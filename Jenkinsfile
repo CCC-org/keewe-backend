@@ -7,7 +7,7 @@ pipeline {
                 script {
                     checkout([$class             : 'GitSCM'
                               , branches         : [[name: "main"]]
-                              , userRemoteConfigs: [[credentialsId: 'hoseong-gh', url: 'https://github.com/Youhoseong/jenkins-pipeline.git']]])
+                              , userRemoteConfigs: [[credentialsId: 'hoseong-gh', url: 'https://github.com/CCC-org/bridge-backend.git']]])
                 }
             }
         }
