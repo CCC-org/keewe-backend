@@ -1,1 +1,7 @@
 rootProject.name = 'bridge'
+include 'bridge-api'
+include 'bridge-domain'
+include 'bridge-infra'
+include 'bridge-push'
+include 'bridge-batch'
+include 'bridge-statistics'
