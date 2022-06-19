@@ -39,7 +39,7 @@ fi
 
 echo "> Do deploy :: $1"
 
-nohup java $JAVA_OPT -jar $2/$1-0.0.1-SNAPSHOT.jar >> running.log &
+nohup java $JAVA_OPT -jar /home/ubuntu/$2/$1-0.0.1-SNAPSHOT.jar >> /home/ubuntu/$2/$1.log &
 NEW_PID=$!
 echo "> NEW APP PID :: $NEW_PID"
 
