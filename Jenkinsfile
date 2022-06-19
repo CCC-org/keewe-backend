@@ -1,3 +1,4 @@
+
 pipeline {
     agent any
 
@@ -52,7 +53,8 @@ pipeline {
                                                     sshTransfer(
                                                             sourceFiles: "${PJ_NAME}/build/libs/*.jar",
                                                             removePrefix: "${PJ_NAME}/build/libs",
-                                                            execCommand: "sh scripts/deploy.sh ${PJ_NAME} "
+                                                            remoteDirectory: "${DEPLOY_PATH_DEV}",
+                                                            execCommand: "sh scripts/deploy.sh ${PJ_NAME} ${DEPLOY_PATH_DEV}"
                                                     )
                                             ])
                             ])
@@ -70,4 +72,8 @@ pipeline {
             echo 'Fail ..'
         }
     }
+}
+
+env {
+    DEPLOY_PATH_DEV = "/data1/${PJ_NAME}"
 }
