@@ -72,8 +72,8 @@ pipeline {
             echo 'Fail ..'
         }
     }
+    environment {
+        DEPLOY_PATH_DEV = "/data1/${PJ_NAME}"
+    }
 }
 
-env {
-    DEPLOY_PATH_DEV = "/data1/${PJ_NAME}"
-}
