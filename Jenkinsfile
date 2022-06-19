@@ -56,7 +56,8 @@ pipeline {
                                                     sshTransfer(
                                                             sourceFiles: "scripts/deploy.sh",
                                                             removePrefix: "scripts",
-                                                            execCommand: "sh deploy.sh ${PJ_NAME} ${DEPLOY_PATH_DEV}"
+                                                            remoteDirectory: "",
+                                                            execCommand: "sh /home/ubuntu/deploy.sh ${PJ_NAME} ${DEPLOY_PATH_DEV}"
                                                     )
 
                                             ])
