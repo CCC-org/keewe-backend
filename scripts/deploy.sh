@@ -19,6 +19,9 @@ is_stop () {
 
 echo "> Auto deploy starting...."
 
+mkdir /home/ubuntu/$2
+cd /home/ubuntu/$2
+
 CURRENT_PID=`cat $1.pid`
 
 echo "> OLD APP PID :: $CURRENT_PID"
@@ -33,15 +36,17 @@ else
     is_stop $CURRENT_PID
     if [ $? -eq 0 ]; then
         echo "> Force stop ! !"
-        kill -9 $PID
+        kill -9 $CURRENT_PID
     fi
 fi
 
 echo "> Do deploy :: $1"
 
-nohup java $JAVA_OPT -jar /home/ubuntu/$2/$1-0.0.1-SNAPSHOT.jar >> /home/ubuntu/$2/$1.log &
+nohup java $JAVA_OPT -jar $1-0.0.1-SNAPSHOT.jar >> $1.log &
 NEW_PID=$!
 echo "> NEW APP PID :: $NEW_PID"
+
+echo $NEW_PID > "$1".pid
 
 is_stop $NEW_PID
 if [ $? -eq 1 ];then

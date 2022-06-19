@@ -48,17 +48,18 @@ pipeline {
                                             verbose: true,
                                             transfers: [
                                                     sshTransfer(
-                                                            sourceFiles: "${PJ_NAME}/build/libs/*.jar",
-                                                            removePrefix: "${PJ_NAME}/build/libs",
-                                                            remoteDirectory: "${DEPLOY_PATH_DEV}"
-
-                                                    ),
-                                                    sshTransfer(
                                                             sourceFiles: "scripts/deploy.sh",
                                                             removePrefix: "scripts",
                                                             remoteDirectory: "",
-                                                            execCommand: "sh /home/ubuntu/deploy.sh ${PJ_NAME} ${DEPLOY_PATH_DEV}"
+                                                            execCommand: "echo deploy script success.."
+                                                    ),
+                                                    sshTransfer(
+                                                            sourceFiles: "${PJ_NAME}/build/libs/*.jar",
+                                                            removePrefix: "${PJ_NAME}/build/libs",
+                                                            remoteDirectory: "${DEPLOY_PATH_DEV}",
+                                                            execCommand: "sh deploy.sh ${PJ_NAME} ${DEPLOY_PATH_DEV}"
                                                     )
+
 
                                             ])
                             ])
