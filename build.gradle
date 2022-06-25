@@ -2,6 +2,7 @@ plugins {
 	id 'org.springframework.boot' version '2.7.0'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 	id 'java'
+	id 'com.epages.restdocs-api-spec' version '0.16.2'
 }
 
 subprojects {
@@ -106,5 +107,27 @@ project(':bridge-api') {
 	dependencies {
 		implementation project(path: ':bridge-domain', configuration: 'default')
 		implementation 'org.springframework.boot:spring-boot-starter-web'
+
+		testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+		testImplementation 'com.epages:restdocs-api-spec-mockmvc:0.16.2'
+	}
+
+	task copyDocument(type:Copy) {
+		dependsOn('openapi3')
+
+		from "build/api-spec"
+		into "src/main/resources/static/docs/"
+	}
+
+	build {
+		dependsOn copyDocument
+	}
+
+	openapi3 {
+		server = 'http://localhost:8080'
+		title = 'Bridge-API'
+		description = 'Bridge의 API 문서입니다.'
+		version = '0.1.0'
+		format = 'yaml'
 	}
 }
