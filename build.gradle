@@ -104,6 +104,8 @@ project(':bridge-domain') {
 
 
 project(':bridge-api') {
+	apply plugin: 'com.epages.restdocs-api-spec'
+
 	dependencies {
 		implementation project(path: ':bridge-domain', configuration: 'default')
 		implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -123,11 +125,21 @@ project(':bridge-api') {
 		dependsOn copyDocument
 	}
 
+	bootJar {
+		dependsOn('openapi3')
+		from ("build/api-spec") {
+			into 'static/docs'
+		}
+	}
+
+	test.doFirst {
+		delete file('build/generated-snippets')
+	}
+
 	openapi3 {
 		server = 'http://localhost:8080'
 		title = 'Bridge-API'
 		description = 'Bridge의 API 문서입니다.'
-		version = '0.1.0'
 		format = 'yaml'
 	}
 }
