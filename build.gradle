@@ -137,7 +137,14 @@ project(':bridge-api') {
 	}
 
 	openapi3 {
-		server = 'http://localhost:8080'
+		ext {
+			local = 'http://localhost:8080'
+			dev = 'http://3.39.100.45:8080'
+		}
+
+		def active = System.properties.getOrDefault('spring.profiles.active', 'local')
+
+		server = ext.get(active)
 		title = 'Bridge-API'
 		description = 'Bridge의 API 문서입니다.'
 		format = 'yaml'
