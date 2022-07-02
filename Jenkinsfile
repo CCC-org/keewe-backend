@@ -57,7 +57,7 @@ pipeline {
                                                             sourceFiles: "${PJ_NAME}/build/libs/*.jar",
                                                             removePrefix: "${PJ_NAME}/build/libs",
                                                             remoteDirectory: "${DEPLOY_PATH_DEV}",
-                                                            execCommand: "sh deploy.sh ${PJ_NAME} ${DEPLOY_PATH_DEV}"
+                                                            execCommand: "sh deploy.sh ${PJ_NAME} ${DEPLOY_PATH_DEV} ${RUN_DEV}"
                                                     )
 
 
@@ -79,6 +79,8 @@ pipeline {
     }
     environment {
         DEPLOY_PATH_DEV = "/data1/${PJ_NAME}"
+        RUN_DEV = "dev"
+        RUN_PROD = "prod"
     }
 }
 
