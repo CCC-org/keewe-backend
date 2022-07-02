@@ -40,3 +40,5 @@ out/
 
 ### Log Files ###
 logs/
+.gitsecret/keys/random_seed
+!*.secret

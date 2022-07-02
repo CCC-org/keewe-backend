@@ -18,7 +18,7 @@ pipeline {
             steps {
                 script {
                     sh '''
-                        ./gradlew :${PJ_NAME}:clean :${PJ_NAME}:bootJar
+                        ./gradlew :${PJ_NAME}:clean :${PJ_NAME}:bootJar -Dspring.profiles.active=${RUN_DEV}
                     '''
                 }
 

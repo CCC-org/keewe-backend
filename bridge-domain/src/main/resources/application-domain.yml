@@ -23,3 +23,18 @@ spring:
   config:
     activate:
       on-profile: dev
+
+  datasource:
+    url: jdbc:mysql://keewe-dev-db.cazgh31jhlbv.ap-northeast-2.rds.amazonaws.com:3306/keewe?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Seoul
+    username: admin
+    password: test
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+    open-in-view: false
+    properties:
+      hibernate.default_batch_fetch_size: 1000
+
+
