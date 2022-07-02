@@ -141,7 +141,7 @@ project(':bridge-api') {
 	openapi3 {
 		ext {
 			local = 'http://localhost:8080'
-			dev = 'http://3.39.100.45:8080'
+			dev = 'https://api-keewe.com'
 		}
 
 		def active = System.properties.getOrDefault('spring.profiles.active', 'local')

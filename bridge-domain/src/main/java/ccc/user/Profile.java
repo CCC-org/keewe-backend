@@ -1,6 +1,6 @@
 package ccc.user;
 
-import ccc.common.enums.ActivityPart;
+import ccc.common.enums.Activity;
 import ccc.user.enums.Privacy;
 
 import javax.persistence.*;
@@ -38,7 +38,7 @@ public class Profile {
 
     @ElementCollection
     @Enumerated(EnumType.STRING)
-    private List<ActivityPart> keywords = new ArrayList<>(); // 나를 나타내는 키워드 목록
+    private List<Activity> keywords = new ArrayList<>(); // 나를 나타내는 키워드 목록
 
     @OneToMany(mappedBy = "follower", fetch = LAZY)
     private List<Buddy> followers = new ArrayList<>(); // 내가 팔로우하는 사람들
