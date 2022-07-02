@@ -42,7 +42,6 @@ out/
 logs/
 .gitsecret/keys/random_seed
 !*.secret
-dbpassword.txt
 bridge-domain/src/main/resources/application-domain.yml
 /gpg-ownertrust.txt
 /gpg-secret.key
