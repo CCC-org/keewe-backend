@@ -1,1 +1,4 @@
 
+spring:
+  profiles:
+    include: domain

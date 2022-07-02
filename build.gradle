@@ -98,6 +98,8 @@ project(':bridge-domain') {
 
 	dependencies {
 		implementation project(path: ':bridge-infra', configuration: 'default')
+		implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+		implementation 'mysql:mysql-connector-java'
 		// todo ::jpa, redis import
 	}
 }
