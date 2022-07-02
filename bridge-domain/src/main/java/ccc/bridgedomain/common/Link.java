@@ -1,6 +1,6 @@
-package ccc.common;
+package ccc.bridgedomain.common;
 
-import ccc.common.enums.LinkType;
+import ccc.bridgedomain.common.enums.LinkType;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;

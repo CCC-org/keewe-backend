@@ -1,7 +1,7 @@
-package ccc.user;
+package ccc.bridgedomain.user;
 
-import ccc.common.enums.Activity;
-import ccc.user.enums.Privacy;
+import ccc.bridgedomain.user.enums.Privacy;
+import ccc.bridgedomain.common.enums.Activity;
 
 import javax.persistence.*;
 import java.util.ArrayList;

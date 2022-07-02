@@ -1,4 +1,4 @@
-package ccc.user.enums;
+package ccc.bridgedomain.user.enums;
 
 public enum UserStatus {
     ACTIVE,

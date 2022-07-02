@@ -1,6 +1,6 @@
-package ccc.user;
+package ccc.bridgedomain.user;
 
-import ccc.user.enums.UserStatus;
+import ccc.bridgedomain.user.enums.UserStatus;
 
 import javax.persistence.*;
 import java.util.List;

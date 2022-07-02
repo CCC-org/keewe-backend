@@ -1,6 +1,6 @@
-package ccc.user;
+package ccc.bridgedomain.user;
 
-import ccc.common.Link;
+import ccc.bridgedomain.common.Link;
 import javax.persistence.*;
 
 import static javax.persistence.FetchType.LAZY;

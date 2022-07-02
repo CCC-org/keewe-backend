@@ -1,4 +1,4 @@
-package ccc.common.enums;
+package ccc.bridgedomain.common.enums;
 
 public enum LinkType {
     YOUTUBE,

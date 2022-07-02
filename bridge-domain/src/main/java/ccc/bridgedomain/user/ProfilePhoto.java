@@ -1,4 +1,4 @@
-package ccc.user;
+package ccc.bridgedomain.user;
 
 import javax.persistence.*;
 
