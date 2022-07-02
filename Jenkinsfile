@@ -13,6 +13,15 @@ pipeline {
             }
         }
 
+        stage('Secret decrypt') {
+            steps {
+                sh """
+                    gpg --batch --import $GPG_SECRET
+                    gpg --import-ownertrust $GPG_TRUST
+                    git secret reveal -p $GPG_PASSPHRASE
+                """
+            }
+        }
 
         stage('Build') {
             steps {
@@ -81,6 +90,9 @@ pipeline {
         DEPLOY_PATH_DEV = "/data1/${PJ_NAME}"
         RUN_DEV = "dev"
         RUN_PROD = "prod"
+        GPG_SECRET = credentials("gpg-secret")
+        GPG_TRUST = credentials("gpg-ownertrust")
+        GPG_PASSPHRASE = credentials("gpg-passphrase")
     }
 }
 
