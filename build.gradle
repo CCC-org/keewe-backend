@@ -2,6 +2,7 @@ plugins {
 	id 'org.springframework.boot' version '2.7.0'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 	id 'java'
+	id 'com.epages.restdocs-api-spec' version '0.16.2'
 }
 
 subprojects {
@@ -97,14 +98,57 @@ project(':bridge-domain') {
 
 	dependencies {
 		implementation project(path: ':bridge-infra', configuration: 'default')
+		implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+		implementation 'mysql:mysql-connector-java'
 		// todo ::jpa, redis import
 	}
 }
 
 
 project(':bridge-api') {
+	apply plugin: 'com.epages.restdocs-api-spec'
+
 	dependencies {
 		implementation project(path: ':bridge-domain', configuration: 'default')
 		implementation 'org.springframework.boot:spring-boot-starter-web'
+
+		testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+		testImplementation 'com.epages:restdocs-api-spec-mockmvc:0.16.2'
+	}
+
+	task copyDocument(type:Copy) {
+		dependsOn('openapi3')
+
+		from "build/api-spec"
+		into "src/main/resources/static/docs/"
+	}
+
+	build {
+		dependsOn copyDocument
+	}
+
+	bootJar {
+		dependsOn('openapi3')
+		from ("build/api-spec") {
+			into 'static/docs'
+		}
+	}
+
+	test.doFirst {
+		delete file('build/generated-snippets')
+	}
+
+	openapi3 {
+		ext {
+			local = 'http://localhost:8080'
+			dev = 'https://api-keewe.com'
+		}
+
+		def active = System.properties.getOrDefault('spring.profiles.active', 'local')
+
+		server = ext.get(active)
+		title = 'Bridge-API'
+		description = 'Bridge의 API 문서입니다.'
+		format = 'yaml'
 	}
 }
