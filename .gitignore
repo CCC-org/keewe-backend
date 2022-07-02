@@ -40,3 +40,8 @@ out/
 
 ### Log Files ###
 logs/
+.gitsecret/keys/random_seed
+!*.secret
+bridge-domain/src/main/resources/application-domain.yml
+/gpg-ownertrust.txt
+/gpg-secret.key
