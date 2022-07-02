@@ -1,0 +1,25 @@
+spring:
+  config:
+    activate:
+      on-profile: local
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/cap2_db
+    username: cs
+    password: cs
+
+  jpa:
+    hibernate:
+     ddl-auto: none
+    show-sql: true
+    open-in-view: false
+    properties:
+      hibernate.default_batch_fetch_size: 1000
+
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: dev
