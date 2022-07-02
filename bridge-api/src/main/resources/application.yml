@@ -1,4 +1,15 @@
-
 spring:
   profiles:
     include: domain
+
+server:
+  tomcat:
+    basedir: .
+    accesslog:
+      enabled: true
+      directory: logs
+      pattern: 'API-access_log %{yyyy-MM-dd HH:mm:ss.SSS}t %{X-Forwarded-For}i %r %s %b %D'
+      prefix: access_log
+      suffix: .log
+      rotate: true
+      rename-on-rotate: true
