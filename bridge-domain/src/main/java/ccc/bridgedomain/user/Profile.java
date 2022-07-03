@@ -37,8 +37,10 @@ public class Profile {
     private ProfilePhoto profilePhoto;
 
     @ElementCollection
+    @CollectionTable(name = "favorite_activities",joinColumns = @JoinColumn(name = "profile_id"))
+    @Column(name = "activity")
     @Enumerated(EnumType.STRING)
-    private List<Activity> keywords = new ArrayList<>(); // 나를 나타내는 키워드 목록
+    private List<Activity> activities = new ArrayList<>(); // 나를 나타내는 키워드 목록
 
     @OneToMany(mappedBy = "follower", fetch = LAZY)
     private List<Buddy> followers = new ArrayList<>(); // 내가 팔로우하는 사람들
