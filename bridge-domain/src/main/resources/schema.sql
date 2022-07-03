@@ -43,7 +43,7 @@ CREATE TABLE IF NOT EXISTS buddy
 CREATE TABLE IF NOT EXISTS favorite_activities
 (
     profile_id      BIGINT(20)      NOT NULL,
-    keyword         VARCHAR(255)    NOT NULL,
+    activity         VARCHAR(255)    NOT NULL,
 
     FOREIGN KEY (profile_id) REFERENCES profile(profile_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
