@@ -5,7 +5,7 @@
 </p>
 
 # 멀티모듈 구성
-- 의존성 방향은 internal한 방향으로만 이뤄져요. (역방향 의존 허용 X)
+- 의존성 방향은 internal 방향으로만 이뤄져요. (역방향 의존 허용 X)
 ![image](https://user-images.githubusercontent.com/33655186/177027647-7b136266-810a-4f16-b8f0-5914e6db34fc.png)
 
 
