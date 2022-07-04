@@ -1,7 +1,7 @@
-package ccc.keewedomain.user;
+package ccc.keewedomain.domain.user;
 
 import ccc.keewedomain.common.BaseTimeEntity;
-import ccc.keewedomain.user.enums.UserStatus;
+import ccc.keewedomain.domain.user.enums.UserStatus;
 
 import javax.persistence.*;
 import java.util.List;

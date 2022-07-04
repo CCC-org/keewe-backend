@@ -1,4 +1,4 @@
-package ccc.keewedomain.common.enums;
+package ccc.keewedomain.domain.common.enums;
 
 public enum MainActivity {
     음악,

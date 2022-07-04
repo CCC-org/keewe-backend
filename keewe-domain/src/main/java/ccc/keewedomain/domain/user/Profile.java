@@ -1,8 +1,8 @@
-package ccc.keewedomain.user;
+package ccc.keewedomain.domain.user;
 
 import ccc.keewedomain.common.BaseTimeEntity;
-import ccc.keewedomain.user.enums.Privacy;
 import ccc.keewedomain.common.enums.Activity;
+import ccc.keewedomain.domain.user.enums.Privacy;
 
 import javax.persistence.*;
 import java.util.ArrayList;

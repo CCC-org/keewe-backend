@@ -1,4 +1,4 @@
-package ccc.keewedomain.user;
+package ccc.keewedomain.domain.user;
 
 import ccc.keewedomain.common.BaseTimeEntity;
 

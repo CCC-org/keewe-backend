@@ -1,4 +1,4 @@
-package ccc.keewedomain.common;
+package ccc.keewedomain.domain.common;
 
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;
