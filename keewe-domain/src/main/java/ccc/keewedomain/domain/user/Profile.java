@@ -36,17 +36,14 @@ public class Profile extends BaseTimeEntity {
     private User user;
 
     @Column(name = "nickname", nullable = false)
-    @Builder.Default
-    private String nickname = ""; // 닉네임
+    private String nickname; // 닉네임
 
     @Column(name = "link", unique = true, nullable = false)
-    @Builder.Default
-    private String link = ""; // 프로필 링크
+    private String link; // 프로필 링크
 
     @Column(name = "privacy")
     @Enumerated(EnumType.STRING)
-    @Builder.Default
-    private Privacy privacy = PUBLIC;
+    private Privacy privacy;
 
     @OneToOne
     @JoinColumn(name = "profile_photo_id")
@@ -54,29 +51,40 @@ public class Profile extends BaseTimeEntity {
 
     @Column(name = "profile_status")
     @Enumerated(EnumType.STRING)
-    @Builder.Default
-    private ProfileStatus profileStatus = LINK_NEEDED;
+    private ProfileStatus profileStatus;
 
     @ElementCollection
     @CollectionTable(name = "favorite_activities",joinColumns = @JoinColumn(name = "profile_id"))
     @Column(name = "activity")
     @Enumerated(EnumType.STRING)
-    private List<Activity> activities = new ArrayList<>(); // 나를 나타내는 키워드 목록
+    private List<Activity> activities; // 나를 나타내는 키워드 목록
 
     @OneToMany(mappedBy = "follower", fetch = LAZY)
-    private List<Buddy> followers = new ArrayList<>(); // 내가 팔로우하는 사람들
+    private List<Buddy> followers; // 내가 팔로우하는 사람들
 
     @OneToMany(mappedBy = "followee", fetch = LAZY)
-    private List<Buddy> followees = new ArrayList<>(); // 나를 팔로우하는 사람들
+    private List<Buddy> followees; // 나를 팔로우하는 사람들
 
     @OneToMany(mappedBy = "profile", fetch = LAZY)
-    private List<ProfileLink> socialLinks = new ArrayList<>();
+    private List<ProfileLink> socialLinks;
 
     @Column(name = "deleted", nullable = false)
-    @Builder.Default
-    private boolean deleted = false;
+    private boolean deleted;
 
     public ProfileBuilder mutate() {
         return this.toBuilder();
+    }
+
+    public static ProfileBuilder initBuild() {
+        return Profile.builder()
+                .nickname("")
+                .link("")
+                .privacy(PUBLIC)
+                .profileStatus(LINK_NEEDED)
+                .activities(new ArrayList<>())
+                .followers(new ArrayList<>())
+                .followees(new ArrayList<>())
+                .socialLinks(new ArrayList<>())
+                .deleted(false);
     }
 }
