@@ -50,28 +50,28 @@ subprojects {
 
 }
 
-project(':bridge-batch') {
+project(':keewe-batch') {
 	dependencies {
 		implementation 'org.springframework.boot:spring-boot-starter-batch'
 		implementation 'org.springframework.boot:spring-boot-starter-quartz'
 	}
 }
 
-project(':bridge-push') {
+project(':keewe-push') {
 	dependencies {
 		implementation 'org.springframework.boot:spring-boot-starter-amqp'
 	}
 }
 
 
-project(':bridge-statistics') {
+project(':keewe-statistics') {
 	dependencies {
-		implementation project(path: ':bridge-domain', configuration: 'default')
+		implementation project(path: ':keewe-domain', configuration: 'default')
 		implementation 'org.springframework.boot:spring-boot-starter-web'
 	}
 }
 
-project(':bridge-infra') {
+project(':keewe-infra') {
 	bootJar {
 		enabled = false
 	}
@@ -87,7 +87,7 @@ project(':bridge-infra') {
 }
 
 
-project(':bridge-domain') {
+project(':keewe-domain') {
 	bootJar {
 		enabled = false
 	}
@@ -97,7 +97,7 @@ project(':bridge-domain') {
 	}
 
 	dependencies {
-		implementation project(path: ':bridge-infra', configuration: 'default')
+		implementation project(path: ':keewe-infra', configuration: 'default')
 		implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 		implementation 'mysql:mysql-connector-java'
 		// todo ::jpa, redis import
@@ -105,11 +105,11 @@ project(':bridge-domain') {
 }
 
 
-project(':bridge-api') {
+project(':keewe-api') {
 	apply plugin: 'com.epages.restdocs-api-spec'
 
 	dependencies {
-		implementation project(path: ':bridge-domain', configuration: 'default')
+		implementation project(path: ':keewe-domain', configuration: 'default')
 		implementation 'org.springframework.boot:spring-boot-starter-web'
 
 		testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
@@ -147,8 +147,8 @@ project(':bridge-api') {
 		def active = System.properties.getOrDefault('spring.profiles.active', 'local')
 
 		server = ext.get(active)
-		title = 'Bridge-API'
-		description = 'Bridge의 API 문서입니다.'
+		title = 'Keewe-API'
+		description = 'Keewe의 API 문서입니다.'
 		format = 'yaml'
 	}
 }
