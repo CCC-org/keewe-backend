@@ -49,7 +49,8 @@ CREATE TABLE IF NOT EXISTS favorite_activities
     profile_id      BIGINT(20)      NOT NULL,
     activity        VARCHAR(255)    NOT NULL,
 
-    FOREIGN KEY (profile_id) REFERENCES profile(profile_id)
+    FOREIGN KEY (profile_id) REFERENCES profile(profile_id),
+    CONSTRAINT UNIQUE (profile_id, activity)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS profile_link
