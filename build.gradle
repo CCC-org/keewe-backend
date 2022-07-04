@@ -112,24 +112,19 @@ project(':keewe-api') {
 	dependencies {
 		implementation project(path: ':keewe-domain', configuration: 'default')
 		implementation 'org.springframework.boot:spring-boot-starter-web'
-
+		implementation 'org.springframework.boot:spring-boot-starter-security'
 		testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
 		testImplementation 'com.epages:restdocs-api-spec-mockmvc:0.16.2'
 	}
 
 	task copyDocument(type:Copy) {
 		dependsOn('openapi3')
-
 		from "build/api-spec"
 		into "src/main/resources/static/docs/"
 	}
 
-	build {
-		dependsOn copyDocument
-	}
-
 	bootJar {
-		dependsOn('openapi3')
+		dependsOn copyDocument
 		from ("build/api-spec") {
 			into 'static/docs'
 		}
