@@ -1,5 +1,6 @@
 package ccc.bridgedomain.user;
 
+import ccc.bridgedomain.common.BaseTimeEntity;
 import ccc.bridgedomain.user.enums.Privacy;
 import ccc.bridgedomain.common.enums.Activity;
 
@@ -11,7 +12,7 @@ import static javax.persistence.FetchType.LAZY;
 
 @Entity
 @Table(name = "profile")
-public class Profile {
+public class Profile extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

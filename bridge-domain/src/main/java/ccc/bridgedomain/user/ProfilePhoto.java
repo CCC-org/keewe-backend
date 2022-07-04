@@ -1,10 +1,12 @@
 package ccc.bridgedomain.user;
 
+import ccc.bridgedomain.common.BaseTimeEntity;
+
 import javax.persistence.*;
 
 @Entity
 @Table(name = "profile_photo")
-public class ProfilePhoto {
+public class ProfilePhoto extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -1,5 +1,6 @@
 package ccc.bridgedomain.user;
 
+import ccc.bridgedomain.common.BaseTimeEntity;
 import ccc.bridgedomain.common.Link;
 import javax.persistence.*;
 
@@ -7,7 +8,7 @@ import static javax.persistence.FetchType.LAZY;
 
 @Entity
 @Table(name = "profile_link")
-public class ProfileLink {
+public class ProfileLink extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
