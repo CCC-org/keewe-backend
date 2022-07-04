@@ -1,17 +1,29 @@
 package ccc.keewedomain.domain.user;
 
-import ccc.keewedomain.common.BaseTimeEntity;
-import ccc.keewedomain.common.enums.Activity;
+import ccc.keewedomain.domain.common.BaseTimeEntity;
+import ccc.keewedomain.domain.common.enums.Activity;
 import ccc.keewedomain.domain.user.enums.Privacy;
+import ccc.keewedomain.domain.user.enums.ProfileStatus;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static ccc.keewedomain.domain.user.enums.Privacy.PUBLIC;
+import static ccc.keewedomain.domain.user.enums.ProfileStatus.LINK_NEEDED;
 import static javax.persistence.FetchType.LAZY;
+import static lombok.AccessLevel.PROTECTED;
 
 @Entity
 @Table(name = "profile")
+@AllArgsConstructor
+@NoArgsConstructor(access = PROTECTED)
+@Builder(toBuilder = true)
+@Getter
 public class Profile extends BaseTimeEntity {
 
     @Id
@@ -24,18 +36,26 @@ public class Profile extends BaseTimeEntity {
     private User user;
 
     @Column(name = "nickname", nullable = false)
-    private String nickname; // 닉네임
+    @Builder.Default
+    private String nickname = ""; // 닉네임
 
     @Column(name = "link", unique = true, nullable = false)
-    private String link; // 프로필 링크
+    @Builder.Default
+    private String link = ""; // 프로필 링크
 
     @Column(name = "privacy")
     @Enumerated(EnumType.STRING)
-    private Privacy privacy;
+    @Builder.Default
+    private Privacy privacy = PUBLIC;
 
     @OneToOne
     @JoinColumn(name = "profile_photo_id")
     private ProfilePhoto profilePhoto;
+
+    @Column(name = "profile_status")
+    @Enumerated(EnumType.STRING)
+    @Builder.Default
+    private ProfileStatus profileStatus = LINK_NEEDED;
 
     @ElementCollection
     @CollectionTable(name = "favorite_activities",joinColumns = @JoinColumn(name = "profile_id"))
@@ -53,5 +73,10 @@ public class Profile extends BaseTimeEntity {
     private List<ProfileLink> socialLinks = new ArrayList<>();
 
     @Column(name = "deleted", nullable = false)
-    private boolean deleted;
+    @Builder.Default
+    private boolean deleted = false;
+
+    public ProfileBuilder mutate() {
+        return this.toBuilder();
+    }
 }
