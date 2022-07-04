@@ -100,6 +100,7 @@ project(':keewe-domain') {
 		implementation project(path: ':keewe-infra', configuration: 'default')
 		implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 		implementation 'mysql:mysql-connector-java'
+		implementation group: 'com.h2database', name: 'h2', version: '2.1.214'
 		// todo ::jpa, redis import
 	}
 }
