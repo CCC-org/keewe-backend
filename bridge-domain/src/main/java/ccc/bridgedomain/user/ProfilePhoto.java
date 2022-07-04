@@ -10,4 +10,7 @@ public class ProfilePhoto {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "profile_photo_id")
     private Long id;
+
+    @Column(name = "deleted", nullable = false)
+    private boolean deleted;
 }

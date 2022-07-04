@@ -20,4 +20,7 @@ public class ProfileLink {
 
     @Embedded
     private Link link;
+
+    @Column(name = "deleted", nullable = false)
+    private boolean deleted;
 }

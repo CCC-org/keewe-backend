@@ -51,4 +51,6 @@ public class Profile {
     @OneToMany(mappedBy = "profile", fetch = LAZY)
     private List<ProfileLink> socialLinks = new ArrayList<>();
 
+    @Column(name = "deleted", nullable = false)
+    private boolean deleted;
 }

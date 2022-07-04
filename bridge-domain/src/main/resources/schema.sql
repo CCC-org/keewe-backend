@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS user
     password            VARCHAR(255),
     phone_number        VARCHAR(255)    UNIQUE,
     status              VARCHAR(255),
+    deleted             BIT             NOT NULL,
 
     PRIMARY KEY(user_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -12,6 +13,8 @@ CREATE TABLE IF NOT EXISTS user
 CREATE TABLE IF NOT EXISTS profile_photo
 (
     profile_photo_id    BIGINT(20)      NOT NULL        AUTO_INCREMENT,
+    deleted             BIT             NOT NULL,
+
     PRIMARY KEY (profile_photo_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -23,6 +26,7 @@ CREATE TABLE IF NOT EXISTS profile
     link                VARCHAR(30)     NOT NULL        UNIQUE,
     privacy             VARCHAR(20)     NOT NULL,
     profile_photo_id    BIGINT(20),
+    deleted             BIT             NOT NULL,
 
     PRIMARY KEY (profile_id),
     FOREIGN KEY (user_id) REFERENCES user(user_id),
@@ -54,6 +58,7 @@ CREATE TABLE IF NOT EXISTS profile_link
     profile_id          BIGINT(20)      NOT NULL,
     url                 VARCHAR(255)    NOT NULL,
     type                VARCHAR(255)    NOT NULL,
+    deleted             BIT             NOT NULL,
 
     PRIMARY KEY (profile_link_id),
     FOREIGN KEY (profile_id) REFERENCES profile(profile_id)
