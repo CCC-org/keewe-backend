@@ -1,11 +1,13 @@
 package ccc.bridgedomain.user;
 
+import ccc.bridgedomain.common.BaseTimeEntity;
+
 import javax.persistence.*;
 
 import static javax.persistence.FetchType.LAZY;
 
 @Entity
-public class Buddy {
+public class Buddy extends BaseTimeEntity {
     @Id
     private Long id;
 

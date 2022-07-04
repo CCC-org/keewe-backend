@@ -1,5 +1,6 @@
 package ccc.bridgedomain.user;
 
+import ccc.bridgedomain.common.BaseTimeEntity;
 import ccc.bridgedomain.user.enums.Privacy;
 import ccc.bridgedomain.common.enums.Activity;
 
@@ -11,7 +12,7 @@ import static javax.persistence.FetchType.LAZY;
 
 @Entity
 @Table(name = "profile")
-public class Profile {
+public class Profile extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,7 +23,7 @@ public class Profile {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Column(name = "nickname", unique = true, nullable = false)
+    @Column(name = "nickname", nullable = false)
     private String nickname; // 닉네임
 
     @Column(name = "link", unique = true, nullable = false)
@@ -37,8 +38,10 @@ public class Profile {
     private ProfilePhoto profilePhoto;
 
     @ElementCollection
+    @CollectionTable(name = "favorite_activities",joinColumns = @JoinColumn(name = "profile_id"))
+    @Column(name = "activity")
     @Enumerated(EnumType.STRING)
-    private List<Activity> keywords = new ArrayList<>(); // 나를 나타내는 키워드 목록
+    private List<Activity> activities = new ArrayList<>(); // 나를 나타내는 키워드 목록
 
     @OneToMany(mappedBy = "follower", fetch = LAZY)
     private List<Buddy> followers = new ArrayList<>(); // 내가 팔로우하는 사람들
@@ -49,4 +52,6 @@ public class Profile {
     @OneToMany(mappedBy = "profile", fetch = LAZY)
     private List<ProfileLink> socialLinks = new ArrayList<>();
 
+    @Column(name = "deleted", nullable = false)
+    private boolean deleted;
 }

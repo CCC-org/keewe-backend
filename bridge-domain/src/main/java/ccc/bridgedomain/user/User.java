@@ -1,5 +1,6 @@
 package ccc.bridgedomain.user;
 
+import ccc.bridgedomain.common.BaseTimeEntity;
 import ccc.bridgedomain.user.enums.UserStatus;
 
 import javax.persistence.*;
@@ -9,7 +10,7 @@ import static javax.persistence.FetchType.LAZY;
 
 @Entity
 @Table(name = "user")
-public class User {
+public class User extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,5 +38,8 @@ public class User {
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private UserStatus status;
+
+    @Column(name = "deleted", nullable = false)
+    private boolean deleted;
 }
 
