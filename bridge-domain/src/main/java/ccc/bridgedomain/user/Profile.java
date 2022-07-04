@@ -22,7 +22,7 @@ public class Profile {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Column(name = "nickname", unique = true, nullable = false)
+    @Column(name = "nickname", nullable = false)
     private String nickname; // 닉네임
 
     @Column(name = "link", unique = true, nullable = false)
