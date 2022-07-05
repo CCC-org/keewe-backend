@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
+import java.text.BreakIterator;
 
 @RequiredArgsConstructor
 @Service
@@ -32,19 +33,43 @@ public class ProfileService {
     }
 
     @Transactional
-    public void createNickname(NicknameCreateDto nicknameCreateDto) {
+    public long createNickname(NicknameCreateDto nicknameCreateDto) {
         String nickname = nicknameCreateDto.getNickname();
 
         checkNicknameLength(nickname);
 
         Profile profile = profileRepository.findByIdAndUserIdAndDeletedFalseOrElseThrow(nicknameCreateDto.getProfileId(), 1L);
         profile.createNickname(nickname);
+
+        return getGraphemeLength(nickname);
     }
 
     private void checkNicknameLength(String nickname) {
-        if (nickname.length() > NICKNAME_MAX_LENGTH) {
+        if (getGraphemeLength(nickname) > NICKNAME_MAX_LENGTH) {
             throw new IllegalArgumentException("김영기 바보!!");
         }
+    }
+
+    private long getGraphemeLength(String s) {
+        long length = getCharacterBoundaryCount(s) - get4ByteEmojiCount(s);
+        return length;
+    }
+
+    private long get4ByteEmojiCount(String s) {
+        return s.chars()
+                .filter(i -> Character.isSurrogate((char) i))
+                .count() / 4;
+    }
+
+    private long getCharacterBoundaryCount(String s) {
+        BreakIterator it = BreakIterator.getCharacterInstance();
+        it.setText(s);
+        long count = 0;
+        while (it.next() != BreakIterator.DONE) {
+            count++;
+        }
+
+        return count;
     }
 
     private void checkDuplicateLinkOrElseThrows(String link) {

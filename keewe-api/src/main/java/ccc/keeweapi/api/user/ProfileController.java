@@ -6,8 +6,10 @@ import ccc.keeweapi.service.user.ProfileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
+
 @RequestMapping
-@RestController("/api/profile")
+@RestController
 @RequiredArgsConstructor
 public class ProfileController {
 
@@ -19,8 +21,7 @@ public class ProfileController {
     }
 
     @PostMapping("/nickname")
-    public int createNickname(@RequestBody NicknameCreateDto nicknameCreateDto) {
-        profileService.createNickname(nicknameCreateDto);
-        return nicknameCreateDto.getNickname().length();
+    public long createNickname(@RequestBody NicknameCreateDto nicknameCreateDto) {
+        return profileService.createNickname(nicknameCreateDto);
     }
 }
