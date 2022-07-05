@@ -2,6 +2,7 @@ package ccc.keewedomain.user;
 
 import ccc.keewedomain.common.BaseTimeEntity;
 import ccc.keewedomain.user.enums.UserStatus;
+import lombok.Getter;
 
 import javax.persistence.*;
 import java.util.List;
@@ -10,6 +11,7 @@ import static javax.persistence.FetchType.LAZY;
 
 @Entity
 @Table(name = "user")
+@Getter
 public class User extends BaseTimeEntity {
 
     @Id
