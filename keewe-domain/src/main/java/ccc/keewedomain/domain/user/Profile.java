@@ -14,8 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static ccc.keewedomain.domain.user.enums.Privacy.PUBLIC;
-import static ccc.keewedomain.domain.user.enums.ProfileStatus.ACTIVITIES_NEEDED;
-import static ccc.keewedomain.domain.user.enums.ProfileStatus.LINK_NEEDED;
+import static ccc.keewedomain.domain.user.enums.ProfileStatus.*;
 import static javax.persistence.FetchType.LAZY;
 import static lombok.AccessLevel.PROTECTED;
 
@@ -88,5 +87,10 @@ public class Profile extends BaseTimeEntity {
     public void createLink(String link) {
         this.link = link;
         this.profileStatus = ACTIVITIES_NEEDED;
+    }
+
+    public void createNickname(String nickname) {
+        this.nickname = nickname;
+        this.profileStatus = SOCIAL_LINK_NEEDED;
     }
 }
