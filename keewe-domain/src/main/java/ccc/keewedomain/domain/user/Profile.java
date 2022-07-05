@@ -90,6 +90,10 @@ public class Profile extends BaseTimeEntity {
     }
 
     public void createNickname(String nickname) {
+        if (this.profileStatus != NICKNAME_NEEDED) {
+            throw new IllegalStateException("닉네임 등록 단계가 아닙니다.");
+        }
+
         this.nickname = nickname;
         this.profileStatus = SOCIAL_LINK_NEEDED;
     }

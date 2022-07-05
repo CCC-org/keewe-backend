@@ -6,8 +6,6 @@ import ccc.keeweapi.service.user.ProfileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.URI;
-
 @RequestMapping
 @RestController
 @RequiredArgsConstructor
