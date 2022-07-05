@@ -1,12 +1,16 @@
-package ccc.keeweapi.config;
+package ccc.keeweapi.config.security;
 
+import ccc.keeweapi.config.UserPrincipal;
+import ccc.keeweapi.consts.KeeweConsts;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
@@ -29,8 +33,8 @@ public class JwtUtils {
         secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
     }
 
-    public String createToken(String userPk, List<String> roles) {
-        Claims claims = Jwts.claims().setSubject(userPk);
+    public String createToken(String email, List<String> roles) {
+        Claims claims = Jwts.claims().setSubject(email);
         claims.put("roles", roles);
 
         Date now = new Date();
@@ -54,37 +58,32 @@ public class JwtUtils {
     }
 
     public String getUserEmail(String token) {
-//        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody()
-//                .getSubject();
-
-        return "hoseong";
+        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody()
+                .getSubject();
     }
 
+
     public String resolveToken(HttpServletRequest request) {
-        String header = request.getHeader("Authorization");
-        if(header != null) {
-            return header.substring(7, header.length());
-        }
-        else {
-            return "";
+        String header = request.getHeader(KeeweConsts.AUTH_HEADER);
 
+        if (StringUtils.hasText(header) && header.startsWith(KeeweConsts.BEARER)) {
+            return header.substring(7);
         }
 
+        return "";
     }
 
     public boolean validateTokenOrElseThrow(String jwtToken) {
-//        try {
-//            Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey)
-//                    .parseClaimsJws(jwtToken);
-//            return !claims.getBody().getExpiration().before(new Date());
-//        }
-//        catch (SignatureException | MalformedJwtException | UnsupportedJwtException | IllegalArgumentException ex) {
-//            throw new BadCredentialsException("TOKEN_INVALID_CREDENTIALS", ex);
-//        } catch (ExpiredJwtException ex) {
-//            throw ex;
-//        }
+        try {
+            Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(jwtToken);
+            return !claims.getBody().getExpiration().before(new Date());
+        }
+        catch (SignatureException | MalformedJwtException | UnsupportedJwtException | IllegalArgumentException ex) {
+            throw new BadCredentialsException("TOKEN_INVALID_CREDENTIALS", ex);
+        } catch (ExpiredJwtException ex) {
+            throw ex;
+        }
 
-        return true;
     }
 
 }

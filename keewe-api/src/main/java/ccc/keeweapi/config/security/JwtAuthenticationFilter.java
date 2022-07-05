@@ -1,9 +1,10 @@
-package ccc.keeweapi.config;
+package ccc.keeweapi.config.security;
 
+import ccc.keeweapi.consts.KeeweRtnConsts;
+import ccc.keeweapi.exception.KeeweAuthException;
 import io.jsonwebtoken.ExpiredJwtException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
@@ -33,40 +34,29 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
-        String jwt = parseJwt(request);
+        String jwt = jwtUtils.resolveToken(request);
         try {
             //TODO jwt가 없는경우 / 있는데 not valid한 경우
             if(!StringUtils.hasText(jwt))
-                throw new BadCredentialsException("토큰이 없어용.");
-
+                throw new KeeweAuthException(KeeweRtnConsts.ERR403);
 
             if(jwtUtils.validateTokenOrElseThrow(jwt)) {
                 SecurityContextHolder.getContext().setAuthentication(jwtUtils.getAuthentication(jwt));
                 chain.doFilter(request, response);
             }
-            throw new BadCredentialsException("토큰이 이상해용.");
+            throw new KeeweAuthException(KeeweRtnConsts.ERR401);
 
-        } catch (BadCredentialsException ex) {
-            request.setAttribute("exception", "STH");
+        } catch (KeeweAuthException ex) {
             authenticationEntryPoint.commence(request, response, ex);
 
         } catch (ExpiredJwtException ex) {
-            request.setAttribute("exception", "STH");
-            authenticationEntryPoint.commence(request, response, new BadCredentialsException("토큰이 만료."));
+            authenticationEntryPoint.commence(request, response, new KeeweAuthException(KeeweRtnConsts.ERR402));
         }
 
 
     }
 
-    private String parseJwt(HttpServletRequest request) {
-        String headerAuth = request.getHeader("Authorization");//FIXME
 
-        if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer ")) {//FIXME
-            return headerAuth.substring(7);
-        }
-
-        return "";
-    }
 
 
 }

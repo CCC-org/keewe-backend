@@ -1,4 +1,4 @@
-package ccc.keeweapi.config;
+package ccc.keeweapi.config.security;
 
 import ccc.keeweapi.service.UserPrincipalDetailsService;
 import lombok.RequiredArgsConstructor;
@@ -19,18 +19,20 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfig {
-
     private final String[] SWAGGER_URL = {"/", "/docs/openapi3.yaml", "/favicon.ico"};
+    private final String SIGNUP_URL = "/user";
     private final String HEALTH_CHECK_URL = "/api/health-check";
+
     private final UserPrincipalDetailsService userService;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
-    private final JwtUtils jwtTokenProvider;
+    private final JwtUtils jwtUtils;
 
     //FIXME 보안 무시 URL
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         return web -> web.ignoring()
                 .antMatchers(HttpMethod.GET, SWAGGER_URL)
+                .antMatchers(SIGNUP_URL)
                 .antMatchers(HttpMethod.GET, HEALTH_CHECK_URL);
     }
 
@@ -49,7 +51,7 @@ public class SecurityConfig {
                 .authorizeRequests(auth -> auth.anyRequest().authenticated())
                 .addFilterBefore(new JwtAuthenticationFilter(authenticationManager(http)
                                 , jwtAuthenticationEntryPoint
-                                , jwtTokenProvider)
+                                , jwtUtils)
                         , BasicAuthenticationFilter.class)
                 .build();
     }

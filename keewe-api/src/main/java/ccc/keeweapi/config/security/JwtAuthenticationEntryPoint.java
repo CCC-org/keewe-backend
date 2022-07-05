@@ -1,5 +1,6 @@
-package ccc.keeweapi.config;
+package ccc.keeweapi.config.security;
 
+import ccc.keeweapi.exception.KeeweAuthException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.AuthenticationException;
@@ -15,37 +16,25 @@ import org.json.simple.JSONObject;
 @RequiredArgsConstructor
 @Slf4j
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
+
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response,
                          AuthenticationException ex) throws IOException {
 
-        String exception = String.valueOf(request.getAttribute("exception"));
-        log.info("ex {}", exception);
+        commence(response, (KeeweAuthException) ex);
+    }
 
+    private void commence(HttpServletResponse response, KeeweAuthException kex) throws IOException {
         response.setContentType("application/json;charset=UTF-8");
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        log.info("kex {}", kex.getKeeweRtnConsts().name());
 
         JSONObject body = new JSONObject();
         body.put("timestamp", LocalDateTime.now().toString());
-        body.put("status", 400);
-        body.put("message", ex.getMessage());
+        body.put("status", kex.getKeeweRtnConsts().getCode());
+        body.put("message", kex.getKeeweRtnConsts().getDescription());
+
         response.getWriter().print(body);
-
-//
-//        if("TOKEN_NOT_VALID".equals(exception))
-//            sendResponse(response, ex.getMessage());
-//        else if("TOKEN_EXPIRED".equals(exception))
-//            sendResponse(response,  ex.getMessage());
-//        else
-//            sendResponse(response, ex.getMessage());
-//
-//        log.error("토큰 필터에서 발생: {}", ex.getMessage());
-
-    }
-
-    private void sendResponse(HttpServletResponse response, String message) throws IOException {
-
-
     }
 
 }
