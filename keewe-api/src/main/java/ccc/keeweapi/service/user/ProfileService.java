@@ -8,8 +8,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static ccc.keewedomain.domain.user.enums.ProfileStatus.ACTIVITIES_NEEDED;
-
 @RequiredArgsConstructor
 @Service
 public class ProfileService {
@@ -23,10 +21,7 @@ public class ProfileService {
 
         checkDuplicateLinkOrElseThrows(link);
 
-        Profile entity = profileRepository.save(profile.mutate()
-                .link(link)
-                .profileStatus(ACTIVITIES_NEEDED)
-                .build());
+        profile.createLink(link);
 
         return 0L;
     }

@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static ccc.keewedomain.domain.user.enums.Privacy.PUBLIC;
+import static ccc.keewedomain.domain.user.enums.ProfileStatus.ACTIVITIES_NEEDED;
 import static ccc.keewedomain.domain.user.enums.ProfileStatus.LINK_NEEDED;
 import static javax.persistence.FetchType.LAZY;
 import static lombok.AccessLevel.PROTECTED;
@@ -22,7 +23,7 @@ import static lombok.AccessLevel.PROTECTED;
 @Table(name = "profile")
 @AllArgsConstructor
 @NoArgsConstructor(access = PROTECTED)
-@Builder(toBuilder = true)
+@Builder
 @Getter
 public class Profile extends BaseTimeEntity {
 
@@ -71,10 +72,6 @@ public class Profile extends BaseTimeEntity {
     @Column(name = "deleted", nullable = false)
     private boolean deleted;
 
-    public ProfileBuilder mutate() {
-        return this.toBuilder();
-    }
-
     public static ProfileBuilder initBuild() {
         return Profile.builder()
                 .nickname("")
@@ -86,5 +83,10 @@ public class Profile extends BaseTimeEntity {
                 .followees(new ArrayList<>())
                 .socialLinks(new ArrayList<>())
                 .deleted(false);
+    }
+
+    public void createLink(String link) {
+        this.link = link;
+        this.profileStatus = ACTIVITIES_NEEDED;
     }
 }
