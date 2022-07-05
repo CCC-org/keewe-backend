@@ -1,4 +1,4 @@
-package ccc.keeweapi.config.security;
+package ccc.keeweapi.config.security.jwt;
 
 import ccc.keeweapi.consts.KeeweRtnConsts;
 import ccc.keeweapi.exception.KeeweAuthException;

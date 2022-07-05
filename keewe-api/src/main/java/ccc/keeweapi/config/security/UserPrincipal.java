@@ -1,4 +1,4 @@
-package ccc.keeweapi.config;
+package ccc.keeweapi.config.security;
 
 import ccc.keewedomain.user.User;
 import lombok.AllArgsConstructor;

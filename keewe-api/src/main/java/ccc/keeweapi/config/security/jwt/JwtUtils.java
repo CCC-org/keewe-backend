@@ -1,6 +1,6 @@
-package ccc.keeweapi.config.security;
+package ccc.keeweapi.config.security.jwt;
 
-import ccc.keeweapi.config.UserPrincipal;
+import ccc.keeweapi.config.security.UserPrincipal;
 import ccc.keeweapi.consts.KeeweConsts;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
