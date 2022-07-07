@@ -1,7 +1,7 @@
 package ccc.keeweapi.exception;
 
 
-import ccc.keeweapi.consts.KeeweRtnConsts;
+import ccc.keewecore.consts.KeeweRtnConsts;
 import lombok.Getter;
 import org.springframework.security.core.AuthenticationException;
 

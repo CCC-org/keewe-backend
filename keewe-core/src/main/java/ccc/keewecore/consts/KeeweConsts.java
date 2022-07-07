@@ -1,4 +1,4 @@
-package ccc.keeweapi.consts;
+package ccc.keewecore.consts;
 
 public class KeeweConsts {
     public static final String AUTH_HEADER = "Authorization";

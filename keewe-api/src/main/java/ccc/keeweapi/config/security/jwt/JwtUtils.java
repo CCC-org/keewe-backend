@@ -1,10 +1,11 @@
 package ccc.keeweapi.config.security.jwt;
 
-import ccc.keeweapi.config.security.UserPrincipal;
-import ccc.keeweapi.consts.KeeweConsts;
+import ccc.keeweapi.exception.KeeweAuthException;
+import ccc.keewecore.consts.KeeweConsts;
+import ccc.keewecore.consts.KeeweRtnConsts;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,9 +23,10 @@ import java.util.List;
 @Component
 public class JwtUtils {
     // 환경 변수로 이동
-    private String secretKey = "keewe";
+    @Value("${jwt.secret}")
+    private String secretKey;
 
-    private long tokenValidTime = 600 * 600 * 1000L;
+    private final long tokenValidTime = 600 * 600 * 1000L;
 
     private final UserDetailsService userDetailsService;
 
@@ -47,23 +49,21 @@ public class JwtUtils {
     }
 
     public Authentication getAuthentication(String token) {
-//        UserDetails userDetails =
-//                userDetailsService.loadUserByUsername(this.getUserEmail(token));
-
-        UserDetails userDetails = new UserPrincipal(null);
+        UserDetails userDetails =
+                userDetailsService.loadUserByUsername(this.getUserEmailFromToken(token));
 
         return new UsernamePasswordAuthenticationToken(userDetails
                 , ""
                 , userDetails.getAuthorities());
     }
 
-    public String getUserEmail(String token) {
+    public String getUserEmailFromToken(String token) {
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody()
                 .getSubject();
     }
 
 
-    public String resolveToken(HttpServletRequest request) {
+    public String extractToken(HttpServletRequest request) {
         String header = request.getHeader(KeeweConsts.AUTH_HEADER);
 
         if (StringUtils.hasText(header) && header.startsWith(KeeweConsts.BEARER)) {
@@ -73,13 +73,13 @@ public class JwtUtils {
         return "";
     }
 
-    public boolean validateTokenOrElseThrow(String jwtToken) {
+    public boolean validateTokenOrElseThrow(String token) {
         try {
-            Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(jwtToken);
+            Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
             return !claims.getBody().getExpiration().before(new Date());
         }
         catch (SignatureException | MalformedJwtException | UnsupportedJwtException | IllegalArgumentException ex) {
-            throw new BadCredentialsException("TOKEN_INVALID_CREDENTIALS", ex);
+            throw new KeeweAuthException(KeeweRtnConsts.ERR401);
         } catch (ExpiredJwtException ex) {
             throw ex;
         }

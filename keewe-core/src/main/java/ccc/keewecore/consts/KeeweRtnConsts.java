@@ -1,4 +1,4 @@
-package ccc.keeweapi.consts;
+package ccc.keewecore.consts;
 
 import lombok.Getter;
 

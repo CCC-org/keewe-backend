@@ -1,7 +1,7 @@
 package ccc.keeweapi.config.security.jwt;
 
-import ccc.keeweapi.consts.KeeweRtnConsts;
 import ccc.keeweapi.exception.KeeweAuthException;
+import ccc.keewecore.consts.KeeweRtnConsts;
 import io.jsonwebtoken.ExpiredJwtException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -34,7 +34,7 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
-        String jwt = jwtUtils.resolveToken(request);
+        String jwt = jwtUtils.extractToken(request);
         try {
             //TODO jwt가 없는경우 / 있는데 not valid한 경우
             if(!StringUtils.hasText(jwt))

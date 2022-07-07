@@ -86,6 +86,21 @@ project(':keewe-infra') {
 	}
 }
 
+project(':keewe-core') {
+	bootJar {
+		enabled = false
+	}
+
+	jar {
+		enabled = true
+	}
+
+	dependencies {
+		compileOnly 'org.projectlombok:lombok'
+		annotationProcessor 'org.projectlombok:lombok'
+	}
+}
+
 
 project(':keewe-domain') {
 	bootJar {
@@ -110,6 +125,7 @@ project(':keewe-api') {
 	apply plugin: 'com.epages.restdocs-api-spec'
 
 	dependencies {
+		implementation project(path: ':keewe-core', configuration: 'default')
 		implementation project(path: ':keewe-domain', configuration: 'default')
 		implementation 'org.springframework.boot:spring-boot-starter-web'
 		implementation 'org.springframework.boot:spring-boot-starter-security'
