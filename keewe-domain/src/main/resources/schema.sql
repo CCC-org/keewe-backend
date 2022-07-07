@@ -50,7 +50,7 @@ CREATE TABLE IF NOT EXISTS `buddy`
 
     PRIMARY KEY (buddy_id),
     FOREIGN KEY (followee_id) REFERENCES `profile`(profile_id),
-    FOREIGN KEY (followee_id) REFERENCES `profile`(profile_id)
+    FOREIGN KEY (follower_id) REFERENCES `profile`(profile_id)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS `favorite_activities`
@@ -77,9 +77,3 @@ CREATE TABLE IF NOT EXISTS `profile_link`
     PRIMARY KEY (profile_link_id),
     FOREIGN KEY (profile_id) REFERENCES `profile`(profile_id)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-INSERT INTO `user` (user_id, email, password, phone_number, status, deleted, created_at, updated_at)
-VALUES(0, 'test@keewe.com', 'pass', '01012341234', 'ONBOARDING', false, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-
-INSERT INTO `profile` (profile_id, user_id, nickname, link, privacy, profile_photo_id, profile_status, deleted, created_at, updated_at)
-VALUES (0, 0,'', '', 'PUBLIC', null, 'LINK_NEEDED', false, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
