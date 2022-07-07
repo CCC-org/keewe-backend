@@ -22,7 +22,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @Component
 public class JwtUtils {
-    // 환경 변수로 이동
     @Value("${jwt.secret}")
     private String secretKey;
 
