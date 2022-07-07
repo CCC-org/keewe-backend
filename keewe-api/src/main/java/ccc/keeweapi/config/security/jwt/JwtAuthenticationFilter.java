@@ -36,7 +36,6 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
         String jwt = jwtUtils.extractToken(request);
         try {
-            //TODO jwt가 없는경우 / 있는데 not valid한 경우
             if(!StringUtils.hasText(jwt))
                 throw new KeeweAuthException(KeeweRtnConsts.ERR403);
 
