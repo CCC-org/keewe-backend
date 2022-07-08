@@ -23,7 +23,7 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final String[] SWAGGER_URL = {"/", "/docs/openapi3.yaml", "/favicon.ico"};
-    private final String SIGNUP_URL = "/user";
+    private final String SIGNUP_URL = "/api/v1/user";
     private final String HEALTH_CHECK_URL = "/api/health-check";
 
     private final UserPrincipalDetailsService userService;

@@ -1,5 +1,8 @@
 package ccc.keewecore.consts;
 
+import lombok.AllArgsConstructor;
+
+@AllArgsConstructor
 public enum KeeweRtnGrp {
     Success(200),
     Auth(400),
@@ -7,8 +10,4 @@ public enum KeeweRtnGrp {
     System(500);
 
     private int repCode;
-
-    KeeweRtnGrp(int repCode) {
-        this.repCode = repCode;
-    }
 }

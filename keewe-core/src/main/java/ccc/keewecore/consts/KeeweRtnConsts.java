@@ -1,8 +1,10 @@
 package ccc.keewecore.consts;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
+@AllArgsConstructor
 public enum KeeweRtnConsts {
     NRM000(KeeweRtnGrp.Success, 200, "성공"),
 
@@ -15,10 +17,4 @@ public enum KeeweRtnConsts {
     private KeeweRtnGrp grp;
     private int code;
     private String description;
-
-    KeeweRtnConsts(KeeweRtnGrp grp, int code, String description) {
-        this.grp = grp;
-        this.code = code;
-        this.description = description;
-    }
 }
