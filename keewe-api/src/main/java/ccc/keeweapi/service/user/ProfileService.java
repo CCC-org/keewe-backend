@@ -2,14 +2,14 @@ package ccc.keeweapi.service.user;
 
 import ccc.keeweapi.dto.user.CreateLinkDto;
 
-import ccc.keeweapi.dto.user.NicknameCreateDto;
+import ccc.keeweapi.dto.user.NicknameCreateRequestDto;
+import ccc.keeweapi.dto.user.NicknameCreateResponseDto;
 import ccc.keewedomain.domain.user.Profile;
 import ccc.keewedomain.repository.user.ProfileRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.PostConstruct;
 import java.text.BreakIterator;
 
 @RequiredArgsConstructor
@@ -33,15 +33,17 @@ public class ProfileService {
     }
 
     @Transactional
-    public long createNickname(NicknameCreateDto nicknameCreateDto) {
+    public NicknameCreateResponseDto createNickname(NicknameCreateRequestDto nicknameCreateDto, Long userId) {
         String nickname = nicknameCreateDto.getNickname();
 
         checkNicknameLength(nickname);
 
-        Profile profile = profileRepository.findByIdAndUserIdAndDeletedFalseOrElseThrow(nicknameCreateDto.getProfileId(), 1L);
+        Profile profile = profileRepository.findByIdAndUserIdAndDeletedFalseOrElseThrow(
+                nicknameCreateDto.getProfileId(),
+                userId);
         profile.createNickname(nickname);
 
-        return getGraphemeLength(nickname);
+        return new NicknameCreateResponseDto(nickname, profile.getProfileStatus());
     }
 
     private void checkNicknameLength(String nickname) {

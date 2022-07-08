@@ -90,11 +90,23 @@ public class Profile extends BaseTimeEntity {
     }
 
     public void createNickname(String nickname) {
-        if (this.profileStatus != NICKNAME_NEEDED) {
-            throw new IllegalStateException("닉네임 등록 단계가 아닙니다.");
+        isCreatingOrElseThrow();
+        this.nickname = nickname;
+        updateOrMaintainStatus(SOCIAL_LINK_NEEDED);
+    }
+
+    private void updateOrMaintainStatus(ProfileStatus newStatus) {
+        ProfileStatus currentStatus = this.profileStatus;
+        if (currentStatus.getOrder() < newStatus.getOrder()) {
+            this.profileStatus = newStatus;
+        }
+    }
+
+    private boolean isCreatingOrElseThrow() {
+        if (this.profileStatus.getOrder() >= ACTIVE.getOrder()) {
+            throw new IllegalStateException("프로필 생성이 이미 완료되었습니다.");
         }
 
-        this.nickname = nickname;
-        this.profileStatus = SOCIAL_LINK_NEEDED;
+        return true;
     }
 }
