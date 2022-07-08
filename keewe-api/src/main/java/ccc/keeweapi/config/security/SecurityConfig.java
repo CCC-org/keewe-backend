@@ -35,7 +35,7 @@ public class SecurityConfig {
     public WebSecurityCustomizer webSecurityCustomizer() {
         return web -> web.ignoring()
                 .antMatchers(HttpMethod.GET, SWAGGER_URL)
-                .antMatchers(SIGNUP_URL)
+                .antMatchers(HttpMethod.POST, SIGNUP_URL)
                 .antMatchers(HttpMethod.GET, HEALTH_CHECK_URL);
     }
 
