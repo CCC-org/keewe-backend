@@ -85,8 +85,9 @@ public class Profile extends BaseTimeEntity {
     }
 
     public void createLink(String link) {
+        isCreatingOrElseThrow();
         this.link = link;
-        this.profileStatus = ACTIVITIES_NEEDED;
+        updateOrMaintainStatus(ACTIVITIES_NEEDED);
     }
 
     public void createNickname(String nickname) {

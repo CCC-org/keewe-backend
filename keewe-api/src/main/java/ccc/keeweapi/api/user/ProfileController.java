@@ -1,7 +1,8 @@
 package ccc.keeweapi.api.user;
 
 import ccc.keeweapi.config.security.UserPrincipal;
-import ccc.keeweapi.dto.user.CreateLinkDto;
+import ccc.keeweapi.dto.user.LinkCreateRequestDto;
+import ccc.keeweapi.dto.user.LinkCreateResponseDto;
 import ccc.keeweapi.dto.user.NicknameCreateRequestDto;
 import ccc.keeweapi.dto.user.NicknameCreateResponseDto;
 import ccc.keeweapi.service.user.ProfileService;
@@ -18,8 +19,12 @@ public class ProfileController {
     private final ProfileService profileService;
 
     @PostMapping("/link")
-    public Long createLink() {
-        return profileService.createLink(new CreateLinkDto(4L, "hs"));
+    public ResponseEntity<LinkCreateResponseDto> createLink(
+            @RequestBody LinkCreateRequestDto requestDto,
+            @AuthenticationPrincipal UserPrincipal principal
+    ) {
+        LinkCreateResponseDto responseDto = profileService.createLink(requestDto, principal.getUser().getId());
+        return ResponseEntity.ok(responseDto);
     }
 
     @PostMapping("/nickname")

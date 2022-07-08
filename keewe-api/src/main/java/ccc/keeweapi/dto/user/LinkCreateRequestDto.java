@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class CreateLinkDto {
+public class LinkCreateRequestDto {
     private Long profileId;
     private String link;
 }

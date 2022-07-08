@@ -1,7 +1,8 @@
 package ccc.keeweapi.service.user;
 
-import ccc.keeweapi.dto.user.CreateLinkDto;
+import ccc.keeweapi.dto.user.LinkCreateRequestDto;
 
+import ccc.keeweapi.dto.user.LinkCreateResponseDto;
 import ccc.keeweapi.dto.user.NicknameCreateRequestDto;
 import ccc.keeweapi.dto.user.NicknameCreateResponseDto;
 import ccc.keewedomain.domain.user.Profile;
@@ -21,15 +22,15 @@ public class ProfileService {
     private static final int NICKNAME_MAX_LENGTH = 12;
 
     @Transactional
-    public Long createLink(CreateLinkDto createLinkDto) {
+    public LinkCreateResponseDto createLink(LinkCreateRequestDto createLinkDto, Long userId) {
         String link = createLinkDto.getLink();
-        Profile profile = profileRepository.findByIdAndUserIdAndDeletedFalseOrElseThrow(createLinkDto.getProfileId(), 5L);
+        Profile profile = profileRepository.findByIdAndUserIdAndDeletedFalseOrElseThrow(createLinkDto.getProfileId(), userId);
 
         checkDuplicateLinkOrElseThrows(link);
 
         profile.createLink(link);
 
-        return 0L;
+        return new LinkCreateResponseDto(link, profile.getProfileStatus());
     }
 
     @Transactional
