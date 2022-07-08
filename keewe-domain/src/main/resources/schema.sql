@@ -50,7 +50,7 @@ CREATE TABLE IF NOT EXISTS `buddy`
 
     PRIMARY KEY (buddy_id),
     FOREIGN KEY (followee_id) REFERENCES `profile`(profile_id),
-    FOREIGN KEY (followee_id) REFERENCES `profile`(profile_id)
+    FOREIGN KEY (follower_id) REFERENCES `profile`(profile_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS `favorite_activities`

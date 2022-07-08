@@ -86,6 +86,21 @@ project(':keewe-infra') {
 	}
 }
 
+project(':keewe-core') {
+	bootJar {
+		enabled = false
+	}
+
+	jar {
+		enabled = true
+	}
+
+	dependencies {
+		compileOnly 'org.projectlombok:lombok'
+		annotationProcessor 'org.projectlombok:lombok'
+	}
+}
+
 
 project(':keewe-domain') {
 	bootJar {
@@ -97,6 +112,7 @@ project(':keewe-domain') {
 	}
 
 	dependencies {
+		implementation project(path: ':keewe-core', configuration: 'default')
 		implementation project(path: ':keewe-infra', configuration: 'default')
 		implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 		implementation 'mysql:mysql-connector-java'
@@ -110,8 +126,12 @@ project(':keewe-api') {
 	apply plugin: 'com.epages.restdocs-api-spec'
 
 	dependencies {
+		implementation project(path: ':keewe-core', configuration: 'default')
 		implementation project(path: ':keewe-domain', configuration: 'default')
 		implementation 'org.springframework.boot:spring-boot-starter-web'
+		implementation 'org.springframework.boot:spring-boot-starter-security'
+		implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
+		implementation group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
 
 		testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
 		testImplementation 'com.epages:restdocs-api-spec-mockmvc:0.16.2'
@@ -119,17 +139,12 @@ project(':keewe-api') {
 
 	task copyDocument(type:Copy) {
 		dependsOn('openapi3')
-
 		from "build/api-spec"
 		into "src/main/resources/static/docs/"
 	}
 
-	build {
-		dependsOn copyDocument
-	}
-
 	bootJar {
-		dependsOn('openapi3')
+		dependsOn copyDocument
 		from ("build/api-spec") {
 			into 'static/docs'
 		}
