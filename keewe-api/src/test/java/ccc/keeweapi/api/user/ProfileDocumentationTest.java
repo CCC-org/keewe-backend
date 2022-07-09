@@ -94,11 +94,14 @@ public class ProfileDocumentationTest extends RestDocsTestSupport {
                                                 fieldWithPath("nickname").description("생성할 닉네임"),
                                                 fieldWithPath("profileId").description("대상 프로필의 id"))
                                         .responseFields(
-                                                fieldWithPath("nickname").description("생성된 닉네임"),
-                                                fieldWithPath("status")
+                                                fieldWithPath("message").description("요청 결과 메세지"),
+                                                fieldWithPath("code").description("결과 코드"),
+                                                fieldWithPath("data.nickname").description("생성된 닉네임"),
+                                                fieldWithPath("data.status")
                                                         .description("요청 완료 후 해당 프로필의 상태")
                                                         .type("ENUM")
                                                         .attributes(key("enumValues").value(List.of(ProfileStatus.values()))))
+                                        .tag("Profile")
                                         .build()
                         )));
     }

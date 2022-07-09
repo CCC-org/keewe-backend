@@ -1,6 +1,7 @@
 package ccc.keeweapi.api.user;
 
 import ccc.keeweapi.config.security.UserPrincipal;
+import ccc.keeweapi.dto.ApiResponse;
 import ccc.keeweapi.dto.user.CreateLinkDto;
 import ccc.keeweapi.dto.user.NicknameCreateRequestDto;
 import ccc.keeweapi.dto.user.NicknameCreateResponseDto;
@@ -23,11 +24,11 @@ public class ProfileController {
     }
 
     @PostMapping("/nickname")
-    public ResponseEntity<NicknameCreateResponseDto> createNickname(
+    public ApiResponse<NicknameCreateResponseDto> createNickname(
             @RequestBody NicknameCreateRequestDto requestDto,
             @AuthenticationPrincipal UserPrincipal principal) {
 
         NicknameCreateResponseDto responseDto = profileService.createNickname(requestDto, principal.getUser().getId());
-        return ResponseEntity.ok(responseDto);
+        return ApiResponse.ok(responseDto);
     }
 }
