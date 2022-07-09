@@ -1,21 +1,20 @@
-package ccc.keeweapi.service;
+package ccc.keeweapi.config.security;
 
-import ccc.keeweapi.config.security.UserPrincipal;
-import ccc.keewedomain.repository.UserRepository;
+import ccc.keewedomain.service.UserDomainService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-
 @Service
 @RequiredArgsConstructor
-public class UserPrincipalDetailsService implements UserDetailsService {
-    private final UserRepository userRepository;
+public class UserDetailService implements UserDetailsService {
+    private final UserDomainService userDomainService;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        return new UserPrincipal(userRepository.findByEmailOrElseThrow(email));
+        return new UserPrincipal(userDomainService.getUserByEmailOrElseThrow(email));
     }
+
 }

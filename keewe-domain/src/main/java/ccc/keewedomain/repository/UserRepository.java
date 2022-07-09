@@ -13,4 +13,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     default User findByEmailOrElseThrow(String email) {
         return findByEmail(email).orElseThrow(() -> new KeeweException(KeeweRtnConsts.ERR411));
     }
+
+    boolean existsUserByEmail(String email);
 }

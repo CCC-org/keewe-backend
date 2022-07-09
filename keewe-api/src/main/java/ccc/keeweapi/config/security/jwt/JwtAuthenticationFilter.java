@@ -34,7 +34,10 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
+        log.info("filter test {}", request.getRequestURL());
         String jwt = jwtUtils.extractToken(request);
+
+
         try {
             if(!StringUtils.hasText(jwt))
                 throw new KeeweAuthException(KeeweRtnConsts.ERR403);
@@ -42,8 +45,9 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
             if(jwtUtils.validateTokenOrElseThrow(jwt)) {
                 SecurityContextHolder.getContext().setAuthentication(jwtUtils.getAuthentication(jwt));
                 chain.doFilter(request, response);
+            } else {
+                throw new KeeweAuthException(KeeweRtnConsts.ERR401);
             }
-            throw new KeeweAuthException(KeeweRtnConsts.ERR401);
 
         } catch (KeeweAuthException ex) {
             authenticationEntryPoint.commence(request, response, ex);
@@ -52,6 +56,7 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
             authenticationEntryPoint.commence(request, response, new KeeweAuthException(KeeweRtnConsts.ERR402));
         }
 
+        log.info("filter test output {}", request.getRequestURL());
 
     }
 
