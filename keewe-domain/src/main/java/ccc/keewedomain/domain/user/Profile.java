@@ -1,5 +1,6 @@
 package ccc.keewedomain.domain.user;
 
+import ccc.keewecore.utils.StringLengthUtil;
 import ccc.keewedomain.domain.common.BaseTimeEntity;
 import ccc.keewedomain.domain.common.enums.Activity;
 import ccc.keewedomain.domain.user.enums.Privacy;
@@ -91,6 +92,7 @@ public class Profile extends BaseTimeEntity {
 
     public void createNickname(String nickname) {
         isCreatingOrElseThrow();
+        checkNicknameLength(nickname);
         this.nickname = nickname;
         updateOrMaintainStatus(SOCIAL_LINK_NEEDED);
     }
@@ -108,5 +110,12 @@ public class Profile extends BaseTimeEntity {
         }
 
         return true;
+    }
+
+    private void checkNicknameLength(String nickname) {
+        final int NICKNAME_MAX_LENGTH = 12;
+        if (StringLengthUtil.getGraphemeLength(nickname) > NICKNAME_MAX_LENGTH) {
+            throw new IllegalArgumentException("닉네임의 길이가 12자를 초과해요.");
+        }
     }
 }
