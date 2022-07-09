@@ -11,15 +11,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.text.BreakIterator;
-
 @RequiredArgsConstructor
 @Service
 public class ProfileService {
 
     private final ProfileRepository profileRepository;
-
-    private static final int NICKNAME_MAX_LENGTH = 12;
 
     @Transactional
     public LinkCreateResponseDto createLink(LinkCreateRequestDto createLinkDto, Long userId) {
@@ -37,43 +33,19 @@ public class ProfileService {
     public NicknameCreateResponseDto createNickname(NicknameCreateRequestDto nicknameCreateDto, Long userId) {
         String nickname = nicknameCreateDto.getNickname();
 
-        checkNicknameLength(nickname);
-
         Profile profile = profileRepository.findByIdAndUserIdAndDeletedFalseOrElseThrow(
                 nicknameCreateDto.getProfileId(),
-                userId);
+                userId
+        );
+
         profile.createNickname(nickname);
 
-        return new NicknameCreateResponseDto(nickname, profile.getProfileStatus());
+        return NicknameCreateResponseDto.builder()
+                .nickname(nickname)
+                .status(profile.getProfileStatus())
+                .build();
     }
 
-    private void checkNicknameLength(String nickname) {
-        if (getGraphemeLength(nickname) > NICKNAME_MAX_LENGTH) {
-            throw new IllegalArgumentException("김영기 바보!!");
-        }
-    }
-
-    private long getGraphemeLength(String s) {
-        long length = getCharacterBoundaryCount(s) - get4ByteEmojiCount(s);
-        return length;
-    }
-
-    private long get4ByteEmojiCount(String s) {
-        return s.chars()
-                .filter(i -> Character.isSurrogate((char) i))
-                .count() / 4;
-    }
-
-    private long getCharacterBoundaryCount(String s) {
-        BreakIterator it = BreakIterator.getCharacterInstance();
-        it.setText(s);
-        long count = 0;
-        while (it.next() != BreakIterator.DONE) {
-            count++;
-        }
-
-        return count;
-    }
 
     private void checkDuplicateLinkOrElseThrows(String link) {
         if (profileRepository.existsByLinkAndDeletedFalse(link))
