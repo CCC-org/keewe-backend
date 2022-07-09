@@ -40,10 +40,15 @@ public class ProfileService {
 
         Profile profile = profileRepository.findByIdAndUserIdAndDeletedFalseOrElseThrow(
                 nicknameCreateDto.getProfileId(),
-                userId);
+                userId
+        );
+
         profile.createNickname(nickname);
 
-        return new NicknameCreateResponseDto(nickname, profile.getProfileStatus());
+        return NicknameCreateResponseDto.builder()
+                .nickname(nickname)
+                .status(profile.getProfileStatus())
+                .build();
     }
 
     private void checkNicknameLength(String nickname) {
