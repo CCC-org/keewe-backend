@@ -48,7 +48,7 @@ public class ProfileService {
 
     private void checkNicknameLength(String nickname) {
         if (getGraphemeLength(nickname) > NICKNAME_MAX_LENGTH) {
-            throw new IllegalArgumentException("김영기 바보!!");
+            throw new IllegalArgumentException("닉네임의 길이가 12자를 초과해요.");
         }
     }
 
