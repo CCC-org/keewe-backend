@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 @SpringBootApplication
 @ComponentScan({"ccc.keewedomain", "ccc.keeweapi"})
-@EnableJpaAuditing
 public class KeeweApiApplication {
 
     public static void main(String[] args) {
