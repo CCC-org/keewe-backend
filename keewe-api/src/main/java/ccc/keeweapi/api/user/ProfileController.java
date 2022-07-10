@@ -1,11 +1,8 @@
 package ccc.keeweapi.api.user;
 
 import ccc.keeweapi.config.security.UserPrincipal;
-import ccc.keeweapi.dto.user.LinkCreateRequestDto;
-import ccc.keeweapi.dto.user.LinkCreateResponseDto;
+import ccc.keeweapi.dto.user.*;
 import ccc.keeweapi.dto.ApiResponse;
-import ccc.keeweapi.dto.user.NicknameCreateRequestDto;
-import ccc.keeweapi.dto.user.NicknameCreateResponseDto;
 import ccc.keeweapi.service.user.ProfileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
