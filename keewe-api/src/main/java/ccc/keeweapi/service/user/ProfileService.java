@@ -26,7 +26,10 @@ public class ProfileService {
 
         profile.createLink(link);
 
-        return new LinkCreateResponseDto(link, profile.getProfileStatus());
+        return LinkCreateResponseDto.builder()
+                .link(link)
+                .status(profile.getProfileStatus())
+                .build();
     }
 
     @Transactional

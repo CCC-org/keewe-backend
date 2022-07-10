@@ -5,7 +5,6 @@ import ccc.keeweapi.dto.user.*;
 import ccc.keeweapi.dto.ApiResponse;
 import ccc.keeweapi.service.user.ProfileService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,12 +16,12 @@ public class ProfileController {
     private final ProfileService profileService;
 
     @PostMapping("/link")
-    public ResponseEntity<LinkCreateResponseDto> createLink(
+    public ApiResponse<LinkCreateResponseDto> createLink(
             @RequestBody LinkCreateRequestDto requestDto,
             @AuthenticationPrincipal UserPrincipal principal
     ) {
         LinkCreateResponseDto responseDto = profileService.createLink(requestDto, principal.getUser().getId());
-        return ResponseEntity.ok(responseDto);
+        return ApiResponse.ok(responseDto);
     }
 
     @PostMapping("/nickname")
