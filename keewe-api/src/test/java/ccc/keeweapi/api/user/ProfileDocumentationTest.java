@@ -131,7 +131,6 @@ public class ProfileDocumentationTest extends RestDocsTestSupport {
 
         mockMvc.perform(
                         post("/api/v1/profiles/link")
-                                .with(user(new UserPrincipal(user)))
                                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                                 .content(objectMapper.writeValueAsString(requestDto))
                                 .contentType(MediaType.APPLICATION_JSON)
