@@ -1,10 +1,8 @@
 package ccc.keeweapi.api.user;
 
 import ccc.keeweapi.config.security.UserPrincipal;
+import ccc.keeweapi.dto.user.*;
 import ccc.keeweapi.dto.ApiResponse;
-import ccc.keeweapi.dto.user.CreateLinkDto;
-import ccc.keeweapi.dto.user.NicknameCreateRequestDto;
-import ccc.keeweapi.dto.user.NicknameCreateResponseDto;
 import ccc.keeweapi.service.user.ProfileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -18,8 +16,12 @@ public class ProfileController {
     private final ProfileService profileService;
 
     @PostMapping("/link")
-    public Long createLink() {
-        return profileService.createLink(new CreateLinkDto(4L, "hs"));
+    public ApiResponse<LinkCreateResponseDto> createLink(
+            @RequestBody LinkCreateRequestDto requestDto,
+            @AuthenticationPrincipal UserPrincipal principal
+    ) {
+        LinkCreateResponseDto responseDto = profileService.createLink(requestDto, principal.getUser().getId());
+        return ApiResponse.ok(responseDto);
     }
 
     @PostMapping("/nickname")
