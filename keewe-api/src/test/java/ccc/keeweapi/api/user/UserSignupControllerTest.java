@@ -12,9 +12,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import static com.epages.restdocs.apispec.ResourceDocumentation.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 
 public class UserSignupControllerTest extends RestDocsTestSupport {
     @MockBean

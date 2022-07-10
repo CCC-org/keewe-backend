@@ -2,7 +2,6 @@ package ccc.keeweapi.api.user;
 
 import ccc.keeweapi.dto.ApiResponse;
 import ccc.keeweapi.service.user.UserApiService;
-import ccc.keeweinfra.apis.KakaoAuthApi;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class UserController {
     private final UserApiService userService;
-    private final KakaoAuthApi api;
 
     @GetMapping("/kakao")
     public ApiResponse<?> signUpWithKakao(@RequestParam String code) {

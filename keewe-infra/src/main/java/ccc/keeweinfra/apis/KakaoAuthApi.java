@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @FeignClient(name = "kakao-auth", url="${kakao.auth-url}")
 public interface KakaoAuthApi {
     @GetMapping("/oauth/authorize")
-    String getAuthCode(@RequestParam("client_id") String clientId, @RequestParam("redirect_uri") String redirectUri, @RequestParam("response_type") String responseType);
+    void getAuthCode(@RequestParam("client_id") String clientId, @RequestParam("redirect_uri") String redirectUri, @RequestParam("response_type") String responseType);
 
 
     @PostMapping("/oauth/token")
