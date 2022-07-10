@@ -23,7 +23,6 @@ public class SecurityConfig {
     private final String[] SWAGGER_URL = {"/", "/docs/openapi3.yaml", "/favicon.ico"};
     private final String SIGNUP_URL = "/api/v1/user/**";
     private final String HEALTH_CHECK_URL = "/api/health-check";
-
     private final UserDetailsService userService;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final JwtUtils jwtUtils;
@@ -33,7 +32,7 @@ public class SecurityConfig {
     public WebSecurityCustomizer webSecurityCustomizer() {
         return web -> web.ignoring()
                 .antMatchers(HttpMethod.GET, SWAGGER_URL)
-                .antMatchers(SIGNUP_URL)
+                .antMatchers(HttpMethod.POST, SIGNUP_URL)
                 .antMatchers(HttpMethod.GET, HEALTH_CHECK_URL)
                 .antMatchers("/h2-console/**");
     }

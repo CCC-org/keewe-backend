@@ -1,4 +1,4 @@
-package ccc.keewedomain.common.enums;
+package ccc.keewedomain.domain.common.enums;
 
 import lombok.AllArgsConstructor;
 

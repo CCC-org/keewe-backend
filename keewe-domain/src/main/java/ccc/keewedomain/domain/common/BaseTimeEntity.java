@@ -1,4 +1,4 @@
-package ccc.keewedomain.common;
+package ccc.keewedomain.domain.common;
 
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;
@@ -17,9 +17,9 @@ public abstract class BaseTimeEntity {
 
     @CreatedDate
     @Column(name = "created_at")
-    private LocalDateTime createdAt;
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     @LastModifiedDate
     @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+    private LocalDateTime updatedAt = LocalDateTime.now();
 }

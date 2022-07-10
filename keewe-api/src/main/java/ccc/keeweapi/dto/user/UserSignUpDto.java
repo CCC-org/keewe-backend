@@ -1,4 +1,4 @@
-package ccc.keeweapi.dto;
+package ccc.keeweapi.dto.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

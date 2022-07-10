@@ -1,8 +1,8 @@
-package ccc.keewedomain.repository;
+package ccc.keewedomain.repository.user;
 
 import ccc.keewecore.consts.KeeweRtnConsts;
 import ccc.keewecore.exception.KeeweException;
-import ccc.keewedomain.user.User;
+import ccc.keewedomain.domain.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
@@ -13,6 +13,4 @@ public interface UserRepository extends JpaRepository<User, Long> {
     default User findByEmailOrElseThrow(String email) {
         return findByEmail(email).orElseThrow(() -> new KeeweException(KeeweRtnConsts.ERR411));
     }
-
-    boolean existsUserByEmail(String email);
 }

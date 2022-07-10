@@ -2,13 +2,14 @@ package ccc.keewedomain.service;
 
 import ccc.keewecore.consts.KeeweRtnConsts;
 import ccc.keewecore.exception.KeeweException;
-import ccc.keewedomain.repository.UserRepository;
-import ccc.keewedomain.user.User;
+import ccc.keewedomain.domain.user.User;
+import ccc.keewedomain.repository.user.UserRepository;
 import ccc.keeweinfra.dto.KakaoProfileResponse;
 import ccc.keeweinfra.service.KakaoInfraService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
 import java.util.Optional;
 
 @Service

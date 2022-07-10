@@ -1,9 +1,9 @@
-package ccc.keeweapi.service;
+package ccc.keeweapi.service.user;
 
 import ccc.keeweapi.config.security.jwt.JwtUtils;
-import ccc.keeweapi.dto.UserSignUpDto;
+import ccc.keeweapi.dto.user.UserSignUpDto;
+import ccc.keewedomain.domain.user.User;
 import ccc.keewedomain.service.UserDomainService;
-import ccc.keewedomain.user.User;
 import ccc.keeweinfra.dto.KakaoProfileResponse;
 import ccc.keeweinfra.vo.kakao.KakaoAccount;
 import lombok.RequiredArgsConstructor;

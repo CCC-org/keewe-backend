@@ -1,19 +1,25 @@
-package ccc.keewedomain.user;
+package ccc.keewedomain.domain.user;
 
-import ccc.keewedomain.common.BaseTimeEntity;
-import ccc.keewedomain.user.enums.UserStatus;
+
+import ccc.keewedomain.domain.common.BaseTimeEntity;
+import ccc.keewedomain.domain.user.enums.UserStatus;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-
+import lombok.NoArgsConstructor;
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
-
+import static ccc.keewedomain.domain.user.enums.UserStatus.ACTIVE;
 import static javax.persistence.FetchType.LAZY;
+import static lombok.AccessLevel.PROTECTED;
 
 @Entity
 @Table(name = "user")
 @Getter
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor(access = PROTECTED)
 public class User extends BaseTimeEntity {
 
     @Id
@@ -37,13 +43,13 @@ public class User extends BaseTimeEntity {
 //    private List<UserRole> role; // ~~~/profile/{닉네임}
 
     @OneToMany(mappedBy = "user", fetch = LAZY)
-    private List<Profile> profiles;
+    private List<Profile> profiles = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    private UserStatus status;
+    private UserStatus status = ACTIVE;
 
     @Column(name = "deleted", nullable = false)
-    private boolean deleted;
+    private boolean deleted = false;
 }
 
