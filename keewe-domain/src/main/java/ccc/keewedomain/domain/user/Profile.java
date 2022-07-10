@@ -13,6 +13,8 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static ccc.keewedomain.domain.user.enums.Privacy.PUBLIC;
 import static ccc.keewedomain.domain.user.enums.ProfileStatus.*;
@@ -84,8 +86,10 @@ public class Profile extends BaseTimeEntity {
     }
 
     public void createLink(String link) {
+        isCreatingOrElseThrow();
+        checkLinkPatternOrElseThrow(link);
         this.link = link;
-        this.profileStatus = ACTIVITIES_NEEDED;
+        updateOrMaintainStatus(ACTIVITIES_NEEDED);
     }
 
     public void createNickname(String nickname) {
@@ -107,12 +111,17 @@ public class Profile extends BaseTimeEntity {
         }
     }
 
-    private boolean isCreatingOrElseThrow() {
+    private void isCreatingOrElseThrow() {
         if (this.profileStatus.getOrder() >= ACTIVE.getOrder()) {
             throw new IllegalStateException("프로필 생성이 이미 완료되었습니다.");
         }
+    }
 
-        return true;
+    private void checkLinkPatternOrElseThrow(String link) {
+        Pattern pattern = Pattern.compile("^[0-9a-zA-Z_][0-9a-zA-Z_.]*[0-9a-zA-Z_]|[0-9a-zA-Z_]$");
+        Matcher matcher = pattern.matcher(link);
+        if (!matcher.matches())
+            throw new IllegalArgumentException("링크 패턴이 일치하지 않습니다.");
     }
 
     private void checkNicknameLength(String nickname) {
