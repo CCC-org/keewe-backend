@@ -8,7 +8,7 @@ pipeline {
                 script {
                     checkout([$class             : 'GitSCM'
                               , branches         : [[name: "main"]]
-                              , userRemoteConfigs: [[credentialsId: 'hoseong-gh', url: 'https://github.com/CCC-org/bridge-backend.git']]])
+                              , userRemoteConfigs: [[credentialsId: 'hoseong-gh', url: 'https://github.com/CCC-org/keewe-backend.git']]])
                 }
             }
         }
@@ -19,6 +19,7 @@ pipeline {
                     gpg --batch --import $GPG_SECRET
                     gpg --import-ownertrust $GPG_TRUST
                     git secret reveal -p $GPG_PASSPHRASE
+                    git secret cat ./keewe-domain/src/main/resources/application-domain.yml
                 """
             }
         }
@@ -87,7 +88,7 @@ pipeline {
         }
     }
     environment {
-        DEPLOY_PATH_DEV = "/data1/${PJ_NAME}"
+        DEPLOY_PATH_DEV = "data1/${PJ_NAME}"
         RUN_DEV = "dev"
         RUN_PROD = "prod"
         GPG_SECRET = credentials("gpg-secret")

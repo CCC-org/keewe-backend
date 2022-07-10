@@ -7,7 +7,6 @@ import ccc.keeweapi.dto.user.NicknameCreateRequestDto;
 import ccc.keeweapi.dto.user.NicknameCreateResponseDto;
 import ccc.keeweapi.service.user.ProfileService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,4 +30,5 @@ public class ProfileController {
         NicknameCreateResponseDto responseDto = profileService.createNickname(requestDto, principal.getUser().getId());
         return ApiResponse.ok(responseDto);
     }
+
 }
