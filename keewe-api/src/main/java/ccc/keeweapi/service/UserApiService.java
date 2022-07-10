@@ -8,7 +8,6 @@ import ccc.keeweinfra.dto.KakaoProfileResponse;
 import ccc.keeweinfra.vo.kakao.KakaoAccount;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
 

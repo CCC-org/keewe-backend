@@ -2,7 +2,6 @@ package ccc.keeweinfra.service;
 
 import ccc.keewecore.consts.KeeweConsts;
 import ccc.keewecore.consts.KeeweRtnConsts;
-import ccc.keewecore.exception.KeeweException;
 import ccc.keeweinfra.apis.KakaoApi;
 import ccc.keeweinfra.apis.KakaoAuthApi;
 import ccc.keeweinfra.dto.KakaoProfileResponse;
@@ -12,7 +11,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
