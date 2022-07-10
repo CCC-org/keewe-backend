@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
     private final UserApiService userService;
 
-    @PostMapping("/kakao")
+    @GetMapping("/kakao")
     public ApiResponse<?> signUpWithKakao(@RequestParam String code) {
         log.info("[Kakao Signup] code {}", code);
         return ApiResponse.ok(userService.signUpWithKakao(code));

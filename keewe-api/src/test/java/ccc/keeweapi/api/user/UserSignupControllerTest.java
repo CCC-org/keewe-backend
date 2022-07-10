@@ -4,6 +4,7 @@ import ccc.keeweapi.document.utils.RestDocsTestSupport;
 import ccc.keeweapi.dto.user.UserSignUpDto;
 import ccc.keeweapi.service.user.ProfileService;
 import ccc.keeweapi.service.user.UserApiService;
+import ccc.keewedomain.service.ProfileDomainService;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,10 +12,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import static com.epages.restdocs.apispec.ResourceDocumentation.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 
 public class UserSignupControllerTest extends RestDocsTestSupport {
     @MockBean
@@ -22,6 +22,9 @@ public class UserSignupControllerTest extends RestDocsTestSupport {
 
     @MockBean
     private UserApiService userApiService;
+
+    @MockBean
+    private ProfileDomainService profileDomainService;
 
     @Test
     @DisplayName("카카오 회원가입/로그인")
@@ -34,7 +37,7 @@ public class UserSignupControllerTest extends RestDocsTestSupport {
         when(userApiService.signUpWithKakao(anyString())).thenReturn(userSignUpDto);
 
         mockMvc.perform(
-                        post("/api/v1/user/kakao")
+                        get("/api/v1/user/kakao")
                                 .param("code", "OcIq1_RZnzHNZ54ylZcBunZGiqcGf7g4IiMVi8WVJgxZkTcfg0dOJK4pgysxSwL_sO_2Lgo9dNkAAAGB5urHyg")
                 ).andExpect(status().isOk())
                 .andDo(restDocs.document(resource(

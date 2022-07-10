@@ -9,6 +9,7 @@ import ccc.keeweapi.service.user.ProfileService;
 import ccc.keewedomain.domain.user.User;
 import ccc.keewedomain.domain.user.enums.ProfileStatus;
 import ccc.keewedomain.domain.user.enums.UserStatus;
+import ccc.keewedomain.service.ProfileDomainService;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,6 +34,9 @@ public class ProfileDocumentationTest extends RestDocsTestSupport {
 
     @MockBean
     private ProfileService profileService;
+
+    @MockBean
+    private ProfileDomainService profileDomainService;
 
     @MockBean
     private UserDetailService userDetailsService;

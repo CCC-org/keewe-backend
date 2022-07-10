@@ -33,8 +33,9 @@ public class SecurityConfig {
     public WebSecurityCustomizer webSecurityCustomizer() {
         return web -> web.ignoring()
                 .antMatchers(HttpMethod.GET, SWAGGER_URL)
-                .antMatchers(HttpMethod.POST, SIGNUP_URL)
+                .antMatchers(HttpMethod.GET, SIGNUP_URL)
                 .antMatchers(HttpMethod.GET, HEALTH_CHECK_URL)
+                .antMatchers(HttpMethod.GET, "/api/v1/oauth/**")
                 .antMatchers("/h2-console/**");
     }
 
