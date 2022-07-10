@@ -1,6 +1,5 @@
 package ccc.keewedomain.domain.user;
 
-
 import ccc.keewedomain.domain.common.BaseTimeEntity;
 import ccc.keewedomain.domain.user.enums.UserStatus;
 import lombok.AllArgsConstructor;

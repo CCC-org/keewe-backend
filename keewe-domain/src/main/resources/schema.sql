@@ -26,8 +26,8 @@ CREATE TABLE IF NOT EXISTS `profile`
 (
     profile_id          BIGINT(20)      NOT NULL        AUTO_INCREMENT,
     user_id             BIGINT(20)      NOT NULL,
-    nickname            VARCHAR(30)     NOT NULL,
-    link                VARCHAR(30)     NOT NULL,
+    nickname            VARCHAR(30),
+    link                VARCHAR(255)    UNIQUE,
     privacy             VARCHAR(20)     NOT NULL,
     profile_photo_id    BIGINT(20),
     profile_status      VARCHAR(30)     NOT NULL,

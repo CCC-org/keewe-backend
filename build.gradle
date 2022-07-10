@@ -150,9 +150,6 @@ project(':keewe-api') {
 
 	bootJar {
 		dependsOn copyDocument
-		from ("build/api-spec") {
-			into 'static/docs'
-		}
 	}
 
 	test.doFirst {

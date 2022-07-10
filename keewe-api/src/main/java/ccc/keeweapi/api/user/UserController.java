@@ -1,6 +1,6 @@
 package ccc.keeweapi.api.user;
 
-import ccc.keeweapi.dto.user.UserSignUpDto;
+import ccc.keeweapi.dto.ApiResponse;
 import ccc.keeweapi.service.user.UserApiService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,8 +16,8 @@ public class UserController {
     private final UserApiService userService;
 
     @PostMapping("/kakao")
-    public UserSignUpDto signUpWithKakao(@RequestParam String code) {
+    public ApiResponse<?> signUpWithKakao(@RequestParam String code) {
         log.info("[Kakao Signup] code {}", code);
-        return userService.signUpWithKakao(code);
+        return ApiResponse.ok(userService.signUpWithKakao(code));
     }
 }
