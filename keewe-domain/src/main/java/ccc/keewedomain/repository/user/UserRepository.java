@@ -1,8 +1,8 @@
-package ccc.keewedomain.repository;
+package ccc.keewedomain.repository.user;
 
 import ccc.keewecore.consts.KeeweRtnConsts;
 import ccc.keewecore.exception.KeeweException;
-import ccc.keewedomain.user.User;
+import ccc.keewedomain.domain.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

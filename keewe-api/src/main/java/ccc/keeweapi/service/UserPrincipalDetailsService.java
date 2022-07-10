@@ -1,7 +1,7 @@
 package ccc.keeweapi.service;
 
 import ccc.keeweapi.config.security.UserPrincipal;
-import ccc.keewedomain.repository.UserRepository;
+import ccc.keewedomain.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

@@ -1,6 +1,6 @@
-package ccc.keewedomain.common;
+package ccc.keewedomain.domain.common;
 
-import ccc.keewedomain.common.enums.LinkType;
+import ccc.keewedomain.domain.common.enums.LinkType;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;

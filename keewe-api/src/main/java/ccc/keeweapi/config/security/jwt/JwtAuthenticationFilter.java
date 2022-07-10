@@ -43,8 +43,6 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
                 SecurityContextHolder.getContext().setAuthentication(jwtUtils.getAuthentication(jwt));
                 chain.doFilter(request, response);
             }
-            throw new KeeweAuthException(KeeweRtnConsts.ERR401);
-
         } catch (KeeweAuthException ex) {
             authenticationEntryPoint.commence(request, response, ex);
 

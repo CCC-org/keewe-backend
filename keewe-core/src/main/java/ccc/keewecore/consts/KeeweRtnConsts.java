@@ -12,6 +12,7 @@ public enum KeeweRtnConsts {
     ERR402(KeeweRtnGrp.Auth, 402, "토큰이 만료됐어요."),
     ERR403(KeeweRtnGrp.Auth, 403, "토큰이 누락됐어요."),
 
+    ERR400(KeeweRtnGrp.Validation, 400, "잘못된 요청이에요."),
     ERR411(KeeweRtnGrp.Validation, 411, "유저를 찾을 수 없어요.");
 
     private KeeweRtnGrp grp;

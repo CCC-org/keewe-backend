@@ -36,7 +36,8 @@ public class SecurityConfig {
         return web -> web.ignoring()
                 .antMatchers(HttpMethod.GET, SWAGGER_URL)
                 .antMatchers(HttpMethod.POST, SIGNUP_URL)
-                .antMatchers(HttpMethod.GET, HEALTH_CHECK_URL);
+                .antMatchers(HttpMethod.GET, HEALTH_CHECK_URL)
+                .antMatchers("/h2-console/**");
     }
 
     @Bean

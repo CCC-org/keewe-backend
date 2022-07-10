@@ -1,13 +1,15 @@
 package ccc.keeweapi.config.security;
 
-import ccc.keewedomain.user.User;
+import ccc.keewedomain.domain.user.User;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 
 @AllArgsConstructor
+@Getter
 public class UserPrincipal implements UserDetails {
     private final User user;
 

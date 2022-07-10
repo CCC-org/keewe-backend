@@ -1,7 +1,9 @@
-package ccc.keewedomain.user;
+package ccc.keewedomain.domain.user;
 
-import ccc.keewedomain.common.BaseTimeEntity;
-import ccc.keewedomain.common.Link;
+
+import ccc.keewedomain.domain.common.BaseTimeEntity;
+import ccc.keewedomain.domain.common.Link;
+
 import javax.persistence.*;
 
 import static javax.persistence.FetchType.LAZY;
