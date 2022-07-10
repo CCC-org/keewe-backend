@@ -8,6 +8,8 @@ import ccc.keeweinfra.dto.KakaoProfileResponse;
 import ccc.keeweinfra.vo.kakao.KakaoAccount;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,6 +20,7 @@ public class UserApiService {
     private final UserDomainService userDomainService;
     private final JwtUtils jwtUtils;
 
+    @Transactional
     public UserSignUpDto signUpWithKakao(String code) {
         KakaoProfileResponse profile = userDomainService.getKakaoProfile(code);
         KakaoAccount kakaoAccount = profile.getKakaoAccount(); // 이미 Null이 아님을 보장받음
