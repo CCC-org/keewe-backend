@@ -3,7 +3,6 @@ package ccc.keeweapi.config.security;
 import ccc.keeweapi.config.security.jwt.JwtAuthenticationEntryPoint;
 import ccc.keeweapi.config.security.jwt.JwtAuthenticationFilter;
 import ccc.keeweapi.config.security.jwt.JwtUtils;
-import ccc.keeweapi.service.UserPrincipalDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,8 +13,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
@@ -23,10 +21,10 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final String[] SWAGGER_URL = {"/", "/docs/openapi3.yaml", "/favicon.ico"};
-    private final String SIGNUP_URL = "/api/v1/user";
+    private final String SIGNUP_URL = "/api/v1/user/**";
     private final String HEALTH_CHECK_URL = "/api/health-check";
 
-    private final UserPrincipalDetailsService userService;
+    private final UserDetailsService userService;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final JwtUtils jwtUtils;
 
@@ -59,14 +57,5 @@ public class SecurityConfig {
                         , BasicAuthenticationFilter.class)
                 .build();
     }
-
-    @Bean
-    public PasswordEncoder encoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-
-
-
 
 }

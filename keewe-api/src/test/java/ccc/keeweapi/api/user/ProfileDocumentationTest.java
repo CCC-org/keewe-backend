@@ -1,23 +1,20 @@
 package ccc.keeweapi.api.user;
 
+import ccc.keeweapi.config.security.UserDetailService;
 import ccc.keeweapi.config.security.UserPrincipal;
 import ccc.keeweapi.document.utils.RestDocsTestSupport;
 import ccc.keeweapi.dto.user.NicknameCreateRequestDto;
 import ccc.keeweapi.dto.user.NicknameCreateResponseDto;
-import ccc.keeweapi.service.UserPrincipalDetailsService;
 import ccc.keeweapi.service.user.ProfileService;
 import ccc.keewedomain.domain.user.User;
 import ccc.keewedomain.domain.user.enums.ProfileStatus;
 import ccc.keewedomain.domain.user.enums.UserStatus;
-import ccc.keewedomain.repository.user.ProfileRepository;
-import ccc.keewedomain.repository.user.UserRepository;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,20 +29,13 @@ import static org.springframework.restdocs.snippet.Attributes.key;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ActiveProfiles("local")
 public class ProfileDocumentationTest extends RestDocsTestSupport {
 
     @MockBean
     private ProfileService profileService;
 
     @MockBean
-    private ProfileRepository profileRepository;
-
-    @MockBean
-    private UserRepository userRepository;
-
-    @MockBean
-    private UserPrincipalDetailsService userDetailsService;
+    private UserDetailService userDetailsService;
 
     @Test
     @DisplayName("닉네임 생성 API")
@@ -86,7 +76,7 @@ public class ProfileDocumentationTest extends RestDocsTestSupport {
                 .andDo(restDocs.document(
                         resource(
                                 ResourceSnippetParameters.builder()
-                                        .description("Prifle 온보딩 닉네임 생성 API 입니다.")
+                                        .description("Profile 온보딩 닉네임 생성 API 입니다.")
                                         .summary("닉네임 생성 API 입니다.")
                                         .requestHeaders(
                                                 headerWithName("Authorization").description("유저의 JWT"))

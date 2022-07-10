@@ -28,9 +28,11 @@ subprojects {
 		compileOnly 'org.projectlombok:lombok'
 		annotationProcessor 'org.projectlombok:lombok'
 
+		implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.2'
+		implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.2'
+
 		testCompileOnly 'org.projectlombok:lombok'
 		testAnnotationProcessor 'org.projectlombok:lombok'
-
 		testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	}
 
@@ -81,6 +83,7 @@ project(':keewe-infra') {
 	}
 
 	dependencies {
+		implementation project(path: ':keewe-core', configuration: 'default')
 		implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
 		// todo :: amqp import, aws config
 	}
@@ -117,6 +120,7 @@ project(':keewe-domain') {
 		implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 		implementation 'mysql:mysql-connector-java'
 		implementation group: 'com.h2database', name: 'h2', version: '2.1.214'
+		implementation 'org.springframework.boot:spring-boot-starter-web'
 		// todo ::jpa, redis import
 	}
 }
@@ -146,9 +150,6 @@ project(':keewe-api') {
 
 	bootJar {
 		dependsOn copyDocument
-		from ("build/api-spec") {
-			into 'static/docs'
-		}
 	}
 
 	test.doFirst {

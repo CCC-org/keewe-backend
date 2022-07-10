@@ -36,10 +36,10 @@ public class Profile extends BaseTimeEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Column(name = "nickname", nullable = false)
+    @Column(name = "nickname")
     private String nickname; // 닉네임
 
-    @Column(name = "link", unique = true, nullable = false)
+    @Column(name = "link", unique = true)
     private String link; // 프로필 링크
 
     @Column(name = "privacy")
@@ -72,12 +72,10 @@ public class Profile extends BaseTimeEntity {
     @Column(name = "deleted", nullable = false)
     private boolean deleted;
 
-    public static ProfileBuilder initBuild() {
+    public static ProfileBuilder init() {
         return Profile.builder()
-                .nickname("")
-                .link("")
                 .privacy(PUBLIC)
-                .profileStatus(LINK_NEEDED)
+                .profileStatus(NICKNAME_NEEDED)
                 .activities(new ArrayList<>())
                 .followers(new ArrayList<>())
                 .followees(new ArrayList<>())
@@ -95,6 +93,11 @@ public class Profile extends BaseTimeEntity {
         checkNicknameLength(nickname);
         this.nickname = nickname;
         updateOrMaintainStatus(SOCIAL_LINK_NEEDED);
+    }
+
+    public void connectWithUser(User user) {
+        this.user = user;
+        user.getProfiles().add(this);
     }
 
     private void updateOrMaintainStatus(ProfileStatus newStatus) {

@@ -5,11 +5,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
-@ComponentScan({"ccc.keewedomain", "ccc.keeweapi"})
+@ComponentScan("ccc")
 public class KeeweApiApplication {
-
     public static void main(String[] args) {
         SpringApplication.run(KeeweApiApplication.class, args);
     }
-
 }
