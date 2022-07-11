@@ -124,7 +124,6 @@ project(':keewe-domain') {
 	}
 }
 
-
 project(':keewe-api') {
 	apply plugin: 'com.epages.restdocs-api-spec'
 
@@ -147,7 +146,7 @@ project(':keewe-api') {
 	}
 
 	bootJar {
-		dependsOn copyDocument
+		finalizedBy(copyDocument)
 	}
 
 	openapi3 {
@@ -164,10 +163,13 @@ project(':keewe-api') {
 		format = 'yaml'
 	}
 
-	test.doFirst {
-		delete file('build/generated-snippets')
-		delete file('build/api-spec')
+	test {
+		doFirst {
+			delete file('build/generated-snippets')
+			delete file('build/api-spec')
+		}
+		finalizedBy('openapi3')
 	}
-	.finalizedBy('openapi3')
+
 
 }
