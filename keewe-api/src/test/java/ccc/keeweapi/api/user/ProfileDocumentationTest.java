@@ -132,8 +132,8 @@ public class ProfileDocumentationTest extends RestDocsTestSupport {
                 .andDo(restDocs.document(
                         resource(
                                 ResourceSnippetParameters.builder()
-                                        .description("profile 온보딩 링크 생성 API")
-                                        .summary("링크 생성 api")
+                                        .description("Profile 온보딩 링크 생성 API 입니다.")
+                                        .summary("링크 생성 API입니다.")
                                         .requestHeaders(
                                                 headerWithName("Authorization").description("유저의 JWT"))
                                         .requestFields(
