@@ -5,6 +5,7 @@ pipeline {
     stages {
         stage ('Checkout') {
             steps {
+                cleanWs()
                 script {
                     checkout([$class             : 'GitSCM'
                               , branches         : [[name: "main"]]
@@ -39,7 +40,7 @@ pipeline {
             steps {
                 script {
                     sh '''
-                        ./gradlew :${PJ_NAME}:clean :${PJ_NAME}:bootJar -Dspring.profiles.active=${RUN_DEV} --exclude-task test
+                        ./gradlew :${PJ_NAME}:bootJar -Dspring.profiles.active=${RUN_DEV}
                     '''
                 }
 
