@@ -52,6 +52,6 @@ public class ProfileService {
 
     private void checkDuplicateLinkOrElseThrows(String link) {
         if (profileRepository.existsByLinkAndDeletedFalse(link))
-            throw new IllegalArgumentException("허보성 바보!!");
+            throw new IllegalArgumentException("이미 존재하는 링크입니다.");
     }
 }

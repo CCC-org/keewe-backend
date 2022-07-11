@@ -6,9 +6,9 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum ProfileStatus {
-    LINK_NEEDED(1),
-    ACTIVITIES_NEEDED(2),
-    NICKNAME_NEEDED(3),
+    NICKNAME_NEEDED(1),
+    LINK_NEEDED(2),
+    ACTIVITIES_NEEDED(3),
     SOCIAL_LINK_NEEDED(4),
     ACTIVE(100);
 
