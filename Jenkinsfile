@@ -5,10 +5,6 @@ pipeline {
     stages {
         stage ('Checkout') {
             steps {
-                echo "Clean workspace"
-                cleanWs()
-
-                echo "Checkout source"
                 script {
                     checkout([$class             : 'GitSCM'
                               , branches         : [[name: "main"]]
@@ -28,11 +24,22 @@ pipeline {
             }
         }
 
+        stage('Test') {
+            steps {
+                script {
+                    sh '''
+                        ./gradlew :${PJ_NAME}:test
+                    '''
+                }
+
+            }
+        }
+
         stage('Build') {
             steps {
                 script {
                     sh '''
-                        ./gradlew :${PJ_NAME}:bootJar -Dspring.profiles.active=${RUN_DEV}
+                        ./gradlew :${PJ_NAME}:clean :${PJ_NAME}:bootJar -Dspring.profiles.active=${RUN_DEV}
                     '''
                 }
 

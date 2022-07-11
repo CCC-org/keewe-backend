@@ -124,7 +124,6 @@ project(':keewe-domain') {
 	}
 }
 
-
 project(':keewe-api') {
 	apply plugin: 'com.epages.restdocs-api-spec'
 
@@ -147,8 +146,7 @@ project(':keewe-api') {
 	}
 
 	bootJar {
-		dependsOn('openapi3')
-		finalizedBy(copyDocument)
+		dependsOn(copyDocument)
 	}
 
 	openapi3 {
@@ -170,8 +168,8 @@ project(':keewe-api') {
 			delete file('build/generated-snippets')
 			delete file('build/api-spec')
 		}
+		finalizedBy('openapi3')
 	}
-
 
 
 }
