@@ -9,7 +9,7 @@ class ProfileTest {
     @Test
     @DisplayName("링크 패턴 정규식 테스트")
     void test1() {
-        Profile profile = Profile.initBuild().build();
+        Profile profile = Profile.init().build();
 
         // 정상적인 링크
         profile.createLink("_hello._.world_");
