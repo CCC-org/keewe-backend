@@ -1,15 +1,16 @@
 package ccc.keeweapi.service.user;
 
-import ccc.keeweapi.dto.user.LinkCreateRequestDto;
-
-import ccc.keeweapi.dto.user.LinkCreateResponseDto;
-import ccc.keeweapi.dto.user.NicknameCreateRequestDto;
-import ccc.keeweapi.dto.user.NicknameCreateResponseDto;
+import ccc.keeweapi.dto.user.*;
+import ccc.keewedomain.domain.common.enums.Activity;
 import ccc.keewedomain.domain.user.Profile;
 import ccc.keewedomain.repository.user.ProfileRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -47,6 +48,18 @@ public class ProfileService {
                 .nickname(nickname)
                 .status(profile.getProfileStatus())
                 .build();
+    }
+
+    // TODO : 현재는 단순 텍스트 비교로 검색(contains). 나중에 NLP...?
+    public ActivitiesSearchResponseDto searchActivities(String keyword) {
+        List<Activity> result = Arrays.stream(Activity.values())
+                .filter(activity -> {
+                    String value = activity.toString().replace("_", " ");
+                    return value.contains(keyword) || keyword.contains(value);
+                })
+                .collect(Collectors.toList());
+
+        return new ActivitiesSearchResponseDto(result);
     }
 
 

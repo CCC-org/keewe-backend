@@ -17,12 +17,15 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
+import static org.springframework.http.HttpMethod.GET;
+
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final String[] SWAGGER_URL = {"/", "/docs/openapi3.yaml", "/favicon.ico"};
     private final String SIGNUP_URL = "/api/v1/user/**";
     private final String HEALTH_CHECK_URL = "/api/health-check";
+    private final String ACTIVITIES_SEARCH_URL = "/api/v1/profiles/activities";
 
     private final UserDetailsService userService;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
@@ -32,10 +35,11 @@ public class SecurityConfig {
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         return web -> web.ignoring()
-                .antMatchers(HttpMethod.GET, SWAGGER_URL)
-                .antMatchers(HttpMethod.GET, SIGNUP_URL)
-                .antMatchers(HttpMethod.GET, HEALTH_CHECK_URL)
-                .antMatchers(HttpMethod.GET, "/api/v1/oauth/**")
+                .antMatchers(GET, SWAGGER_URL)
+                .antMatchers(GET, SIGNUP_URL)
+                .antMatchers(GET, HEALTH_CHECK_URL)
+                .antMatchers(GET, ACTIVITIES_SEARCH_URL)
+                .antMatchers(GET, "/api/v1/oauth/**")
                 .antMatchers("/h2-console/**");
     }
 

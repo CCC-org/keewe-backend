@@ -12,5 +12,5 @@ public enum ProfileStatus {
     SOCIAL_LINK_NEEDED(4),
     ACTIVE(100);
 
-    private int order;
+    private final int order;
 }
