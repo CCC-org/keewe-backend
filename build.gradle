@@ -140,27 +140,22 @@ project(':keewe-api') {
 		testImplementation 'org.springframework.security:spring-security-test'
 	}
 
+	def active = System.properties.getOrDefault('spring.profiles.active', 'local')
+
 	task copyDocument(type:Copy) {
 		from "build/api-spec"
 		into "src/main/resources/static/docs/"
 	}
 
-	bootJar {
-		dependsOn(copyDocument)
+	def makeApiDocs = tasks.register('makeApiDocs')
+	makeApiDocs.configure {
+		finalizedBy('openapi3').finalizedBy(copyDocument)
 	}
 
-	openapi3 {
-		ext {
-			local = 'http://localhost:8080'
-			dev = 'https://api-keewe.com'
+	bootJar {
+		if(active == 'local') {
+			finalizedBy(makeApiDocs) // for local
 		}
-
-		def active = System.properties.getOrDefault('spring.profiles.active', 'local')
-
-		server = ext.get(active)
-		title = 'Keewe-API'
-		description = 'Keewe의 API 문서입니다.'
-		format = 'yaml'
 	}
 
 	test {
@@ -168,8 +163,20 @@ project(':keewe-api') {
 			delete file('build/generated-snippets')
 			delete file('build/api-spec')
 		}
-		finalizedBy('openapi3')
+		finalizedBy(makeApiDocs)
 	}
+
+	openapi3 {
+		ext {
+			local = 'http://localhost:8080'
+			dev = 'https://api-keewe.com'
+		}
+		server = ext.get(active)
+		title = 'Keewe-API'
+		description = 'Keewe의 API 문서입니다.'
+		format = 'yaml'
+	}
+
 
 
 }
