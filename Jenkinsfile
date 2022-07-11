@@ -29,7 +29,7 @@ pipeline {
             steps {
                 script {
                     sh '''
-                        ./gradlew :${PJ_NAME}:test
+                        ./gradlew :${PJ_NAME}:test -Dspring.profiles.active=${RUN_DEV}
                     '''
                 }
 
