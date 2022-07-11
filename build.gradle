@@ -147,7 +147,8 @@ project(':keewe-api') {
 	}
 
 	bootJar {
-		dependsOn copyDocument
+		dependsOn('openapi3')
+		finalizedBy(copyDocument)
 	}
 
 	openapi3 {
@@ -164,10 +165,13 @@ project(':keewe-api') {
 		format = 'yaml'
 	}
 
-	test.doFirst {
-		delete file('build/generated-snippets')
-		delete file('build/api-spec')
+	test {
+		doFirst {
+			delete file('build/generated-snippets')
+			delete file('build/api-spec')
+		}
 	}
-	.finalizedBy('openapi3')
+
+
 
 }
