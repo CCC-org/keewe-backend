@@ -24,11 +24,22 @@ pipeline {
             }
         }
 
+        stage('Test') {
+            steps {
+                script {
+                    sh '''
+                        ./gradlew :${PJ_NAME}:test
+                    '''
+                }
+
+            }
+        }
+
         stage('Build') {
             steps {
                 script {
                     sh '''
-                        ./gradlew :${PJ_NAME}:clean :${PJ_NAME}:bootJar -Dspring.profiles.active=${RUN_DEV}
+                        ./gradlew :${PJ_NAME}:clean :${PJ_NAME}:bootJar -Dspring.profiles.active=${RUN_DEV} --exclude-task test
                     '''
                 }
 

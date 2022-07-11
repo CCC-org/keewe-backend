@@ -120,7 +120,6 @@ project(':keewe-domain') {
 		implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 		implementation 'mysql:mysql-connector-java'
 		implementation group: 'com.h2database', name: 'h2', version: '2.1.214'
-		implementation 'org.springframework.boot:spring-boot-starter-web'
 		// todo ::jpa, redis import
 	}
 }
@@ -143,17 +142,12 @@ project(':keewe-api') {
 	}
 
 	task copyDocument(type:Copy) {
-		dependsOn('openapi3')
 		from "build/api-spec"
 		into "src/main/resources/static/docs/"
 	}
 
 	bootJar {
 		dependsOn copyDocument
-	}
-
-	test.doFirst {
-		delete file('build/generated-snippets')
 	}
 
 	openapi3 {
@@ -169,4 +163,11 @@ project(':keewe-api') {
 		description = 'Keewe의 API 문서입니다.'
 		format = 'yaml'
 	}
+
+	test.doFirst {
+		delete file('build/generated-snippets')
+		delete file('build/api-spec')
+	}
+	.finalizedBy('openapi3')
+
 }
