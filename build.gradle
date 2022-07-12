@@ -120,11 +120,9 @@ project(':keewe-domain') {
 		implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 		implementation 'mysql:mysql-connector-java'
 		implementation group: 'com.h2database', name: 'h2', version: '2.1.214'
-		implementation 'org.springframework.boot:spring-boot-starter-web'
 		// todo ::jpa, redis import
 	}
 }
-
 
 project(':keewe-api') {
 	apply plugin: 'com.epages.restdocs-api-spec'
@@ -142,18 +140,30 @@ project(':keewe-api') {
 		testImplementation 'org.springframework.security:spring-security-test'
 	}
 
+	def active = System.properties.getOrDefault('spring.profiles.active', 'local')
+
 	task copyDocument(type:Copy) {
-		dependsOn('openapi3')
 		from "build/api-spec"
 		into "src/main/resources/static/docs/"
 	}
 
-	bootJar {
-		dependsOn copyDocument
+	def makeApiDocs = tasks.register('makeApiDocs')
+	makeApiDocs.configure {
+		finalizedBy('openapi3').finalizedBy(copyDocument)
 	}
 
-	test.doFirst {
-		delete file('build/generated-snippets')
+	bootJar {
+		if(active == 'local') {
+			finalizedBy(makeApiDocs) // for local
+		}
+	}
+
+	test {
+		doFirst {
+			delete file('build/generated-snippets')
+			delete file('build/api-spec')
+		}
+		finalizedBy(makeApiDocs)
 	}
 
 	openapi3 {
@@ -161,12 +171,12 @@ project(':keewe-api') {
 			local = 'http://localhost:8080'
 			dev = 'https://api-keewe.com'
 		}
-
-		def active = System.properties.getOrDefault('spring.profiles.active', 'local')
-
 		server = ext.get(active)
 		title = 'Keewe-API'
 		description = 'Keewe의 API 문서입니다.'
 		format = 'yaml'
 	}
+
+
+
 }

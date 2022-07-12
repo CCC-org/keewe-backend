@@ -5,6 +5,7 @@ pipeline {
     stages {
         stage ('Checkout') {
             steps {
+                cleanWs()
                 script {
                     checkout([$class             : 'GitSCM'
                               , branches         : [[name: "main"]]
@@ -24,11 +25,22 @@ pipeline {
             }
         }
 
+        stage('Test') {
+            steps {
+                script {
+                    sh '''
+                        ./gradlew :${PJ_NAME}:test -Dspring.profiles.active=${RUN_DEV}
+                    '''
+                }
+
+            }
+        }
+
         stage('Build') {
             steps {
                 script {
                     sh '''
-                        ./gradlew :${PJ_NAME}:clean :${PJ_NAME}:bootJar -Dspring.profiles.active=${RUN_DEV}
+                        ./gradlew :${PJ_NAME}:bootJar -Dspring.profiles.active=${RUN_DEV}
                     '''
                 }
 
