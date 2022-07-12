@@ -3,17 +3,14 @@ package ccc.keeweapi.api.user;
 import ccc.keeweapi.config.security.UserDetailService;
 import ccc.keeweapi.config.security.UserPrincipal;
 import ccc.keeweapi.document.utils.RestDocsTestSupport;
-import ccc.keeweapi.dto.user.LinkCreateRequestDto;
-import ccc.keeweapi.dto.user.LinkCreateResponseDto;
-import ccc.keeweapi.dto.user.NicknameCreateRequestDto;
-import ccc.keeweapi.dto.user.NicknameCreateResponseDto;
+import ccc.keeweapi.dto.user.*;
 import ccc.keeweapi.service.user.ProfileService;
+import ccc.keewedomain.domain.common.enums.Activity;
 import ccc.keewedomain.domain.user.User;
 import ccc.keewedomain.domain.user.enums.ProfileStatus;
 import ccc.keewedomain.domain.user.enums.UserStatus;
 import ccc.keewedomain.service.ProfileDomainService;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -23,10 +20,11 @@ import org.springframework.http.MediaType;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.epages.restdocs.apispec.ResourceDocumentation.headerWithName;
-import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
+import static ccc.keewedomain.domain.common.enums.Activity.기타_음악;
+import static com.epages.restdocs.apispec.ResourceDocumentation.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.snippet.Attributes.key;
@@ -153,5 +151,34 @@ public class ProfileDocumentationTest extends RestDocsTestSupport {
 
     }
 
+    @Test
+    @DisplayName("활동 분야 검색 api")
+    void search_activities_test() throws Exception {
+        when(profileService.searchActivities(any()))
+                .thenReturn(new ActivitiesSearchResponseDto(List.of(기타_음악)));
 
+        mockMvc.perform(
+                        get("/api/v1/profiles/activities")
+                                .param("keyword", "음악")
+                ).andExpect(status().isOk())
+                .andDo(restDocs.document(
+                        resource(
+                                ResourceSnippetParameters.builder()
+                                        .description("활동 분야 검색 API")
+                                        .summary("활동 분야 검색 api")
+                                        .requestParameters(
+                                                parameterWithName("keyword").description("검색어")
+                                        )
+                                        .responseFields(
+                                                fieldWithPath("message").description("요청 결과 메세지"),
+                                                fieldWithPath("code").description("결과 코드"),
+                                                fieldWithPath("data.activities")
+                                                        .description("검색 결과")
+                                                        .type("array")
+                                                        .attributes(key("enumValues").value(List.of(Activity.values()))))
+                                        .tag("Profile")
+                                        .build()
+                        )));
+
+    }
 }
