@@ -13,6 +13,8 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static ccc.keewedomain.domain.user.enums.Privacy.PUBLIC;
 import static ccc.keewedomain.domain.user.enums.ProfileStatus.*;
@@ -36,10 +38,10 @@ public class Profile extends BaseTimeEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Column(name = "nickname", nullable = false)
+    @Column(name = "nickname")
     private String nickname; // 닉네임
 
-    @Column(name = "link", unique = true, nullable = false)
+    @Column(name = "link", unique = true)
     private String link; // 프로필 링크
 
     @Column(name = "privacy")
@@ -72,12 +74,10 @@ public class Profile extends BaseTimeEntity {
     @Column(name = "deleted", nullable = false)
     private boolean deleted;
 
-    public static ProfileBuilder initBuild() {
+    public static ProfileBuilder init() {
         return Profile.builder()
-                .nickname("")
-                .link("")
                 .privacy(PUBLIC)
-                .profileStatus(LINK_NEEDED)
+                .profileStatus(NICKNAME_NEEDED)
                 .activities(new ArrayList<>())
                 .followers(new ArrayList<>())
                 .followees(new ArrayList<>())
@@ -86,8 +86,10 @@ public class Profile extends BaseTimeEntity {
     }
 
     public void createLink(String link) {
+        isCreatingOrElseThrow();
+        checkLinkPatternOrElseThrow(link);
         this.link = link;
-        this.profileStatus = ACTIVITIES_NEEDED;
+        updateOrMaintainStatus(ACTIVITIES_NEEDED);
     }
 
     public void createNickname(String nickname) {
@@ -97,6 +99,11 @@ public class Profile extends BaseTimeEntity {
         updateOrMaintainStatus(SOCIAL_LINK_NEEDED);
     }
 
+    public void connectWithUser(User user) {
+        this.user = user;
+        user.getProfiles().add(this);
+    }
+
     private void updateOrMaintainStatus(ProfileStatus newStatus) {
         ProfileStatus currentStatus = this.profileStatus;
         if (currentStatus.getOrder() < newStatus.getOrder()) {
@@ -104,12 +111,17 @@ public class Profile extends BaseTimeEntity {
         }
     }
 
-    private boolean isCreatingOrElseThrow() {
+    private void isCreatingOrElseThrow() {
         if (this.profileStatus.getOrder() >= ACTIVE.getOrder()) {
             throw new IllegalStateException("프로필 생성이 이미 완료되었습니다.");
         }
+    }
 
-        return true;
+    private void checkLinkPatternOrElseThrow(String link) {
+        Pattern pattern = Pattern.compile("^[0-9a-zA-Z_][0-9a-zA-Z_.]*[0-9a-zA-Z_]|[0-9a-zA-Z_]$");
+        Matcher matcher = pattern.matcher(link);
+        if (!matcher.matches())
+            throw new IllegalArgumentException("링크 패턴이 일치하지 않습니다.");
     }
 
     private void checkNicknameLength(String nickname) {

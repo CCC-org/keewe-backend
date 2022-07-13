@@ -47,21 +47,6 @@ public class JwtUtils {
                 .compact();
     }
 
-    public Authentication getAuthentication(String token) {
-        UserDetails userDetails =
-                userDetailsService.loadUserByUsername(this.getUserEmailFromToken(token));
-
-        return new UsernamePasswordAuthenticationToken(userDetails
-                , ""
-                , userDetails.getAuthorities());
-    }
-
-    public String getUserEmailFromToken(String token) {
-        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody()
-                .getSubject();
-    }
-
-
     public String extractToken(HttpServletRequest request) {
         String header = request.getHeader(KeeweConsts.AUTH_HEADER);
 
@@ -70,6 +55,15 @@ public class JwtUtils {
         }
 
         return "";
+    }
+
+    public Authentication getAuthentication(String token) {
+        UserDetails userDetails =
+                userDetailsService.loadUserByUsername(this.getUserEmailFromToken(token));
+
+        return new UsernamePasswordAuthenticationToken(userDetails
+                , ""
+                , userDetails.getAuthorities());
     }
 
     public boolean validateTokenOrElseThrow(String token) {
@@ -83,6 +77,11 @@ public class JwtUtils {
             throw ex;
         }
 
+    }
+
+    private String getUserEmailFromToken(String token) {
+        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody()
+                .getSubject();
     }
 
 }
