@@ -96,8 +96,8 @@ public class Profile extends BaseTimeEntity {
         isCreatingOrElseThrow();
 
         nickname = applyNicknameFormat(nickname);
-        System.out.println("nickname = " + nickname);
         checkNicknameLengthOrElseThrow(nickname);
+
         this.nickname = nickname;
         updateOrMaintainStatus(SOCIAL_LINK_NEEDED);
 

@@ -48,12 +48,6 @@ class ProfileTest {
         profile.createNickname("0123456789");
 
         // 여러 유형의 문자가 섞여있는 경우
-        String s = "";
-        try {
-            s = profile.createNickname("   \uD83C\uDDF0\uD83C\uDDF7\uD83D\uDE011한    \t \b\b\b\b\b \n      글B❣️✅#️⃣ ");
-        } catch (Exception e) {
-        }
-
-        System.out.println("s = " + s);
+        profile.createNickname("   \uD83C\uDDF0\uD83C\uDDF7\uD83D\uDE011한    \t \b\b\b\b\b \n      글B❣️✅#️⃣ ");
     }
 }
