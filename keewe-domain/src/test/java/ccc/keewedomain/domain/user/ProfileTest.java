@@ -1,8 +1,10 @@
 package ccc.keewedomain.domain.user;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ProfileTest {
@@ -26,5 +28,32 @@ class ProfileTest {
         // 시작, 끝이 .
         assertThrows(IllegalArgumentException.class, () -> profile.createLink("hello."));
         assertThrows(IllegalArgumentException.class, () -> profile.createLink(".hello"));
+    }
+
+    @Test
+    @DisplayName("닉네임 제약조건 테스트")
+    void nickname_constraint_test() {
+        Profile profile = Profile.init().build();
+
+        // 공백 포매팅
+        assertEquals(profile.createNickname("   \n공백  \t    테스트  \n \t \t \b  "), "공백 테스트");
+
+        // whitespace 문자로만 이루어진 경우
+        assertThrows(IllegalArgumentException.class, () -> profile.createNickname("\n\n\n\n\n\n\n\n\n"));
+
+        // 닉네임의 길이가 초과된 경우(11자)
+        assertThrows(IllegalArgumentException.class, () -> profile.createNickname("01234567891"));
+
+        // 닉네임의 길이가 제한과 일치하는 경우
+        profile.createNickname("0123456789");
+
+        // 여러 유형의 문자가 섞여있는 경우
+        String s = "";
+        try {
+            s = profile.createNickname("   \uD83C\uDDF0\uD83C\uDDF7\uD83D\uDE011한    \t \b\b\b\b\b \n      글B❣️✅#️⃣ ");
+        } catch (Exception e) {
+        }
+
+        System.out.println("s = " + s);
     }
 }
