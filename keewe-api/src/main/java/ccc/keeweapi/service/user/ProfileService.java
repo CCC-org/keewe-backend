@@ -41,10 +41,10 @@ public class ProfileService {
                 userId
         );
 
-        profile.createNickname(nickname);
+        String createdNickname = profile.createNickname(nickname);
 
         return NicknameCreateResponseDto.builder()
-                .nickname(nickname)
+                .nickname(createdNickname)
                 .status(profile.getProfileStatus())
                 .build();
     }

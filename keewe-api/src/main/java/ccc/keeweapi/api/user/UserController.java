@@ -1,5 +1,6 @@
 package ccc.keeweapi.api.user;
 
+import ccc.keeweapi.config.security.jwt.JwtUtils;
 import ccc.keeweapi.dto.ApiResponse;
 import ccc.keeweapi.service.user.UserApiService;
 import lombok.RequiredArgsConstructor;
@@ -14,10 +15,16 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class UserController {
     private final UserApiService userService;
+    private final JwtUtils jwtUtils;
 
     @GetMapping("/kakao")
     public ApiResponse<?> signUpWithKakao(@RequestParam String code) {
         log.info("[Kakao Signup] code {}", code);
         return ApiResponse.ok(userService.signUpWithKakao(code));
+    }
+
+    @GetMapping
+    public String tt(@RequestParam String email) {
+        return jwtUtils.createToken(email, null);
     }
 }

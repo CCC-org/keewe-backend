@@ -92,11 +92,14 @@ public class Profile extends BaseTimeEntity {
         updateOrMaintainStatus(ACTIVITIES_NEEDED);
     }
 
-    public void createNickname(String nickname) {
+    public String createNickname(String nickname) {
         isCreatingOrElseThrow();
+        nickname = applyNicknameFormat(nickname);
         checkNicknameLengthOrElseThrow(nickname);
         this.nickname = nickname;
         updateOrMaintainStatus(SOCIAL_LINK_NEEDED);
+
+        return this.nickname;
     }
 
     public void connectWithUser(User user) {
@@ -129,5 +132,9 @@ public class Profile extends BaseTimeEntity {
         if (StringLengthUtil.getGraphemeLength(nickname) > NICKNAME_MAX_LENGTH) {
             throw new IllegalArgumentException(String.format("닉네임의 길이가 %d자를 초과해요.", NICKNAME_MAX_LENGTH));
         }
+    }
+
+    private String applyNicknameFormat(String nickname) {
+        return nickname.trim().replaceAll("\\s+", " ");
     }
 }
