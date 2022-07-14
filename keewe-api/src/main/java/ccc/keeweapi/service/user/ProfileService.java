@@ -1,10 +1,7 @@
 package ccc.keeweapi.service.user;
 
-import ccc.keeweapi.dto.user.LinkCreateRequestDto;
+import ccc.keeweapi.dto.user.*;
 
-import ccc.keeweapi.dto.user.LinkCreateResponseDto;
-import ccc.keeweapi.dto.user.NicknameCreateRequestDto;
-import ccc.keeweapi.dto.user.NicknameCreateResponseDto;
 import ccc.keewedomain.domain.user.Profile;
 import ccc.keewedomain.repository.user.ProfileRepository;
 import ccc.keewedomain.service.ProfileDomainService;
@@ -38,10 +35,7 @@ public class ProfileService {
     public NicknameCreateResponseDto createNickname(Long profileId, Long userId, String nickname) {
         Profile profile = profileDomainService.getAndVerifyOwnerOrElseThrow(profileId, userId);
         profileDomainService.createNickname(profile.getId(), nickname);
-        return NicknameCreateResponseDto.builder()
-                .nickname(profile.getNickname())
-                .status(profile.getProfileStatus())
-                .build();
+        return NicknameCreateResponseDto.of(profile.getNickname(), profile.getProfileStatus());
     }
 
 

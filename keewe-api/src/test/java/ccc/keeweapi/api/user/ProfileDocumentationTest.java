@@ -69,7 +69,7 @@ public class ProfileDocumentationTest extends RestDocsTestSupport {
                 .thenReturn(new UserPrincipal(user));
 
         when(profileService.createNickname(any(), any(), any()))
-                .thenReturn(new NicknameCreateResponseDto(nickname, ProfileStatus.SOCIAL_LINK_NEEDED));
+                .thenReturn(NicknameCreateResponseDto.of(nickname, ProfileStatus.SOCIAL_LINK_NEEDED));
 
 
         mockMvc.perform(
