@@ -17,6 +17,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
+import static org.springframework.http.HttpMethod.GET;
+
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfig {
@@ -32,10 +34,10 @@ public class SecurityConfig {
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         return web -> web.ignoring()
-                .antMatchers(HttpMethod.GET, SWAGGER_URL)
-                .antMatchers(HttpMethod.GET, SIGNUP_URL)
-                .antMatchers(HttpMethod.GET, HEALTH_CHECK_URL)
-                .antMatchers(HttpMethod.GET, "/api/v1/oauth/**")
+                .antMatchers(GET, SWAGGER_URL)
+                .antMatchers(GET, SIGNUP_URL)
+                .antMatchers(GET, HEALTH_CHECK_URL)
+                .antMatchers(GET, "/api/v1/oauth/**")
                 .antMatchers("/h2-console/**");
     }
 

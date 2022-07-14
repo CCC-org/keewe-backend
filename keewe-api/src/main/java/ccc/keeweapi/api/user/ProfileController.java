@@ -33,4 +33,9 @@ public class ProfileController {
         return ApiResponse.ok(responseDto);
     }
 
+    @GetMapping("/activities")
+    public ApiResponse<ActivitiesSearchResponseDto> searchActivities(@RequestParam("keyword") String keyword) {
+        ActivitiesSearchResponseDto responseDto = profileService.searchActivities(keyword);
+        return ApiResponse.ok(responseDto);
+    }
 }
