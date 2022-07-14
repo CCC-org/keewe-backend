@@ -1,9 +1,12 @@
 package ccc.keeweapi.service.user;
 
 import ccc.keeweapi.dto.user.*;
+
+import ccc.keeweapi.dto.user.*;
 import ccc.keewedomain.domain.common.enums.Activity;
 import ccc.keewedomain.domain.user.Profile;
 import ccc.keewedomain.repository.user.ProfileRepository;
+import ccc.keewedomain.service.ProfileDomainService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +20,7 @@ import java.util.stream.Collectors;
 public class ProfileService {
 
     private final ProfileRepository profileRepository;
+    private final ProfileDomainService profileDomainService;
 
     @Transactional
     public LinkCreateResponseDto createLink(LinkCreateRequestDto createLinkDto, Long userId) {
@@ -34,20 +38,10 @@ public class ProfileService {
     }
 
     @Transactional
-    public NicknameCreateResponseDto createNickname(NicknameCreateRequestDto nicknameCreateDto, Long userId) {
-        String nickname = nicknameCreateDto.getNickname();
-
-        Profile profile = profileRepository.findByIdAndUserIdAndDeletedFalseOrElseThrow(
-                nicknameCreateDto.getProfileId(),
-                userId
-        );
-
-        profile.createNickname(nickname);
-
-        return NicknameCreateResponseDto.builder()
-                .nickname(nickname)
-                .status(profile.getProfileStatus())
-                .build();
+    public NicknameCreateResponseDto createNickname(Long profileId, Long userId, String nickname) {
+        Profile profile = profileDomainService.getAndVerifyOwnerOrElseThrow(profileId, userId);
+        profileDomainService.createNickname(profile.getId(), nickname);
+        return NicknameCreateResponseDto.of(profile.getNickname(), profile.getProfileStatus());
     }
 
     // TODO : 현재는 단순 텍스트 비교로 검색(contains). 나중에 NLP...?

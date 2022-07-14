@@ -10,6 +10,8 @@ public interface ProfileRepository extends JpaRepository<Profile, Long> {
 
     Boolean existsByLinkAndDeletedFalse(String link);
 
+    Boolean existsByIdAndUserIdAndDeletedFalse(Long id, Long userId);
+
     default Profile findByIdAndUserIdAndDeletedFalseOrElseThrow(Long id, Long userId) {
         return findByIdAndUserIdAndDeletedFalse(id, userId).orElseThrow(() -> new IllegalArgumentException("해당 프로필이 존재하지 않습니다."));
     }

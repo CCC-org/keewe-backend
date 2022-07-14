@@ -29,7 +29,10 @@ public class ProfileController {
             @RequestBody NicknameCreateRequestDto requestDto,
             @AuthenticationPrincipal UserPrincipal principal) {
 
-        NicknameCreateResponseDto responseDto = profileService.createNickname(requestDto, principal.getUser().getId());
+        NicknameCreateResponseDto responseDto = profileService.createNickname(
+                requestDto.getProfileId(),
+                principal.getUser().getId(),
+                requestDto.getNickname());
         return ApiResponse.ok(responseDto);
     }
 
