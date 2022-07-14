@@ -154,11 +154,19 @@ public class ProfileDocumentationTest extends RestDocsTestSupport {
     @Test
     @DisplayName("활동 분야 검색 api")
     void search_activities_test() throws Exception {
+        String email = "test@keewe.com";
+        String token = jwtUtils.createToken(email, new ArrayList<>());
+
+        User user = User.builder().build();
+        when(userDetailsService.loadUserByUsername(any()))
+                .thenReturn(new UserPrincipal(user));
+
         when(profileService.searchActivities(any()))
                 .thenReturn(new ActivitiesSearchResponseDto(List.of(기타_음악)));
 
         mockMvc.perform(
                         get("/api/v1/profiles/activities")
+                                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                                 .param("keyword", "음악")
                 ).andExpect(status().isOk())
                 .andDo(restDocs.document(
@@ -166,6 +174,8 @@ public class ProfileDocumentationTest extends RestDocsTestSupport {
                                 ResourceSnippetParameters.builder()
                                         .description("활동 분야 검색 API")
                                         .summary("활동 분야 검색 api")
+                                        .requestHeaders(
+                                                headerWithName("Authorization").description("유저의 JWT"))
                                         .requestParameters(
                                                 parameterWithName("keyword").description("검색어")
                                         )
