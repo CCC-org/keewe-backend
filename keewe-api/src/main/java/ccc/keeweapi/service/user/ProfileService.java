@@ -7,6 +7,7 @@ import ccc.keeweapi.dto.user.NicknameCreateRequestDto;
 import ccc.keeweapi.dto.user.NicknameCreateResponseDto;
 import ccc.keewedomain.domain.user.Profile;
 import ccc.keewedomain.repository.user.ProfileRepository;
+import ccc.keewedomain.service.ProfileDomainService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ProfileService {
 
     private final ProfileRepository profileRepository;
+    private final ProfileDomainService profileDomainService;
 
     @Transactional
     public LinkCreateResponseDto createLink(LinkCreateRequestDto createLinkDto, Long userId) {
@@ -33,18 +35,11 @@ public class ProfileService {
     }
 
     @Transactional
-    public NicknameCreateResponseDto createNickname(NicknameCreateRequestDto nicknameCreateDto, Long userId) {
-        String nickname = nicknameCreateDto.getNickname();
-
-        Profile profile = profileRepository.findByIdAndUserIdAndDeletedFalseOrElseThrow(
-                nicknameCreateDto.getProfileId(),
-                userId
-        );
-
-        String createdNickname = profile.createNickname(nickname);
-
+    public NicknameCreateResponseDto createNickname(Long profileId, Long userId, String nickname) {
+        Profile profile = profileDomainService.getAndVerifyOwnerOrElseThrow(profileId, userId);
+        profileDomainService.createNickname(profile.getId(), nickname);
         return NicknameCreateResponseDto.builder()
-                .nickname(createdNickname)
+                .nickname(profile.getNickname())
                 .status(profile.getProfileStatus())
                 .build();
     }

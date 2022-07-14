@@ -96,16 +96,10 @@ public class Profile extends BaseTimeEntity {
         updateOrMaintainStatus(ACTIVITIES_NEEDED);
     }
 
-    public String createNickname(String nickname) {
+    public void createNickname(String nickname) {
         isCreatingOrElseThrow();
-
-        nickname = applyNicknameFormat(nickname);
-        checkNicknameLengthOrElseThrow(nickname);
-
         this.nickname = nickname;
         updateOrMaintainStatus(SOCIAL_LINK_NEEDED);
-
-        return this.nickname;
     }
 
     public void connectWithUser(User user) {
@@ -131,24 +125,5 @@ public class Profile extends BaseTimeEntity {
         Matcher matcher = pattern.matcher(link);
         if (!matcher.matches())
             throw new IllegalArgumentException("링크 패턴이 일치하지 않습니다.");
-    }
-
-    private void checkNicknameLengthOrElseThrow(String nickname) {
-        long length = StringLengthUtil.getGraphemeLength(nickname);
-
-        if (length > NICKNAME_MAX_LENGTH) {
-            throw new KeeweException(KeeweRtnConsts.ERR420);
-        }
-
-        if (length == 0) {
-            throw new KeeweException(KeeweRtnConsts.ERR421);
-        }
-    }
-
-    private String applyNicknameFormat(String nickname) {
-        return nickname
-                .trim()
-                .replaceAll("\b", "")
-                .replaceAll("\\s+", " ");
     }
 }
