@@ -1,5 +1,7 @@
 package ccc.keewedomain.domain.user;
 
+import ccc.keewecore.consts.KeeweRtnConsts;
+import ccc.keewecore.exception.KeeweException;
 import ccc.keewecore.utils.StringLengthUtil;
 import ccc.keewedomain.domain.common.BaseTimeEntity;
 import ccc.keewedomain.domain.common.enums.Activity;
@@ -74,6 +76,8 @@ public class Profile extends BaseTimeEntity {
     @Column(name = "deleted", nullable = false)
     private boolean deleted;
 
+    public static final int NICKNAME_MAX_LENGTH = 10;
+
     public static ProfileBuilder init() {
         return Profile.builder()
                 .privacy(PUBLIC)
@@ -130,15 +134,14 @@ public class Profile extends BaseTimeEntity {
     }
 
     private void checkNicknameLengthOrElseThrow(String nickname) {
-        final int NICKNAME_MAX_LENGTH = 10;
         long length = StringLengthUtil.getGraphemeLength(nickname);
 
         if (length > NICKNAME_MAX_LENGTH) {
-            throw new IllegalArgumentException(String.format("닉네임의 길이가 %d자를 초과해요.", NICKNAME_MAX_LENGTH));
+            throw new KeeweException(KeeweRtnConsts.ERR420);
         }
 
         if (length == 0) {
-            throw new IllegalArgumentException(String.format("닉네임의 길이가 0이에요."));
+            throw new KeeweException(KeeweRtnConsts.ERR421);
         }
     }
 
