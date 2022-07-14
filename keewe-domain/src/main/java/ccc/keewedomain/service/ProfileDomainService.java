@@ -9,8 +9,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import static ccc.keewecore.consts.KeeweRtnConsts.ERR422;
-
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -29,7 +27,7 @@ public class ProfileDomainService {
 
     public Profile getAndVerifyOwnerOrElseThrow(Long id, Long userId) {
         return profileRepository.findByIdAndUserIdAndDeletedFalse(id, userId).orElseThrow(() ->
-                new KeeweException(ERR422)
+                new KeeweException(KeeweRtnConsts.ERR422)
         );
     }
 
