@@ -69,7 +69,7 @@ public class Profile extends BaseTimeEntity {
     private List<Buddy> followees; // 나를 팔로우하는 사람들
 
     @OneToMany(mappedBy = "profile", fetch = LAZY)
-    private List<ProfileLink> socialLinks;
+    private List<ProfileLink> profileLinks;
 
     @Column(name = "deleted", nullable = false)
     private boolean deleted;
@@ -81,7 +81,7 @@ public class Profile extends BaseTimeEntity {
                 .activities(new ArrayList<>())
                 .followers(new ArrayList<>())
                 .followees(new ArrayList<>())
-                .socialLinks(new ArrayList<>())
+                .profileLinks(new ArrayList<>())
                 .deleted(false);
     }
 
@@ -97,6 +97,12 @@ public class Profile extends BaseTimeEntity {
         checkNicknameLength(nickname);
         this.nickname = nickname;
         updateOrMaintainStatus(SOCIAL_LINK_NEEDED);
+    }
+
+    public void createProfileLinks(List<ProfileLink> profileLinks) {
+        isCreatingOrElseThrow();
+        this.profileLinks.addAll(profileLinks);
+        updateOrMaintainStatus(ACTIVE);
     }
 
     public void connectWithUser(User user) {

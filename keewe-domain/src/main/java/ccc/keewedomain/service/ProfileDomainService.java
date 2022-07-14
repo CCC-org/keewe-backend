@@ -15,4 +15,10 @@ public class ProfileDomainService {
     public Long save(Profile profile) {
         return profileRepository.save(profile).getId();
     }
+
+    public Profile getByIdAndUserIdOrElseThrow(Long profileId, Long userId) {
+        return profileRepository.findByIdAndUserIdAndDeletedFalse(profileId, userId).orElseThrow(() ->
+                new IllegalArgumentException(String.format("profileId=[%d], userId=[%d]에 해당하는 프로필이 없습니다."))
+        );
+    }
 }

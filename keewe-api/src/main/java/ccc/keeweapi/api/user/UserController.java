@@ -1,5 +1,6 @@
 package ccc.keeweapi.api.user;
 
+import ccc.keeweapi.config.security.jwt.JwtUtils;
 import ccc.keeweapi.dto.ApiResponse;
 import ccc.keeweapi.service.user.UserApiService;
 import lombok.RequiredArgsConstructor;
@@ -19,5 +20,13 @@ public class UserController {
     public ApiResponse<?> signUpWithKakao(@RequestParam String code) {
         log.info("[Kakao Signup] code {}", code);
         return ApiResponse.ok(userService.signUpWithKakao(code));
+    }
+
+
+    private final JwtUtils jwtUtils;
+
+    @GetMapping
+    public String tt(@RequestParam String email) {
+        return jwtUtils.createToken(email, null);
     }
 }

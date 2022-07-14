@@ -4,8 +4,12 @@ import ccc.keeweapi.config.security.UserPrincipal;
 import ccc.keeweapi.dto.user.*;
 import ccc.keeweapi.dto.ApiResponse;
 import ccc.keeweapi.service.user.ProfileService;
+import ccc.keewedomain.domain.common.Link;
 import lombok.RequiredArgsConstructor;
+import org.apache.catalina.security.SecurityUtil;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -33,4 +37,9 @@ public class ProfileController {
         return ApiResponse.ok(responseDto);
     }
 
+    @PostMapping("/profile-links")
+    public ApiResponse<?> createProfileLinks(@RequestBody ProfileLinkCreateRequestDto requestDto) {
+        profileService.createProfileLinks(requestDto);
+        return ApiResponse.ok();
+    }
 }

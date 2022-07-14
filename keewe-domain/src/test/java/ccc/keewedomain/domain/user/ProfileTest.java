@@ -3,6 +3,9 @@ package ccc.keewedomain.domain.user;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ProfileTest {
@@ -26,5 +29,20 @@ class ProfileTest {
         // 시작, 끝이 .
         assertThrows(IllegalArgumentException.class, () -> profile.createLink("hello."));
         assertThrows(IllegalArgumentException.class, () -> profile.createLink(".hello"));
+    }
+
+    @Test
+    void tt() {
+        String t = "facebook.com/post";
+        if (!t.startsWith("(https://)|(http://)")) {
+            t = "https://" + t;
+        }
+        URL url = null;
+        try {
+            url = new URL(t);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        System.out.println("t = " + url.getHost());
     }
 }
