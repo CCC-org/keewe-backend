@@ -1,5 +1,8 @@
 package ccc.keewedomain.service;
 
+import ccc.keewecore.consts.KeeweRtnConsts;
+import ccc.keewecore.exception.KeeweException;
+import ccc.keewecore.utils.StringLengthUtil;
 import ccc.keewedomain.domain.user.Profile;
 import ccc.keewedomain.repository.user.ProfileRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,9 +19,42 @@ public class ProfileDomainService {
         return profileRepository.save(profile).getId();
     }
 
-    public Profile getByIdAndUserIdOrElseThrow(Long profileId, Long userId) {
-        return profileRepository.findByIdAndUserIdAndDeletedFalse(profileId, userId).orElseThrow(() ->
-                new IllegalArgumentException(String.format("profileId=[%d], userId=[%d]에 해당하는 프로필이 없습니다."))
+    public Profile getByIdOrElseThrow(Long id) {
+        return profileRepository.findById(id).orElseThrow(() ->
+                new IllegalArgumentException("해당 프로필이 존재하지 않습니다.")
         );
+    }
+
+    public Profile getAndVerifyOwnerOrElseThrow(Long id, Long userId) {
+        return profileRepository.findByIdAndUserIdAndDeletedFalse(id, userId).orElseThrow(() ->
+                new KeeweException(KeeweRtnConsts.ERR422)
+        );
+    }
+
+    public Profile createNickname(Long id, String nickname) {
+        nickname = applyNicknameFormat(nickname);
+        verifyNicknameOrElseThrow(nickname);
+        Profile profile = getByIdOrElseThrow(id);
+        profile.createNickname(nickname);
+        return profile;
+    }
+
+    private String applyNicknameFormat(String nickname) {
+        return nickname
+                .trim()
+                .replaceAll("\b", "")
+                .replaceAll("\\s+", " ");
+    }
+
+    private void verifyNicknameOrElseThrow(String nickname) {
+        long length = StringLengthUtil.getGraphemeLength(nickname);
+
+        if (length > Profile.NICKNAME_MAX_LENGTH) {
+            throw new KeeweException(KeeweRtnConsts.ERR420);
+        }
+
+        if (length == 0) {
+            throw new KeeweException(KeeweRtnConsts.ERR421);
+        }
     }
 }

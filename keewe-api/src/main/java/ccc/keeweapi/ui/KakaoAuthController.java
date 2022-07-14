@@ -2,6 +2,7 @@ package ccc.keeweapi.ui;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -10,6 +11,7 @@ import java.io.IOException;
 
 @Controller
 @RequestMapping("/api/v1/oauth/kakao")
+@CrossOrigin(origins = "*", maxAge = 3600)
 public class KakaoAuthController {
     @Value("${kakao.auth-url}")
     private String kakaoUrl;
