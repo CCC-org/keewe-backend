@@ -12,14 +12,14 @@ import javax.persistence.*;
 import static javax.persistence.FetchType.LAZY;
 
 @Entity
-@Table(name = "profile_link")
+@Table(name = "social_link")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ProfileLink extends BaseTimeEntity {
+public class SocialLink extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "profile_link_id")
+    @Column(name = "social_link_id")
     private Long id;
 
     @ManyToOne(fetch = LAZY)
@@ -32,12 +32,12 @@ public class ProfileLink extends BaseTimeEntity {
     @Column(name = "deleted", nullable = false)
     private boolean deleted;
 
-    public static ProfileLink of(Profile profile, Link link) {
-        ProfileLink profileLink = new ProfileLink();
-        profileLink.profile = profile;
-        profileLink.link = link;
-        profileLink.deleted = false;
+    public static SocialLink of(Profile profile, Link link) {
+        SocialLink socialLink = new SocialLink();
+        socialLink.profile = profile;
+        socialLink.link = link;
+        socialLink.deleted = false;
 
-        return profileLink;
+        return socialLink;
     }
 }

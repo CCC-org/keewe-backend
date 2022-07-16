@@ -49,14 +49,14 @@ public class ProfileController {
         return ApiResponse.ok(responseDto);
     }
 
-    @PostMapping("/profile-links")
-    public ApiResponse<Void> createProfileLinks(@RequestBody ProfileLinkCreateRequestDto requestDto) {
+    @PostMapping("/social-links")
+    public ApiResponse<Void> createSocialLinks(@RequestBody SocialLinkCreateRequestDto requestDto) {
         User user = SecurityUtil.getUser();
         List<Link> links = requestDto.getLinks().stream()
                 .map(linkDto -> Link.of(linkDto.getUrl(), linkDto.getType()))
                 .collect(Collectors.toList());
 
-        profileService.createProfileLinks(requestDto.getProfileId(), user.getId(), links);
+        profileService.createSocialLinks(requestDto.getProfileId(), user.getId(), links);
         return ApiResponse.ok();
     }
 }

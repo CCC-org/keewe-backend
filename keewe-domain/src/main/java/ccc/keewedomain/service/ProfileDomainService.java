@@ -4,7 +4,7 @@ import ccc.keewecore.consts.KeeweRtnConsts;
 import ccc.keewecore.exception.KeeweException;
 import ccc.keewecore.utils.StringLengthUtil;
 import ccc.keewedomain.domain.user.Profile;
-import ccc.keewedomain.domain.user.ProfileLink;
+import ccc.keewedomain.domain.user.SocialLink;
 import ccc.keewedomain.repository.user.ProfileRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -42,9 +42,9 @@ public class ProfileDomainService {
         return profile;
     }
 
-    public void initProfileLinks(Long id, List<ProfileLink> profileLinks) {
+    public void initSocialLinks(Long id, List<SocialLink> socialLinks) {
         Profile profile = getByIdOrElseThrow(id);
-        profile.initProfileLinks(profileLinks);
+        profile.initSocialLinks(socialLinks);
     }
 
     private String applyNicknameFormat(String nickname) {

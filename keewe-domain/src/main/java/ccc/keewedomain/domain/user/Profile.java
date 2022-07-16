@@ -1,8 +1,5 @@
 package ccc.keewedomain.domain.user;
 
-import ccc.keewecore.consts.KeeweRtnConsts;
-import ccc.keewecore.exception.KeeweException;
-import ccc.keewecore.utils.StringLengthUtil;
 import ccc.keewedomain.domain.common.BaseTimeEntity;
 import ccc.keewedomain.domain.common.enums.Activity;
 import ccc.keewedomain.domain.user.enums.Privacy;
@@ -71,7 +68,7 @@ public class Profile extends BaseTimeEntity {
     private List<Buddy> followees; // 나를 팔로우하는 사람들
 
     @OneToMany(mappedBy = "profile", fetch = LAZY)
-    private List<ProfileLink> profileLinks;
+    private List<SocialLink> socialLinks;
 
     @Column(name = "deleted", nullable = false)
     private boolean deleted;
@@ -85,7 +82,7 @@ public class Profile extends BaseTimeEntity {
                 .activities(new ArrayList<>())
                 .followers(new ArrayList<>())
                 .followees(new ArrayList<>())
-                .profileLinks(new ArrayList<>())
+                .socialLinks(new ArrayList<>())
                 .deleted(false);
     }
 
@@ -102,9 +99,9 @@ public class Profile extends BaseTimeEntity {
         updateOrMaintainStatus(SOCIAL_LINK_NEEDED);
     }
 
-    public void initProfileLinks(List<ProfileLink> profileLinks) {
+    public void initSocialLinks(List<SocialLink> socialLinks) {
         isCreatingOrElseThrow();
-        this.profileLinks.addAll(profileLinks);
+        this.socialLinks.addAll(socialLinks);
         updateOrMaintainStatus(ACTIVE);
     }
 
