@@ -44,7 +44,7 @@ public class Link {
             throw new KeeweException(KeeweRtnConsts.ERR424);
         }
 
-        if(!urlObj.getHost().equals(type.getDomain())) {
+        if(!type.getDomain().equals(urlObj.getHost())) {
             throw new KeeweException(KeeweRtnConsts.ERR425);
         }
     }
