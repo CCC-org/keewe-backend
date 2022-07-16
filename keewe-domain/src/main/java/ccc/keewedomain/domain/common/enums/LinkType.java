@@ -8,9 +8,14 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum LinkType {
-    YOUTUBE("youtube.com"),
-    INSTAGRAM("instagram.com"),
+    NAVER_BLOG("blog.naver.com"),
     FACEBOOK("facebook.com"),
+    INSTAGRAM("instagram.com"),
+    BRUNCH("brunch.co.kr"),
+    LINKEDIN("linkedin.com"),
+    GITHUB("github.com"),
+    YOUTUBE("youtube.com"),
+    BEHANCE("behance.net"),
     OTHER("");
 
     private String domain;
