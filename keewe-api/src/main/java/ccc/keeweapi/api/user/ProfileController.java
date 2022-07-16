@@ -4,9 +4,15 @@ import ccc.keeweapi.config.security.UserPrincipal;
 import ccc.keeweapi.dto.user.*;
 import ccc.keeweapi.dto.ApiResponse;
 import ccc.keeweapi.service.user.ProfileService;
+import ccc.keeweapi.utils.SecurityUtil;
+import ccc.keewedomain.domain.common.Link;
+import ccc.keewedomain.domain.user.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/profiles")
@@ -44,8 +50,13 @@ public class ProfileController {
     }
 
     @PostMapping("/profile-links")
-    public ApiResponse<?> createProfileLinks(@RequestBody ProfileLinkCreateRequestDto requestDto) {
-        profileService.createProfileLinks(requestDto);
+    public ApiResponse<Void> createProfileLinks(@RequestBody ProfileLinkCreateRequestDto requestDto) {
+        User user = SecurityUtil.getUser();
+        List<Link> links = requestDto.getLinks().stream()
+                .map(linkDto -> Link.of(linkDto.getUrl(), linkDto.getType()))
+                .collect(Collectors.toList());
+
+        profileService.createProfileLinks(requestDto.getProfileId(), user.getId(), links);
         return ApiResponse.ok();
     }
 }

@@ -3,7 +3,6 @@ package ccc.keewedomain.domain.common;
 import ccc.keewecore.consts.KeeweRtnConsts;
 import ccc.keewecore.exception.KeeweException;
 import ccc.keewedomain.domain.common.enums.LinkType;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -26,7 +25,8 @@ public class Link {
     @Enumerated(EnumType.STRING)
     private LinkType type;
 
-    public static Link of(String url, LinkType type) {
+    public static Link of(String url, String typeStr) {
+        LinkType type = LinkType.valueOfOrElseThrow(typeStr);
         checkUrlTypeOrElseThrow(url, type);
         Link link = new Link();
         link.url = url;
@@ -38,15 +38,14 @@ public class Link {
     private static void checkUrlTypeOrElseThrow(String url, LinkType type) {
         URL urlObj;
         try {
+            url = url.replaceFirst("www\\.", "");
             urlObj = new URL(url);
         } catch (MalformedURLException e) {
-            log.error("[{}]는 유효하지 않은 URL입니다.", url);
-            throw new KeeweException(KeeweRtnConsts.ERR400);
+            throw new KeeweException(KeeweRtnConsts.ERR424);
         }
 
         if(!urlObj.getHost().equals(type.getDomain())) {
-            log.error("[{}]는 [{}]의 도메인이 아닙니다.", urlObj.getHost(), type);
-            throw new KeeweException(KeeweRtnConsts.ERR400);
+            throw new KeeweException(KeeweRtnConsts.ERR425);
         }
     }
 }

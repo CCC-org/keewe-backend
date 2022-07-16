@@ -102,7 +102,7 @@ public class Profile extends BaseTimeEntity {
         updateOrMaintainStatus(SOCIAL_LINK_NEEDED);
     }
 
-    public void createProfileLinks(List<ProfileLink> profileLinks) {
+    public void initProfileLinks(List<ProfileLink> profileLinks) {
         isCreatingOrElseThrow();
         this.profileLinks.addAll(profileLinks);
         updateOrMaintainStatus(ACTIVE);

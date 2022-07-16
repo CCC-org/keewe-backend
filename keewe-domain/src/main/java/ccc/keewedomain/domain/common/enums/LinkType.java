@@ -1,5 +1,7 @@
 package ccc.keewedomain.domain.common.enums;
 
+import ccc.keewecore.consts.KeeweRtnConsts;
+import ccc.keewecore.exception.KeeweException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -11,6 +13,13 @@ public enum LinkType {
     FACEBOOK("facebook.com"),
     OTHER("");
 
-
     private String domain;
+
+    public static LinkType valueOfOrElseThrow(String s) {
+        try {
+            return valueOf(s);
+        } catch (IllegalArgumentException ex) {
+            throw new KeeweException(KeeweRtnConsts.ERR423);
+        }
+    }
 }

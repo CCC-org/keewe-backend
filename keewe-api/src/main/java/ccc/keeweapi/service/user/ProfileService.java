@@ -1,16 +1,14 @@
 package ccc.keeweapi.service.user;
 
-import ccc.keeweapi.dto.user.*;
-
-import ccc.keeweapi.dto.user.*;
-import ccc.keewedomain.domain.common.enums.Activity;
-import ccc.keeweapi.utils.SecurityUtil;
+import ccc.keeweapi.dto.user.ActivitiesSearchResponseDto;
+import ccc.keeweapi.dto.user.LinkCreateRequestDto;
+import ccc.keeweapi.dto.user.LinkCreateResponseDto;
+import ccc.keeweapi.dto.user.NicknameCreateResponseDto;
 import ccc.keewedomain.domain.common.Link;
+import ccc.keewedomain.domain.common.enums.Activity;
 import ccc.keewedomain.domain.user.Profile;
 import ccc.keewedomain.domain.user.ProfileLink;
-import ccc.keewedomain.domain.user.User;
 import ccc.keewedomain.repository.user.ProfileRepository;
-import ccc.keewedomain.service.ProfileDomainService;
 import ccc.keewedomain.service.ProfileDomainService;
 import ccc.keewedomain.service.ProfileLinkDomainService;
 import lombok.RequiredArgsConstructor;
@@ -64,15 +62,13 @@ public class ProfileService {
     }
 
     @Transactional
-    public void createProfileLinks(ProfileLinkCreateRequestDto requestDto) {
-        User user = SecurityUtil.getUser();
-        Profile profile = profileDomainService.getAndVerifyOwnerOrElseThrow(requestDto.getProfileId(), user.getId());
-        List<ProfileLink> profileLinks = requestDto.getLinks().stream()
-                .map(linkDto -> Link.of(linkDto.getUrl(), linkDto.getType()))
+    public void createProfileLinks(Long profileId, Long userId, List<Link> links) {
+        Profile profile = profileDomainService.getAndVerifyOwnerOrElseThrow(profileId, userId);
+        List<ProfileLink> profileLinks = links.stream()
                 .map(link -> profileLinkDomainService.save(profile, link))
                 .collect(Collectors.toList());
 
-        profile.createProfileLinks(profileLinks);
+        profileDomainService.initProfileLinks(profileId, profileLinks);
     }
 
 

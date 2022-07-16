@@ -19,6 +19,9 @@ public enum KeeweRtnConsts {
     ERR420(KeeweRtnGrp.Validation, 420, "닉네임의 길이가 초과됐어요."),
     ERR421(KeeweRtnGrp.Validation, 421, "닉네임이 비어있어요."),
     ERR422(KeeweRtnGrp.Validation, 422, "프로필을 찾을 수 없어요."),
+    ERR423(KeeweRtnGrp.Validation, 423, "링크 타입이 일치하지 않아요."),
+    ERR424(KeeweRtnGrp.Validation, 424, "유효하지 않은 URL 입니다."),
+    ERR425(KeeweRtnGrp.Validation, 425, "도메인과 링크 타입이 일치하지 않습니다."),
 
     ERR501(KeeweRtnGrp.System, 501, "카카오 회원가입 중 내부 오류가 발생했어요.");
 

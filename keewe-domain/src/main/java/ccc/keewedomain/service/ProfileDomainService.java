@@ -4,10 +4,13 @@ import ccc.keewecore.consts.KeeweRtnConsts;
 import ccc.keewecore.exception.KeeweException;
 import ccc.keewecore.utils.StringLengthUtil;
 import ccc.keewedomain.domain.user.Profile;
+import ccc.keewedomain.domain.user.ProfileLink;
 import ccc.keewedomain.repository.user.ProfileRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -21,7 +24,7 @@ public class ProfileDomainService {
 
     public Profile getByIdOrElseThrow(Long id) {
         return profileRepository.findById(id).orElseThrow(() ->
-                new IllegalArgumentException("해당 프로필이 존재하지 않습니다.")
+                new KeeweException(KeeweRtnConsts.ERR422)
         );
     }
 
@@ -37,6 +40,11 @@ public class ProfileDomainService {
         Profile profile = getByIdOrElseThrow(id);
         profile.createNickname(nickname);
         return profile;
+    }
+
+    public void initProfileLinks(Long id, List<ProfileLink> profileLinks) {
+        Profile profile = getByIdOrElseThrow(id);
+        profile.initProfileLinks(profileLinks);
     }
 
     private String applyNicknameFormat(String nickname) {
