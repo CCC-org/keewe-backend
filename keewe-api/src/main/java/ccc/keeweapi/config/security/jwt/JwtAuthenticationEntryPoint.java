@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.time.LocalDateTime;
 import org.json.simple.JSONObject;
 
 @Component
@@ -30,8 +29,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
         log.info("Auth Exception {}", kex.getKeeweRtnConsts().name());
 
         JSONObject body = new JSONObject();
-        body.put("timestamp", LocalDateTime.now().toString());
-        body.put("status", kex.getKeeweRtnConsts().getCode());
+        body.put("code", kex.getKeeweRtnConsts().getCode());
         body.put("message", kex.getKeeweRtnConsts().getDescription());
 
         response.getWriter().print(body);

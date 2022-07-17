@@ -9,8 +9,9 @@ import ccc.keewedomain.repository.user.ProfileRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
+
+import static ccc.keewedomain.domain.user.enums.ProfileStatus.ACTIVE;
 
 @Service
 @RequiredArgsConstructor
@@ -47,6 +48,10 @@ public class ProfileDomainService {
         verifySocialLinkSize(socialLinks);
         Profile profile = getByIdOrElseThrow(id);
         profile.initSocialLinks(socialLinks);
+    }
+
+    public List<Profile> getIncompleteProfiles(Long userId) {
+        return profileRepository.findByUserIdAndProfileStatusNotAndDeletedFalse(userId, ACTIVE);
     }
 
     private void verifySocialLinkSize(List<SocialLink> socialLinks) {

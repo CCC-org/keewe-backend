@@ -8,7 +8,7 @@ import lombok.Data;
 @Data
 @Builder
 @AllArgsConstructor
-public class LinkCreateResponseDto {
+public class LinkCreateResponse {
     private String link;
     private ProfileStatus status;
 }

@@ -2,6 +2,7 @@ package ccc.keeweapi.config.security.jwt;
 
 import ccc.keeweapi.exception.KeeweAuthException;
 import ccc.keewecore.consts.KeeweRtnConsts;
+import ccc.keewecore.exception.KeeweException;
 import io.jsonwebtoken.ExpiredJwtException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -44,9 +45,10 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
             } else {
                 throw new KeeweAuthException(KeeweRtnConsts.ERR401);
             }
+        } catch (KeeweException ex) {
+            authenticationEntryPoint.commence(request, response, new KeeweAuthException(ex.getKeeweRtnConsts()));
         } catch (KeeweAuthException ex) {
             authenticationEntryPoint.commence(request, response, ex);
-
         } catch (ExpiredJwtException ex) {
             authenticationEntryPoint.commence(request, response, new KeeweAuthException(KeeweRtnConsts.ERR402));
         }

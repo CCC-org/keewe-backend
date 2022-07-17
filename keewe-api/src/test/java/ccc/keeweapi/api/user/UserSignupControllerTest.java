@@ -1,7 +1,7 @@
 package ccc.keeweapi.api.user;
 
 import ccc.keeweapi.document.utils.RestDocsTestSupport;
-import ccc.keeweapi.dto.user.UserSignUpDto;
+import ccc.keeweapi.dto.user.UserSignUpResponse;
 import ccc.keeweapi.service.user.ProfileService;
 import ccc.keeweapi.service.user.UserApiService;
 import ccc.keewedomain.service.ProfileDomainService;
@@ -34,7 +34,7 @@ public class UserSignupControllerTest extends RestDocsTestSupport {
     @DisplayName("카카오 회원가입/로그인")
     void kakao_signup() throws Exception {
         // given
-        UserSignUpDto userSignUpDto = new UserSignUpDto();
+        UserSignUpResponse userSignUpDto = new UserSignUpResponse();
         userSignUpDto.setUserId(1L);
         userSignUpDto.setAccessToken("eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJoYXZlYWx3YXlzYmVlbkBrYWthby5jb20iLCJyb2xlcyI6W10sImlhdCI6MTY1NzQzNjU2MywiZXhwIjoxNjU3Nzk2NTYzfQ.AJX7rGRXjmi4TopUBsX6zWVgMYgjN_uRYtF_Yb_80KE");
 
