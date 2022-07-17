@@ -9,6 +9,7 @@ import ccc.keeweapi.service.user.ProfileService;
 import ccc.keeweapi.utils.SecurityUtil;
 import ccc.keewedomain.domain.common.enums.Activity;
 import ccc.keewedomain.domain.common.enums.LinkType;
+import ccc.keewedomain.domain.user.Profile;
 import ccc.keewedomain.domain.user.User;
 import ccc.keewedomain.domain.user.enums.ProfileStatus;
 import ccc.keewedomain.domain.user.enums.UserStatus;
@@ -69,7 +70,7 @@ public class ProfileDocumentationTest extends RestDocsTestSupport {
                 .deleted(false)
                 .build();
 
-        NicknameCreateRequestDto requestDto = new NicknameCreateRequestDto();
+        NicknameCreateRequest requestDto = new NicknameCreateRequest();
         requestDto.setNickname(nickname);
         requestDto.setProfileId(profileId);
         String token = jwtUtils.createToken(email, new ArrayList<>());
@@ -78,8 +79,8 @@ public class ProfileDocumentationTest extends RestDocsTestSupport {
         when(userDetailsService.loadUserByUsername(any()))
                 .thenReturn(new UserPrincipal(user));
 
-        when(profileService.createNickname(any(), any(), any()))
-                .thenReturn(NicknameCreateResponseDto.of(nickname, ACTIVITIES_NEEDED));
+        when(profileService.createNickname(any()))
+                .thenReturn(NicknameCreateResponse.of(nickname, ACTIVITIES_NEEDED));
 
 
         mockMvc.perform(
@@ -121,14 +122,15 @@ public class ProfileDocumentationTest extends RestDocsTestSupport {
 
         User user = User.builder().build();
 
-        LinkCreateRequestDto requestDto = new LinkCreateRequestDto(profileId, link);
+        LinkCreateRequest requestDto = new LinkCreateRequest(profileId, link);
         String token = jwtUtils.createToken(email, new ArrayList<>());
 
         when(userDetailsService.loadUserByUsername(any()))
                 .thenReturn(new UserPrincipal(user));
 
         when(profileService.createLink(any(), any()))
-                .thenReturn(new LinkCreateResponseDto(link, SOCIAL_LINK_NEEDED));
+                .thenReturn(new LinkCreateResponse(link, SOCIAL_LINK_NEEDED));
+
 
         mockMvc.perform(
                         post("/api/v1/profiles/link")
@@ -167,12 +169,12 @@ public class ProfileDocumentationTest extends RestDocsTestSupport {
         List<Activity> activities = List.of(인디, 해외팝);
 
         User user = User.builder().build();
-        ActivitiesCreateRequestDto requestDto = new ActivitiesCreateRequestDto(user.getId(), activities);
+        ActivitiesCreateRequest requestDto = new ActivitiesCreateRequest(user.getId(), activities);
         when(userDetailsService.loadUserByUsername(any()))
                 .thenReturn(new UserPrincipal(user));
 
         when(profileService.createActivities(any(), any()))
-                .thenReturn(ActivitiesCreateResponseDto.of(activities, LINK_NEEDED));
+                .thenReturn(ActivitiesCreateResponse.of(activities, LINK_NEEDED));
 
         mockMvc.perform(
                         post("/api/v1/profiles/activities")
@@ -221,7 +223,7 @@ public class ProfileDocumentationTest extends RestDocsTestSupport {
                 .thenReturn(new UserPrincipal(user));
 
         when(profileService.searchActivities(any()))
-                .thenReturn(new ActivitiesSearchResponseDto(List.of(기타_음악)));
+                .thenReturn(new ActivitiesSearchResponse(List.of(기타_음악)));
 
         mockMvc.perform(
                         get("/api/v1/profiles/activities")
@@ -231,8 +233,8 @@ public class ProfileDocumentationTest extends RestDocsTestSupport {
                 .andDo(restDocs.document(
                         resource(
                                 ResourceSnippetParameters.builder()
-                                        .description("활동 분야 검색 API")
-                                        .summary("활동 분야 검색 api")
+                                        .description("Profile 온보딩 활동 분야 검색 API 입니다.")
+                                        .summary("활동 분야 검색 API 입니다.")
                                         .requestHeaders(
                                                 headerWithName("Authorization").description("유저의 JWT"))
                                         .requestParameters(
@@ -315,5 +317,38 @@ public class ProfileDocumentationTest extends RestDocsTestSupport {
                                         .tag("Profile")
                                         .build()
                         )));
+    }
+
+    @Test
+    @DisplayName("온보딩 미수행 프로필 조회 api")
+    void incomplete_profile_select() throws Exception {
+        when(userDetailsService.loadUserByUsername(any())).thenReturn(new UserPrincipal(User.builder().build()));
+        when(profileService.getIncompleteProfile()).thenReturn(IncompleteProfileResponse.getExistResult(Profile.builder()
+                        .id(1L)
+                        .profileStatus(ProfileStatus.NICKNAME_NEEDED)
+                        .build()));
+
+        mockMvc.perform(get("/api/v1/profiles/incomplete")
+                                .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtUtils.createToken("h0song@naver.com", List.of()))
+                ).andExpect(status().isOk())
+                .andDo(restDocs.document(
+                        resource(
+                                ResourceSnippetParameters.builder()
+                                        .description("Profile 온보딩 미수행 프로필 검색 API 입니다.")
+                                        .summary("온보딩 미수행 프로필 검색 API 입니다.")
+                                        .requestHeaders(
+                                                headerWithName("Authorization").description("유저의 JWT"))
+                                        .responseFields(
+                                                fieldWithPath("message").description("요청 결과 메세지"),
+                                                fieldWithPath("code").description("결과 코드"),
+                                                fieldWithPath("data.exist").description("미완성 프로필 존재 여부"),
+                                                fieldWithPath("data.profileId").description("미완성 프로필 ID"),
+                                                fieldWithPath("data.status").description("온보딩 수행해야 할 단계")
+                                                        .type("ENUM")
+                                                        .attributes(key("enumValues").value(List.of(ProfileStatus.values()))))
+                                        .tag("Profile")
+                                        .build()
+                        )));
+
     }
 }

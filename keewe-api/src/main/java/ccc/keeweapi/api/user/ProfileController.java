@@ -17,43 +17,41 @@ public class ProfileController {
     private final ProfileService profileService;
 
     @PostMapping("/link")
-    public ApiResponse<LinkCreateResponseDto> createLink(
-            @RequestBody LinkCreateRequestDto requestDto,
+    public ApiResponse<LinkCreateResponse> createLink(
+            @RequestBody LinkCreateRequest requestDto,
             @AuthenticationPrincipal UserPrincipal principal
     ) {
-        LinkCreateResponseDto responseDto = profileService.createLink(requestDto, principal.getUser().getId());
+        LinkCreateResponse responseDto = profileService.createLink(requestDto, principal.getUser().getId());
         return ApiResponse.ok(responseDto);
     }
 
     @PostMapping("/nickname")
-    public ApiResponse<NicknameCreateResponseDto> createNickname(
-            @RequestBody NicknameCreateRequestDto requestDto,
-            @AuthenticationPrincipal UserPrincipal principal) {
-        NicknameCreateResponseDto responseDto = profileService.createNickname(
-                requestDto.getProfileId(),
-                principal.getUser().getId(),
-                requestDto.getNickname());
-        return ApiResponse.ok(responseDto);
+    public ApiResponse<NicknameCreateResponse> createNickname(@RequestBody NicknameCreateRequest requestDto) {
+        return ApiResponse.ok(profileService.createNickname(requestDto));
     }
 
     @PostMapping("/activities")
-    public ApiResponse<ActivitiesCreateResponseDto> createActivities(
-            @RequestBody ActivitiesCreateRequestDto requestDto,
+    public ApiResponse<ActivitiesCreateResponse> createActivities(
+            @RequestBody ActivitiesCreateRequest requestDto,
             @AuthenticationPrincipal UserPrincipal principal
     ) {
-        ActivitiesCreateResponseDto responseDto = profileService.createActivities(requestDto, principal.getUser().getId());
+        ActivitiesCreateResponse responseDto = profileService.createActivities(requestDto, principal.getUser().getId());
         return ApiResponse.ok(responseDto);
     }
 
     @GetMapping("/activities")
-    public ApiResponse<ActivitiesSearchResponseDto> searchActivities(@RequestParam("keyword") String keyword) {
-        ActivitiesSearchResponseDto responseDto = profileService.searchActivities(keyword);
-        return ApiResponse.ok(responseDto);
+    public ApiResponse<ActivitiesSearchResponse> searchActivities(@RequestParam("keyword") String keyword) {
+        return ApiResponse.ok(profileService.searchActivities(keyword));
     }
 
     @PostMapping("/social-links")
     public ApiResponse<Void> createSocialLinks(@RequestBody SocialLinkCreateRequest request) {
         profileService.createSocialLinks(request);
         return ApiResponse.ok();
+    }
+
+    @GetMapping("/incomplete")
+    public ApiResponse<IncompleteProfileResponse> getIncompleteProfiles() {
+        return ApiResponse.ok(profileService.getIncompleteProfile());
     }
 }

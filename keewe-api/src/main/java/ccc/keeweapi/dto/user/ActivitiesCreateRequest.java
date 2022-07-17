@@ -10,7 +10,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ActivitiesCreateRequestDto {
+public class ActivitiesCreateRequest {
     private Long profileId;
     private List<Activity> activities;
 }
