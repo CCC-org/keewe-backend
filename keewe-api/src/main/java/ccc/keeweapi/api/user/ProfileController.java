@@ -17,11 +17,8 @@ public class ProfileController {
     private final ProfileService profileService;
 
     @PostMapping("/link")
-    public ApiResponse<LinkCreateResponse> createLink(
-            @RequestBody LinkCreateRequest requestDto,
-            @AuthenticationPrincipal UserPrincipal principal
-    ) {
-        LinkCreateResponse responseDto = profileService.createLink(requestDto, principal.getUser().getId());
+    public ApiResponse<LinkCreateResponse> createLink(@RequestBody LinkCreateRequest requestDto) {
+        LinkCreateResponse responseDto = profileService.createLink(requestDto);
         return ApiResponse.ok(responseDto);
     }
 
@@ -31,11 +28,8 @@ public class ProfileController {
     }
 
     @PostMapping("/activities")
-    public ApiResponse<ActivitiesCreateResponse> createActivities(
-            @RequestBody ActivitiesCreateRequest requestDto,
-            @AuthenticationPrincipal UserPrincipal principal
-    ) {
-        ActivitiesCreateResponse responseDto = profileService.createActivities(requestDto, principal.getUser().getId());
+    public ApiResponse<ActivitiesCreateResponse> createActivities(@RequestBody ActivitiesCreateRequest requestDto) {
+        ActivitiesCreateResponse responseDto = profileService.createActivities(requestDto);
         return ApiResponse.ok(responseDto);
     }
 

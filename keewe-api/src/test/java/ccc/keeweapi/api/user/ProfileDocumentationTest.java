@@ -128,7 +128,7 @@ public class ProfileDocumentationTest extends RestDocsTestSupport {
         when(userDetailsService.loadUserByUsername(any()))
                 .thenReturn(new UserPrincipal(user));
 
-        when(profileService.createLink(any(), any()))
+        when(profileService.createLink(any()))
                 .thenReturn(new LinkCreateResponse(link, SOCIAL_LINK_NEEDED));
 
 
@@ -173,7 +173,7 @@ public class ProfileDocumentationTest extends RestDocsTestSupport {
         when(userDetailsService.loadUserByUsername(any()))
                 .thenReturn(new UserPrincipal(user));
 
-        when(profileService.createActivities(any(), any()))
+        when(profileService.createActivities(any()))
                 .thenReturn(ActivitiesCreateResponse.of(activities, LINK_NEEDED));
 
         mockMvc.perform(

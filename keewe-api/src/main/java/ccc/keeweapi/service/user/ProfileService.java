@@ -26,28 +26,25 @@ public class ProfileService {
     private final ProfileDomainService profileDomainService;
 
     @Transactional
-    public LinkCreateResponse createLink(LinkCreateRequest createLinkDto, Long userId) {
-        String link = createLinkDto.getLink();
-        Profile profile = profileRepository.findByIdAndUserIdAndDeletedFalseOrElseThrow(createLinkDto.getProfileId(), userId);
+    public LinkCreateResponse createLink(LinkCreateRequest request) {
+        String link = request.getLink();
+        Profile profile = profileRepository.findByIdAndUserIdAndDeletedFalseOrElseThrow(request.getProfileId(), SecurityUtil.getUserId());
 
         checkDuplicateLinkOrElseThrows(link);
-
         profile.createLink(link);
 
         return LinkCreateResponse.builder()
-                .link(link)
+                .link(profile.getLink())
                 .status(profile.getProfileStatus())
                 .build();
     }
 
     @Transactional
-    public ActivitiesCreateResponse createActivities(ActivitiesCreateRequest activitiesCreateDto, Long userId) {
-        List<Activity> activities = activitiesCreateDto.getActivities();
-        Profile profile = profileRepository.findByIdAndUserIdAndDeletedFalseOrElseThrow(activitiesCreateDto.getProfileId(), userId);
+    public ActivitiesCreateResponse createActivities(ActivitiesCreateRequest request) {
+        Profile profile = profileDomainService.getAndVerifyOwnerOrElseThrow(request.getProfileId(), SecurityUtil.getUserId());
+        profile.createActivities(request.getActivities());
 
-        profile.createActivities(activities);
-
-        return ActivitiesCreateResponse.of(activities, profile.getProfileStatus());
+        return ActivitiesCreateResponse.of(profile.getActivities(), profile.getProfileStatus());
     }
 
     @Transactional

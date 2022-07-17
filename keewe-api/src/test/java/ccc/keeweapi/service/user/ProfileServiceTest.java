@@ -43,9 +43,8 @@ class ProfileServiceTest {
         Profile profile = Profile.init().user(user).build();
         profileRepository.save(profile);
         Long profileId = profile.getId();
-        Long userId = user.getId();
         // 정상적인 요청
-        profileService.createLink(new LinkCreateRequest(profileId, "link_my._"), userId);
+        profileService.createLink(new LinkCreateRequest(profileId, "link_my._"));
         Profile savedProfile = profileRepository.findById(profileId).get();
         assertThat(savedProfile.getId()).isEqualTo(profileId);
         System.out.println(savedProfile.getProfileStatus());
@@ -53,12 +52,12 @@ class ProfileServiceTest {
 
         // 중복 요청
         assertThrows(IllegalArgumentException.class, () ->
-                profileService.createLink(new LinkCreateRequest(profileId, "link_my._"), userId)
+                profileService.createLink(new LinkCreateRequest(profileId, "link_my._"))
         );
 
         // 이상한 패턴 요청
         assertThrows(IllegalArgumentException.class, () ->
-                profileService.createLink(new LinkCreateRequest(profileId, ".link"), userId)
+                profileService.createLink(new LinkCreateRequest(profileId, ".link"))
         );
     }
 
