@@ -1,13 +1,12 @@
 package ccc.keeweapi.service.user;
 
-import ccc.keeweapi.dto.user.ActivitiesSearchResponseDto;
-import ccc.keeweapi.dto.user.LinkCreateRequestDto;
-import ccc.keeweapi.dto.user.LinkCreateResponseDto;
-import ccc.keeweapi.dto.user.NicknameCreateResponseDto;
+import ccc.keeweapi.dto.user.*;
+import ccc.keeweapi.utils.SecurityUtil;
 import ccc.keewedomain.domain.common.Link;
 import ccc.keewedomain.domain.common.enums.Activity;
 import ccc.keewedomain.domain.user.Profile;
 import ccc.keewedomain.domain.user.SocialLink;
+import ccc.keewedomain.domain.user.User;
 import ccc.keewedomain.repository.user.ProfileRepository;
 import ccc.keewedomain.service.ProfileDomainService;
 import ccc.keewedomain.service.SocialLinkDomainService;
@@ -62,13 +61,15 @@ public class ProfileService {
     }
 
     @Transactional
-    public void createSocialLinks(Long profileId, Long userId, List<Link> links) {
-        Profile profile = profileDomainService.getAndVerifyOwnerOrElseThrow(profileId, userId);
-        List<SocialLink> socialLinks = links.stream()
-                .map(link -> socialLinkDomainService.save(profile, link))
+    public void createSocialLinks(SocialLinkCreateRequest request) {
+        List<Link> links = request.getLinks().stream()
+                .map(linkDto -> Link.of(linkDto.getUrl(), linkDto.getType()))
                 .collect(Collectors.toList());
+        User user = SecurityUtil.getUser();
 
-        profileDomainService.initSocialLinks(profileId, socialLinks);
+        Profile profile = profileDomainService.getAndVerifyOwnerOrElseThrow(request.getProfileId(), user.getId());
+        List<SocialLink> socialLinks = socialLinkDomainService.saveAll(profile, links);
+        profileDomainService.initSocialLinks(profile.getId(), socialLinks);
     }
 
 

@@ -6,7 +6,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class SocialLinkCreateRequestDto {
+public class SocialLinkCreateRequest {
     private Long profileId;
     private List<LinkDto> links;
 }

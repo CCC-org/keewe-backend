@@ -9,18 +9,14 @@ import ccc.keeweapi.service.user.ProfileService;
 import ccc.keeweapi.utils.SecurityUtil;
 import ccc.keewedomain.domain.common.enums.Activity;
 import ccc.keewedomain.domain.common.enums.LinkType;
-import ccc.keewedomain.domain.user.SocialLink;
 import ccc.keewedomain.domain.user.User;
 import ccc.keewedomain.domain.user.enums.ProfileStatus;
 import ccc.keewedomain.domain.user.enums.UserStatus;
-import ccc.keewedomain.repository.user.SocialLinkRepository;
 import ccc.keewedomain.service.ProfileDomainService;
 import ccc.keewedomain.service.SocialLinkDomainService;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -237,7 +233,7 @@ public class ProfileDocumentationTest extends RestDocsTestSupport {
         linkDtos.add(linkDto2);
 
 
-        SocialLinkCreateRequestDto requestDto = new SocialLinkCreateRequestDto();
+        SocialLinkCreateRequest requestDto = new SocialLinkCreateRequest();
         requestDto.setProfileId(profileId);
         requestDto.setLinks(linkDtos);
 

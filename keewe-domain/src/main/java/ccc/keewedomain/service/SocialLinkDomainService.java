@@ -7,6 +7,9 @@ import ccc.keewedomain.repository.user.SocialLinkRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class SocialLinkDomainService {
@@ -16,5 +19,12 @@ public class SocialLinkDomainService {
     public SocialLink save(Profile profile, Link link) {
         SocialLink socialLink = SocialLink.of(profile, link);
         return socialLinkRepository.save(socialLink);
+    }
+
+    public List<SocialLink> saveAll(Profile profile, List<Link> links) {
+        List<SocialLink> socialLinks = links.stream()
+                .map(link -> SocialLink.of(profile, link))
+                .collect(Collectors.toList());
+        return socialLinkRepository.saveAll(socialLinks);
     }
 }
