@@ -5,6 +5,7 @@ import ccc.keeweapi.dto.user.UserSignUpDto;
 import ccc.keeweapi.service.user.ProfileService;
 import ccc.keeweapi.service.user.UserApiService;
 import ccc.keewedomain.service.ProfileDomainService;
+import ccc.keewedomain.service.SocialLinkDomainService;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,6 +26,9 @@ public class UserSignupControllerTest extends RestDocsTestSupport {
 
     @MockBean
     private ProfileDomainService profileDomainService;
+
+    @MockBean
+    private SocialLinkDomainService socialLinkDomainService;
 
     @Test
     @DisplayName("카카오 회원가입/로그인")

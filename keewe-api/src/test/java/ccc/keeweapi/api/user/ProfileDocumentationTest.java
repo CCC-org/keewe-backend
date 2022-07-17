@@ -3,16 +3,22 @@ package ccc.keeweapi.api.user;
 import ccc.keeweapi.config.security.UserDetailService;
 import ccc.keeweapi.config.security.UserPrincipal;
 import ccc.keeweapi.document.utils.RestDocsTestSupport;
+import ccc.keeweapi.dto.common.LinkDto;
 import ccc.keeweapi.dto.user.*;
 import ccc.keeweapi.service.user.ProfileService;
+import ccc.keeweapi.utils.SecurityUtil;
 import ccc.keewedomain.domain.common.enums.Activity;
+import ccc.keewedomain.domain.common.enums.LinkType;
 import ccc.keewedomain.domain.user.User;
 import ccc.keewedomain.domain.user.enums.ProfileStatus;
 import ccc.keewedomain.domain.user.enums.UserStatus;
 import ccc.keewedomain.service.ProfileDomainService;
+import ccc.keewedomain.service.SocialLinkDomainService;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -23,6 +29,7 @@ import java.util.List;
 import static ccc.keewedomain.domain.common.enums.Activity.기타_음악;
 import static com.epages.restdocs.apispec.ResourceDocumentation.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
@@ -41,6 +48,10 @@ public class ProfileDocumentationTest extends RestDocsTestSupport {
 
     @MockBean
     private UserDetailService userDetailsService;
+
+    @MockBean
+    SocialLinkDomainService socialLinkDomainService;
+
 
     @Test
     @DisplayName("닉네임 생성 API")
@@ -190,5 +201,71 @@ public class ProfileDocumentationTest extends RestDocsTestSupport {
                                         .build()
                         )));
 
+    }
+
+    @Test
+    @DisplayName("소셜 링크 등록 API")
+    void create_social_links_test() throws Exception {
+        String email = "test@keewe.com";
+        Long profileId = 1L;
+        String token = jwtUtils.createToken(email, new ArrayList<>());
+
+        User user = User.builder()
+                .id(1L)
+                .email(email)
+                .status(UserStatus.ACTIVE)
+                .deleted(false)
+                .build();
+
+        when(userDetailsService.loadUserByUsername(any()))
+                .thenReturn(new UserPrincipal(user));
+
+        LinkDto linkDto1 = new LinkDto();
+        linkDto1.setUrl("https://www.youtube.com/hello");
+        linkDto1.setType("YOUTUBE");
+
+        LinkDto linkDto2 = new LinkDto();
+        linkDto2.setUrl("https://facebook.com/world");
+        linkDto2.setType("FACEBOOK");
+
+        List<LinkDto> linkDtos = new ArrayList<>();
+        linkDtos.add(linkDto1);
+        linkDtos.add(linkDto2);
+
+
+        SocialLinkCreateRequest requestDto = new SocialLinkCreateRequest();
+        requestDto.setProfileId(profileId);
+        requestDto.setLinks(linkDtos);
+
+        MockedStatic<SecurityUtil> socialLinkMockedStatic = Mockito.mockStatic(SecurityUtil.class);
+        socialLinkMockedStatic.when(SecurityUtil::getUser).thenReturn(user);
+
+        mockMvc.perform(
+                        post("/api/v1/profiles/social-links")
+                                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                                .content(objectMapper.writeValueAsString(requestDto))
+                                .contentType(MediaType.APPLICATION_JSON)
+                ).andExpect(status().isOk())
+                .andDo(restDocs.document(
+                        resource(
+                                ResourceSnippetParameters.builder()
+                                        .description("Profile 온보딩 소셜 링크 생성 API 입니다.")
+                                        .summary("소셜 링크 생성 API 입니다.")
+                                        .requestHeaders(
+                                                headerWithName("Authorization").description("유저의 JWT"))
+                                        .requestFields(
+                                                fieldWithPath("profileId").description("대상 프로필의 id"),
+                                                fieldWithPath("links[].url").description("등록할 주소"),
+                                                fieldWithPath("links[].type")
+                                                        .description("등록할 주소의 타입")
+                                                        .type("ENUM")
+                                                        .attributes(key("enumValues").value(List.of(LinkType.values()))))
+                                        .responseFields(
+                                                fieldWithPath("message").description("요청 결과 메세지"),
+                                                fieldWithPath("code").description("결과 코드"),
+                                                fieldWithPath("data").description("비어 있음"))
+                                        .tag("Profile")
+                                        .build()
+                        )));
     }
 }

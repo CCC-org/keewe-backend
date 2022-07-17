@@ -1,8 +1,5 @@
 package ccc.keewedomain.domain.user;
 
-import ccc.keewecore.consts.KeeweRtnConsts;
-import ccc.keewecore.exception.KeeweException;
-import ccc.keewecore.utils.StringLengthUtil;
 import ccc.keewedomain.domain.common.BaseTimeEntity;
 import ccc.keewedomain.domain.common.enums.Activity;
 import ccc.keewedomain.domain.user.enums.Privacy;
@@ -71,12 +68,13 @@ public class Profile extends BaseTimeEntity {
     private List<Buddy> followees; // 나를 팔로우하는 사람들
 
     @OneToMany(mappedBy = "profile", fetch = LAZY)
-    private List<ProfileLink> socialLinks;
+    private List<SocialLink> socialLinks;
 
     @Column(name = "deleted", nullable = false)
     private boolean deleted;
 
     public static final int NICKNAME_MAX_LENGTH = 10;
+    public static final int SOCIAL_LINKS_MAX_SIZE = 5;
 
     public static ProfileBuilder init() {
         return Profile.builder()
@@ -100,6 +98,12 @@ public class Profile extends BaseTimeEntity {
         isCreatingOrElseThrow();
         this.nickname = nickname;
         updateOrMaintainStatus(SOCIAL_LINK_NEEDED);
+    }
+
+    public void initSocialLinks(List<SocialLink> socialLinks) {
+        isCreatingOrElseThrow();
+        this.socialLinks.addAll(socialLinks);
+        updateOrMaintainStatus(ACTIVE);
     }
 
     public void connectWithUser(User user) {

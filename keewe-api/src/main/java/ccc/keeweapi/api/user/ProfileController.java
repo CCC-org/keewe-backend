@@ -1,8 +1,8 @@
 package ccc.keeweapi.api.user;
 
 import ccc.keeweapi.config.security.UserPrincipal;
-import ccc.keeweapi.dto.user.*;
 import ccc.keeweapi.dto.ApiResponse;
+import ccc.keeweapi.dto.user.*;
 import ccc.keeweapi.service.user.ProfileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -41,5 +41,11 @@ public class ProfileController {
     public ApiResponse<ActivitiesSearchResponseDto> searchActivities(@RequestParam("keyword") String keyword) {
         ActivitiesSearchResponseDto responseDto = profileService.searchActivities(keyword);
         return ApiResponse.ok(responseDto);
+    }
+
+    @PostMapping("/social-links")
+    public ApiResponse<Void> createSocialLinks(@RequestBody SocialLinkCreateRequest request) {
+        profileService.createSocialLinks(request);
+        return ApiResponse.ok();
     }
 }

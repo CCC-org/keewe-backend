@@ -1,12 +1,15 @@
 package ccc.keeweapi.service.user;
 
 import ccc.keeweapi.dto.user.*;
-
-import ccc.keeweapi.dto.user.*;
+import ccc.keeweapi.utils.SecurityUtil;
+import ccc.keewedomain.domain.common.Link;
 import ccc.keewedomain.domain.common.enums.Activity;
 import ccc.keewedomain.domain.user.Profile;
+import ccc.keewedomain.domain.user.SocialLink;
+import ccc.keewedomain.domain.user.User;
 import ccc.keewedomain.repository.user.ProfileRepository;
 import ccc.keewedomain.service.ProfileDomainService;
+import ccc.keewedomain.service.SocialLinkDomainService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +23,7 @@ import java.util.stream.Collectors;
 public class ProfileService {
 
     private final ProfileRepository profileRepository;
+    private final SocialLinkDomainService socialLinkDomainService;
     private final ProfileDomainService profileDomainService;
 
     @Transactional
@@ -54,6 +58,18 @@ public class ProfileService {
                 .collect(Collectors.toList());
 
         return new ActivitiesSearchResponseDto(result);
+    }
+
+    @Transactional
+    public void createSocialLinks(SocialLinkCreateRequest request) {
+        List<Link> links = request.getLinks().stream()
+                .map(linkDto -> Link.of(linkDto.getUrl(), linkDto.getType()))
+                .collect(Collectors.toList());
+        User user = SecurityUtil.getUser();
+
+        Profile profile = profileDomainService.getAndVerifyOwnerOrElseThrow(request.getProfileId(), user.getId());
+        List<SocialLink> socialLinks = socialLinkDomainService.saveAll(profile, links);
+        profileDomainService.initSocialLinks(profile.getId(), socialLinks);
     }
 
 
