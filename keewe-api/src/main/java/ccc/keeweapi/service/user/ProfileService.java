@@ -27,7 +27,7 @@ public class ProfileService {
     private final ProfileDomainService profileDomainService;
 
     @Transactional
-    public LinkCreateResponseDto createLink(LinkCreateRequestDto createLinkDto, Long userId) {
+    public LinkCreateResponse createLink(LinkCreateRequest createLinkDto, Long userId) {
         String link = createLinkDto.getLink();
         Profile profile = profileRepository.findByIdAndUserIdAndDeletedFalseOrElseThrow(createLinkDto.getProfileId(), userId);
 
@@ -35,21 +35,21 @@ public class ProfileService {
 
         profile.createLink(link);
 
-        return LinkCreateResponseDto.builder()
+        return LinkCreateResponse.builder()
                 .link(link)
                 .status(profile.getProfileStatus())
                 .build();
     }
 
     @Transactional
-    public NicknameCreateResponseDto createNickname(Long profileId, Long userId, String nickname) {
-        Profile profile = profileDomainService.getAndVerifyOwnerOrElseThrow(profileId, userId);
-        profileDomainService.createNickname(profile.getId(), nickname);
-        return NicknameCreateResponseDto.of(profile.getNickname(), profile.getProfileStatus());
+    public NicknameCreateResponse createNickname(NicknameCreateRequest request) {
+        Profile profile = profileDomainService.getAndVerifyOwnerOrElseThrow(request.getProfileId(), SecurityUtil.getUserId());
+        profileDomainService.createNickname(profile.getId(), request.getNickname());
+        return NicknameCreateResponse.of(profile.getNickname(), profile.getProfileStatus());
     }
 
     // TODO : 현재는 단순 텍스트 비교로 검색(contains). 나중에 NLP...?
-    public ActivitiesSearchResponseDto searchActivities(String keyword) {
+    public ActivitiesSearchResponse searchActivities(String keyword) {
         List<Activity> result = Arrays.stream(Activity.values())
                 .filter(activity -> {
                     String value = activity.toString().replace("_", " ");
@@ -57,7 +57,7 @@ public class ProfileService {
                 })
                 .collect(Collectors.toList());
 
-        return new ActivitiesSearchResponseDto(result);
+        return new ActivitiesSearchResponse(result);
     }
 
     @Transactional
@@ -65,11 +65,19 @@ public class ProfileService {
         List<Link> links = request.getLinks().stream()
                 .map(linkDto -> Link.of(linkDto.getUrl(), linkDto.getType()))
                 .collect(Collectors.toList());
-        User user = SecurityUtil.getUser();
 
-        Profile profile = profileDomainService.getAndVerifyOwnerOrElseThrow(request.getProfileId(), user.getId());
+        Profile profile = profileDomainService.getAndVerifyOwnerOrElseThrow(request.getProfileId(), SecurityUtil.getUserId());
         List<SocialLink> socialLinks = socialLinkDomainService.saveAll(profile, links);
         profileDomainService.initSocialLinks(profile.getId(), socialLinks);
+    }
+
+
+    @Transactional(readOnly = true)
+    public IncompleteProfileResponse getIncompleteProfile() {
+        return profileDomainService.getIncompleteProfiles(SecurityUtil.getUserId()).stream()
+                .map(IncompleteProfileResponse::getExistResult)
+                .findFirst()
+                .orElse(IncompleteProfileResponse.getNotExistResult());
     }
 
 

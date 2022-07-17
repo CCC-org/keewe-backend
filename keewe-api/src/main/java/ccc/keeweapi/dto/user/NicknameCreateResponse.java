@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor(staticName = "of")
-public class NicknameCreateResponseDto {
+public class NicknameCreateResponse {
     private String nickname;
     private ProfileStatus status;
 }
