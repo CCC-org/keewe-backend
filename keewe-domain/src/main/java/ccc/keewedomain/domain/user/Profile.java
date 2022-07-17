@@ -74,6 +74,7 @@ public class Profile extends BaseTimeEntity {
     private boolean deleted;
 
     public static final int NICKNAME_MAX_LENGTH = 10;
+    public static final int SOCIAL_LINKS_MAX_SIZE = 5;
 
     public static ProfileBuilder init() {
         return Profile.builder()

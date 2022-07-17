@@ -17,6 +17,7 @@ import java.util.List;
 @Slf4j
 public class ProfileDomainService {
     private final ProfileRepository profileRepository;
+    private final int SOCIAL_LINKS_SIZE = 5;
 
     public Long save(Profile profile) {
         return profileRepository.save(profile).getId();
@@ -43,8 +44,15 @@ public class ProfileDomainService {
     }
 
     public void initSocialLinks(Long id, List<SocialLink> socialLinks) {
+        verifySocialLinkSize(socialLinks);
         Profile profile = getByIdOrElseThrow(id);
         profile.initSocialLinks(socialLinks);
+    }
+
+    private void verifySocialLinkSize(List<SocialLink> socialLinks) {
+        if (socialLinks.size() > Profile.SOCIAL_LINKS_MAX_SIZE) {
+            throw new KeeweException(KeeweRtnConsts.ERR426);
+        }
     }
 
     private String applyNicknameFormat(String nickname) {

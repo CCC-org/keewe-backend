@@ -22,6 +22,7 @@ public enum KeeweRtnConsts {
     ERR423(KeeweRtnGrp.Validation, 423, "링크 타입이 일치하지 않아요."),
     ERR424(KeeweRtnGrp.Validation, 424, "유효하지 않은 URL 입니다."),
     ERR425(KeeweRtnGrp.Validation, 425, "도메인과 링크 타입이 일치하지 않습니다."),
+    ERR426(KeeweRtnGrp.Validation, 426, "소셜 링크의 개수가 초과됐어요."),
 
     ERR501(KeeweRtnGrp.System, 501, "카카오 회원가입 중 내부 오류가 발생했어요.");
 
