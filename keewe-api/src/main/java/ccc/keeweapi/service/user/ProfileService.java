@@ -42,6 +42,16 @@ public class ProfileService {
     }
 
     @Transactional
+    public ActivitiesCreateResponseDto createActivities(ActivitiesCreateRequestDto activitiesCreateDto, Long userId) {
+        List<Activity> activities = activitiesCreateDto.getActivities();
+        Profile profile = profileRepository.findByIdAndUserIdAndDeletedFalseOrElseThrow(activitiesCreateDto.getProfileId(), userId);
+
+        profile.createActivities(activities);
+
+        return ActivitiesCreateResponseDto.of(activities, profile.getProfileStatus());
+    }
+
+    @Transactional
     public NicknameCreateResponseDto createNickname(Long profileId, Long userId, String nickname) {
         Profile profile = profileDomainService.getAndVerifyOwnerOrElseThrow(profileId, userId);
         profileDomainService.createNickname(profile.getId(), nickname);

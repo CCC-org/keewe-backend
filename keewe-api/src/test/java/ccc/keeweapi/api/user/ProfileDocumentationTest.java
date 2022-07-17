@@ -26,10 +26,10 @@ import org.springframework.http.MediaType;
 import java.util.ArrayList;
 import java.util.List;
 
-import static ccc.keewedomain.domain.common.enums.Activity.기타_음악;
+import static ccc.keewedomain.domain.common.enums.Activity.*;
+import static ccc.keewedomain.domain.user.enums.ProfileStatus.*;
 import static com.epages.restdocs.apispec.ResourceDocumentation.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
@@ -79,16 +79,16 @@ public class ProfileDocumentationTest extends RestDocsTestSupport {
                 .thenReturn(new UserPrincipal(user));
 
         when(profileService.createNickname(any(), any(), any()))
-                .thenReturn(NicknameCreateResponseDto.of(nickname, ProfileStatus.SOCIAL_LINK_NEEDED));
+                .thenReturn(NicknameCreateResponseDto.of(nickname, ACTIVITIES_NEEDED));
 
 
         mockMvc.perform(
-                post("/api/v1/profiles/nickname")
-                        .with(user(new UserPrincipal(user)))
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                        .content(objectMapper.writeValueAsString(requestDto))
-                        .contentType(MediaType.APPLICATION_JSON)
-        ).andExpect(status().isOk())
+                        post("/api/v1/profiles/nickname")
+                                .with(user(new UserPrincipal(user)))
+                                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                                .content(objectMapper.writeValueAsString(requestDto))
+                                .contentType(MediaType.APPLICATION_JSON)
+                ).andExpect(status().isOk())
                 .andDo(restDocs.document(
                         resource(
                                 ResourceSnippetParameters.builder()
@@ -124,13 +124,11 @@ public class ProfileDocumentationTest extends RestDocsTestSupport {
         LinkCreateRequestDto requestDto = new LinkCreateRequestDto(profileId, link);
         String token = jwtUtils.createToken(email, new ArrayList<>());
 
-
         when(userDetailsService.loadUserByUsername(any()))
                 .thenReturn(new UserPrincipal(user));
 
         when(profileService.createLink(any(), any()))
-                .thenReturn(new LinkCreateResponseDto(link, ProfileStatus.ACTIVITIES_NEEDED));
-
+                .thenReturn(new LinkCreateResponseDto(link, SOCIAL_LINK_NEEDED));
 
         mockMvc.perform(
                         post("/api/v1/profiles/link")
@@ -159,7 +157,57 @@ public class ProfileDocumentationTest extends RestDocsTestSupport {
                                         .tag("Profile")
                                         .build()
                         )));
+    }
 
+    @Test
+    @DisplayName("활동 분야 등록 api")
+    void create_activities_test() throws Exception {
+        String email = "test@keewe.com";
+        String token = jwtUtils.createToken(email, new ArrayList<>());
+        List<Activity> activities = List.of(인디, 해외팝);
+
+        User user = User.builder().build();
+        ActivitiesCreateRequestDto requestDto = new ActivitiesCreateRequestDto(user.getId(), activities);
+        when(userDetailsService.loadUserByUsername(any()))
+                .thenReturn(new UserPrincipal(user));
+
+        when(profileService.createActivities(any(), any()))
+                .thenReturn(ActivitiesCreateResponseDto.of(activities, LINK_NEEDED));
+
+        mockMvc.perform(
+                        post("/api/v1/profiles/activities")
+                                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                                .content(objectMapper.writeValueAsString(requestDto))
+                                .contentType(MediaType.APPLICATION_JSON)
+                ).andExpect(status().isOk())
+                .andDo(restDocs.document(
+                        resource(
+                                ResourceSnippetParameters.builder()
+                                        .description("Profile 온보딩 활동 분야 생성 API 입니다.")
+                                        .summary("활동 분야 생성 API입니다.")
+                                        .requestHeaders(
+                                                headerWithName("Authorization").description("유저의 JWT"))
+                                        .requestFields(
+                                                fieldWithPath("activities")
+                                                        .description("생성할 활동 분야의 리스트")
+                                                        .type("array")
+                                                        .attributes(key("enumValues").value(List.of(Activity.values()))),
+                                                fieldWithPath("profileId").description("대상 프로필의 id"))
+                                        .responseFields(
+                                                fieldWithPath("message").description("요청 결과 메세지"),
+                                                fieldWithPath("code").description("결과 코드"),
+                                                fieldWithPath("data.activities")
+                                                        .description("활동 생성 결과")
+                                                        .type("array")
+                                                        .attributes(key("enumValues").value(List.of(Activity.values()))),
+                                                fieldWithPath("data.status")
+                                                        .description("요청 완료 후 해당 프로필의 상태")
+                                                        .type("ENUM")
+                                                        .attributes(key("enumValues").value(List.of(ProfileStatus.values())))
+                                        )
+                                        .tag("Profile")
+                                        .build()
+                        )));
     }
 
     @Test

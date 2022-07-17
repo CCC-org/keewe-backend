@@ -29,11 +29,19 @@ public class ProfileController {
     public ApiResponse<NicknameCreateResponseDto> createNickname(
             @RequestBody NicknameCreateRequestDto requestDto,
             @AuthenticationPrincipal UserPrincipal principal) {
-
         NicknameCreateResponseDto responseDto = profileService.createNickname(
                 requestDto.getProfileId(),
                 principal.getUser().getId(),
                 requestDto.getNickname());
+        return ApiResponse.ok(responseDto);
+    }
+
+    @PostMapping("/activities")
+    public ApiResponse<ActivitiesCreateResponseDto> createActivities(
+            @RequestBody ActivitiesCreateRequestDto requestDto,
+            @AuthenticationPrincipal UserPrincipal principal
+    ) {
+        ActivitiesCreateResponseDto responseDto = profileService.createActivities(requestDto, principal.getUser().getId());
         return ApiResponse.ok(responseDto);
     }
 
