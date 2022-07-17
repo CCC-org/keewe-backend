@@ -51,7 +51,7 @@ public class ProfileDomainService {
     }
 
     public List<Profile> getIncompleteProfiles(Long userId) {
-        return profileRepository.findByUserIdAndProfileStatusNot(userId, ACTIVE);
+        return profileRepository.findByUserIdAndProfileStatusNotAndDeletedFalse(userId, ACTIVE);
     }
 
     private void verifySocialLinkSize(List<SocialLink> socialLinks) {

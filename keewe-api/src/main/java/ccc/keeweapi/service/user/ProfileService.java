@@ -6,7 +6,6 @@ import ccc.keewedomain.domain.common.Link;
 import ccc.keewedomain.domain.common.enums.Activity;
 import ccc.keewedomain.domain.user.Profile;
 import ccc.keewedomain.domain.user.SocialLink;
-import ccc.keewedomain.domain.user.User;
 import ccc.keewedomain.repository.user.ProfileRepository;
 import ccc.keewedomain.service.ProfileDomainService;
 import ccc.keewedomain.service.SocialLinkDomainService;
