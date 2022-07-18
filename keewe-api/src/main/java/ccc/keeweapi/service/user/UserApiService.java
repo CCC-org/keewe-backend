@@ -1,7 +1,7 @@
 package ccc.keeweapi.service.user;
 
 import ccc.keeweapi.config.security.jwt.JwtUtils;
-import ccc.keeweapi.dto.user.UserSignUpDto;
+import ccc.keeweapi.dto.user.UserSignUpResponse;
 import ccc.keewedomain.domain.user.Profile;
 import ccc.keewedomain.domain.user.User;
 import ccc.keewedomain.service.ProfileDomainService;
@@ -27,13 +27,13 @@ public class UserApiService {
     private final JwtUtils jwtUtils;
 
     @Transactional
-    public UserSignUpDto signUpWithKakao(String code) {
+    public UserSignUpResponse signUpWithKakao(String code) {
         KakaoProfileResponse kakaoProfile = userDomainService.getKakaoProfile(code);
         KakaoAccount kakaoAccount = kakaoProfile.getKakaoAccount(); // 이미 Null이 아님을 보장받음
 
         Optional<User> userOps = userDomainService.getUserByEmail(kakaoAccount.getEmail());
         if(userOps.isPresent()) {
-            return UserSignUpDto.builder()
+            return UserSignUpResponse.builder()
                     .userId(userOps.get().getId())
                     .accessToken(jwtUtils.createToken(userOps.get().getEmail(), List.of()))
                     .build();
@@ -47,7 +47,7 @@ public class UserApiService {
         Long userId = userDomainService.save(user);
         profileDomainService.save(profile);
 
-        return UserSignUpDto.builder()
+        return UserSignUpResponse.builder()
                 .userId(userId)
                 .accessToken(jwtUtils.createToken(kakaoAccount.getEmail(), List.of()))
                 .build();

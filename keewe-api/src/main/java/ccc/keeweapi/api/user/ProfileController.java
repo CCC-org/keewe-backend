@@ -1,8 +1,8 @@
 package ccc.keeweapi.api.user;
 
 import ccc.keeweapi.config.security.UserPrincipal;
-import ccc.keeweapi.dto.user.*;
 import ccc.keeweapi.dto.ApiResponse;
+import ccc.keeweapi.dto.user.*;
 import ccc.keeweapi.service.user.ProfileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -17,26 +17,32 @@ public class ProfileController {
     private final ProfileService profileService;
 
     @PostMapping("/link")
-    public ApiResponse<LinkCreateResponseDto> createLink(
-            @RequestBody LinkCreateRequestDto requestDto,
+    public ApiResponse<LinkCreateResponse> createLink(
+            @RequestBody LinkCreateRequest requestDto,
             @AuthenticationPrincipal UserPrincipal principal
     ) {
-        LinkCreateResponseDto responseDto = profileService.createLink(requestDto, principal.getUser().getId());
+        LinkCreateResponse responseDto = profileService.createLink(requestDto, principal.getUser().getId());
         return ApiResponse.ok(responseDto);
     }
 
     @PostMapping("/nickname")
-    public ApiResponse<NicknameCreateResponseDto> createNickname(
-            @RequestBody NicknameCreateRequestDto requestDto,
-            @AuthenticationPrincipal UserPrincipal principal) {
-
-        NicknameCreateResponseDto responseDto = profileService.createNickname(requestDto, principal.getUser().getId());
-        return ApiResponse.ok(responseDto);
+    public ApiResponse<NicknameCreateResponse> createNickname(@RequestBody NicknameCreateRequest requestDto) {
+        return ApiResponse.ok(profileService.createNickname(requestDto));
     }
 
     @GetMapping("/activities")
-    public ApiResponse<ActivitiesSearchResponseDto> searchActivities(@RequestParam("keyword") String keyword) {
-        ActivitiesSearchResponseDto responseDto = profileService.searchActivities(keyword);
-        return ApiResponse.ok(responseDto);
+    public ApiResponse<ActivitiesSearchResponse> searchActivities(@RequestParam("keyword") String keyword) {
+        return ApiResponse.ok(profileService.searchActivities(keyword));
+    }
+
+    @PostMapping("/social-links")
+    public ApiResponse<Void> createSocialLinks(@RequestBody SocialLinkCreateRequest request) {
+        profileService.createSocialLinks(request);
+        return ApiResponse.ok();
+    }
+
+    @GetMapping("/incomplete")
+    public ApiResponse<IncompleteProfileResponse> getIncompleteProfiles() {
+        return ApiResponse.ok(profileService.getIncompleteProfile());
     }
 }

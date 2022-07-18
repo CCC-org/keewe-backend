@@ -1,7 +1,7 @@
 package ccc.keeweapi.service.user;
 
-import ccc.keeweapi.dto.user.ActivitiesSearchResponseDto;
-import ccc.keeweapi.dto.user.LinkCreateRequestDto;
+import ccc.keeweapi.dto.user.ActivitiesSearchResponse;
+import ccc.keeweapi.dto.user.LinkCreateRequest;
 import ccc.keewedomain.domain.common.enums.Activity;
 import ccc.keewedomain.domain.user.Profile;
 import ccc.keewedomain.domain.user.User;
@@ -45,7 +45,7 @@ class ProfileServiceTest {
         Long profileId = profile.getId();
         Long userId = user.getId();
         // 정상적인 요청
-        profileService.createLink(new LinkCreateRequestDto(profileId, "link_my._"), userId);
+        profileService.createLink(new LinkCreateRequest(profileId, "link_my._"), userId);
         Profile savedProfile = profileRepository.findById(profileId).get();
         assertThat(savedProfile.getId()).isEqualTo(profileId);
         System.out.println(savedProfile.getProfileStatus());
@@ -53,19 +53,19 @@ class ProfileServiceTest {
 
         // 중복 요청
         assertThrows(IllegalArgumentException.class, () ->
-                profileService.createLink(new LinkCreateRequestDto(profileId, "link_my._"), userId)
+                profileService.createLink(new LinkCreateRequest(profileId, "link_my._"), userId)
         );
 
         // 이상한 패턴 요청
         assertThrows(IllegalArgumentException.class, () ->
-                profileService.createLink(new LinkCreateRequestDto(profileId, ".link"), userId)
+                profileService.createLink(new LinkCreateRequest(profileId, ".link"), userId)
         );
     }
 
     @Test
     @DisplayName("활동 분야 검색 테스트")
     void test2() {
-        ActivitiesSearchResponseDto responseDto = profileService.searchActivities("인디");
+        ActivitiesSearchResponse responseDto = profileService.searchActivities("인디");
         List<Activity> activities = responseDto.getActivities();
         assertTrue(activities.contains(인디));
 
