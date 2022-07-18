@@ -58,7 +58,7 @@ public class ProfileService {
     public ActivitiesSearchResponse searchActivities(String keyword) {
         List<Activity> result = Arrays.stream(Activity.values())
                 .filter(activity -> {
-                    String value = activity.toString().replace("_", " ");
+                    String value = activity.getValue();
                     return value.contains(keyword) || keyword.contains(value);
                 })
                 .collect(Collectors.toList());

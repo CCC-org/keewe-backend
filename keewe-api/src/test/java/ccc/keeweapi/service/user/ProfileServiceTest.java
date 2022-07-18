@@ -16,8 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static ccc.keewedomain.domain.common.enums.Activity.인디;
-import static ccc.keewedomain.domain.common.enums.Activity.축구;
+import static ccc.keewedomain.domain.common.enums.Activity.*;
 import static ccc.keewedomain.domain.user.enums.ProfileStatus.LINK_NEEDED;
 import static ccc.keewedomain.domain.user.enums.UserStatus.ACTIVE;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -66,14 +65,19 @@ class ProfileServiceTest {
     void test2() {
         ActivitiesSearchResponse responseDto = profileService.searchActivities("인디");
         List<Activity> activities = responseDto.getActivities();
-        assertTrue(activities.contains(인디));
+        assertTrue(activities.contains(INDIE));
 
-        responseDto = profileService.searchActivities("축구");
+        responseDto = profileService.searchActivities("음악");
         activities = responseDto.getActivities();
-        assertTrue(activities.contains(축구));
+        assertTrue(activities.contains(OTHER_MUSIC));
 
-        responseDto = profileService.searchActivities("야구");
+        responseDto = profileService.searchActivities("스케이트보드");
         activities = responseDto.getActivities();
-        assertFalse(activities.contains(축구)); // NLP 적용되면 검색 되는게 맞는거 같기도...?
+        assertTrue(activities.contains(BOARD));
+
+        responseDto = profileService.searchActivities("불어");
+        activities = responseDto.getActivities();
+        assertFalse(activities.contains(OTHER_LANGUAGE)); // NLP 적용되면 바뀌어야 함...
+
     }
 }

@@ -166,7 +166,7 @@ public class ProfileDocumentationTest extends RestDocsTestSupport {
     void create_activities_test() throws Exception {
         String email = "test@keewe.com";
         String token = jwtUtils.createToken(email, new ArrayList<>());
-        List<Activity> activities = List.of(인디, 해외팝);
+        List<Activity> activities = List.of(INDIE, POP);
 
         User user = User.builder().build();
         ActivitiesCreateRequest requestDto = new ActivitiesCreateRequest(user.getId(), activities);
@@ -223,7 +223,7 @@ public class ProfileDocumentationTest extends RestDocsTestSupport {
                 .thenReturn(new UserPrincipal(user));
 
         when(profileService.searchActivities(any()))
-                .thenReturn(new ActivitiesSearchResponse(List.of(기타_음악)));
+                .thenReturn(new ActivitiesSearchResponse(List.of(OTHER_MUSIC)));
 
         mockMvc.perform(
                         get("/api/v1/profiles/activities")
