@@ -16,7 +16,8 @@ public enum KeeweRtnConsts {
     ERR411(KeeweRtnGrp.Validation, 411, "유저를 찾을 수 없어요."),
     ERR412(KeeweRtnGrp.Validation, 412, "유저가 이메일 제공에 동의를 하지 않았어요."),
 
-    ERR501(KeeweRtnGrp.System, 501, "카카오 회원가입 중 내부 오류가 발생했어요.");
+    ERR501(KeeweRtnGrp.System, 501, "카카오 회원가입 중 내부 오류가 발생했어요."),
+    ERR502(KeeweRtnGrp.System, 502, "네이버 회원가입 중 내부 오류가 발생했어요.");
 
     private KeeweRtnGrp grp;
     private int code;
