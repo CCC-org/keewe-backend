@@ -3,6 +3,7 @@ package ccc.keewedomain.service;
 import ccc.keewecore.consts.KeeweRtnConsts;
 import ccc.keewecore.exception.KeeweException;
 import ccc.keewedomain.domain.user.User;
+import ccc.keewedomain.dto.UserSignUpDto;
 import ccc.keewedomain.repository.user.UserRepository;
 import ccc.keeweinfra.dto.KakaoProfileResponse;
 import ccc.keeweinfra.dto.NaverProfileResponse;
@@ -44,6 +45,10 @@ public class UserDomainService {
 
     public Long save(User user) {
         return userRepository.save(user).getId();
+    }
+
+    public User save(UserSignUpDto userSignUpDto) {
+        return User.from(userSignUpDto);
     }
 
     public User getUserByEmailOrElseThrow(String email) {

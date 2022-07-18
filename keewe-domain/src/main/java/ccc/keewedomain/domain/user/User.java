@@ -2,6 +2,7 @@ package ccc.keewedomain.domain.user;
 
 import ccc.keewedomain.domain.common.BaseTimeEntity;
 import ccc.keewedomain.domain.user.enums.UserStatus;
+import ccc.keewedomain.dto.UserSignUpDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -50,5 +51,14 @@ public class User extends BaseTimeEntity {
 
     @Column(name = "deleted", nullable = false)
     private boolean deleted = false;
+
+    public static User from(UserSignUpDto userSignUpDto) {
+        User user = new User();
+        user.email = userSignUpDto.getEmail();
+        user.password = userSignUpDto.getPassword();
+        user.phoneNumber = userSignUpDto.getPhoneNumber();
+
+        return user;
+    }
 }
 
