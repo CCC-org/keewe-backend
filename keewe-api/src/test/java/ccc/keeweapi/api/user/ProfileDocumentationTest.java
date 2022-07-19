@@ -115,7 +115,7 @@ public class ProfileDocumentationTest extends ApiDocumentationTest {
         String token = "[유저의 JWT]";
 
         when(profileService.createLink(any()))
-                .thenReturn(new LinkCreateResponse(link, ProfileStatus.ACTIVITIES_NEEDED));
+                .thenReturn(LinkCreateResponse.of(link, ProfileStatus.ACTIVITIES_NEEDED));
 
         mockMvc.perform(
                         post("/api/v1/profiles/link")

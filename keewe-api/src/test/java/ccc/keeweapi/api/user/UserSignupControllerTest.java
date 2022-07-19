@@ -5,6 +5,7 @@ import ccc.keeweapi.document.utils.RestDocsTestSupport;
 import ccc.keeweapi.dto.user.UserSignUpResponse;
 import ccc.keeweapi.service.user.ProfileService;
 import ccc.keeweapi.service.user.UserApiService;
+import ccc.keewedomain.dto.UserSignUpDto;
 import ccc.keewedomain.service.ProfileDomainService;
 import ccc.keewedomain.service.SocialLinkDomainService;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
@@ -40,9 +41,11 @@ public class UserSignupControllerTest extends ApiDocumentationTest {
     @DisplayName("카카오 회원가입/로그인")
     void kakao_signup() throws Exception {
         // given
-        UserSignUpResponse userSignUpDto = new UserSignUpResponse();
-        userSignUpDto.setUserId(1L);
-        userSignUpDto.setAccessToken("eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJoYXZlYWx3YXlzYmVlbkBrYWthby5jb20iLCJyb2xlcyI6W10sImlhdCI6MTY1NzQzNjU2MywiZXhwIjoxNjU3Nzk2NTYzfQ.AJX7rGRXjmi4TopUBsX6zWVgMYgjN_uRYtF_Yb_80KE");
+        UserSignUpResponse userSignUpDto = UserSignUpResponse.of(
+                1L,
+                "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJoYXZlYWx3YXlzYmVlbkBrYWthby5jb20iLCJyb2xlcyI6W10sImlhdCI6MTY1NzQzNjU2MywiZXhwIjoxNjU3Nzk2NTYzfQ.AJX7rGRXjmi4TopUBsX6zWVgMYgjN_uRYtF_Yb_80KE"
+        );
+
 
         when(userApiService.signUpWithKakao(anyString())).thenReturn(userSignUpDto);
 
