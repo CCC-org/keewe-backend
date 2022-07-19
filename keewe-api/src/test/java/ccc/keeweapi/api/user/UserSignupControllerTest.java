@@ -62,7 +62,40 @@ public class UserSignupControllerTest extends ApiDocumentationTest {
                                         fieldWithPath("message").description("요청 결과 메세지"),
                                         fieldWithPath("code").description("결과 코드"),
                                         fieldWithPath("data.userId").description("생성된 유저 ID"),
-                                        fieldWithPath("data.accessToken").description("요청 완료 후 해당 프로필의 상태"))
+                                        fieldWithPath("data.accessToken").description("발급된 유저의 JWT"))
+                                .tag("SignUp")
+                                .build()
+                )));
+    }
+
+    @Test
+    @DisplayName("네이버 회원가입/로그인")
+    void naver_signup() throws Exception {
+        UserSignUpResponse userSignUpDto = UserSignUpResponse.of(
+                1L,
+                "[발급된 JWT]"
+        );
+
+        when(userApiService.signUpWithNaver(anyString())).thenReturn(userSignUpDto);
+
+        mockMvc.perform(
+                        get("/api/v1/user/naver")
+                                .param("code", "[네이버에서 받은 code]")
+                                .param("state", "[네이버에서 받은 state]")
+                ).andExpect(status().isOk())
+                .andDo(restDocs.document(resource(
+                        ResourceSnippetParameters.builder()
+                                .description("네이버 회원가입/로그인 API 입니다.")
+                                .summary("네이버 회원가입/로그인 API 입니다.")
+                                .requestParameters(
+                                        parameterWithName("code").description("인가 코드 (Authorization Code)"),
+                                        parameterWithName("state").description("CSRF 공격을 방지하기 위한 임의의 값")
+                                )
+                                .responseFields(
+                                        fieldWithPath("message").description("요청 결과 메세지"),
+                                        fieldWithPath("code").description("결과 코드"),
+                                        fieldWithPath("data.userId").description("생성된 유저 ID"),
+                                        fieldWithPath("data.accessToken").description("발급된 유저의 JWT"))
                                 .tag("SignUp")
                                 .build()
                 )));
