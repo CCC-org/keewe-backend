@@ -1,6 +1,7 @@
 package ccc.keeweapi.service.user;
 
 import ccc.keeweapi.config.security.jwt.JwtUtils;
+import ccc.keeweapi.dto.user.UserAssembler;
 import ccc.keeweapi.dto.user.UserSignUpResponse;
 import ccc.keewedomain.domain.user.Profile;
 import ccc.keewedomain.domain.user.User;
@@ -24,6 +25,7 @@ import java.util.Optional;
 public class UserApiService {
     private final UserDomainService userDomainService;
     private final ProfileDomainService profileDomainService;
+    private final UserAssembler userAssembler;
     private final JwtUtils jwtUtils;
 
     @Transactional
@@ -33,18 +35,12 @@ public class UserApiService {
 
         Optional<User> userOps = userDomainService.getUserByEmail(kakaoAccount.getEmail());
         if(userOps.isPresent()) {
-            return UserSignUpResponse.builder()
-                    .userId(userOps.get().getId())
-                    .accessToken(jwtUtils.createToken(userOps.get().getEmail(), List.of()))
-                    .build();
+            return userAssembler.toUserSignUpResponse(userOps.get(), getToken(userOps.get()));
         }
 
         User user = signUpWithOauth(kakaoAccount.getEmail());
 
-        return UserSignUpResponse.builder()
-                .userId(user.getId())
-                .accessToken(jwtUtils.createToken(kakaoAccount.getEmail(), List.of()))
-                .build();
+        return userAssembler.toUserSignUpResponse(user, getToken(user));
     }
 
     @Transactional
@@ -53,18 +49,12 @@ public class UserApiService {
         Optional<User> userOps = userDomainService.getUserByEmail(naverAccount.getEmail());
 
         if(userOps.isPresent()) {
-            return UserSignUpResponse.builder()
-                    .userId(userOps.get().getId())
-                    .accessToken(jwtUtils.createToken(userOps.get().getEmail(), List.of()))
-                    .build();
+            return userAssembler.toUserSignUpResponse(userOps.get(), getToken(userOps.get()));
         }
 
         User user = signUpWithOauth(naverAccount.getEmail());
 
-        return UserSignUpResponse.builder()
-                .userId(user.getId())
-                .accessToken(jwtUtils.createToken(naverAccount.getEmail(), List.of()))
-                .build();
+        return userAssembler.toUserSignUpResponse(user, getToken(user));
     }
 
     private User signUpWithOauth(String email) {
@@ -72,5 +62,9 @@ public class UserApiService {
         profileDomainService.createProfile(user);
 
         return user;
+    }
+
+    private String getToken(User user) {
+        return jwtUtils.createToken(user.getEmail(), List.of());
     }
 }
