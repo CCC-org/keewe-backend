@@ -24,6 +24,6 @@ public class NaverAuthController {
 
     @GetMapping
     public void redirect(HttpServletResponse response) throws IOException {
-        response.sendRedirect(naverUrl + "/oauth2.0/authorize" + "?response_type=code&client_id=" + clientId + "&redirect_uri=" + redirectUrl + "&state=STATE_STRING");
+        response.sendRedirect(naverUrl + "/oauth2.0/authorize?response_type=code&client_id=" + clientId + "&redirect_uri=" + redirectUrl + "&state=STATE_STRING");
     }
 }

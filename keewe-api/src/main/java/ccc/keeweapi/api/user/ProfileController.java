@@ -17,10 +17,7 @@ public class ProfileController {
     private final ProfileService profileService;
 
     @PostMapping("/link")
-    public ApiResponse<LinkCreateResponse> createLink(
-            @RequestBody LinkCreateRequest requestDto
-//            @AuthenticationPrincipal UserPrincipal principal
-    ) {
+    public ApiResponse<LinkCreateResponse> createLink(@RequestBody LinkCreateRequest requestDto) {
         LinkCreateResponse responseDto = profileService.createLink(requestDto);
         return ApiResponse.ok(responseDto);
     }

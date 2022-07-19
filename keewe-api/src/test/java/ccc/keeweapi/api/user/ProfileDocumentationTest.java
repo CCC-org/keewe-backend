@@ -151,7 +151,6 @@ public class ProfileDocumentationTest extends ApiDocumentationTest {
     @Test
     @DisplayName("활동 분야 검색 api")
     void search_activities_test() throws Exception {
-        String email = "test@keewe.com";
         String token = "[유저의 JWT]";
 
         when(profileService.searchActivities(any()))
@@ -188,21 +187,13 @@ public class ProfileDocumentationTest extends ApiDocumentationTest {
     @Test
     @DisplayName("소셜 링크 등록 API")
     void create_social_links_test() throws Exception {
-        String email = "test@keewe.com";
         Long profileId = 1L;
-        String token = "유저의 JWT";
+        String token = "[유저의 JWT]";
 
-        LinkDto linkDto1 = new LinkDto();
-        linkDto1.setUrl("https://www.youtube.com/hello");
-        linkDto1.setType("YOUTUBE");
+        LinkDto linkDto1 = LinkDto.of("https://www.youtube.com/hello", "YOUTUBE");
+        LinkDto linkDto2 = LinkDto.of("https://facebook.com/world", "FACEBOOK");
 
-        LinkDto linkDto2 = new LinkDto();
-        linkDto2.setUrl("https://facebook.com/world");
-        linkDto2.setType("FACEBOOK");
-
-        List<LinkDto> linkDtos = new ArrayList<>();
-        linkDtos.add(linkDto1);
-        linkDtos.add(linkDto2);
+        List<LinkDto> linkDtos = List.of(linkDto1, linkDto2);
 
 
         SocialLinkCreateRequest requestDto = new SocialLinkCreateRequest();
