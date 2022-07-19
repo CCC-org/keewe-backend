@@ -26,7 +26,8 @@ public class ProfileService {
     private final ProfileDomainService profileDomainService;
 
     @Transactional
-    public LinkCreateResponse createLink(LinkCreateRequest createLinkDto, Long userId) {
+    public LinkCreateResponse createLink(LinkCreateRequest createLinkDto) {
+        Long userId = SecurityUtil.getUserId();
         String link = createLinkDto.getLink();
         Profile profile = profileRepository.findByIdAndUserIdAndDeletedFalseOrElseThrow(createLinkDto.getProfileId(), userId);
 

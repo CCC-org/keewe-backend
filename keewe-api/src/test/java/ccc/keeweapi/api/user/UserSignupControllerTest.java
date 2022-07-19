@@ -1,5 +1,6 @@
 package ccc.keeweapi.api.user;
 
+import ccc.keeweapi.document.utils.ApiDocumentationTest;
 import ccc.keeweapi.document.utils.RestDocsTestSupport;
 import ccc.keeweapi.dto.user.UserSignUpResponse;
 import ccc.keeweapi.service.user.ProfileService;
@@ -7,9 +8,14 @@ import ccc.keeweapi.service.user.UserApiService;
 import ccc.keewedomain.service.ProfileDomainService;
 import ccc.keewedomain.service.SocialLinkDomainService;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.restdocs.RestDocumentationContextProvider;
+
 import static com.epages.restdocs.apispec.ResourceDocumentation.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -17,18 +23,18 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWit
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 
-public class UserSignupControllerTest extends RestDocsTestSupport {
-    @MockBean
-    private ProfileService profileService;
+public class UserSignupControllerTest extends ApiDocumentationTest {
 
-    @MockBean
+    @InjectMocks
+    private UserController userController;
+
+    @Mock
     private UserApiService userApiService;
 
-    @MockBean
-    private ProfileDomainService profileDomainService;
-
-    @MockBean
-    private SocialLinkDomainService socialLinkDomainService;
+    @BeforeEach
+    void setup(RestDocumentationContextProvider provider) {
+        super.setup(userController, provider);
+    }
 
     @Test
     @DisplayName("카카오 회원가입/로그인")

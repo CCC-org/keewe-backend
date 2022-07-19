@@ -27,7 +27,7 @@ public class ApiDocumentationTest {
     @Spy
     protected ObjectMapper objectMapper;
 
-    static RestDocumentationResultHandler restDocs;
+    protected static RestDocumentationResultHandler restDocs;
 
     @BeforeAll
     static void restDocSetup() {
