@@ -24,7 +24,7 @@ public class UserController {
 
     @GetMapping("/naver")
     public ApiResponse<?> signUpWithNaver(@RequestParam String code, @RequestParam String state) {
-        log.info("[Kakao Signup] code {}, statue {}", code, state);
+        log.info("[Naver Signup] code {}, statue {}", code, state);
         return ApiResponse.ok(userService.signUpWithNaver(code));
     }
 }
