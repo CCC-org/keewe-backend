@@ -48,7 +48,7 @@ public class UserDomainService {
     }
 
     public User save(UserSignUpDto userSignUpDto) {
-        return User.from(userSignUpDto);
+        return userRepository.save(User.from(userSignUpDto));
     }
 
     public User getUserByEmailOrElseThrow(String email) {

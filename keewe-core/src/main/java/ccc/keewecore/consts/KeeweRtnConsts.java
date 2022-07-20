@@ -26,7 +26,8 @@ public enum KeeweRtnConsts {
     ERR426(KeeweRtnGrp.Validation, 426, "소셜 링크의 개수가 초과됐어요."),
 
     ERR501(KeeweRtnGrp.System, 501, "카카오 회원가입 중 내부 오류가 발생했어요."),
-    ERR502(KeeweRtnGrp.System, 502, "네이버 회원가입 중 내부 오류가 발생했어요.");
+    ERR502(KeeweRtnGrp.System, 502, "네이버 회원가입 중 내부 오류가 발생했어요."),
+    ERR503(KeeweRtnGrp.System, 503, "네이버 회원가입 중 state가 일치하지 않아요");
 
 
     private KeeweRtnGrp grp;
