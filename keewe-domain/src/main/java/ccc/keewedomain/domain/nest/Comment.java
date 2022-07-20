@@ -4,6 +4,7 @@ import ccc.keewedomain.domain.user.Profile;
 
 import javax.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static javax.persistence.FetchType.LAZY;
@@ -16,19 +17,20 @@ public class Comment {
     private Long id;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "parent_comment_id")
+    @JoinColumn(name = "parent_comment_id", nullable = true)
     private Comment parent;
 
     @OneToMany(mappedBy = "parent", fetch = LAZY)
-    private List<Comment> replies;
+    private List<Comment> replies = new ArrayList<>();
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "post_id")
+    @JoinColumn(name = "post_id", nullable = false)
     private Post post;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "writer_id")
+    @JoinColumn(name = "writer_id", nullable = false)
     private Profile writer;
 
+    @Column(name = "content", nullable = false)
     private String content;
 }

@@ -12,11 +12,11 @@ import static javax.persistence.FetchType.LAZY;
 public class PostLike extends BaseTimeEntity {
     @Id
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "profile_id")
+    @JoinColumn(name = "profile_id", nullable = false)
     private Profile profile;
 
     @Id
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "post_id")
+    @JoinColumn(name = "post_id", nullable = false)
     private Post post;
 }

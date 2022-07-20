@@ -3,6 +3,7 @@ package ccc.keewedomain.domain.nest;
 import ccc.keewedomain.domain.nest.enums.PostType;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -16,18 +17,20 @@ public abstract class Post {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "nest_id")
+    @JoinColumn(name = "nest_id", nullable = false)
     private Nest nest;
 
-    private Long likeCount;
+    @Column(name = "likeCount")
+    private Long likeCount = 0L;
 
+    @Column(name = "content", nullable = false)
     private String content;
 
     @OneToMany(mappedBy = "post")
-    private List<PostLike> likes;
+    private List<PostLike> likes = new ArrayList<>();
 
     @OneToMany(mappedBy = "post")
-    private List<Comment> comments;
+    private List<Comment> comments = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
     @Column(name = "post_type", insertable = false, updatable = false)
