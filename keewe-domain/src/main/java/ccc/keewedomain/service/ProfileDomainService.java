@@ -5,6 +5,7 @@ import ccc.keewecore.exception.KeeweException;
 import ccc.keewecore.utils.StringLengthUtil;
 import ccc.keewedomain.domain.user.Profile;
 import ccc.keewedomain.domain.user.SocialLink;
+import ccc.keewedomain.domain.user.User;
 import ccc.keewedomain.repository.user.ProfileRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +23,10 @@ public class ProfileDomainService {
 
     public Long save(Profile profile) {
         return profileRepository.save(profile).getId();
+    }
+
+    public Profile createProfile(User user) {
+        return profileRepository.save(Profile.of(user));
     }
 
     public Profile getByIdOrElseThrow(Long id) {

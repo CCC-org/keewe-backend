@@ -6,8 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 
 @Data
-@Builder
-@AllArgsConstructor
+@AllArgsConstructor(staticName = "of")
 public class LinkCreateResponse {
     private String link;
     private ProfileStatus status;

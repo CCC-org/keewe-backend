@@ -6,9 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
+@AllArgsConstructor(staticName = "of")
 public class UserSignUpResponse {
     private Long userId;
     private String accessToken;

@@ -1,12 +1,15 @@
 package ccc.keeweapi.service.user;
 
 import ccc.keeweapi.config.security.jwt.JwtUtils;
+import ccc.keeweapi.dto.user.UserAssembler;
 import ccc.keeweapi.dto.user.UserSignUpResponse;
 import ccc.keewedomain.domain.user.Profile;
 import ccc.keewedomain.domain.user.User;
+import ccc.keewedomain.dto.UserSignUpDto;
 import ccc.keewedomain.service.ProfileDomainService;
 import ccc.keewedomain.service.UserDomainService;
 import ccc.keeweinfra.dto.KakaoProfileResponse;
+import ccc.keeweinfra.vo.Naver.NaverAccount;
 import ccc.keeweinfra.vo.kakao.KakaoAccount;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,6 +25,7 @@ import java.util.Optional;
 public class UserApiService {
     private final UserDomainService userDomainService;
     private final ProfileDomainService profileDomainService;
+    private final UserAssembler userAssembler;
     private final JwtUtils jwtUtils;
 
     @Transactional
@@ -31,23 +35,36 @@ public class UserApiService {
 
         Optional<User> userOps = userDomainService.getUserByEmail(kakaoAccount.getEmail());
         if(userOps.isPresent()) {
-            return UserSignUpResponse.builder()
-                    .userId(userOps.get().getId())
-                    .accessToken(jwtUtils.createToken(userOps.get().getEmail(), List.of()))
-                    .build();
+            return userAssembler.toUserSignUpResponse(userOps.get(), getToken(userOps.get()));
         }
 
-        User user = User.builder().email(kakaoAccount.getEmail()).profiles(new ArrayList<>()).build();
-        Profile profile = Profile.init().build();
+        User user = signUpWithOauth(kakaoAccount.getEmail());
 
-        profile.connectWithUser(user);
+        return userAssembler.toUserSignUpResponse(user, getToken(user));
+    }
 
-        Long userId = userDomainService.save(user);
-        profileDomainService.save(profile);
+    @Transactional
+    public UserSignUpResponse signUpWithNaver(String code) {
+        NaverAccount naverAccount = userDomainService.getNaverProfile(code);
+        Optional<User> userOps = userDomainService.getUserByEmail(naverAccount.getEmail());
 
-        return UserSignUpResponse.builder()
-                .userId(userId)
-                .accessToken(jwtUtils.createToken(kakaoAccount.getEmail(), List.of()))
-                .build();
+        if(userOps.isPresent()) {
+            return userAssembler.toUserSignUpResponse(userOps.get(), getToken(userOps.get()));
+        }
+
+        User user = signUpWithOauth(naverAccount.getEmail());
+
+        return userAssembler.toUserSignUpResponse(user, getToken(user));
+    }
+
+    private User signUpWithOauth(String email) {
+        User user = userDomainService.save(UserSignUpDto.of(email, null, null));
+        profileDomainService.createProfile(user);
+
+        return user;
+    }
+
+    private String getToken(User user) {
+        return jwtUtils.createToken(user.getEmail(), List.of());
     }
 }
