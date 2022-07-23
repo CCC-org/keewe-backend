@@ -5,8 +5,10 @@ import ccc.keeweapi.dto.user.LinkCreateRequest;
 import ccc.keeweapi.security.WithKeeweUser;
 import ccc.keeweapi.utils.SecurityUtil;
 import ccc.keewedomain.domain.common.enums.Activity;
+import ccc.keewedomain.domain.nest.Nest;
 import ccc.keewedomain.domain.user.Profile;
 import ccc.keewedomain.domain.user.User;
+import ccc.keewedomain.repository.nest.NestRepository;
 import ccc.keewedomain.repository.user.ProfileRepository;
 import ccc.keewedomain.repository.user.UserRepository;
 import org.junit.jupiter.api.Disabled;
@@ -36,6 +38,8 @@ class ProfileServiceTest {
     ProfileRepository profileRepository;
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    NestRepository nestRepository;
 
     @Test
     @DisplayName("링크 생성 테스트")
@@ -46,10 +50,14 @@ class ProfileServiceTest {
         userRepository.save(user);
         System.out.println("user = " + user.getId());
         Profile profile = Profile.init().user(user).build();
+
+        Nest nest = new Nest();
+        nestRepository.save(nest);
+
+        profile.createNest(nest);
         profileRepository.save(profile);
 
         Long profileId = profile.getId();
-        Long userId = user.getId();
 
         // 정상적인 요청
         profileService.createLink(new LinkCreateRequest(profileId, "link_my._"));
