@@ -50,7 +50,7 @@ public class UserSignupControllerTest extends ApiDocumentationTest {
         );
 
 
-        when(userApiService.signUpWithKakao(anyString())).thenReturn(userSignUpDto);
+        when(userApiService.signupWithOauth(anyString(), anyString())).thenReturn(userSignUpDto);
 
         mockMvc.perform(
                         get("/api/v1/user/kakao")
@@ -85,7 +85,7 @@ public class UserSignupControllerTest extends ApiDocumentationTest {
         ReflectionTestUtils.setField(userController, "naverState", naverState);
         session.setAttribute(naverState, state);
 
-        when(userApiService.signUpWithNaver(anyString())).thenReturn(userSignUpDto);
+        when(userApiService.signupWithOauth(anyString(), anyString())).thenReturn(userSignUpDto);
 
         mockMvc.perform(
                         get("/api/v1/user/naver")

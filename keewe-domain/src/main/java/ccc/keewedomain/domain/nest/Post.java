@@ -2,6 +2,9 @@ package ccc.keewedomain.domain.nest;
 
 import ccc.keewedomain.domain.common.BaseTimeEntity;
 import ccc.keewedomain.domain.nest.enums.PostType;
+import ccc.keewedomain.domain.user.Profile;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -13,7 +16,9 @@ import static javax.persistence.FetchType.LAZY;
 @Table(name = "post")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "post_type")
-public abstract class Post extends BaseTimeEntity {
+@NoArgsConstructor
+@Getter
+public class Post extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,10 +41,20 @@ public abstract class Post extends BaseTimeEntity {
     @OneToMany(mappedBy = "post", fetch = LAZY)
     private List<Comment> comments = new ArrayList<>();
 
+    @ManyToOne(fetch = LAZY)
+    private Profile writer;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "post_type", insertable = false, updatable = false)
     private PostType postType;
 
     @Column(name = "deleted", nullable = false)
     private boolean deleted = false;
+
+    protected Post(Nest nest, Profile writer, String content) {
+        this.nest = nest;
+        this.writer = writer;
+        this.content = content;
+        nest.getPosts().add(this);
+    }
 }

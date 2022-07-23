@@ -26,4 +26,10 @@ public class Candidate extends BaseTimeEntity {
     @JoinColumn(name = "vote_post_id", nullable = false)
     private VotePost votePost;
 
+    public static Candidate from(String contents, VotePost votePost) {
+        Candidate candidate = new Candidate();
+        candidate.contents = contents;
+        candidate.votePost = votePost;
+        return candidate;
+    }
 }

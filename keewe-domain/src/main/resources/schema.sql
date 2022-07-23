@@ -30,6 +30,7 @@ CREATE TABLE IF NOT EXISTS `profile`
     link                VARCHAR(255)    UNIQUE,
     privacy             VARCHAR(20)     NOT NULL,
     profile_photo_id    BIGINT(20),
+    nest_id             BIGINT          NOT NULL,
     profile_status      VARCHAR(30)     NOT NULL,
     deleted             BIT             NOT NULL,
     created_at          DATETIME(6)     NOT NULL,
@@ -92,6 +93,7 @@ CREATE TABLE IF NOT EXISTS `post`
 (
     post_id     BIGINT(20)      NOT NULL    AUTO_INCREMENT,
     nest_id     BIGINT(20)      NOT NULL,
+    writer_id   BIGINT          NOT NULL,
     like_count  BIGINT          NOT NULL,
     content     VARCHAR(140)    NOT NULL,
     post_type   VARCHAR(20)     NOT NULL,
@@ -100,7 +102,8 @@ CREATE TABLE IF NOT EXISTS `post`
     updated_at  DATETIME(6)     NOT NULL,
 
     PRIMARY KEY (post_id),
-    FOREIGN KEY (nest_id) REFERENCES `nest`(nest_id)
+    FOREIGN KEY (nest_id) REFERENCES `nest`(nest_id),
+    FOREIGN KEY (writer_id) REFERENCES `profile`(profile_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS `post_like`
@@ -166,3 +169,5 @@ CREATE TABLE IF NOT EXISTS `choice`
     FOREIGN KEY (candidate_id) REFERENCES `candidate`(candidate_id),
     FOREIGN KEY (profile_id) REFERENCES `profile`(profile_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+ALTER TABLE `profile` ADD FOREIGN KEY (nest_id) REFERENCES nest(nest_id);
