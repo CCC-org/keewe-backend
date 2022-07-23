@@ -2,6 +2,7 @@ package ccc.keewedomain.domain.nest;
 
 import ccc.keewedomain.domain.common.BaseTimeEntity;
 import ccc.keewedomain.domain.user.Profile;
+import lombok.Getter;
 
 import javax.persistence.*;
 
@@ -12,6 +13,7 @@ import static javax.persistence.FetchType.LAZY;
 
 @Entity
 @Table(name="nest")
+@Getter
 public class Nest extends BaseTimeEntity {
 
     @Id
@@ -27,4 +29,11 @@ public class Nest extends BaseTimeEntity {
 
     @Column(name = "deleted", nullable = false)
     private boolean deleted = false;
+
+    public static Nest of(Profile profile) {
+        Nest nest = new Nest();
+        nest.profile = profile;
+        profile.createNest(nest);
+        return nest;
+    }
 }
