@@ -2,6 +2,7 @@ package ccc.keeweapi.api.user;
 
 import ccc.keeweapi.dto.ApiResponse;
 import ccc.keeweapi.service.user.UserApiService;
+import ccc.keewecore.consts.KeeweConsts;
 import ccc.keewecore.consts.KeeweRtnConsts;
 import ccc.keewecore.exception.KeeweException;
 import lombok.RequiredArgsConstructor;
@@ -27,16 +28,17 @@ public class UserController {
     @GetMapping("/kakao")
     public ApiResponse<?> signUpWithKakao(@RequestParam String code) {
         log.info("[Kakao Signup] code {}", code);
-        return ApiResponse.ok(userService.signUpWithKakao(code));
+        return ApiResponse.ok(userService.signupWithOauth(code, KeeweConsts.KAKAO));
     }
 
     @GetMapping("/naver")
     public ApiResponse<?> signUpWithNaver(HttpSession session, @RequestParam String code, @RequestParam String state) {
         verifySessionState(session, state);
         log.info("[Naver Signup] code {}, state {}", code, state);
-        return ApiResponse.ok(userService.signUpWithNaver(code));
+        return ApiResponse.ok(userService.signupWithOauth(code, KeeweConsts.NAVER));
     }
 
+    //FIXME 컨트롤러보다 앞단에서 검증
     private void verifySessionState(HttpSession session, String state) {
         String sessionState = (String) session.getAttribute(naverState);
         if (!state.equals(sessionState)) {
