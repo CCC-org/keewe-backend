@@ -2,6 +2,7 @@ package ccc.keewedomain.domain.user;
 
 import ccc.keewedomain.domain.common.BaseTimeEntity;
 import ccc.keewedomain.domain.common.enums.Activity;
+import ccc.keewedomain.domain.nest.Nest;
 import ccc.keewedomain.domain.user.enums.Privacy;
 import ccc.keewedomain.domain.user.enums.ProfileStatus;
 import lombok.AllArgsConstructor;
@@ -45,33 +46,37 @@ public class Profile extends BaseTimeEntity {
 
     @Column(name = "privacy")
     @Enumerated(EnumType.STRING)
-    private Privacy privacy;
+    private Privacy privacy = PUBLIC;
 
-    @OneToOne
+    @OneToOne(fetch = LAZY)
     @JoinColumn(name = "profile_photo_id")
     private ProfilePhoto profilePhoto;
 
     @Column(name = "profile_status")
     @Enumerated(EnumType.STRING)
-    private ProfileStatus profileStatus;
+    private ProfileStatus profileStatus = NICKNAME_NEEDED;
 
     @ElementCollection
     @CollectionTable(name = "favorite_activities",joinColumns = @JoinColumn(name = "profile_id"))
     @Column(name = "activity")
     @Enumerated(EnumType.STRING)
-    private List<Activity> activities; // 나를 나타내는 키워드 목록
+    private List<Activity> activities = new ArrayList<>(); // 나를 나타내는 키워드 목록
 
     @OneToMany(mappedBy = "follower", fetch = LAZY)
-    private List<Buddy> followers; // 내가 팔로우하는 사람들
+    private List<Buddy> followers = new ArrayList<>(); // 내가 팔로우하는 사람들
 
     @OneToMany(mappedBy = "followee", fetch = LAZY)
-    private List<Buddy> followees; // 나를 팔로우하는 사람들
+    private List<Buddy> followees = new ArrayList<>(); // 나를 팔로우하는 사람들
 
     @OneToMany(mappedBy = "profile", fetch = LAZY)
-    private List<SocialLink> socialLinks;
+    private List<SocialLink> socialLinks = new ArrayList<>();
+
+    @OneToOne(fetch = LAZY)
+    @JoinColumn(name = "nest_id")
+    private Nest nest;
 
     @Column(name = "deleted", nullable = false)
-    private boolean deleted;
+    private boolean deleted = false;
 
     public static final int NICKNAME_MAX_LENGTH = 10;
     public static final int SOCIAL_LINKS_MAX_SIZE = 5;
@@ -85,6 +90,13 @@ public class Profile extends BaseTimeEntity {
                 .followees(new ArrayList<>())
                 .socialLinks(new ArrayList<>())
                 .deleted(false);
+    }
+
+    public static Profile of(User user) {
+        Profile profile = new Profile();
+        profile.connectWithUser(user);
+
+        return profile;
     }
 
     public void createLink(String link) {

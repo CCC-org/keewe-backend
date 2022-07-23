@@ -5,6 +5,7 @@ import ccc.keewecore.consts.KeeweRtnConsts;
 import ccc.keeweinfra.apis.KakaoApi;
 import ccc.keeweinfra.apis.KakaoAuthApi;
 import ccc.keeweinfra.dto.KakaoProfileResponse;
+import ccc.keeweinfra.vo.kakao.KakaoAccount;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,11 +33,11 @@ public class KakaoInfraService {
         return kakaoAuthApi.getAccessToken(KeeweConsts.AUTH_CODE, clientId, redirectUrl, code, clientSecret).getAccessToken();
     }
 
-    public KakaoProfileResponse getKakaoProfile(String accessToken) {
+    public KakaoAccount getKakaoAccount(String accessToken) {
         KakaoProfileResponse profile = kakaoApi.getKakaoUser(KeeweConsts.BEARER.concat(" " + accessToken));
         Assert.notNull(profile.getKakaoAccount(), KeeweRtnConsts.ERR412.getDescription());
         Assert.notNull(profile.getKakaoAccount().getEmail(), KeeweRtnConsts.ERR412.getDescription());
-        return profile;
+        return profile.getKakaoAccount();
     }
 
 }

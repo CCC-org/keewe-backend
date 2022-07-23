@@ -24,6 +24,7 @@ public class ProfileService {
     private final ProfileRepository profileRepository;
     private final SocialLinkDomainService socialLinkDomainService;
     private final ProfileDomainService profileDomainService;
+    private final ProfileAssembler profileAssembler;
 
     @Transactional
     public LinkCreateResponse createLink(LinkCreateRequest request) {
@@ -33,10 +34,7 @@ public class ProfileService {
         checkDuplicateLinkOrElseThrows(link);
         profile.createLink(link);
 
-        return LinkCreateResponse.builder()
-                .link(profile.getLink())
-                .status(profile.getProfileStatus())
-                .build();
+        return profileAssembler.toLinkCreateResponse(profile);
     }
 
     @Transactional
@@ -51,7 +49,7 @@ public class ProfileService {
     public NicknameCreateResponse createNickname(NicknameCreateRequest request) {
         Profile profile = profileDomainService.getAndVerifyOwnerOrElseThrow(request.getProfileId(), SecurityUtil.getUserId());
         profileDomainService.createNickname(profile.getId(), request.getNickname());
-        return NicknameCreateResponse.of(profile.getNickname(), profile.getProfileStatus());
+        return profileAssembler.toNicknameCreateResponse(profile);
     }
 
     // TODO : 현재는 단순 텍스트 비교로 검색(contains). 나중에 NLP...?

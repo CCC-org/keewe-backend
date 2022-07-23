@@ -1,15 +1,15 @@
-package ccc.keeweinfra.vo.kakao;
+package ccc.keeweinfra.vo.naver;
 
 import ccc.keeweinfra.vo.OauthAccount;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import lombok.Data;
+import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import lombok.Value;
 
-@Data
-@NoArgsConstructor
+@Value
+@NoArgsConstructor(force = true, access = AccessLevel.PRIVATE)
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class KakaoAccount implements OauthAccount {
-    private Boolean hasEmail;
+public class NaverAccount implements OauthAccount {
     private String email;
 }

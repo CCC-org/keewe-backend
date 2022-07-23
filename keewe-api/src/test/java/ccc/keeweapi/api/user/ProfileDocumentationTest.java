@@ -1,28 +1,25 @@
 package ccc.keeweapi.api.user;
 
-import ccc.keeweapi.config.security.UserDetailService;
 import ccc.keeweapi.config.security.UserPrincipal;
-import ccc.keeweapi.document.utils.RestDocsTestSupport;
+import ccc.keeweapi.document.utils.ApiDocumentationTest;
 import ccc.keeweapi.dto.common.LinkDto;
 import ccc.keeweapi.dto.user.*;
 import ccc.keeweapi.service.user.ProfileService;
-import ccc.keeweapi.utils.SecurityUtil;
 import ccc.keewedomain.domain.common.enums.Activity;
 import ccc.keewedomain.domain.common.enums.LinkType;
 import ccc.keewedomain.domain.user.Profile;
 import ccc.keewedomain.domain.user.User;
 import ccc.keewedomain.domain.user.enums.ProfileStatus;
 import ccc.keewedomain.domain.user.enums.UserStatus;
-import ccc.keewedomain.service.ProfileDomainService;
-import ccc.keewedomain.service.SocialLinkDomainService;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.RestDocumentationContextProvider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,26 +36,23 @@ import static org.springframework.restdocs.snippet.Attributes.key;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class ProfileDocumentationTest extends RestDocsTestSupport {
+public class ProfileDocumentationTest extends ApiDocumentationTest {
 
-    @MockBean
-    private ProfileService profileService;
+    @InjectMocks
+    ProfileController profileController;
 
-    @MockBean
-    private ProfileDomainService profileDomainService;
+    @Mock
+    ProfileService profileService;
 
-    @MockBean
-    private UserDetailService userDetailsService;
-
-    @MockBean
-    SocialLinkDomainService socialLinkDomainService;
-
+    @BeforeEach
+    void setup(final RestDocumentationContextProvider provider) {
+        super.setup(profileController, provider);
+    }
 
     @Test
     @DisplayName("닉네임 생성 API")
     void create_nickname_test() throws Exception {
         // given
-
         String email = "test@keewe.com";
         String nickname = "\uD83C\uDDF0\uD83C\uDDF7\uD83D\uDE011한글B❣️✅#️⃣";
         Long profileId = 1L;
@@ -73,11 +67,8 @@ public class ProfileDocumentationTest extends RestDocsTestSupport {
         NicknameCreateRequest requestDto = new NicknameCreateRequest();
         requestDto.setNickname(nickname);
         requestDto.setProfileId(profileId);
-        String token = jwtUtils.createToken(email, new ArrayList<>());
+        String token = "[유저의 JWT]";
 
-
-        when(userDetailsService.loadUserByUsername(any()))
-                .thenReturn(new UserPrincipal(user));
 
         when(profileService.createNickname(any()))
                 .thenReturn(NicknameCreateResponse.of(nickname, ACTIVITIES_NEEDED));
@@ -116,24 +107,20 @@ public class ProfileDocumentationTest extends RestDocsTestSupport {
     @Test
     @DisplayName("링크 생성 api")
     void create_link_test() throws Exception {
-        String email = "test@keewe.com";
         String link = "my._.link";
         Long profileId = 0L;
 
         User user = User.builder().build();
 
         LinkCreateRequest requestDto = new LinkCreateRequest(profileId, link);
-        String token = jwtUtils.createToken(email, new ArrayList<>());
-
-        when(userDetailsService.loadUserByUsername(any()))
-                .thenReturn(new UserPrincipal(user));
+        String token = "[유저의 JWT]";
 
         when(profileService.createLink(any()))
-                .thenReturn(new LinkCreateResponse(link, SOCIAL_LINK_NEEDED));
-
+                .thenReturn(LinkCreateResponse.of(link, ProfileStatus.ACTIVITIES_NEEDED));
 
         mockMvc.perform(
                         post("/api/v1/profiles/link")
+                                .with(user(new UserPrincipal(user)))
                                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                                 .content(objectMapper.writeValueAsString(requestDto))
                                 .contentType(MediaType.APPLICATION_JSON)
@@ -164,14 +151,11 @@ public class ProfileDocumentationTest extends RestDocsTestSupport {
     @Test
     @DisplayName("활동 분야 등록 api")
     void create_activities_test() throws Exception {
-        String email = "test@keewe.com";
-        String token = jwtUtils.createToken(email, new ArrayList<>());
+        String token = "[유저의 JWT]";
         List<Activity> activities = List.of(INDIE, POP);
 
         User user = User.builder().build();
         ActivitiesCreateRequest requestDto = new ActivitiesCreateRequest(user.getId(), activities);
-        when(userDetailsService.loadUserByUsername(any()))
-                .thenReturn(new UserPrincipal(user));
 
         when(profileService.createActivities(any()))
                 .thenReturn(ActivitiesCreateResponse.of(activities, LINK_NEEDED));
@@ -215,12 +199,7 @@ public class ProfileDocumentationTest extends RestDocsTestSupport {
     @Test
     @DisplayName("활동 분야 검색 api")
     void search_activities_test() throws Exception {
-        String email = "test@keewe.com";
-        String token = jwtUtils.createToken(email, new ArrayList<>());
-
-        User user = User.builder().build();
-        when(userDetailsService.loadUserByUsername(any()))
-                .thenReturn(new UserPrincipal(user));
+        String token = "[유저의 JWT]";
 
         when(profileService.searchActivities(any()))
                 .thenReturn(new ActivitiesSearchResponse(List.of(OTHER_MUSIC)));
@@ -256,39 +235,18 @@ public class ProfileDocumentationTest extends RestDocsTestSupport {
     @Test
     @DisplayName("소셜 링크 등록 API")
     void create_social_links_test() throws Exception {
-        String email = "test@keewe.com";
         Long profileId = 1L;
-        String token = jwtUtils.createToken(email, new ArrayList<>());
+        String token = "[유저의 JWT]";
 
-        User user = User.builder()
-                .id(1L)
-                .email(email)
-                .status(UserStatus.ACTIVE)
-                .deleted(false)
-                .build();
+        LinkDto linkDto1 = LinkDto.of("https://www.youtube.com/hello", "YOUTUBE");
+        LinkDto linkDto2 = LinkDto.of("https://facebook.com/world", "FACEBOOK");
 
-        when(userDetailsService.loadUserByUsername(any()))
-                .thenReturn(new UserPrincipal(user));
-
-        LinkDto linkDto1 = new LinkDto();
-        linkDto1.setUrl("https://www.youtube.com/hello");
-        linkDto1.setType("YOUTUBE");
-
-        LinkDto linkDto2 = new LinkDto();
-        linkDto2.setUrl("https://facebook.com/world");
-        linkDto2.setType("FACEBOOK");
-
-        List<LinkDto> linkDtos = new ArrayList<>();
-        linkDtos.add(linkDto1);
-        linkDtos.add(linkDto2);
+        List<LinkDto> linkDtos = List.of(linkDto1, linkDto2);
 
 
         SocialLinkCreateRequest requestDto = new SocialLinkCreateRequest();
         requestDto.setProfileId(profileId);
         requestDto.setLinks(linkDtos);
-
-        MockedStatic<SecurityUtil> socialLinkMockedStatic = Mockito.mockStatic(SecurityUtil.class);
-        socialLinkMockedStatic.when(SecurityUtil::getUser).thenReturn(user);
 
         mockMvc.perform(
                         post("/api/v1/profiles/social-links")
@@ -322,14 +280,13 @@ public class ProfileDocumentationTest extends RestDocsTestSupport {
     @Test
     @DisplayName("온보딩 미수행 프로필 조회 api")
     void incomplete_profile_select() throws Exception {
-        when(userDetailsService.loadUserByUsername(any())).thenReturn(new UserPrincipal(User.builder().build()));
         when(profileService.getIncompleteProfile()).thenReturn(IncompleteProfileResponse.getExistResult(Profile.builder()
                         .id(1L)
                         .profileStatus(ProfileStatus.NICKNAME_NEEDED)
                         .build()));
 
         mockMvc.perform(get("/api/v1/profiles/incomplete")
-                                .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtUtils.createToken("h0song@naver.com", List.of()))
+                                .header(HttpHeaders.AUTHORIZATION, "Bearer " + "[유저의 JWT]")
                 ).andExpect(status().isOk())
                 .andDo(restDocs.document(
                         resource(

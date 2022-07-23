@@ -2,11 +2,14 @@ package ccc.keeweapi.service.user;
 
 import ccc.keeweapi.dto.user.ActivitiesSearchResponse;
 import ccc.keeweapi.dto.user.LinkCreateRequest;
+import ccc.keeweapi.security.WithKeeweUser;
+import ccc.keeweapi.utils.SecurityUtil;
 import ccc.keewedomain.domain.common.enums.Activity;
 import ccc.keewedomain.domain.user.Profile;
 import ccc.keewedomain.domain.user.User;
 import ccc.keewedomain.repository.user.ProfileRepository;
 import ccc.keewedomain.repository.user.UserRepository;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +21,6 @@ import java.util.List;
 
 import static ccc.keewedomain.domain.common.enums.Activity.*;
 import static ccc.keewedomain.domain.user.enums.ProfileStatus.LINK_NEEDED;
-import static ccc.keewedomain.domain.user.enums.UserStatus.ACTIVE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -36,12 +38,17 @@ class ProfileServiceTest {
 
     @Test
     @DisplayName("링크 생성 테스트")
+    @WithKeeweUser(email = "yk@keewe.com")
     void test1() {
         // given
-        User user = userRepository.save(new User(0L, "yk@keewe.com", "password", "000", List.of(), ACTIVE, false));
+        User user = SecurityUtil.getUser();
+        userRepository.save(user);
+        System.out.println("user = " + user.getId());
         Profile profile = Profile.init().user(user).build();
         profileRepository.save(profile);
+
         Long profileId = profile.getId();
+
         // 정상적인 요청
         profileService.createLink(new LinkCreateRequest(profileId, "link_my._"));
         Profile savedProfile = profileRepository.findById(profileId).get();

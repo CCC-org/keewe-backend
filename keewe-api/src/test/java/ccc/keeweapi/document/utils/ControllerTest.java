@@ -12,6 +12,7 @@ import org.springframework.cloud.openfeign.FeignAutoConfiguration;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.test.web.servlet.MockMvc;
 
+@Deprecated
 @Disabled
 @WebMvcTest
 @MockBean(JpaMetamodelMappingContext.class)

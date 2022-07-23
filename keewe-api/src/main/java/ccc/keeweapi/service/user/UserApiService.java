@@ -1,18 +1,20 @@
 package ccc.keeweapi.service.user;
 
 import ccc.keeweapi.config.security.jwt.JwtUtils;
+import ccc.keeweapi.dto.user.UserAssembler;
 import ccc.keeweapi.dto.user.UserSignUpResponse;
-import ccc.keewedomain.domain.user.Profile;
 import ccc.keewedomain.domain.user.User;
+import ccc.keewedomain.dto.UserSignUpDto;
 import ccc.keewedomain.service.ProfileDomainService;
 import ccc.keewedomain.service.UserDomainService;
 import ccc.keeweinfra.dto.KakaoProfileResponse;
+import ccc.keeweinfra.vo.OauthAccount;
+import ccc.keeweinfra.vo.naver.NaverAccount;
 import ccc.keeweinfra.vo.kakao.KakaoAccount;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,32 +24,30 @@ import java.util.Optional;
 public class UserApiService {
     private final UserDomainService userDomainService;
     private final ProfileDomainService profileDomainService;
+    private final UserAssembler userAssembler;
     private final JwtUtils jwtUtils;
 
     @Transactional
-    public UserSignUpResponse signUpWithKakao(String code) {
-        KakaoProfileResponse kakaoProfile = userDomainService.getKakaoProfile(code);
-        KakaoAccount kakaoAccount = kakaoProfile.getKakaoAccount(); // 이미 Null이 아님을 보장받음
+    public <T extends OauthAccount> UserSignUpResponse signupWithOauth(String code, String company) {
+        T account = userDomainService.getOauthProfile(code, company);
+        Optional<User> userOps = userDomainService.getUserByEmail(account.getEmail());
 
-        Optional<User> userOps = userDomainService.getUserByEmail(kakaoAccount.getEmail());
         if(userOps.isPresent()) {
-            return UserSignUpResponse.builder()
-                    .userId(userOps.get().getId())
-                    .accessToken(jwtUtils.createToken(userOps.get().getEmail(), List.of()))
-                    .build();
+            return userAssembler.toUserSignUpResponse(userOps.get(), getToken(userOps.get()));
         }
 
-        User user = User.builder().email(kakaoAccount.getEmail()).profiles(new ArrayList<>()).build();
-        Profile profile = Profile.init().build();
+        User user = signUpWithOauth(account.getEmail());
 
-        profile.connectWithUser(user);
+        return userAssembler.toUserSignUpResponse(user, getToken(user));
+    }
 
-        Long userId = userDomainService.save(user);
-        profileDomainService.save(profile);
+    private User signUpWithOauth(String email) {
+        User user = userDomainService.save(userAssembler.toUserSignUpDto(email));
+        profileDomainService.createProfile(user);
+        return user;
+    }
 
-        return UserSignUpResponse.builder()
-                .userId(userId)
-                .accessToken(jwtUtils.createToken(kakaoAccount.getEmail(), List.of()))
-                .build();
+    private String getToken(User user) {
+        return jwtUtils.createToken(user.getEmail(), List.of());
     }
 }
