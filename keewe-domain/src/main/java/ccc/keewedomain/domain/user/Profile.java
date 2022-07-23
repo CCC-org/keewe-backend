@@ -2,6 +2,7 @@ package ccc.keewedomain.domain.user;
 
 import ccc.keewedomain.domain.common.BaseTimeEntity;
 import ccc.keewedomain.domain.common.enums.Activity;
+import ccc.keewedomain.domain.nest.Nest;
 import ccc.keewedomain.domain.user.enums.Privacy;
 import ccc.keewedomain.domain.user.enums.ProfileStatus;
 import lombok.AllArgsConstructor;
@@ -47,7 +48,7 @@ public class Profile extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private Privacy privacy = PUBLIC;
 
-    @OneToOne
+    @OneToOne(fetch = LAZY)
     @JoinColumn(name = "profile_photo_id")
     private ProfilePhoto profilePhoto;
 
@@ -69,6 +70,10 @@ public class Profile extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "profile", fetch = LAZY)
     private List<SocialLink> socialLinks = new ArrayList<>();
+
+    @OneToOne(fetch = LAZY)
+    @JoinColumn(name = "nest_id")
+    private Nest nest;
 
     @Column(name = "deleted", nullable = false)
     private boolean deleted = false;
