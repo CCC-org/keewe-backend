@@ -1,6 +1,6 @@
 package ccc.keeweinfra.dto;
 
-import ccc.keeweinfra.vo.Naver.NaverAccount;
+import ccc.keeweinfra.vo.naver.NaverAccount;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 

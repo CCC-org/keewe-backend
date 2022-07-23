@@ -6,7 +6,7 @@ import ccc.keeweinfra.apis.NaverApi;
 import ccc.keeweinfra.apis.NaverAuthApi;
 import ccc.keeweinfra.dto.NaverProfileResponse;
 import ccc.keeweinfra.dto.NaverTokenResponse;
-import ccc.keeweinfra.vo.Naver.NaverAccount;
+import ccc.keeweinfra.vo.naver.NaverAccount;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
