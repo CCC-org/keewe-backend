@@ -1,5 +1,7 @@
 package ccc.keewedomain.domain.nest;
 
+import ccc.keewedomain.domain.common.BaseTimeEntity;
+import ccc.keewedomain.domain.nest.id.ChoiceId;
 import ccc.keewedomain.domain.user.Profile;
 
 import javax.persistence.*;
@@ -7,8 +9,9 @@ import javax.persistence.*;
 import static javax.persistence.FetchType.LAZY;
 
 @Entity
+@Table(name = "choice")
 @IdClass(ChoiceId.class)
-public class Choice {
+public class Choice extends BaseTimeEntity {
 
     @Id
     @ManyToOne(fetch = LAZY)

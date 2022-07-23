@@ -1,5 +1,6 @@
-package ccc.keewedomain.domain.nest;
+package ccc.keewedomain.domain.nest.id;
 
+import ccc.keewedomain.domain.nest.Comment;
 import ccc.keewedomain.domain.user.Profile;
 import lombok.EqualsAndHashCode;
 

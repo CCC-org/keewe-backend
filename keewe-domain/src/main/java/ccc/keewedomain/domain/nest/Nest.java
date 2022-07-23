@@ -24,4 +24,7 @@ public class Nest extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "nest", fetch = LAZY)
     private List<Post> posts = new ArrayList<>();
+
+    @Column(name = "deleted", nullable = false)
+    private boolean deleted = false;
 }

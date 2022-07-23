@@ -1,6 +1,7 @@
 package ccc.keewedomain.domain.nest;
 
 import ccc.keewedomain.domain.common.BaseTimeEntity;
+import ccc.keewedomain.domain.nest.id.PostLikeId;
 import ccc.keewedomain.domain.user.Profile;
 
 import javax.persistence.*;
@@ -9,6 +10,7 @@ import static javax.persistence.FetchType.LAZY;
 
 @Entity
 @IdClass(PostLikeId.class)
+@Table(name = "post_like")
 public class PostLike extends BaseTimeEntity {
     @Id
     @ManyToOne(fetch = LAZY)
