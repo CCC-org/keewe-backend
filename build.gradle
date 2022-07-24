@@ -135,6 +135,7 @@ project(':keewe-api') {
 		implementation 'org.springframework.boot:spring-boot-starter-security'
 		implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
 		implementation group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
+		implementation 'org.springframework.boot:spring-boot-starter-validation'
 
 		testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
 		testImplementation 'com.epages:restdocs-api-spec-mockmvc:0.16.2'

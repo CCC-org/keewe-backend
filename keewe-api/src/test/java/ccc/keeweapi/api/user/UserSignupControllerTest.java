@@ -1,31 +1,25 @@
 package ccc.keeweapi.api.user;
 
 import ccc.keeweapi.document.utils.ApiDocumentationTest;
-import ccc.keeweapi.document.utils.RestDocsTestSupport;
 import ccc.keeweapi.dto.user.UserSignUpResponse;
-import ccc.keeweapi.service.user.ProfileService;
 import ccc.keeweapi.service.user.UserApiService;
-import ccc.keewedomain.dto.UserSignUpDto;
-import ccc.keewedomain.service.ProfileDomainService;
-import ccc.keewedomain.service.SocialLinkDomainService;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import static com.epages.restdocs.apispec.ResourceDocumentation.*;
-import static org.mockito.ArgumentMatchers.any;
+import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName;
+import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 
 public class UserSignupControllerTest extends ApiDocumentationTest {
 
@@ -50,7 +44,7 @@ public class UserSignupControllerTest extends ApiDocumentationTest {
         );
 
 
-        when(userApiService.signUpWithKakao(anyString())).thenReturn(userSignUpDto);
+        when(userApiService.signupWithOauth(anyString(), anyString())).thenReturn(userSignUpDto);
 
         mockMvc.perform(
                         get("/api/v1/user/kakao")
@@ -85,7 +79,7 @@ public class UserSignupControllerTest extends ApiDocumentationTest {
         ReflectionTestUtils.setField(userController, "naverState", naverState);
         session.setAttribute(naverState, state);
 
-        when(userApiService.signUpWithNaver(anyString())).thenReturn(userSignUpDto);
+        when(userApiService.signupWithOauth(anyString(), anyString())).thenReturn(userSignUpDto);
 
         mockMvc.perform(
                         get("/api/v1/user/naver")
