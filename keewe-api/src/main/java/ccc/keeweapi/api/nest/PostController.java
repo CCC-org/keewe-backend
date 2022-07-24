@@ -18,9 +18,7 @@ import javax.validation.Valid;
 @RequestMapping("/api/v1/nest")
 @RequiredArgsConstructor
 public class PostController {
-
     private final PostApiService postApiService;
-
 
     @PostMapping("/announcement")
     public ApiResponse<AnnouncementCreateResponse> createAnnouncement(@Valid @RequestBody AnnouncementCreateRequest request) {
@@ -29,7 +27,7 @@ public class PostController {
 
     //TODO: 선택지 size, 선택지 내용 size, contents 145자 validate
     @PostMapping("/vote")
-    public ApiResponse<PostResponse> createAnnouncementPost(@RequestBody VotePostCreateRequest request) {
+    public ApiResponse<PostResponse> createAnnouncementPost(@Valid @RequestBody VotePostCreateRequest request) {
         return ApiResponse.ok(postApiService.createPost(request));
     }
 }

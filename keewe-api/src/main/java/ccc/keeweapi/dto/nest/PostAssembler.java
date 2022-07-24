@@ -1,7 +1,6 @@
 package ccc.keeweapi.dto.nest;
 
 import ccc.keeweapi.utils.SecurityUtil;
-import ccc.keewedomain.domain.nest.AnnouncementPost;
 import ccc.keewedomain.dto.nest.AnnouncementCreateDto;
 import ccc.keewedomain.dto.nest.VotePostDto;
 import org.springframework.stereotype.Component;
@@ -17,7 +16,7 @@ public class PostAssembler {
     }
 
     public VotePostDto toVotePostDto(VotePostCreateRequest request) {
-        return new VotePostDto(request.getCandidates(), request.getProfileId(), SecurityUtil.getUserId(), request.getContents());
+        return new VotePostDto(request.getCandidates(), request.getProfileId(), SecurityUtil.getUserId(), request.getContent());
     }
 
     public PostResponse toPostResponse(Long postId) {

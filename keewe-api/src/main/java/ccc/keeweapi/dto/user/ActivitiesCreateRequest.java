@@ -1,6 +1,6 @@
 package ccc.keeweapi.dto.user;
 
-import ccc.keeweapi.validation.Enum;
+import ccc.keeweapi.validator.Enum;
 import ccc.keewedomain.domain.common.enums.Activity;
 import lombok.AllArgsConstructor;
 import lombok.Data;

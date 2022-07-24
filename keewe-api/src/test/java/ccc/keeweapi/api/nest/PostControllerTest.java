@@ -43,7 +43,7 @@ public class PostControllerTest extends ApiDocumentationTest {
     void create_vote_post() throws Exception {
         VotePostCreateRequest request = new VotePostCreateRequest();
         request.setProfileId(1L);
-        request.setContents("똥 vs 카레");
+        request.setContent("똥 vs 카레");
         request.setCandidates(new ArrayList<>());
         request.getCandidates().add("똥");
         request.getCandidates().add("카레");

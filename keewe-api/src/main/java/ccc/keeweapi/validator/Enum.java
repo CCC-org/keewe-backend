@@ -1,4 +1,4 @@
-package ccc.keeweapi.validation;
+package ccc.keeweapi.validator;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;

@@ -1,4 +1,4 @@
-package ccc.keeweapi.validator.nest;
+package ccc.keeweapi.validator;
 
 import javax.validation.Constraint;
 import java.lang.annotation.ElementType;
