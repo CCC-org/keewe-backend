@@ -1,4 +1,4 @@
-package ccc.keeweapi.dto.nest;
+package ccc.keeweapi.validator.nest;
 
 import ccc.keewecore.utils.StringLengthUtil;
 import ccc.keewedomain.domain.nest.Post;
