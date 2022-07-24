@@ -74,7 +74,8 @@ public class PostControllerTest extends ApiDocumentationTest {
                 )));
     }
 
-    @DisplayName("공지 생성 API")
+    @Test
+    @DisplayName("둥지 - 공지 생성 API")
     void announcement_create_test() throws Exception {
 
         String token = "[유저의 JWT]";
@@ -106,7 +107,7 @@ public class PostControllerTest extends ApiDocumentationTest {
                                                 fieldWithPath("code").description("결과 코드"),
                                                 fieldWithPath("data.postId").description("작성된 공지의 ID")
                                         )
-                                        .tag("Post")
+                                        .tag("Nest")
                                         .build()
                         )));
     }
