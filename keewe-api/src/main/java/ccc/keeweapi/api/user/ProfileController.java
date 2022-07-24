@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/api/v1/profiles")
 @RequiredArgsConstructor
@@ -28,7 +30,7 @@ public class ProfileController {
     }
 
     @PostMapping("/activities")
-    public ApiResponse<ActivitiesCreateResponse> createActivities(@RequestBody ActivitiesCreateRequest requestDto) {
+    public ApiResponse<ActivitiesCreateResponse> createActivities(@Valid @RequestBody ActivitiesCreateRequest requestDto) {
         ActivitiesCreateResponse responseDto = profileService.createActivities(requestDto);
         return ApiResponse.ok(responseDto);
     }

@@ -40,9 +40,13 @@ public class ProfileService {
     @Transactional
     public ActivitiesCreateResponse createActivities(ActivitiesCreateRequest request) {
         Profile profile = profileDomainService.getAndVerifyOwnerOrElseThrow(request.getProfileId(), SecurityUtil.getUserId());
-        profile.createActivities(request.getActivities());
+        profile.createActivities(request.getActivities().stream().map(Activity::valueOf).collect(Collectors.toList()));
 
-        return ActivitiesCreateResponse.of(profile.getActivities(), profile.getProfileStatus());
+        return ActivitiesCreateResponse.of(profile.getActivities().stream()
+                .map(Activity::getValue)
+                .collect(Collectors.toList()),
+                profile.getProfileStatus()
+        );
     }
 
     @Transactional

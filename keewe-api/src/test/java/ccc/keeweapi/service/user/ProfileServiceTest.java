@@ -21,6 +21,7 @@ import java.util.List;
 
 import static ccc.keewedomain.domain.common.enums.Activity.*;
 import static ccc.keewedomain.domain.user.enums.ProfileStatus.LINK_NEEDED;
+import static ccc.keewedomain.domain.user.enums.ProfileStatus.SOCIAL_LINK_NEEDED;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -54,7 +55,7 @@ class ProfileServiceTest {
         Profile savedProfile = profileRepository.findById(profileId).get();
         assertThat(savedProfile.getId()).isEqualTo(profileId);
         System.out.println(savedProfile.getProfileStatus());
-        assertThat(savedProfile.getProfileStatus().getOrder()).isEqualTo(LINK_NEEDED.getOrder() + 1);
+        assertThat(savedProfile.getProfileStatus()).isEqualTo(SOCIAL_LINK_NEEDED);
 
         // 중복 요청
         assertThrows(IllegalArgumentException.class, () ->

@@ -21,8 +21,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static ccc.keewedomain.domain.common.enums.Activity.*;
 import static ccc.keewedomain.domain.user.enums.ProfileStatus.*;
@@ -152,13 +153,13 @@ public class ProfileDocumentationTest extends ApiDocumentationTest {
     @DisplayName("활동 분야 등록 api")
     void create_activities_test() throws Exception {
         String token = "[유저의 JWT]";
-        List<Activity> activities = List.of(INDIE, POP);
+        List<String> activities = List.of("INDIE", "POP");
 
         User user = User.builder().build();
         ActivitiesCreateRequest requestDto = new ActivitiesCreateRequest(user.getId(), activities);
 
         when(profileService.createActivities(any()))
-                .thenReturn(ActivitiesCreateResponse.of(activities, LINK_NEEDED));
+                .thenReturn(ActivitiesCreateResponse.of(activities.stream().map((a) -> Activity.valueOf(a).getValue()).collect(Collectors.toList()), LINK_NEEDED));
 
         mockMvc.perform(
                         post("/api/v1/profiles/activities")
@@ -185,7 +186,7 @@ public class ProfileDocumentationTest extends ApiDocumentationTest {
                                                 fieldWithPath("data.activities")
                                                         .description("활동 생성 결과")
                                                         .type("array")
-                                                        .attributes(key("enumValues").value(List.of(Activity.values()))),
+                                                        .attributes(key("enumValues").value(List.of(Arrays.stream(Activity.values()).map(Activity::getValue).collect(Collectors.toList())))),
                                                 fieldWithPath("data.status")
                                                         .description("요청 완료 후 해당 프로필의 상태")
                                                         .type("ENUM")

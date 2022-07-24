@@ -1,5 +1,6 @@
 package ccc.keeweapi.dto.user;
 
+import ccc.keeweapi.validation.Enum;
 import ccc.keewedomain.domain.common.enums.Activity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,5 +13,6 @@ import java.util.List;
 @NoArgsConstructor
 public class ActivitiesCreateRequest {
     private Long profileId;
-    private List<Activity> activities;
+    @Enum(enumClass = Activity.class)
+    private List<String> activities;
 }
