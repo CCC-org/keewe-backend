@@ -34,8 +34,9 @@ public class GoogleInfraService {
 
     public GoogleAccount getGoogleAccount(String accessToken) {
         GoogleProfileResponse profile = googleApi.getGoogleUser(KeeweConsts.BEARER.concat(" " + accessToken));
-        String email = profile.getEmail();
-        Assert.notNull(email, KeeweRtnConsts.ERR412.getDescription());
-        return new GoogleAccount(email);
+        GoogleAccount account = profile.getGoogleAccount();
+        Assert.notNull(account, KeeweRtnConsts.ERR412.getDescription());
+        Assert.notNull(account.getEmail(), KeeweRtnConsts.ERR412.getDescription());
+        return account;
     }
 }
