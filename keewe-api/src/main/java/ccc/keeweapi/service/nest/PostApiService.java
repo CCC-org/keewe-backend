@@ -25,4 +25,10 @@ public class PostApiService {
         Long postId = postDomainService.createAnnouncementPost(postAssembler.toAnnouncementCreateDto(request));
         return postAssembler.toAnnouncementCreateResponse(postId);
     }
+
+    @Transactional
+    public PostResponse createQuestionPost(QuestionPostCreateRequest request) {
+        Long postId = postDomainService.createQuestionPost(postAssembler.toQuestionCreateDto(request));
+        return postAssembler.toPostResponse(postId);
+    }
 }

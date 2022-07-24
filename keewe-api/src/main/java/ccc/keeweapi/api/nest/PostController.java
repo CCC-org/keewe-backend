@@ -1,10 +1,7 @@
 package ccc.keeweapi.api.nest;
 
 import ccc.keeweapi.dto.ApiResponse;
-import ccc.keeweapi.dto.nest.AnnouncementCreateRequest;
-import ccc.keeweapi.dto.nest.AnnouncementCreateResponse;
-import ccc.keeweapi.dto.nest.PostResponse;
-import ccc.keeweapi.dto.nest.VotePostCreateRequest;
+import ccc.keeweapi.dto.nest.*;
 import ccc.keeweapi.service.nest.PostApiService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,5 +28,10 @@ public class PostController {
     @PostMapping("/vote")
     public ApiResponse<PostResponse> createAnnouncementPost(@RequestBody VotePostCreateRequest request) {
         return ApiResponse.ok(postApiService.createPost(request));
+    }
+
+    @PostMapping("/question")
+    public ApiResponse<PostResponse> createQuestionPost(@Valid @RequestBody QuestionPostCreateRequest request) {
+        return ApiResponse.ok(postApiService.createQuestionPost(request));
     }
 }
