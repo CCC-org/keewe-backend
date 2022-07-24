@@ -103,13 +103,19 @@ public class Profile extends BaseTimeEntity {
         isCreatingOrElseThrow();
         checkLinkPatternOrElseThrow(link);
         this.link = link;
-        updateOrMaintainStatus(ACTIVITIES_NEEDED);
+        updateOrMaintainStatus(SOCIAL_LINK_NEEDED);
     }
 
     public void createNickname(String nickname) {
         isCreatingOrElseThrow();
         this.nickname = nickname;
-        updateOrMaintainStatus(SOCIAL_LINK_NEEDED);
+        updateOrMaintainStatus(ACTIVITIES_NEEDED);
+    }
+
+    public void createActivities(List<Activity> activities) {
+        isCreatingOrElseThrow();
+        this.activities = activities;
+        updateOrMaintainStatus(LINK_NEEDED);
     }
 
     public void initSocialLinks(List<SocialLink> socialLinks) {

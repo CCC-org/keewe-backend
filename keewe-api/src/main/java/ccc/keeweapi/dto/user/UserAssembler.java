@@ -1,7 +1,7 @@
 package ccc.keeweapi.dto.user;
 
 import ccc.keewedomain.domain.user.User;
-import ccc.keewedomain.dto.UserSignUpDto;
+import ccc.keewedomain.dto.user.UserSignUpDto;
 import org.springframework.stereotype.Component;
 
 @Component

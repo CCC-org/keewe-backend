@@ -1,4 +1,4 @@
-package ccc.keewedomain.service;
+package ccc.keewedomain.service.user;
 
 import ccc.keewecore.consts.KeeweRtnConsts;
 import ccc.keewecore.exception.KeeweException;
@@ -7,6 +7,7 @@ import ccc.keewedomain.domain.user.Profile;
 import ccc.keewedomain.domain.user.SocialLink;
 import ccc.keewedomain.domain.user.User;
 import ccc.keewedomain.repository.user.ProfileRepository;
+import ccc.keewedomain.service.nest.NestDomainService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

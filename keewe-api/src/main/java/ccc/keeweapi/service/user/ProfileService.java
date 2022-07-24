@@ -7,8 +7,8 @@ import ccc.keewedomain.domain.common.enums.Activity;
 import ccc.keewedomain.domain.user.Profile;
 import ccc.keewedomain.domain.user.SocialLink;
 import ccc.keewedomain.repository.user.ProfileRepository;
-import ccc.keewedomain.service.ProfileDomainService;
-import ccc.keewedomain.service.SocialLinkDomainService;
+import ccc.keewedomain.service.user.ProfileDomainService;
+import ccc.keewedomain.service.user.SocialLinkDomainService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,16 +27,26 @@ public class ProfileService {
     private final ProfileAssembler profileAssembler;
 
     @Transactional
-    public LinkCreateResponse createLink(LinkCreateRequest createLinkDto) {
-        Long userId = SecurityUtil.getUserId();
-        String link = createLinkDto.getLink();
-        Profile profile = profileRepository.findByIdAndUserIdAndDeletedFalseOrElseThrow(createLinkDto.getProfileId(), userId);
+    public LinkCreateResponse createLink(LinkCreateRequest request) {
+        String link = request.getLink();
+        Profile profile = profileRepository.findByIdAndUserIdAndDeletedFalseOrElseThrow(request.getProfileId(), SecurityUtil.getUserId());
 
         checkDuplicateLinkOrElseThrows(link);
-
         profile.createLink(link);
 
         return profileAssembler.toLinkCreateResponse(profile);
+    }
+
+    @Transactional
+    public ActivitiesCreateResponse createActivities(ActivitiesCreateRequest request) {
+        Profile profile = profileDomainService.getAndVerifyOwnerOrElseThrow(request.getProfileId(), SecurityUtil.getUserId());
+        profile.createActivities(request.getActivities().stream().map(Activity::valueOf).collect(Collectors.toList()));
+
+        return ActivitiesCreateResponse.of(profile.getActivities().stream()
+                .map(Activity::getValue)
+                .collect(Collectors.toList()),
+                profile.getProfileStatus()
+        );
     }
 
     @Transactional
@@ -50,7 +60,7 @@ public class ProfileService {
     public ActivitiesSearchResponse searchActivities(String keyword) {
         List<Activity> result = Arrays.stream(Activity.values())
                 .filter(activity -> {
-                    String value = activity.toString().replace("_", " ");
+                    String value = activity.getValue();
                     return value.contains(keyword) || keyword.contains(value);
                 })
                 .collect(Collectors.toList());

@@ -1,4 +1,4 @@
-package ccc.keewedomain.dto;
+package ccc.keewedomain.dto.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

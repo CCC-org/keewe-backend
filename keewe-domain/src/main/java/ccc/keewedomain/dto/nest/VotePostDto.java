@@ -1,4 +1,4 @@
-package ccc.keewedomain.dto;
+package ccc.keewedomain.dto.nest;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
