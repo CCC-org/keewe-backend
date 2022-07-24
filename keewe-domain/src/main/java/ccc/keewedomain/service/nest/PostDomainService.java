@@ -1,10 +1,8 @@
 package ccc.keewedomain.service.nest;
 
-import ccc.keewedomain.domain.nest.AnnouncementPost;
-import ccc.keewedomain.domain.nest.Candidate;
-import ccc.keewedomain.domain.nest.Post;
-import ccc.keewedomain.domain.nest.VotePost;
+import ccc.keewedomain.domain.nest.*;
 import ccc.keewedomain.domain.user.Profile;
+import ccc.keewedomain.dto.nest.QuestionPostDto;
 import ccc.keewedomain.dto.nest.VotePostDto;
 import ccc.keewedomain.dto.nest.AnnouncementCreateDto;
 import ccc.keewedomain.repository.nest.PostRepository;
@@ -47,6 +45,11 @@ public class PostDomainService {
     public Long createAnnouncementPost(AnnouncementCreateDto dto) {
         Profile profile = profileDomainService.getAndVerifyOwnerOrElseThrow(dto.getProfileId(), dto.getUserId());
         return this.save(AnnouncementPost.of(profile, dto.getContent()));
+    }
+
+    public Long createQuestionPost(QuestionPostDto dto) {
+        Profile profile = profileDomainService.getAndVerifyOwnerOrElseThrow(dto.getProfileId(), dto.getUserId());
+        return this.save(QuestionPost.of(profile, dto.getContent()));
     }
 
 }
