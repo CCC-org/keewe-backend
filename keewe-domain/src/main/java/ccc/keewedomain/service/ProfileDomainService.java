@@ -27,9 +27,9 @@ public class ProfileDomainService {
     }
 
     public Profile save(User user) {
-        Profile profile = profileRepository.save(Profile.of(user));
+        Profile profile = Profile.of(user);
         nestDomainService.save(profile);
-        return profile;
+        return profileRepository.save(profile);
     }
 
     public Profile getByIdOrElseThrow(Long id) {

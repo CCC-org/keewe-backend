@@ -1,5 +1,6 @@
 package ccc.keeweapi.service.user;
 
+import ccc.keewecore.aop.annotations.FLogging;
 import ccc.keeweapi.config.security.jwt.JwtUtils;
 import ccc.keeweapi.dto.user.UserAssembler;
 import ccc.keeweapi.dto.user.UserSignUpResponse;
@@ -24,6 +25,7 @@ public class UserApiService {
     private final JwtUtils jwtUtils;
 
     @Transactional
+    @FLogging
     public <T extends OauthAccount> UserSignUpResponse signupWithOauth(String code, String company) {
         T account = userDomainService.getOauthProfile(code, company);
         Optional<User> userOps = userDomainService.getUserByEmail(account.getEmail());
