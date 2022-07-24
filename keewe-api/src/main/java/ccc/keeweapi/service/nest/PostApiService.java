@@ -1,24 +1,25 @@
-package ccc.keeweapi.service.post;
+package ccc.keeweapi.service.nest;
 
-import ccc.keeweapi.dto.nest.AnnouncementCreateRequest;
-import ccc.keeweapi.dto.nest.AnnouncementCreateResponse;
-import ccc.keeweapi.dto.nest.PostAssembler;
-import ccc.keeweapi.utils.SecurityUtil;
+import ccc.keeweapi.dto.nest.*;
 import ccc.keewedomain.domain.nest.AnnouncementPost;
-import ccc.keewedomain.domain.user.Profile;
 import ccc.keewedomain.service.PostDomainService;
-import ccc.keewedomain.service.ProfileDomainService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 
-@Service
 @RequiredArgsConstructor
-public class PostService {
-
+@Service
+public class PostApiService {
     private final PostDomainService postDomainService;
     private final PostAssembler postAssembler;
+
+
+    @Transactional
+    public PostResponse createPost(VotePostCreateRequest request) {
+        Long postId = postDomainService.createVotePost(postAssembler.toVotePostDto(request));
+        return postAssembler.toPostResponse(postId);
+    }
 
     @Transactional
     public AnnouncementCreateResponse createAnnouncementPost(AnnouncementCreateRequest request) {

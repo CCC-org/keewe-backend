@@ -4,6 +4,7 @@ import ccc.keewedomain.domain.common.BaseTimeEntity;
 import ccc.keewedomain.domain.nest.enums.PostType;
 import ccc.keewedomain.domain.user.Profile;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -15,8 +16,9 @@ import static javax.persistence.FetchType.LAZY;
 @Table(name = "post")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "post_type")
+@NoArgsConstructor
 @Getter
-public abstract class Post extends BaseTimeEntity {
+public class Post extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -56,5 +58,6 @@ public abstract class Post extends BaseTimeEntity {
         this.nest = nest;
         this.writer = writer;
         this.content = content;
+        nest.getPosts().add(this);
     }
 }

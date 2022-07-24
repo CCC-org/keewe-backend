@@ -8,8 +8,4 @@ import javax.persistence.Entity;
 @Entity
 @DiscriminatorValue("QUESTION")
 public class QuestionPost extends Post {
-
-    protected QuestionPost(Nest nest, Profile writer, String content) {
-        super(nest, writer, content);
-    }
 }

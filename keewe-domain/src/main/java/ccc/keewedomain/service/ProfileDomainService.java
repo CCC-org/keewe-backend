@@ -19,14 +19,17 @@ import static ccc.keewedomain.domain.user.enums.ProfileStatus.ACTIVE;
 @Slf4j
 public class ProfileDomainService {
     private final ProfileRepository profileRepository;
+    private final NestDomainService nestDomainService;
     private final int SOCIAL_LINKS_SIZE = 5;
 
     public Long save(Profile profile) {
         return profileRepository.save(profile).getId();
     }
 
-    public Profile createProfile(User user) {
-        return profileRepository.save(Profile.of(user));
+    public Profile save(User user) {
+        Profile profile = profileRepository.save(Profile.of(user));
+        nestDomainService.save(profile);
+        return profile;
     }
 
     public Profile getByIdOrElseThrow(Long id) {
