@@ -8,8 +8,8 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class PostAssembler {
-    public AnnouncementCreateResponse toAnnouncementCreateResponse(AnnouncementPost post) {
-        return AnnouncementCreateResponse.of(post.getId());
+    public AnnouncementCreateResponse toAnnouncementCreateResponse(Long postId) {
+        return AnnouncementCreateResponse.of(postId);
     }
 
     public AnnouncementCreateDto toAnnouncementCreateDto(AnnouncementCreateRequest request) {

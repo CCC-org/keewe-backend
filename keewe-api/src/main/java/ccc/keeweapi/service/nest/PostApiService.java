@@ -1,7 +1,6 @@
 package ccc.keeweapi.service.nest;
 
 import ccc.keeweapi.dto.nest.*;
-import ccc.keewedomain.domain.nest.AnnouncementPost;
 import ccc.keewedomain.service.nest.PostDomainService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,7 +22,7 @@ public class PostApiService {
 
     @Transactional
     public AnnouncementCreateResponse createAnnouncementPost(AnnouncementCreateRequest request) {
-        AnnouncementPost post = postDomainService.createAnnouncementPost(postAssembler.toAnnouncementCreateDto(request));
-        return postAssembler.toAnnouncementCreateResponse(post);
+        Long postId = postDomainService.createAnnouncementPost(postAssembler.toAnnouncementCreateDto(request));
+        return postAssembler.toAnnouncementCreateResponse(postId);
     }
 }

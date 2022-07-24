@@ -44,9 +44,9 @@ public class PostDomainService {
                 .collect(Collectors.toList());
     }
 
-    public AnnouncementPost createAnnouncementPost(AnnouncementCreateDto dto) {
+    public Long createAnnouncementPost(AnnouncementCreateDto dto) {
         Profile profile = profileDomainService.getAndVerifyOwnerOrElseThrow(dto.getProfileId(), dto.getUserId());
-        return (AnnouncementPost) postRepository.save(AnnouncementPost.of(profile, dto.getContent()));
+        return this.save(AnnouncementPost.of(profile, dto.getContent()));
     }
 
 }
