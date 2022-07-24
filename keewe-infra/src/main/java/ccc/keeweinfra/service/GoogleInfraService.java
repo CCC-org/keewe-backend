@@ -19,6 +19,8 @@ public class GoogleInfraService {
     private final GoogleApi googleApi;
     private final GoogleAuthApi googleAuthApi;
 
+    public static final String EMPTY_STRING = "";
+
     @Value("${google.client-id}")
     private String clientId;
 
@@ -29,7 +31,7 @@ public class GoogleInfraService {
     private String clientSecret;
 
     public String getAccessToken(String code) {
-        return googleAuthApi.getAccessToken(code, clientId, clientSecret, redirectUrl, KeeweConsts.AUTH_CODE, "").getAccessToken();
+        return googleAuthApi.getAccessToken(code, clientId, clientSecret, redirectUrl, KeeweConsts.AUTH_CODE, EMPTY_STRING).getAccessToken();
     }
 
     public GoogleAccount getGoogleAccount(String accessToken) {
