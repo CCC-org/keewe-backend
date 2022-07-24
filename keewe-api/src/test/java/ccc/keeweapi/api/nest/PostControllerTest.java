@@ -75,7 +75,7 @@ public class PostControllerTest extends ApiDocumentationTest {
     }
 
     @Test
-    @DisplayName("둥지 - 공지 생성 API")
+    @DisplayName("둥지 - 공지글 생성 API")
     void announcement_create_test() throws Exception {
 
         String token = "[유저의 JWT]";
@@ -106,6 +106,44 @@ public class PostControllerTest extends ApiDocumentationTest {
                                                 fieldWithPath("message").description("요청 결과 메세지"),
                                                 fieldWithPath("code").description("결과 코드"),
                                                 fieldWithPath("data.postId").description("작성된 공지의 ID")
+                                        )
+                                        .tag("Nest")
+                                        .build()
+                        )));
+    }
+
+    @Test
+    @DisplayName("둥지 - 질문글 생성 API")
+    void question_create_test() throws Exception {
+
+        String token = "[유저의 JWT]";
+        AnnouncementCreateRequest request = new AnnouncementCreateRequest();
+        request.setProfileId(1L);
+        request.setContent("봄날의 햇살 유승훈.");
+
+        when(postApiService.createQuestionPost(any()))
+                .thenReturn(new PostResponse(1L));
+
+        mockMvc.perform(
+                        post("/api/v1/nest/question")
+                                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                                .content(objectMapper.writeValueAsString(request))
+                                .contentType(MediaType.APPLICATION_JSON)
+                ).andExpect(status().isOk())
+                .andDo(restDocs.document(
+                        resource(
+                                ResourceSnippetParameters.builder()
+                                        .description("질문글 생성 API 입니다.")
+                                        .summary("질문글 생성 API 입니다.")
+                                        .requestHeaders(
+                                                headerWithName("Authorization").description("유저의 JWT"))
+                                        .requestFields(
+                                                fieldWithPath("profileId").description("대상 프로필의 id"),
+                                                fieldWithPath("content").description("글의 내용"))
+                                        .responseFields(
+                                                fieldWithPath("message").description("요청 결과 메세지"),
+                                                fieldWithPath("code").description("결과 코드"),
+                                                fieldWithPath("data.postId").description("작성된 질문글의 ID")
                                         )
                                         .tag("Nest")
                                         .build()
