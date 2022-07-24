@@ -1,4 +1,7 @@
-package ccc.keeweapi.validator;
+package ccc.keeweapi.validator.annotations;
+
+import ccc.keeweapi.validator.EnumListValidator;
+import ccc.keeweapi.validator.EnumValidator;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;

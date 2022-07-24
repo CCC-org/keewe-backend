@@ -5,8 +5,9 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor(staticName = "of")
-public class QuestionPostDto {
+public class QuestionPostDto implements PostDto{
     private Long profileId;
     private Long userId;
     private String content;
+    private String postType;
 }

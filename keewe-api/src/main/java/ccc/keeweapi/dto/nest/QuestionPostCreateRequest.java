@@ -1,6 +1,6 @@
 package ccc.keeweapi.dto.nest;
 
-import ccc.keeweapi.validator.nest.PostContent;
+import ccc.keeweapi.validator.annotations.PostContent;
 import lombok.Data;
 
 @Data

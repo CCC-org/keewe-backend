@@ -1,5 +1,6 @@
 package ccc.keeweapi.validator;
 
+import ccc.keeweapi.validator.annotations.PostContent;
 import ccc.keewecore.utils.StringLengthUtil;
 import ccc.keewedomain.domain.nest.Post;
 

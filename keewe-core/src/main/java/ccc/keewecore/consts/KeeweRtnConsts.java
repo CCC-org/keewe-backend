@@ -28,8 +28,8 @@ public enum KeeweRtnConsts {
     ERR501(KeeweRtnGrp.System, 501, "카카오 회원가입 중 내부 오류가 발생했어요."),
     ERR502(KeeweRtnGrp.System, 502, "네이버 회원가입 중 내부 오류가 발생했어요."),
     ERR503(KeeweRtnGrp.System, 503, "네이버 회원가입 중 state가 일치하지 않아요"),
-    ERR504(KeeweRtnGrp.System, 504, "지원하지 않는 소셜 타입이에요.");
-
+    ERR504(KeeweRtnGrp.System, 504, "지원하지 않는 소셜 타입이에요."),
+    ERR505(KeeweRtnGrp.System, 505, "지원하지 않는 게시글 타입이에요.");
 
     private KeeweRtnGrp grp;
     private int code;

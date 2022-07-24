@@ -1,4 +1,4 @@
-package ccc.keeweapi.config.feign;
+package ccc.keeweinfra.config.feign;
 
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Configuration;

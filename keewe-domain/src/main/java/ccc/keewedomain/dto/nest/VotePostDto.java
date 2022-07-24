@@ -9,9 +9,10 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class VotePostDto {
+public class VotePostDto implements PostDto {
     private List<String> candidates;
     private Long profileId;
     private Long userId;
-    private String contents;
+    private String content;
+    private String postType;
 }
