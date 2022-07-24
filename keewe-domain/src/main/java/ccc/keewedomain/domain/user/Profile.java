@@ -129,6 +129,10 @@ public class Profile extends BaseTimeEntity {
         user.getProfiles().add(this);
     }
 
+    public void createNest(Nest nest) {
+        this.nest = nest;
+    }
+
     private void updateOrMaintainStatus(ProfileStatus newStatus) {
         ProfileStatus currentStatus = this.profileStatus;
         if (currentStatus.getOrder() < newStatus.getOrder()) {

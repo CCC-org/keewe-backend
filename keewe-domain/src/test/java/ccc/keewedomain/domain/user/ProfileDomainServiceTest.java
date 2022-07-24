@@ -2,7 +2,7 @@ package ccc.keewedomain.domain.user;
 
 import ccc.keewecore.exception.KeeweException;
 import ccc.keewedomain.repository.user.ProfileRepository;
-import ccc.keewedomain.service.ProfileDomainService;
+import ccc.keewedomain.service.user.ProfileDomainService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

@@ -4,13 +4,9 @@ import ccc.keeweapi.config.security.jwt.JwtUtils;
 import ccc.keeweapi.dto.user.UserAssembler;
 import ccc.keeweapi.dto.user.UserSignUpResponse;
 import ccc.keewedomain.domain.user.User;
-import ccc.keewedomain.dto.UserSignUpDto;
-import ccc.keewedomain.service.ProfileDomainService;
-import ccc.keewedomain.service.UserDomainService;
-import ccc.keeweinfra.dto.KakaoProfileResponse;
+import ccc.keewedomain.service.user.ProfileDomainService;
+import ccc.keewedomain.service.user.UserDomainService;
 import ccc.keeweinfra.vo.OauthAccount;
-import ccc.keeweinfra.vo.naver.NaverAccount;
-import ccc.keeweinfra.vo.kakao.KakaoAccount;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -43,7 +39,7 @@ public class UserApiService {
 
     private User signUpWithOauth(String email) {
         User user = userDomainService.save(userAssembler.toUserSignUpDto(email));
-        profileDomainService.createProfile(user);
+        profileDomainService.save(user);
         return user;
     }
 
