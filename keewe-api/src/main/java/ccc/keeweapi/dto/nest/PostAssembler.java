@@ -3,7 +3,7 @@ package ccc.keeweapi.dto.nest;
 import ccc.keeweapi.utils.SecurityUtil;
 import ccc.keewedomain.domain.nest.AnnouncementPost;
 import ccc.keewedomain.dto.nest.AnnouncementCreateDto;
-import ccc.keewedomain.dto.VotePostDto;
+import ccc.keewedomain.dto.nest.VotePostDto;
 import org.springframework.stereotype.Component;
 
 @Component

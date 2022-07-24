@@ -2,7 +2,7 @@ package ccc.keewedomain.domain.user;
 
 import ccc.keewedomain.domain.common.BaseTimeEntity;
 import ccc.keewedomain.domain.user.enums.UserStatus;
-import ccc.keewedomain.dto.UserSignUpDto;
+import ccc.keewedomain.dto.user.UserSignUpDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
