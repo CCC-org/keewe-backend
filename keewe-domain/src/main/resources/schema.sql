@@ -46,7 +46,7 @@ CREATE TABLE IF NOT EXISTS `buddy`
     buddy_id            BIGINT(20)      NOT NULL        AUTO_INCREMENT,
     follower_id         BIGINT(20)      NOT NULL,
     followee_id         BIGINT(20)      NOT NULL,
-    created_at          DATETIME(6)     NOT NULL ,
+    created_at          DATETIME(6)     NOT NULL,
     updated_at          DATETIME(6)     NOT NULL,
 
     PRIMARY KEY (buddy_id),
