@@ -6,9 +6,11 @@ import ccc.keewecore.exception.KeeweException;
 import ccc.keewedomain.domain.user.User;
 import ccc.keewedomain.dto.user.UserSignUpDto;
 import ccc.keewedomain.repository.user.UserRepository;
+import ccc.keeweinfra.service.GoogleInfraService;
 import ccc.keeweinfra.service.KakaoInfraService;
 import ccc.keeweinfra.service.NaverInfraService;
 import ccc.keeweinfra.vo.OauthAccount;
+import ccc.keeweinfra.vo.google.GoogleAccount;
 import ccc.keeweinfra.vo.kakao.KakaoAccount;
 import ccc.keeweinfra.vo.naver.NaverAccount;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +25,7 @@ public class UserDomainService {
     private final UserRepository userRepository;
     private final KakaoInfraService kakaoInfraService;
     private final NaverInfraService naverInfraService;
+    private final GoogleInfraService googleInfraService;
 
     public <T extends OauthAccount> T getOauthProfile(String code, String company) {
 
@@ -31,6 +34,8 @@ public class UserDomainService {
                 return (T) getKakaoProfile(code);
             case KeeweConsts.NAVER:
                 return (T) getNaverProfile(code);
+            case KeeweConsts.GOOGLE:
+                return (T) getGoogleProfile(code);
             default:
                 throw new KeeweException(KeeweRtnConsts.ERR504);
         }
@@ -69,7 +74,15 @@ public class UserDomainService {
             log.error("[getNaverProfile] fail {}", e.getMessage());
             throw new KeeweException(KeeweRtnConsts.ERR502);
         }
+    }
 
+    private GoogleAccount getGoogleProfile(String code) {
+        try {
+            return googleInfraService.getGoogleAccount(googleInfraService.getAccessToken(code));
+        } catch (Exception e) {
+            log.error("[getGoogleProfile] fail {}", e.getMessage());
+            throw new KeeweException(KeeweRtnConsts.ERR505);
+        }
     }
 
 }
