@@ -1,4 +1,4 @@
-package ccc.keewedomain.service;
+package ccc.keewedomain.service.nest;
 
 
 import ccc.keewedomain.domain.nest.Nest;

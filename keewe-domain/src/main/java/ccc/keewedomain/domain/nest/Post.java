@@ -29,6 +29,10 @@ public class Post extends BaseTimeEntity {
     @JoinColumn(name = "nest_id", nullable = false)
     private Nest nest;
 
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "writer_id", nullable = false)
+    private Profile writer;
+
     @Column(name = "like_count")
     private Long likeCount = 0L;
 
@@ -41,15 +45,14 @@ public class Post extends BaseTimeEntity {
     @OneToMany(mappedBy = "post", fetch = LAZY)
     private List<Comment> comments = new ArrayList<>();
 
-    @ManyToOne(fetch = LAZY)
-    private Profile writer;
-
     @Enumerated(EnumType.STRING)
     @Column(name = "post_type", insertable = false, updatable = false)
     private PostType postType;
 
     @Column(name = "deleted", nullable = false)
     private boolean deleted = false;
+
+    public static final long CONTENT_MAX_LENGTH = 140L;
 
     protected Post(Nest nest, Profile writer, String content) {
         this.nest = nest;

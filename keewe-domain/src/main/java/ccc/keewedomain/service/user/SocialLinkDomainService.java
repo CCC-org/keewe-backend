@@ -1,4 +1,4 @@
-package ccc.keewedomain.service;
+package ccc.keewedomain.service.user;
 
 import ccc.keewedomain.domain.common.Link;
 import ccc.keewedomain.domain.user.Profile;

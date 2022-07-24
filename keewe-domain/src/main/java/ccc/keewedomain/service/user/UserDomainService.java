@@ -1,10 +1,10 @@
-package ccc.keewedomain.service;
+package ccc.keewedomain.service.user;
 
 import ccc.keewecore.consts.KeeweConsts;
 import ccc.keewecore.consts.KeeweRtnConsts;
 import ccc.keewecore.exception.KeeweException;
 import ccc.keewedomain.domain.user.User;
-import ccc.keewedomain.dto.UserSignUpDto;
+import ccc.keewedomain.dto.user.UserSignUpDto;
 import ccc.keewedomain.repository.user.UserRepository;
 import ccc.keeweinfra.service.KakaoInfraService;
 import ccc.keeweinfra.service.NaverInfraService;
