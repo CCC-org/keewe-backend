@@ -57,8 +57,6 @@ CREATE TABLE IF NOT EXISTS `favorite_activities`
 (
     profile_id      BIGINT(20)      NOT NULL,
     activity        VARCHAR(255)    NOT NULL,
-    created_at      DATETIME(6)     NOT NULL    DEFAULT CURRENT_TIMESTAMP,
-    updated_at      DATETIME(6)     NOT NULL    DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
     FOREIGN KEY (profile_id) REFERENCES `profile`(profile_id),
     CONSTRAINT `favorite_activities_constraint` UNIQUE (profile_id, activity)
