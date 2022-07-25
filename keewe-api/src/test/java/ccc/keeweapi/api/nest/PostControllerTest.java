@@ -49,7 +49,7 @@ public class PostControllerTest extends ApiDocumentationTest {
         when(postApiService.createPost(any(), anyString())).thenReturn(PostResponse.of(1L));
 
         mockMvc.perform(post("/api/v1/nest/vote")
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + "[유저의 JWT]")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
                         .content(objectMapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -75,8 +75,6 @@ public class PostControllerTest extends ApiDocumentationTest {
     @Test
     @DisplayName("둥지 - 공지글 생성 API")
     void announcement_create_test() throws Exception {
-
-        String token = "[유저의 JWT]";
         PostCreateRequest request = new PostCreateRequest();
         request.setProfileId(1L);
         request.setContent("안녕하세요 내용이에요.");
@@ -86,7 +84,7 @@ public class PostControllerTest extends ApiDocumentationTest {
 
         mockMvc.perform(
                         post("/api/v1/nest/announcement")
-                                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                                .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
                                 .content(objectMapper.writeValueAsString(request))
                                 .contentType(MediaType.APPLICATION_JSON)
                 ).andExpect(status().isOk())
@@ -113,8 +111,6 @@ public class PostControllerTest extends ApiDocumentationTest {
     @Test
     @DisplayName("둥지 - 질문글 생성 API")
     void question_create_test() throws Exception {
-
-        String token = "[유저의 JWT]";
         PostCreateRequest request = new PostCreateRequest();
         request.setProfileId(1L);
         request.setContent("봄날의 햇살 유승훈.");
@@ -124,7 +120,7 @@ public class PostControllerTest extends ApiDocumentationTest {
 
         mockMvc.perform(
                         post("/api/v1/nest/question")
-                                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                                .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
                                 .content(objectMapper.writeValueAsString(request))
                                 .contentType(MediaType.APPLICATION_JSON)
                 ).andExpect(status().isOk())

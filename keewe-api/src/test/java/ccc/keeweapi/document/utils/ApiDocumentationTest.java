@@ -29,6 +29,8 @@ public class ApiDocumentationTest {
 
     protected static RestDocumentationResultHandler restDocs;
 
+    protected static String JWT = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGtlZXdlLmNvbSIsInJvbGVzIjpbXSwiaWF0IjoxNjU4NTgwNzgzLCJleHAiOjE2NTg5NDA3ODN9.8OuBmD7iWMKKjnGf6mIUWCO4m1j69dNJ-d_hf6ezX6E";
+
     @BeforeAll
     static void restDocSetup() {
         restDocs = MockMvcRestDocumentation.document("{class-name}/{method-name}");

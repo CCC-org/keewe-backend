@@ -68,7 +68,6 @@ public class ProfileDocumentationTest extends ApiDocumentationTest {
         NicknameCreateRequest requestDto = new NicknameCreateRequest();
         requestDto.setNickname(nickname);
         requestDto.setProfileId(profileId);
-        String token = "[유저의 JWT]";
 
 
         when(profileService.createNickname(any()))
@@ -78,7 +77,7 @@ public class ProfileDocumentationTest extends ApiDocumentationTest {
         mockMvc.perform(
                         post("/api/v1/profiles/nickname")
                                 .with(user(new UserPrincipal(user)))
-                                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                                .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
                                 .content(objectMapper.writeValueAsString(requestDto))
                                 .contentType(MediaType.APPLICATION_JSON)
                 ).andExpect(status().isOk())
@@ -114,7 +113,6 @@ public class ProfileDocumentationTest extends ApiDocumentationTest {
         User user = User.builder().build();
 
         LinkCreateRequest requestDto = new LinkCreateRequest(profileId, link);
-        String token = "[유저의 JWT]";
 
         when(profileService.createLink(any()))
                 .thenReturn(LinkCreateResponse.of(link, ProfileStatus.ACTIVITIES_NEEDED));
@@ -122,7 +120,7 @@ public class ProfileDocumentationTest extends ApiDocumentationTest {
         mockMvc.perform(
                         post("/api/v1/profiles/link")
                                 .with(user(new UserPrincipal(user)))
-                                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                                .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
                                 .content(objectMapper.writeValueAsString(requestDto))
                                 .contentType(MediaType.APPLICATION_JSON)
                 ).andExpect(status().isOk())
@@ -152,7 +150,6 @@ public class ProfileDocumentationTest extends ApiDocumentationTest {
     @Test
     @DisplayName("활동 분야 등록 api")
     void create_activities_test() throws Exception {
-        String token = "[유저의 JWT]";
         List<String> activities = List.of("INDIE", "POP");
 
         User user = User.builder().build();
@@ -163,7 +160,7 @@ public class ProfileDocumentationTest extends ApiDocumentationTest {
 
         mockMvc.perform(
                         post("/api/v1/profiles/activities")
-                                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                                .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
                                 .content(objectMapper.writeValueAsString(requestDto))
                                 .contentType(MediaType.APPLICATION_JSON)
                 ).andExpect(status().isOk())
@@ -200,14 +197,13 @@ public class ProfileDocumentationTest extends ApiDocumentationTest {
     @Test
     @DisplayName("활동 분야 검색 api")
     void search_activities_test() throws Exception {
-        String token = "[유저의 JWT]";
 
         when(profileService.searchActivities(any()))
                 .thenReturn(new ActivitiesSearchResponse(List.of(OTHER_MUSIC)));
 
         mockMvc.perform(
                         get("/api/v1/profiles/activities")
-                                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                                .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
                                 .param("keyword", "음악")
                 ).andExpect(status().isOk())
                 .andDo(restDocs.document(
@@ -237,7 +233,6 @@ public class ProfileDocumentationTest extends ApiDocumentationTest {
     @DisplayName("소셜 링크 등록 API")
     void create_social_links_test() throws Exception {
         Long profileId = 1L;
-        String token = "[유저의 JWT]";
 
         LinkDto linkDto1 = LinkDto.of("https://www.youtube.com/hello", "YOUTUBE");
         LinkDto linkDto2 = LinkDto.of("https://facebook.com/world", "FACEBOOK");
@@ -251,7 +246,7 @@ public class ProfileDocumentationTest extends ApiDocumentationTest {
 
         mockMvc.perform(
                         post("/api/v1/profiles/social-links")
-                                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                                .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
                                 .content(objectMapper.writeValueAsString(requestDto))
                                 .contentType(MediaType.APPLICATION_JSON)
                 ).andExpect(status().isOk())
@@ -287,7 +282,7 @@ public class ProfileDocumentationTest extends ApiDocumentationTest {
                         .build()));
 
         mockMvc.perform(get("/api/v1/profiles/incomplete")
-                                .header(HttpHeaders.AUTHORIZATION, "Bearer " + "[유저의 JWT]")
+                                .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
                 ).andExpect(status().isOk())
                 .andDo(restDocs.document(
                         resource(
