@@ -104,4 +104,34 @@ public class UserSignupControllerTest extends ApiDocumentationTest {
                                 .build()
                 )));
     }
+
+    @Test
+    @DisplayName("구글 회원가입/로그인")
+    void google_signup() throws Exception {
+        UserSignUpResponse userSignUpDto = UserSignUpResponse.of(
+                1L,
+                "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJoYXZlYWx3YXlzYmVlbkBrYWthby5jb20iLCJyb2xlcyI6W10sImlhdCI6MTY1NzQzNjU2MywiZXhwIjoxNjU3Nzk2NTYzfQ.AJX7rGRXjmi4TopUBsX6zWVgMYgjN_uRYtF_Yb_80KE"
+        );
+
+
+        when(userApiService.signupWithOauth(anyString(), anyString())).thenReturn(userSignUpDto);
+
+        mockMvc.perform(
+                        get("/api/v1/user/google")
+                                .param("code", "OcIq1_RZnzHNZ54ylZcBunZGiqcGf7g4IiMVi8WVJgxZkTcfg0dOJK4pgysxSwL_sO_2Lgo9dNkAAAGB5urHyg")
+                ).andExpect(status().isOk())
+                .andDo(restDocs.document(resource(
+                        ResourceSnippetParameters.builder()
+                                .description("구글 회원가입/로그인 API 입니다.")
+                                .summary("구글 회원가입/로그인 API 입니다.")
+                                .requestParameters(parameterWithName("code").description("인가 코드 (Authorization Code)"))
+                                .responseFields(
+                                        fieldWithPath("message").description("요청 결과 메세지"),
+                                        fieldWithPath("code").description("결과 코드"),
+                                        fieldWithPath("data.userId").description("생성된 유저 ID"),
+                                        fieldWithPath("data.accessToken").description("발급된 유저의 JWT"))
+                                .tag("SignUp")
+                                .build()
+                )));
+    }
 }
