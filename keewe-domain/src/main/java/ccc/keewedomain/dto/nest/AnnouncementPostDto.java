@@ -5,8 +5,9 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor(staticName = "of")
-public class AnnouncementCreateDto {
+public class AnnouncementPostDto implements PostDto {
     private Long profileId;
     private Long userId;
     private String content;
+    private String postType;
 }

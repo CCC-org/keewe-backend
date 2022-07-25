@@ -4,6 +4,8 @@ import ccc.keeweapi.validator.annotations.PostContent;
 import lombok.Data;
 
 @Data
-public class AnnouncementCreateRequest {
-
+public class QuestionPostCreateRequest {
+    private Long profileId;
+    @PostContent
+    private String content;
 }
