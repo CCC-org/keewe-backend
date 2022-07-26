@@ -33,7 +33,7 @@ public class GoogleAuthController {
 
     private String authRequestUrl;
 
-    @PostConstruct()
+    @PostConstruct
     private void initAuthRequestUrl() {
         UriComponents uri = UriComponentsBuilder.fromUriString(googleUrl)
                 .pathSegment("o", "oauth2", "v2", "auth")

@@ -39,7 +39,7 @@ public class UserController {
     }
 
     @GetMapping("/google")
-    public ApiResponse<?> signUpWithGoogle(HttpSession session, @RequestParam String code) {
+    public ApiResponse<?> signUpWithGoogle(@RequestParam String code) {
         log.info("[Google Signup] code {}", code);
         return ApiResponse.ok(userService.signupWithOauth(code, KeeweConsts.GOOGLE));
     }
