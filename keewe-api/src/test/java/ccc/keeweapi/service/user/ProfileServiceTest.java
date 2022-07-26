@@ -11,7 +11,6 @@ import ccc.keewedomain.domain.user.User;
 import ccc.keewedomain.repository.nest.NestRepository;
 import ccc.keewedomain.repository.user.ProfileRepository;
 import ccc.keewedomain.repository.user.UserRepository;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static ccc.keewedomain.domain.common.enums.Activity.*;
-import static ccc.keewedomain.domain.user.enums.ProfileStatus.LINK_NEEDED;
 import static ccc.keewedomain.domain.user.enums.ProfileStatus.SOCIAL_LINK_NEEDED;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;

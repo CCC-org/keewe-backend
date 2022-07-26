@@ -8,7 +8,7 @@ import ccc.keewedomain.dto.nest.QuestionPostDto;
 import ccc.keewedomain.dto.nest.VotePostDto;
 import org.springframework.stereotype.Component;
 
-import static ccc.keewecore.consts.KeeweRtnConsts.ERR505;
+import static ccc.keewecore.consts.KeeweRtnConsts.ERR506;
 
 @Component
 public class PostAssembler {
@@ -25,7 +25,7 @@ public class PostAssembler {
             case KeeweConsts.QUESTION_POST:
                 return (T) toQuestionCreateDto(request, postType);
             default:
-                throw new KeeweException(ERR505);
+                throw new KeeweException(ERR506);
         }
     }
 

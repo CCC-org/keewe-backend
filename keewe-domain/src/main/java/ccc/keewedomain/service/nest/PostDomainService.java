@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static ccc.keewecore.consts.KeeweRtnConsts.ERR505;
+import static ccc.keewecore.consts.KeeweRtnConsts.ERR506;
 
 
 @RequiredArgsConstructor
@@ -36,7 +36,7 @@ public class PostDomainService {
             case KeeweConsts.QUESTION_POST:
                 return createQuestionPost((QuestionPostDto) dto);
             default:
-                throw new KeeweException(ERR505);
+                throw new KeeweException(ERR506);
         }
     }
 
