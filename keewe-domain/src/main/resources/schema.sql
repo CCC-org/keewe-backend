@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS `user`
 (
-    user_id             BIGINT(20)      AUTO_INCREMENT,
+    user_id             BIGINT   NOT NULL     AUTO_INCREMENT,
     email               VARCHAR(255),
     password            VARCHAR(255),
     phone_number        VARCHAR(255)    UNIQUE,
@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS `user`
 
     PRIMARY KEY(user_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 
 CREATE TABLE IF NOT EXISTS `profile_photo`
 (
