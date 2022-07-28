@@ -3,6 +3,7 @@ package ccc.keeweapi.dto.nest;
 import ccc.keeweapi.utils.SecurityUtil;
 import ccc.keewecore.consts.KeeweConsts;
 import ccc.keewecore.exception.KeeweException;
+import ccc.keewedomain.domain.nest.enums.PostType;
 import ccc.keewedomain.domain.nest.enums.Visibility;
 import ccc.keewedomain.dto.nest.AnnouncementPostDto;
 import ccc.keewedomain.dto.nest.FootprintPostDto;
@@ -18,34 +19,35 @@ public class PostAssembler {
         return PostResponse.of(postId);
     }
 
-    public <T, S extends PostCreateRequest> T toAbstractPostDto(S request, String postType) {
+    public <T, S extends PostCreateRequest> T toAbstractPostDto(S request) {
+        PostType postType = PostType.valueOf(request.getPostType());
         switch (postType) {
-            case KeeweConsts.VOTE_POST:
-                return (T) toVotePostDto((VotePostCreateRequest) request, postType);
-            case KeeweConsts.ANNOUNCE_POST:
-                return (T) toAnnouncementCreateDto(request, postType);
-            case KeeweConsts.QUESTION_POST:
-                return (T) toQuestionCreateDto(request, postType);
-            case KeeweConsts.FOOTPRINT_POST:
-                return (T) toFootprintCreateDto((FootprintPostCreateRequest) request, postType);
+            case VOTE:
+                return (T) toVotePostDto((VotePostCreateRequest) request);
+            case ANNOUNCEMENT:
+                return (T) toAnnouncementCreateDto(request);
+            case QUESTION:
+                return (T) toQuestionCreateDto(request);
+            case FOOTPRINT:
+                return (T) toFootprintCreateDto((FootprintPostCreateRequest) request);
             default:
                 throw new KeeweException(ERR506);
         }
     }
 
-    private AnnouncementPostDto toAnnouncementCreateDto(PostCreateRequest request, String postType) {
-        return AnnouncementPostDto.of(request.getProfileId(), SecurityUtil.getUserId(), request.getContent(), postType);
+    private AnnouncementPostDto toAnnouncementCreateDto(PostCreateRequest request) {
+        return AnnouncementPostDto.of(request.getProfileId(), SecurityUtil.getUserId(), request.getContent(), request.getPostType());
     }
 
-    private VotePostDto toVotePostDto(VotePostCreateRequest request, String postType) {
-        return new VotePostDto(request.getCandidates(), request.getProfileId(), SecurityUtil.getUserId(), request.getContent(), postType);
+    private VotePostDto toVotePostDto(VotePostCreateRequest request) {
+        return new VotePostDto(request.getCandidates(), request.getProfileId(), SecurityUtil.getUserId(), request.getContent(), request.getPostType());
     }
 
-    private QuestionPostDto toQuestionCreateDto(PostCreateRequest request, String postType) {
-        return QuestionPostDto.of(request.getProfileId(), SecurityUtil.getUserId(), request.getContent(), postType);
+    private QuestionPostDto toQuestionCreateDto(PostCreateRequest request) {
+        return QuestionPostDto.of(request.getProfileId(), SecurityUtil.getUserId(), request.getContent(), request.getPostType());
     }
 
-    private FootprintPostDto toFootprintCreateDto(FootprintPostCreateRequest request, String postType) {
-        return FootprintPostDto.of(request.getWriterId(), request.getProfileId(), SecurityUtil.getUserId(), request.getContent(), postType, Visibility.valueOf(request.getVisibility()));
+    private FootprintPostDto toFootprintCreateDto(FootprintPostCreateRequest request) {
+        return FootprintPostDto.of(request.getWriterId(), request.getProfileId(), SecurityUtil.getUserId(), request.getContent(), request.getPostType(), Visibility.valueOf(request.getVisibility()));
     }
 }
