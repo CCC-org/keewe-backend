@@ -20,6 +20,9 @@ public final class StringLengthUtil {
     }
 
     private static long getCharacterBoundaryCount(String s) {
+        if (s == null) {
+            return 0;
+        }
         BreakIterator it = BreakIterator.getCharacterInstance();
         it.setText(s);
         long count = 0;

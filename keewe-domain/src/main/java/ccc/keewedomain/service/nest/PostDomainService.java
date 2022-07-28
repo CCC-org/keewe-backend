@@ -3,6 +3,7 @@ package ccc.keewedomain.service.nest;
 import ccc.keewecore.consts.KeeweConsts;
 import ccc.keewecore.exception.KeeweException;
 import ccc.keewedomain.domain.nest.*;
+import ccc.keewedomain.domain.nest.enums.PostType;
 import ccc.keewedomain.domain.user.Profile;
 import ccc.keewedomain.dto.nest.*;
 import ccc.keewedomain.repository.nest.PostRepository;
@@ -26,14 +27,15 @@ public class PostDomainService {
     private final NestDomainService nestDomainService;
 
     public <T extends PostDto> Long createPost(T dto) {
-        switch (dto.getPostType()) {
-            case KeeweConsts.VOTE_POST:
+        PostType postType = PostType.valueOf(dto.getPostType());
+        switch (postType) {
+            case VOTE:
                 return createVotePost((VotePostDto) dto);
-            case KeeweConsts.ANNOUNCE_POST:
+            case ANNOUNCEMENT:
                 return createAnnouncementPost((AnnouncementPostDto) dto);
-            case KeeweConsts.QUESTION_POST:
+            case QUESTION:
                 return createQuestionPost((QuestionPostDto) dto);
-            case KeeweConsts.FOOTPRINT_POST:
+            case FOOTPRINT:
                 return createFootprintPost((FootprintPostDto)dto);
             default:
                 throw new KeeweException(ERR506);
