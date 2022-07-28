@@ -1,5 +1,7 @@
-package ccc.keeweapi.dto.user;
+package ccc.keeweapi.dto.user.handler;
 
+import ccc.keeweapi.dto.user.LinkCreateResponse;
+import ccc.keeweapi.dto.user.NicknameCreateResponse;
 import ccc.keewedomain.domain.user.Profile;
 import org.springframework.stereotype.Component;
 

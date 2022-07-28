@@ -1,6 +1,7 @@
 package ccc.keeweapi.service.nest;
 
 import ccc.keeweapi.dto.nest.*;
+import ccc.keeweapi.dto.nest.handler.PostAssembler;
 import ccc.keewecore.aop.annotations.FLogging;
 import ccc.keewedomain.service.nest.PostDomainService;
 import lombok.RequiredArgsConstructor;
@@ -16,8 +17,8 @@ public class PostApiService {
 
     @Transactional
     @FLogging
-    public <T extends PostCreateRequest> PostResponse createPost(T request, String postType) {
-        Long postId = postDomainService.createPost(postAssembler.toAbstractPostDto(request, postType));
+    public <T extends AbstractPostCreateRequest> PostResponse createPost(T request) {
+        Long postId = postDomainService.createPost(postAssembler.toAbstractPostDto(request));
         return postAssembler.toPostResponse(postId);
     }
 }

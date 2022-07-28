@@ -148,7 +148,7 @@ CREATE TABLE IF NOT EXISTS `comment_like`
 CREATE TABLE IF NOT EXISTS `candidate`
 (
     candidate_id        BIGINT          NOT NULL    AUTO_INCREMENT,
-    contents            VARCHAR(25)     NOT NULL,
+    content            VARCHAR(25)     NOT NULL,
     post_id             BIGINT          NOT NULL,
     created_at          DATETIME(6)     NOT NULL,
     updated_at          DATETIME(6)     NOT NULL,

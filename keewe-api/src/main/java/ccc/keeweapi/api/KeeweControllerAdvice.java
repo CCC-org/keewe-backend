@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.validation.ConstraintViolationException;
+
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 @RestControllerAdvice
@@ -26,5 +28,12 @@ public class KeeweControllerAdvice {
     public ApiResponse<?> handleKeeweException(KeeweException ex) {
         log.error("KeeweException[{}]: {}", ex.getKeeweRtnConsts(), ex.getMessage());
         return ApiResponse.failure(ex.getKeeweRtnConsts(), ex.getMessage());
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    @ResponseStatus(BAD_REQUEST)
+    public ApiResponse<?> handleKeeweException(ConstraintViolationException ex) {
+        log.error("constraintViolationEx :: {}", ex.getMessage(), ex.getMessage());
+        return ApiResponse.failure(KeeweRtnConsts.ERR400, ex.getMessage());
     }
 }

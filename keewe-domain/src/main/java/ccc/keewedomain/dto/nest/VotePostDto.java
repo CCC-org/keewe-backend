@@ -8,7 +8,7 @@ import java.util.List;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
+@AllArgsConstructor(staticName = "of")
 public class VotePostDto implements PostDto {
     private List<String> candidates;
     private Long profileId;

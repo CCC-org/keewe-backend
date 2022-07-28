@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import static com.epages.restdocs.apispec.ResourceDocumentation.headerWithName;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
@@ -46,7 +45,7 @@ public class PostControllerTest extends ApiDocumentationTest {
         request.getCandidates().add("똥");
         request.getCandidates().add("카레");
 
-        when(postApiService.createPost(any(), anyString())).thenReturn(PostResponse.of(1L));
+        when(postApiService.createPost(any())).thenReturn(PostResponse.of(1L));
 
         mockMvc.perform(post("/api/v1/nest/vote")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
@@ -75,11 +74,11 @@ public class PostControllerTest extends ApiDocumentationTest {
     @Test
     @DisplayName("둥지 - 공지글 생성 API")
     void announcement_create_test() throws Exception {
-        PostCreateRequest request = new PostCreateRequest();
+        CommonPostCreateRequest request = new CommonPostCreateRequest();
         request.setProfileId(1L);
         request.setContent("안녕하세요 내용이에요.");
 
-        when(postApiService.createPost(any(), anyString()))
+        when(postApiService.createPost(any()))
                 .thenReturn(PostResponse.of(1L));
 
         mockMvc.perform(
@@ -111,11 +110,11 @@ public class PostControllerTest extends ApiDocumentationTest {
     @Test
     @DisplayName("둥지 - 질문글 생성 API")
     void question_create_test() throws Exception {
-        PostCreateRequest request = new PostCreateRequest();
+        CommonPostCreateRequest request = new CommonPostCreateRequest();
         request.setProfileId(1L);
         request.setContent("봄날의 햇살 유승훈.");
 
-        when(postApiService.createPost(any(), anyString()))
+        when(postApiService.createPost(any()))
                 .thenReturn(PostResponse.of(1L));
 
         mockMvc.perform(

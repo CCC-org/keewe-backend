@@ -1,6 +1,7 @@
 package ccc.keewedomain.domain.nest;
 
 import ccc.keewedomain.domain.common.BaseTimeEntity;
+import lombok.Getter;
 
 import javax.persistence.*;
 
@@ -10,6 +11,7 @@ import static javax.persistence.FetchType.LAZY;
 
 @Entity
 @Table(name = "candidate")
+@Getter
 public class Candidate extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,18 +19,18 @@ public class Candidate extends BaseTimeEntity {
     private Long id;
 
     @Column(name = "content", nullable = false, length = 25)
-    private String contents;
+    private String content;
 
     @OneToMany(mappedBy = "candidate", fetch = LAZY)
     private List<Choice> choices;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "vote_post_id", nullable = false)
+    @JoinColumn(name = "post_id", nullable = false)
     private VotePost votePost;
 
-    public static Candidate from(String contents, VotePost votePost) {
+    public static Candidate from(String content, VotePost votePost) {
         Candidate candidate = new Candidate();
-        candidate.contents = contents;
+        candidate.content = content;
         candidate.votePost = votePost;
         return candidate;
     }

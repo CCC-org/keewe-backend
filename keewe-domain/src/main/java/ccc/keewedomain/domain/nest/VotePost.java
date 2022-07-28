@@ -16,12 +16,12 @@ public class VotePost extends Post {
     @OneToMany(mappedBy = "votePost", cascade = PERSIST)
     private List<Candidate> candidates;
 
-    public static VotePost from(Profile writer, String contents) {
-        return new VotePost(writer.getNest(), writer, contents);
+    public static VotePost from(Profile writer, String content) {
+        return new VotePost(writer.getNest(), writer, content);
     }
 
-    public VotePost(Nest nest, Profile writer, String contents) {
-        super(nest, writer, contents);
+    public VotePost(Nest nest, Profile writer, String content) {
+        super(nest, writer, content);
     }
 
     public void createCandidates(List<Candidate> candidates) {
