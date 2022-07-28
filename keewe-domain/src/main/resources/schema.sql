@@ -95,6 +95,7 @@ CREATE TABLE IF NOT EXISTS `post`
     writer_id   BIGINT          NOT NULL,
     like_count  BIGINT          NOT NULL,
     content     VARCHAR(140)    NOT NULL,
+    visibility  VARCHAR(20)     NOT NULL,
     post_type   VARCHAR(20)     NOT NULL,
     deleted     BIT             NOT NULL,
     created_at  DATETIME(6)     NOT NULL,
