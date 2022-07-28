@@ -33,4 +33,9 @@ public class PostController {
     public ApiResponse<PostResponse> createQuestionPost(@Valid @RequestBody PostCreateRequest request) {
         return ApiResponse.ok(postApiService.createPost(request, KeeweConsts.QUESTION_POST));
     }
+
+    @PostMapping("/footprint")
+    public ApiResponse<PostResponse> createFootprintPost(@Valid @RequestBody FootprintPostCreateRequest request) {
+        return ApiResponse.ok(postApiService.createPost(request, KeeweConsts.FOOTPRINT_POST));
+    }
 }

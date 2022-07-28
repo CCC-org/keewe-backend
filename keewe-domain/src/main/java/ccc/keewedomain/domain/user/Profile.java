@@ -72,7 +72,7 @@ public class Profile extends BaseTimeEntity {
     private List<SocialLink> socialLinks = new ArrayList<>();
 
     @OneToOne(fetch = LAZY)
-    @JoinColumn(name = "nest_id")
+    @JoinColumn(name = "nest_id", nullable = false, unique = true)
     private Nest nest;
 
     @Column(name = "deleted", nullable = false)

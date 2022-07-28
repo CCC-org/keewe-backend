@@ -3,7 +3,9 @@ package ccc.keeweapi.dto.nest;
 import ccc.keeweapi.utils.SecurityUtil;
 import ccc.keewecore.consts.KeeweConsts;
 import ccc.keewecore.exception.KeeweException;
+import ccc.keewedomain.domain.nest.enums.Visibility;
 import ccc.keewedomain.dto.nest.AnnouncementPostDto;
+import ccc.keewedomain.dto.nest.FootprintPostDto;
 import ccc.keewedomain.dto.nest.QuestionPostDto;
 import ccc.keewedomain.dto.nest.VotePostDto;
 import org.springframework.stereotype.Component;
@@ -24,6 +26,8 @@ public class PostAssembler {
                 return (T) toAnnouncementCreateDto(request, postType);
             case KeeweConsts.QUESTION_POST:
                 return (T) toQuestionCreateDto(request, postType);
+            case KeeweConsts.FOOTPRINT_POST:
+                return (T) toFootprintCreateDto((FootprintPostCreateRequest) request, postType);
             default:
                 throw new KeeweException(ERR506);
         }
@@ -39,5 +43,9 @@ public class PostAssembler {
 
     private QuestionPostDto toQuestionCreateDto(PostCreateRequest request, String postType) {
         return QuestionPostDto.of(request.getProfileId(), SecurityUtil.getUserId(), request.getContent(), postType);
+    }
+
+    private FootprintPostDto toFootprintCreateDto(FootprintPostCreateRequest request, String postType) {
+        return FootprintPostDto.of(request.getWriterId(), request.getProfileId(), SecurityUtil.getUserId(), request.getContent(), postType, Visibility.valueOf(request.getVisibility()));
     }
 }

@@ -7,7 +7,6 @@ import javax.validation.ConstraintValidatorContext;
 
 public class EnumValidator implements ConstraintValidator<Enum, String> {
     private Enum annotation;
-
     @Override
     public void initialize(Enum constraintAnnotation) {
         this.annotation = constraintAnnotation;
