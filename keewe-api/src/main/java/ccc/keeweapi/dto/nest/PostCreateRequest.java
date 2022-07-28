@@ -22,12 +22,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class PostCreateRequest {
     private Long profileId;
+
     @PostContent
     private String content;
-
-    public String getPostType() {
-        return postType;
-    }
 
     @Enum(enumClass = PostType.class)
     private String postType;
