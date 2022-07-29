@@ -2,6 +2,7 @@ package ccc.keewecore.utils;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 
 import java.text.BreakIterator;
 
@@ -9,6 +10,9 @@ import java.text.BreakIterator;
 public final class StringLengthUtil {
 
     public static long getGraphemeLength(String s) {
+        if (StringUtils.isEmpty(s)) {
+            return 0;
+        }
         long length = getCharacterBoundaryCount(s) - get4ByteEmojiCount(s);
         return length;
     }
@@ -20,9 +24,6 @@ public final class StringLengthUtil {
     }
 
     private static long getCharacterBoundaryCount(String s) {
-        if (s == null) {
-            return 0;
-        }
         BreakIterator it = BreakIterator.getCharacterInstance();
         it.setText(s);
         long count = 0;
