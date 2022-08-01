@@ -16,8 +16,8 @@ public class PostApiService {
 
     @Transactional
     @FLogging
-    public <T extends PostCreateRequest> PostResponse createPost(T request, String postType) {
-        Long postId = postDomainService.createPost(postAssembler.toAbstractPostDto(request, postType));
+    public <T extends PostCreateRequest> PostResponse createPost(T request) {
+        Long postId = postDomainService.createPost(postAssembler.toAbstractPostDto(request));
         return postAssembler.toPostResponse(postId);
     }
 }

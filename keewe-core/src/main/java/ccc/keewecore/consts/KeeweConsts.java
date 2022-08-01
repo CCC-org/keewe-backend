@@ -12,4 +12,5 @@ public class KeeweConsts {
     public static final String ANNOUNCE_POST = "announcement";
     public static final String VOTE_POST = "vote";
     public static final String QUESTION_POST = "question";
+    public static final String FOOTPRINT_POST = "footprint";
 }
