@@ -32,8 +32,7 @@ public class UserController {
     }
 
     @GetMapping("/naver")
-    public ApiResponse<?> signUpWithNaver(HttpSession session, @RequestParam String code, @RequestParam String state) {
-        verifySessionState(session, state);
+    public ApiResponse<?> signUpWithNaver(@RequestParam String code, @RequestParam String state) {
         log.info("[Naver Signup] code {}, state {}", code, state);
         return ApiResponse.ok(userService.signupWithOauth(code, KeeweConsts.NAVER));
     }
