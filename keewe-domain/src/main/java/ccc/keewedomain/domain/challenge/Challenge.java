@@ -1,6 +1,7 @@
 package ccc.keewedomain.domain.challenge;
 
 import ccc.keewedomain.domain.common.BaseTimeEntity;
+import ccc.keewedomain.domain.common.Interest;
 import ccc.keewedomain.domain.user.User;
 import lombok.Getter;
 
@@ -22,8 +23,8 @@ public class Challenge extends BaseTimeEntity {
     @JoinColumn(name = "writer_id")
     private User writer;
 
-    @Column(name = "interest", nullable = false)
-    private String interest;
+    @Embedded
+    private Interest interest;
 
     @Column(name = "name", nullable = false, length = 25)
     private String name;

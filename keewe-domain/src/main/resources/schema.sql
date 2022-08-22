@@ -173,7 +173,7 @@ CREATE TABLE IF NOT EXISTS `challenge`
 (
     challenge_id    BIGINT          NOT NULL    AUTO_INCREMENT,
     writer_id       BIGINT          NOT NULL,
-    interest        VARCHAR(255)    NOT NULL,
+    interest_name   VARCHAR(255)    NOT NULL,
     name            VARCHAR(255)    NOT NULL,
     introduction    VARCHAR(255)    NOT NULL,
     deleted         BIT             NOT NULL,
