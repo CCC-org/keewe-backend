@@ -25,10 +25,10 @@ public class Challenge extends BaseTimeEntity {
     @Column(name = "interest", nullable = false)
     private String interest;
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "name", nullable = false, length = 25)
     private String name;
 
-    @Column(name = "introduction")
+    @Column(name = "introduction", length = 150)
     private String introduction;
 
     @Column(name = "deleted", nullable = false)
