@@ -1,0 +1,36 @@
+package ccc.keewedomain.domain.challenge;
+
+import ccc.keewedomain.domain.common.BaseTimeEntity;
+import ccc.keewedomain.domain.user.User;
+import lombok.Getter;
+
+import javax.persistence.*;
+
+import static javax.persistence.FetchType.LAZY;
+
+@Entity
+@Table(name = "challenge")
+@Getter
+public class Challenge extends BaseTimeEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "challenge_id")
+    private Long id;
+
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "writer_id")
+    private User writer;
+
+    @Column(name = "interest", nullable = false)
+    private String interest;
+
+    @Column(name = "name", nullable = false)
+    private String name;
+
+    @Column(name = "introduction")
+    private String introduction;
+
+    @Column(name = "deleted", nullable = false)
+    private boolean deleted;
+}
