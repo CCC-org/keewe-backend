@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 @Getter
 public class Interest {
 
-    @Column(name = "interest_name", nullable = false)
+    @Column(name = "interest_name", nullable = false, length = 8)
     private String name;
 
     public static final List<Interest> defaultInterests = List.of(

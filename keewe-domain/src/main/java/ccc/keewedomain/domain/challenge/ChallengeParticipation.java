@@ -26,7 +26,7 @@ public class ChallengeParticipation extends BaseTimeEntity {
     @JoinColumn(name = "challenge_id", nullable = false)
     private Challenge challenge;
 
-    @Column(name = "my_topic", nullable = false)
+    @Column(name = "my_topic", nullable = false, length = 25)
     private String myTopic;
 
     @Column(name = "insight_per_week", nullable = false)
