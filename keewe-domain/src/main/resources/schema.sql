@@ -168,3 +168,35 @@ CREATE TABLE IF NOT EXISTS `choice`
     FOREIGN KEY (candidate_id) REFERENCES `candidate`(candidate_id),
     FOREIGN KEY (profile_id) REFERENCES `profile`(profile_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS `challenge`
+(
+    challenge_id    BIGINT          NOT NULL    AUTO_INCREMENT,
+    writer_id       BIGINT          NOT NULL,
+    interest_name   VARCHAR(8)    NOT NULL,
+    name            VARCHAR(25)    NOT NULL,
+    introduction    VARCHAR(150)    NOT NULL,
+    deleted         BIT             NOT NULL,
+    created_at      DATETIME(6)     NOT NULL,
+    updated_at      DATETIME(6)     NOT NULL,
+
+    PRIMARY KEY (challenge_id),
+    FOREIGN KEY (writer_id) REFERENCES `user`(user_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS `challenge_participation`
+(
+    challenge_participation_id  BIGINT          NOT NULL    AUTO_INCREMENT,
+    challenger_id               BIGINT          NOT NULL,
+    challenge_id                BIGINT          NOT NULL,
+    my_topic                    VARCHAR(25)    NOT NULL,
+    insight_per_week            INT             NOT NULL,
+    duration                    INT             NOT NULL,
+    deleted                     BIT             NOT NULL,
+    created_at                  DATETIME(6)     NOT NULL,
+    updated_at                  DATETIME(6)     NOT NULL,
+
+    PRIMARY KEY (challenge_participation_id),
+    FOREIGN KEY (challenger_id) REFERENCES `user`(user_id),
+    FOREIGN KEY (challenge_id) REFERENCES `challenge`(challenge_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
