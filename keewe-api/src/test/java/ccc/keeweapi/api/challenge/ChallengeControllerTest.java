@@ -1,11 +1,9 @@
-package ccc.keeweapi.challenge;
+package ccc.keeweapi.api.challenge;
 
-import ccc.keeweapi.api.challenge.ChallengeController;
 import ccc.keeweapi.document.utils.ApiDocumentationTest;
 import ccc.keeweapi.dto.challenge.ChallengeCreateResponse;
 import ccc.keeweapi.service.challenge.ChallengeApiService;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

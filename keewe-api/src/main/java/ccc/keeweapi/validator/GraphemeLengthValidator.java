@@ -34,8 +34,8 @@ public class GraphemeLengthValidator implements ConstraintValidator<GraphemeLeng
         if (max < 0) {
             throw new IllegalArgumentException("max는 음수일 수 없습니다.");
         }
-        if(min > max) {
-            throw new IllegalArgumentException("max는 min보다 커야합니다.");
+        if (min > max) {
+            throw new IllegalArgumentException("max는 min보다 크거나 같아야 합니다.");
         }
     }
 }

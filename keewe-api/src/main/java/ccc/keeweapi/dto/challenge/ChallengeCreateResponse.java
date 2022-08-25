@@ -1,6 +1,5 @@
 package ccc.keeweapi.dto.challenge;
 
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
