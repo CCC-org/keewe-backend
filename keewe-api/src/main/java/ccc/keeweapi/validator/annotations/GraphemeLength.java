@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = GraphemeLengthValidator.class)
 public @interface GraphemeLength {
-    String message() default "기대한 비교 결과와 일치하지 않습니다.";
+    String message() default "길이 조건과 일치하지 않습니다.";
     Class[] groups() default {};
     Class[] payload() default {};
     int min() default 0;
