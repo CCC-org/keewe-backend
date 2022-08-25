@@ -15,7 +15,7 @@ public class ChallengeCreateResponse {
     private String myTopic;
     private int insightPerWeek;
     private int duration;
-    private LocalDate endDate;
+    private String endDate;
 
     public static ChallengeCreateResponse of(String challengeName, String myTopic, int insightPerWeek, int duration, LocalDate endDate) {
         ChallengeCreateResponse response = new ChallengeCreateResponse();
@@ -23,7 +23,7 @@ public class ChallengeCreateResponse {
         response.myTopic = myTopic;
         response.insightPerWeek = insightPerWeek;
         response.duration = duration;
-        response.endDate = endDate;
+        response.endDate = endDate.toString();
 
         return response;
     }

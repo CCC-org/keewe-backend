@@ -22,7 +22,7 @@ public class ChallengeApiService {
     public ChallengeCreateResponse createChallenge(ChallengeCreateRequest request) {
         Challenge challenge = challengeDomainService.save(challengeAssembler.toChallengeCreateDto(request));
         ChallengeParticipation participation = challengeDomainService
-                .participate(challengeAssembler.toChallengeParticipateDto(request.getParticipation(), challenge.getId()));
+                .participate(challengeAssembler.toChallengeParticipateDto(request.getParticipate(), challenge.getId()));
         return challengeAssembler.toChallengeCreateResponse(challenge, participation);
     }
 }
