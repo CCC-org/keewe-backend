@@ -3,13 +3,18 @@ package ccc.keewedomain.domain.challenge;
 import ccc.keewedomain.domain.common.BaseTimeEntity;
 import ccc.keewedomain.domain.user.User;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+import java.time.LocalDate;
+
 import static javax.persistence.FetchType.LAZY;
+import static lombok.AccessLevel.PROTECTED;
 
 @Entity
 @Table(name = "challenge_participation")
+@NoArgsConstructor(access = PROTECTED)
 @Getter
 public class ChallengeParticipation extends BaseTimeEntity {
 
@@ -37,4 +42,19 @@ public class ChallengeParticipation extends BaseTimeEntity {
 
     @Column(name = "deleted", nullable = false)
     private boolean deleted;
+
+    public static ChallengeParticipation of(User challenger, Challenge challenge, String myTopic, int insightPerWeek, int duration) {
+        ChallengeParticipation participation = new ChallengeParticipation();
+        participation.challenger = challenger;
+        participation.challenge = challenge;
+        participation.myTopic = myTopic;
+        participation.insightPerWeek = insightPerWeek;
+        participation.duration = duration;
+
+        return participation;
+    }
+
+    public LocalDate getEndDate() {
+        return getCreatedAt().toLocalDate().plusWeeks(duration);
+    }
 }

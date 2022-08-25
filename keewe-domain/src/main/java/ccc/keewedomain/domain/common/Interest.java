@@ -1,15 +1,17 @@
 package ccc.keewedomain.domain.common;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static lombok.AccessLevel.PROTECTED;
+
 @Embeddable
-@AllArgsConstructor(staticName = "of")
+@NoArgsConstructor(access = PROTECTED)
 @Getter
 public class Interest {
 
@@ -44,5 +46,12 @@ public class Interest {
             .stream()
             .map(Interest::of)
             .collect(Collectors.toUnmodifiableList());
+
+    public static Interest of(String name) {
+        Interest interest = new Interest();
+        interest.name = name;
+
+        return interest;
+    }
 
 }
