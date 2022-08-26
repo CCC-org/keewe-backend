@@ -40,6 +40,9 @@ public class ChallengeParticipation extends BaseTimeEntity {
     @Column(name = "duration", nullable = false)
     private int duration; // 주 단위
 
+    @Column(name = "end_date", nullable = false)
+    private LocalDate endDate;
+
     @Column(name = "deleted", nullable = false)
     private boolean deleted;
 
@@ -50,14 +53,15 @@ public class ChallengeParticipation extends BaseTimeEntity {
         participation.myTopic = myTopic;
         participation.insightPerWeek = insightPerWeek;
         participation.duration = duration;
+        participation.initEndDate();
 
         return participation;
     }
 
-    public LocalDate getEndDate() {
+    private void initEndDate() {
         LocalDate createdDate = getCreatedAt().toLocalDate();
         int dayOfWeek = createdDate.getDayOfWeek().getValue();
-        return createdDate
+        this.endDate = createdDate
                 .minusDays(dayOfWeek)
                 .plusWeeks(duration);
     }
