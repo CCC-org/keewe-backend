@@ -54,6 +54,10 @@ public class UserDomainService {
         return userRepository.findByEmailOrElseThrow(email);
     }
 
+    public User getUserByIdOrElseThrow(Long id) {
+        return userRepository.findById(id).orElseThrow(() -> new KeeweException(KeeweRtnConsts.ERR411));
+    }
+
     public Optional<User> getUserByEmail(String email) {
         return userRepository.findByEmail(email);
     }
