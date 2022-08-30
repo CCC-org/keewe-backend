@@ -1,8 +1,6 @@
 package ccc.keeweapi.service.challenge;
 
-import ccc.keeweapi.dto.challenge.ChallengeAssembler;
-import ccc.keeweapi.dto.challenge.ChallengeCreateRequest;
-import ccc.keeweapi.dto.challenge.ChallengeCreateResponse;
+import ccc.keeweapi.dto.challenge.*;
 import ccc.keewedomain.domain.challenge.Challenge;
 import ccc.keewedomain.domain.challenge.ChallengeParticipation;
 import ccc.keewedomain.service.challenge.ChallengeDomainService;
@@ -24,5 +22,13 @@ public class ChallengeApiService {
         ChallengeParticipation participation = challengeDomainService
                 .participate(challengeAssembler.toChallengeParticipateDto(request.getParticipate(), challenge.getId()));
         return challengeAssembler.toChallengeCreateResponse(challenge, participation);
+    }
+
+    @Transactional
+    public ChallengeParticipationResponse participate(ChallengeParticipateRequest request) {
+        ChallengeParticipation participation = challengeDomainService
+                .participate(challengeAssembler.toChallengeParticipateDto(request));
+        return challengeAssembler.toChallengeParticipationResponse(participation);
+
     }
 }
