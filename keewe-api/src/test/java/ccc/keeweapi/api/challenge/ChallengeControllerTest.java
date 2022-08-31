@@ -41,6 +41,7 @@ public class ChallengeControllerTest extends ApiDocumentationTest {
     @Test
     @DisplayName("챌린지 등록 API")
     void create_challenge() throws Exception {
+        Long challengeId = 1L;
         String interest = "개발";
         String name = "하루 한 문제 풀기";
         String introduction = "알고리즘 하루에 하나씩 풀기";
@@ -62,7 +63,7 @@ public class ChallengeControllerTest extends ApiDocumentationTest {
                 .put("participate", participateRequest);
 
         when(challengeApiService.createChallenge(any())).thenReturn(
-                ChallengeCreateResponse.of(name, myTopic, insightPerWeek, duration, LocalDate.of(2022, 9, 18)));
+                ChallengeCreateResponse.of(challengeId, name, myTopic, insightPerWeek, duration, LocalDate.of(2022, 9, 18)));
 
         ResultActions resultActions = mockMvc.perform(post("/api/v1/challenge")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
@@ -86,6 +87,7 @@ public class ChallengeControllerTest extends ApiDocumentationTest {
                         .responseFields(
                                 fieldWithPath("message").description("요청 결과 메세지"),
                                 fieldWithPath("code").description("결과 코드"),
+                                fieldWithPath("data.challengeId").description("생성된 챌린지의 ID"),
                                 fieldWithPath("data.challengeName").description("생성된 챌린지 이름"),
                                 fieldWithPath("data.myTopic").description("나만의 주제"),
                                 fieldWithPath("data.insightPerWeek").description("주마다 올릴 인사이트 개수"),
