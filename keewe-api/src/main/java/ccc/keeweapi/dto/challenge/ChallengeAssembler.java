@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 public class ChallengeAssembler {
     public ChallengeCreateResponse toChallengeCreateResponse(Challenge challenge, ChallengeParticipation participation) {
         return ChallengeCreateResponse.of(
+                challenge.getId(),
                 challenge.getName(),
                 participation.getMyTopic(),
                 participation.getInsightPerWeek(),
