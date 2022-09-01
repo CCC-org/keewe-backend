@@ -194,6 +194,7 @@ CREATE TABLE IF NOT EXISTS `challenge_participation`
     duration                    INT             NOT NULL,
     deleted                     BIT             NOT NULL,
     end_date                    DATETIME(6)     NOT NULL,
+    status                      VARCHAR(20)     NOT NULL,
     created_at                  DATETIME(6)     NOT NULL,
     updated_at                  DATETIME(6)     NOT NULL,
 

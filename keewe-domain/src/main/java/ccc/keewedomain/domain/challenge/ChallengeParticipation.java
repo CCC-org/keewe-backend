@@ -1,5 +1,6 @@
 package ccc.keewedomain.domain.challenge;
 
+import ccc.keewedomain.domain.challenge.enums.ChallengeParticipationStatus;
 import ccc.keewedomain.domain.common.BaseTimeEntity;
 import ccc.keewedomain.domain.user.User;
 import lombok.Getter;
@@ -46,6 +47,10 @@ public class ChallengeParticipation extends BaseTimeEntity {
     @Column(name = "deleted", nullable = false)
     private boolean deleted;
 
+    @Column(name = "status", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private ChallengeParticipationStatus status;
+
     public static ChallengeParticipation of(User challenger, Challenge challenge, String myTopic, int insightPerWeek, int duration) {
         ChallengeParticipation participation = new ChallengeParticipation();
         participation.challenger = challenger;
@@ -53,6 +58,7 @@ public class ChallengeParticipation extends BaseTimeEntity {
         participation.myTopic = myTopic;
         participation.insightPerWeek = insightPerWeek;
         participation.duration = duration;
+        participation.status = ChallengeParticipationStatus.CHALLENGING;
         participation.initEndDate();
 
         return participation;
