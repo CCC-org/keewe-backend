@@ -194,10 +194,12 @@ CREATE TABLE IF NOT EXISTS `challenge_participation`
     duration                    INT             NOT NULL,
     deleted                     BIT             NOT NULL,
     end_date                    DATETIME(6)     NOT NULL,
+    status                      VARCHAR(20)     NOT NULL,
     created_at                  DATETIME(6)     NOT NULL,
     updated_at                  DATETIME(6)     NOT NULL,
 
     PRIMARY KEY (challenge_participation_id),
     FOREIGN KEY (challenger_id) REFERENCES `user`(user_id),
-    FOREIGN KEY (challenge_id) REFERENCES `challenge`(challenge_id)
+    FOREIGN KEY (challenge_id) REFERENCES `challenge`(challenge_id),
+    INDEX `CHALLENGER_STATUS_IDX`(challenger_id, status)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

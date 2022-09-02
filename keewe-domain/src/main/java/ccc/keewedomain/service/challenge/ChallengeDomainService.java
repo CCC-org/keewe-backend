@@ -13,7 +13,7 @@ import ccc.keewedomain.service.user.UserDomainService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
+import static ccc.keewedomain.domain.challenge.enums.ChallengeParticipationStatus.CHALLENGING;
 
 @Service
 @RequiredArgsConstructor
@@ -36,7 +36,7 @@ public class ChallengeDomainService {
     }
 
     public boolean onChallenge(Long userId) {
-        return challengeParticipationRepository.existsByChallengeIdAndEndDateAfterAndDeletedFalse(userId, LocalDate.now());
+        return challengeParticipationRepository.existsByChallengerIdAndStatus(userId, CHALLENGING);
     }
 
     public Challenge getByIdOrElseThrow(Long id) {
