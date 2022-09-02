@@ -66,9 +66,6 @@ public class ChallengeParticipation extends BaseTimeEntity {
 
     private void initEndDate() {
         LocalDate createdDate = getCreatedAt().toLocalDate();
-        int dayOfWeek = createdDate.getDayOfWeek().getValue();
-        this.endDate = createdDate
-                .minusDays(dayOfWeek)
-                .plusWeeks(duration);
+        this.endDate = createdDate.minusDays(1).plusWeeks(duration);
     }
 }
