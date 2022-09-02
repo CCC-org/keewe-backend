@@ -23,7 +23,7 @@ public class ChallengeController {
         return ApiResponse.ok(challengeApiService.createChallenge(request));
     }
 
-    @PostMapping(value = "/paticipate")
+    @PostMapping(value = "/participation")
     public ApiResponse<?> participate(@RequestBody @Valid ChallengeParticipateRequest request) {
         return ApiResponse.ok(challengeApiService.participate(request));
     }
