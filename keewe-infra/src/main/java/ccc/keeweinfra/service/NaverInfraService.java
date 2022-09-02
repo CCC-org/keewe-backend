@@ -33,7 +33,6 @@ public class NaverInfraService {
                 clientId,
                 clientSecret,
                 code);
-        System.out.println(response.toString());
         return response.getAccessToken();
     }
 
