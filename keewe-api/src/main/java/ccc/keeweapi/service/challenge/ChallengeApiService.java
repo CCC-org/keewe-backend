@@ -12,7 +12,6 @@ import javax.transaction.Transactional;
 @Service
 @RequiredArgsConstructor
 public class ChallengeApiService {
-
     private final ChallengeDomainService challengeDomainService;
     private final ChallengeAssembler challengeAssembler;
 

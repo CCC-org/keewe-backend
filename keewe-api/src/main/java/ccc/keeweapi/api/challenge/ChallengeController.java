@@ -16,7 +16,6 @@ import javax.validation.Valid;
 @RequestMapping("/api/v1/challenge")
 @RequiredArgsConstructor
 public class ChallengeController {
-
     private final ChallengeApiService challengeApiService;
 
     @PostMapping
