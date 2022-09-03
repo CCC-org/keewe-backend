@@ -3,6 +3,7 @@ plugins {
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 	id 'java'
 	id 'com.epages.restdocs-api-spec' version '0.16.2'
+	id 'com.ewerk.gradle.plugins.querydsl' version '1.0.10'
 }
 
 subprojects {
@@ -108,12 +109,24 @@ project(':keewe-core') {
 
 
 project(':keewe-domain') {
+	apply plugin: 'com.ewerk.gradle.plugins.querydsl'
+
 	bootJar {
 		enabled = false
 	}
 
 	jar {
 		enabled = true
+	}
+
+	configurations {
+		querydsl {
+			extendsFrom compileClasspath
+		}
+	}
+
+	ext {
+		queryDslVersion = "5.0.0"
 	}
 
 	dependencies {
@@ -123,7 +136,25 @@ project(':keewe-domain') {
 		implementation 'mysql:mysql-connector-java'
 		implementation group: 'com.h2database', name: 'h2', version: '2.1.214'
 		implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.5.8'
+		implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
+		implementation "com.querydsl:querydsl-apt:${queryDslVersion}"
 		// todo ::jpa, redis import
+	}
+
+
+	def querydslSrcDir = "$buildDir/generated/querydsl"
+
+	querydsl {
+		jpa = true
+		querydslSourcesDir = querydslSrcDir
+	}
+
+	sourceSets {
+		main.java.srcDir querydslSrcDir
+	}
+
+	compileQuerydsl {
+		options.annotationProcessorPath = configurations.querydsl
 	}
 }
 

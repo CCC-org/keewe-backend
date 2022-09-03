@@ -28,7 +28,8 @@ public class ProfileDomainServiceTest {
     @Test
     @DisplayName("닉네임 생성 제약조건 테스트")
     void nickname_constraint_test() {
-        Profile profile = Profile.init().build();
+        Profile profile = new Profile();
+
         when(profileRepository.findById(any()))
                 .thenReturn(Optional.of(profile));
 
