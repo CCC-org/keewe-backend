@@ -81,17 +81,6 @@ public class Profile extends BaseTimeEntity {
     public static final int NICKNAME_MAX_LENGTH = 10;
     public static final int SOCIAL_LINKS_MAX_SIZE = 5;
 
-    public static ProfileBuilder init() {
-        return Profile.builder()
-                .privacy(PUBLIC)
-                .profileStatus(NICKNAME_NEEDED)
-                .activities(new ArrayList<>())
-                .followers(new ArrayList<>())
-                .followees(new ArrayList<>())
-                .socialLinks(new ArrayList<>())
-                .deleted(false);
-    }
-
     public static Profile of(User user) {
         Profile profile = new Profile();
         profile.connectWithUser(user);
@@ -152,4 +141,5 @@ public class Profile extends BaseTimeEntity {
         if (!matcher.matches())
             throw new IllegalArgumentException("링크 패턴이 일치하지 않습니다.");
     }
+
 }

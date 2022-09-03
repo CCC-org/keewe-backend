@@ -47,7 +47,7 @@ class ProfileServiceTest {
         User user = SecurityUtil.getUser();
         userRepository.save(user);
         System.out.println("user = " + user.getId());
-        Profile profile = Profile.init().user(user).build();
+        Profile profile = Profile.of(user);
 
         Nest nest = new Nest();
         nestRepository.save(nest);
