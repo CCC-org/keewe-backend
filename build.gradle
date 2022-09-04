@@ -161,7 +161,19 @@ project(':keewe-domain') {
 project(':keewe-api') {
 	apply plugin: 'com.epages.restdocs-api-spec'
 
+
+	ext {
+		logbackVersion = "1.2.11"
+	}
+
 	dependencies {
+		implementation "ch.qos.logback:logback-core:${logbackVersion}"
+		implementation "ch.qos.logback:logback-classic:${logbackVersion}"
+		implementation(
+				"io.sentry:sentry-spring-boot-starter:1.7.30",
+				"io.sentry:sentry-logback:1.7.30"
+		)
+
 		implementation project(path: ':keewe-core', configuration: 'default')
 		implementation project(path: ':keewe-domain', configuration: 'default')
 		implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -173,6 +185,7 @@ project(':keewe-api') {
 		testImplementation 'com.epages:restdocs-api-spec-mockmvc:0.16.2'
 		testImplementation 'org.springframework.security:spring-security-test'
 	}
+
 
 	def active = System.properties.getOrDefault('spring.profiles.active', 'local')
 
