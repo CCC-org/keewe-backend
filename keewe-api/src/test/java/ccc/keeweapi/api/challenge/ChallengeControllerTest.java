@@ -130,7 +130,7 @@ public class ChallengeControllerTest extends ApiDocumentationTest {
                         .requestHeaders(
                                 headerWithName("Authorization").description("유저의 JWT"))
                         .requestFields(
-                                fieldWithPath("challengeId").description("챌린지 커버"),
+                                fieldWithPath("challengeId").description("참여할 챌린지 ID"),
                                 fieldWithPath("insightPerWeek").description("주마다 올릴 인사이트 개수 1~7"),
                                 fieldWithPath("duration").description("참가 기간 2~8, 단위: 주"),
                                 fieldWithPath("myTopic").description("나만의 주제 150자 이하"))
