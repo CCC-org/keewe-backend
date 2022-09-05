@@ -3,13 +3,13 @@ package ccc.keewedomain.service.nest;
 import ccc.keewecore.consts.KeeweConsts;
 import ccc.keewecore.exception.KeeweException;
 import ccc.keewedomain.domain.nest.*;
-import ccc.keewedomain.domain.user.Profile;
+import ccc.keewedomain.domain.user.User;
+import ccc.keewedomain.dto.nest.AnnouncementPostDto;
 import ccc.keewedomain.dto.nest.PostDto;
 import ccc.keewedomain.dto.nest.QuestionPostDto;
 import ccc.keewedomain.dto.nest.VotePostDto;
-import ccc.keewedomain.dto.nest.AnnouncementPostDto;
 import ccc.keewedomain.repository.nest.PostRepository;
-import ccc.keewedomain.service.user.ProfileDomainService;
+import ccc.keewedomain.service.user.UserDomainService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -24,7 +24,7 @@ import static ccc.keewecore.consts.KeeweRtnConsts.ERR506;
 @Service
 @Slf4j
 public class PostDomainService {
-    private final ProfileDomainService profileDomainService;
+    private final UserDomainService userDomainService;
     private final PostRepository postRepository;
 
     public <T extends PostDto> Long createPost(T dto) {
@@ -52,9 +52,8 @@ public class PostDomainService {
     }
 
     private Long createVotePost(VotePostDto votePostDto) {
-        Profile profile = profileDomainService.getAndVerifyOwnerOrElseThrow(votePostDto.getProfileId(), votePostDto.getUserId());
-
-        VotePost votePost = VotePost.from(profile, votePostDto.getContent());
+        User user = userDomainService.getUserByIdOrElseThrow(votePostDto.getUserId());
+        VotePost votePost = VotePost.from(user, votePostDto.getContent());
         List<Candidate> candidates = createVoteCandidates(votePostDto.getCandidates(), votePost);
         votePost.createCandidates(candidates);
 
@@ -62,13 +61,13 @@ public class PostDomainService {
     }
 
     private Long createAnnouncementPost(AnnouncementPostDto dto) {
-        Profile profile = profileDomainService.getAndVerifyOwnerOrElseThrow(dto.getProfileId(), dto.getUserId());
-        return this.save(AnnouncementPost.of(profile, dto.getContent()));
+        User user = userDomainService.getUserByIdOrElseThrow(dto.getUserId());
+        return this.save(AnnouncementPost.of(user, dto.getContent()));
     }
 
     private Long createQuestionPost(QuestionPostDto dto) {
-        Profile profile = profileDomainService.getAndVerifyOwnerOrElseThrow(dto.getProfileId(), dto.getUserId());
-        return this.save(QuestionPost.of(profile, dto.getContent()));
+        User user = userDomainService.getUserByIdOrElseThrow(dto.getUserId());
+        return this.save(QuestionPost.of(user, dto.getContent()));
     }
 
 }

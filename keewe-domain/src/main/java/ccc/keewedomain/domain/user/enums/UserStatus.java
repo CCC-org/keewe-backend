@@ -1,7 +1,7 @@
 package ccc.keewedomain.domain.user.enums;
 
 public enum UserStatus {
-    ONBOARDING,
+    ONBOARD,
     ACTIVE,
     INACTIVE,
     BLOCKED

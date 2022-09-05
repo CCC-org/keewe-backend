@@ -10,15 +10,15 @@ import javax.persistence.ManyToOne;
 import static javax.persistence.FetchType.LAZY;
 
 @Entity
-public class Buddy extends BaseTimeEntity {
+public class Follow extends BaseTimeEntity {
     @Id
     private Long id;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "follower_id")
-    private Profile follower;
+    private User follower;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "followee_id")
-    private Profile followee;
+    private User followee;
 }

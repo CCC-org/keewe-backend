@@ -1,10 +1,9 @@
 package ccc.keewedomain.domain.nest;
 
 import ccc.keewedomain.domain.common.BaseTimeEntity;
-import ccc.keewedomain.domain.user.Profile;
+import ccc.keewedomain.domain.user.User;
 
 import javax.persistence.*;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,7 +23,7 @@ public class Comment extends BaseTimeEntity {
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "writer_id", nullable = false)
-    private Profile writer;
+    private User writer;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "parent_comment_id", nullable = true)
