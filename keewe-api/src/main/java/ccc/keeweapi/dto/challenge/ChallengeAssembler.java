@@ -20,6 +20,15 @@ public class ChallengeAssembler {
         );
     }
 
+    public ChallengeParticipationResponse toChallengeParticipationResponse(ChallengeParticipation participation) {
+        return ChallengeParticipationResponse.of(
+                participation.getMyTopic(),
+                participation.getInsightPerWeek(),
+                participation.getDuration(),
+                participation.getEndDate()
+        );
+    }
+
     public ChallengeCreateDto toChallengeCreateDto(ChallengeCreateRequest request) {
         return ChallengeCreateDto.of(SecurityUtil.getUserId(), request.getName(), request.getInterest(), request.getIntroduction());
     }
