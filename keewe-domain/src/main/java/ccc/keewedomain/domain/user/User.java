@@ -85,8 +85,5 @@ public class User extends BaseTimeEntity {
 
         return user;
     }
-
-    public void createProfile() {
-    }
 }
 
