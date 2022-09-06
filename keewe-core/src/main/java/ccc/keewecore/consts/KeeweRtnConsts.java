@@ -13,7 +13,8 @@ public enum KeeweRtnConsts {
     ERR403(KeeweRtnGrp.Auth, 403, "토큰이 누락됐어요."),
     ERR404(KeeweRtnGrp.Auth, 404, "권한이 없는 유저입니다."),
 
-    ERR400(KeeweRtnGrp.Validation, 400, "잘못된 요청이에요."), // FIXME
+    ERR400(KeeweRtnGrp.Validation, 400, "유효하지 않은 값이에요."),
+
     ERR411(KeeweRtnGrp.Validation, 411, "유저를 찾을 수 없어요."),
     ERR412(KeeweRtnGrp.Validation, 412, "유저가 이메일 제공에 동의를 하지 않았어요."),
 
@@ -34,7 +35,9 @@ public enum KeeweRtnConsts {
     ERR504(KeeweRtnGrp.System, 504, "지원하지 않는 소셜 타입이에요."),
     ERR505(KeeweRtnGrp.System, 505, "구글 회원가입 중 내부 오류가 발생했어요."),
 
-    ERR506(KeeweRtnGrp.System, 506, "지원하지 않는 게시글 타입이에요.");
+    ERR506(KeeweRtnGrp.System, 506, "지원하지 않는 게시글 타입이에요."),
+
+    ERR999(KeeweRtnGrp.System, 999, "처리되지 않은 예외가 발생했어요.");
 
     private KeeweRtnGrp grp;
     private int code;
