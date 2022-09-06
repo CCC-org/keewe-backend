@@ -13,6 +13,8 @@ import ccc.keewedomain.service.user.UserDomainService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 import static ccc.keewedomain.domain.challenge.enums.ChallengeParticipationStatus.CHALLENGING;
 
 @Service
@@ -30,22 +32,17 @@ public class ChallengeDomainService {
 
     public ChallengeParticipation participate(ChallengeParticipateDto dto) {
         User challenger = userDomainService.getUserByIdOrElseThrow(dto.getChallengerId());
-        validateNotOnChallenge(dto.getChallengerId());
+        exitCurrentChallengeIfExist(dto.getChallengerId());
         Challenge challenge = getByIdOrElseThrow(dto.getChallengeId());
         return challenge.participate(challenger, dto.getMyTopic(), dto.getInsightPerWeek(), dto.getDuration());
-    }
-
-    public boolean onChallenge(Long userId) {
-        return challengeParticipationRepository.existsByChallengerIdAndStatus(userId, CHALLENGING);
     }
 
     public Challenge getByIdOrElseThrow(Long id) {
         return challengeRepository.findById(id).orElseThrow(() -> new KeeweException(KeeweRtnConsts.ERR430));
     }
 
-    private void validateNotOnChallenge(Long userId) {
-        if (onChallenge(userId)) {
-            throw new KeeweException(KeeweRtnConsts.ERR431);
-        }
+    private void exitCurrentChallengeIfExist(Long userId) {
+        challengeParticipationRepository.findByChallengerIdAndStatus(userId, CHALLENGING)
+                .ifPresent(ChallengeParticipation::cancel);
     }
 }
