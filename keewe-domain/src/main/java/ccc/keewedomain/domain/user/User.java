@@ -2,7 +2,6 @@ package ccc.keewedomain.domain.user;
 
 import ccc.keewedomain.domain.common.BaseTimeEntity;
 import ccc.keewedomain.domain.common.Interest;
-import ccc.keewedomain.domain.common.enums.Activity;
 import ccc.keewedomain.domain.user.enums.Privacy;
 import ccc.keewedomain.domain.user.enums.UserStatus;
 import ccc.keewedomain.dto.user.UserSignUpDto;
@@ -10,12 +9,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 import static ccc.keewedomain.domain.user.enums.Privacy.PUBLIC;
-import static ccc.keewedomain.domain.user.enums.UserStatus.ACTIVE;
 import static ccc.keewedomain.domain.user.enums.UserStatus.ONBOARD;
 import static javax.persistence.FetchType.LAZY;
 import static lombok.AccessLevel.PROTECTED;
