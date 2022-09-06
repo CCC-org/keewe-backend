@@ -55,7 +55,7 @@ public class User extends BaseTimeEntity {
     @ElementCollection
     @CollectionTable(name = "favorite_interests",joinColumns = @JoinColumn(name = "user_id"))
     @Column(name = "interest")
-    private List<Interest> activities = new ArrayList<>();
+    private List<Interest> interests = new ArrayList<>();
 
     //FIXME
 //    @Column(name = "role")

@@ -26,15 +26,14 @@ CREATE TABLE IF NOT EXISTS `user`
     FOREIGN KEY (profile_photo_id) REFERENCES  `profile_photo`(profile_photo_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE IF NOT EXISTS `buddy`
+CREATE TABLE IF NOT EXISTS `follow`
 (
-    buddy_id            BIGINT(20)      NOT NULL        AUTO_INCREMENT,
     follower_id         BIGINT(20)      NOT NULL,
     followee_id         BIGINT(20)      NOT NULL,
     created_at          DATETIME(6)     NOT NULL,
     updated_at          DATETIME(6)     NOT NULL,
 
-    PRIMARY KEY (buddy_id),
+    PRIMARY KEY (follower_id, followee_id),
     FOREIGN KEY (followee_id) REFERENCES `user`(user_id),
     FOREIGN KEY (follower_id) REFERENCES `user`(user_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -46,20 +45,6 @@ CREATE TABLE IF NOT EXISTS `favorite_interests`
 
     FOREIGN KEY (user_id) REFERENCES `user`(user_id),
     CONSTRAINT `favorite_activities_constraint` UNIQUE (user_id, interest)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-CREATE TABLE IF NOT EXISTS `social_link`
-(
-    social_link_id      BIGINT(20)      NOT NULL    AUTO_INCREMENT,
-    user_id             BIGINT(20)      NOT NULL,
-    url                 VARCHAR(255)    NOT NULL,
-    type                VARCHAR(255)    NOT NULL,
-    deleted             BIT             NOT NULL,
-    created_at          DATETIME(6)     NOT NULL,
-    updated_at          DATETIME(6)     NOT NULL,
-
-    PRIMARY KEY (social_link_id),
-    FOREIGN KEY (user_id) REFERENCES `user`(user_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS `nest`
