@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
@@ -40,6 +41,12 @@ public class KeeweControllerAdvice {
                 .map(this::fieldErrorMessage)
                 .collect(Collectors.joining("\n"));
         return ApiResponse.failure(KeeweRtnConsts.ERR400, messages);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ApiResponse<?> handleException(HttpServletRequest request, Exception ex) {
+        log.error("Request: [{}] Exception: {}", request.getRequestURL(), ex.getMessage());
+        return ApiResponse.failure(KeeweRtnConsts.ERR999, ex.getMessage());
     }
 
     private String fieldErrorMessage(FieldError fieldError) {

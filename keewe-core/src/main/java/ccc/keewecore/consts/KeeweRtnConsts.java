@@ -35,7 +35,9 @@ public enum KeeweRtnConsts {
     ERR504(KeeweRtnGrp.System, 504, "지원하지 않는 소셜 타입이에요."),
     ERR505(KeeweRtnGrp.System, 505, "구글 회원가입 중 내부 오류가 발생했어요."),
 
-    ERR506(KeeweRtnGrp.System, 506, "지원하지 않는 게시글 타입이에요.");
+    ERR506(KeeweRtnGrp.System, 506, "지원하지 않는 게시글 타입이에요."),
+
+    ERR999(KeeweRtnGrp.System, 999, "처리되지 않은 예외가 발생했어요.");
 
     private KeeweRtnGrp grp;
     private int code;
