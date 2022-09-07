@@ -7,14 +7,13 @@ import ccc.keewedomain.domain.common.Interest;
 import ccc.keewedomain.domain.user.enums.Privacy;
 import ccc.keewedomain.domain.user.enums.UserStatus;
 import ccc.keewedomain.dto.user.UserSignUpDto;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static ccc.keewedomain.domain.user.enums.Privacy.PUBLIC;
@@ -26,8 +25,6 @@ import static lombok.AccessLevel.PROTECTED;
 @Entity
 @Table(name = "user")
 @Getter
-//@Builder
-//@AllArgsConstructor
 @NoArgsConstructor(access = PROTECTED)
 public class User extends BaseTimeEntity {
 
@@ -89,7 +86,7 @@ public class User extends BaseTimeEntity {
         return user;
     }
 
-    public void initProfile(String nickname, List<String> interests) {
+    public void initProfile(String nickname, Set<String> interests) {
         verifyOnboardStatus();
         this.nickname = nickname;
         this.interests = interests.stream().map(Interest::of).collect(Collectors.toList());

@@ -9,7 +9,7 @@ import lombok.Getter;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
-import java.util.List;
+import java.util.Set;
 
 @Getter
 public class OnboardRequest {
@@ -18,7 +18,7 @@ public class OnboardRequest {
 
     @NotNull
     @Size(min = 1, max = 5)
-    private List<@Size(min = 1, max = 8) @Pattern(regexp = KeeweRegexs.KOREAN_OR_ENGLISH) String> interests;
+    private Set<@Size(min = 1, max = 8) @Pattern(regexp = KeeweRegexs.KOREAN_OR_ENGLISH) String> interests;
 
     @JsonProperty("nickname")
     private void setNickname(String nickname) {
