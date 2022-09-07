@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <springProperty name = "DSN" source = "env.sentry-dsn"/>
+
+    <appender name="LAZY_SENTRY" class="ch.qos.logback.classic.sift.SiftingAppender">
+        <discriminator>
+            <key>lazy-sentry</key>
+            <defaultValue>lazy-sentry</defaultValue>
+        </discriminator>
+        <sift>
+            <appender name="SENTRY" class="io.sentry.logback.SentryAppender">
+                <options>
+                    <dsn>${DSN}</dsn>
+                </options>
+            </appender>
+        </sift>
+    </appender>
+
+
+    <appender name="LAZY_CONSOLE" class="ch.qos.logback.classic.sift.SiftingAppender">
+        <discriminator>
+            <key>lazy-console</key>
+            <defaultValue>lazy-console</defaultValue>
+        </discriminator>
+        <sift>
+            <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+                <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+                    <pattern>%d{yy-MM-dd HH:mm:ss.SSS} [%-10.10thread][%-5level][%-36.36logger{5}] - %msg%n</pattern>
+                </encoder>
+            </appender>
+        </sift>
+    </appender>
+
+
+    <springProfile name="local">
+        <root level="INFO">
+            <appender-ref ref="LAZY_CONSOLE"/>
+        </root>
+    </springProfile>
+
+    <springProfile name="dev">
+        <root level="INFO">
+            <appender-ref ref="LAZY_SENTRY"/>
+            <appender-ref ref="LAZY_CONSOLE"/>
+        </root>
+    </springProfile>
+
+
+</configuration>

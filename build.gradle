@@ -161,9 +161,17 @@ project(':keewe-domain') {
 project(':keewe-api') {
 	apply plugin: 'com.epages.restdocs-api-spec'
 
+
+	ext {
+		logbackVersion = "1.2.11"
+		sentryVersion = "5.7.4"
+	}
+
 	dependencies {
 		implementation project(path: ':keewe-core', configuration: 'default')
 		implementation project(path: ':keewe-domain', configuration: 'default')
+		implementation "io.sentry:sentry-spring-boot-starter:${sentryVersion}"
+		implementation "io.sentry:sentry-logback:${sentryVersion}"
 		implementation 'org.springframework.boot:spring-boot-starter-web'
 		implementation 'org.springframework.boot:spring-boot-starter-security'
 		implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
@@ -173,6 +181,7 @@ project(':keewe-api') {
 		testImplementation 'com.epages:restdocs-api-spec-mockmvc:0.16.2'
 		testImplementation 'org.springframework.security:spring-security-test'
 	}
+
 
 	def active = System.properties.getOrDefault('spring.profiles.active', 'local')
 
