@@ -2,7 +2,7 @@ package ccc.keewedomain.domain.nest;
 
 import ccc.keewedomain.domain.common.BaseTimeEntity;
 import ccc.keewedomain.domain.nest.enums.PostType;
-import ccc.keewedomain.domain.user.Profile;
+import ccc.keewedomain.domain.user.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -25,13 +25,13 @@ public class Post extends BaseTimeEntity {
     @Column(name = "post_id")
     private Long id;
 
-    @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "nest_id", nullable = false)
-    private Nest nest;
+//    @ManyToOne(fetch = LAZY)
+//    @JoinColumn(name = "nest_id", nullable = false)
+//    private Nest nest;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "writer_id", nullable = false)
-    private Profile writer;
+    private User writer;
 
     @Column(name = "like_count")
     private Long likeCount = 0L;
@@ -54,10 +54,8 @@ public class Post extends BaseTimeEntity {
 
     public static final long CONTENT_MAX_LENGTH = 140L;
 
-    protected Post(Nest nest, Profile writer, String content) {
-        this.nest = nest;
+    protected Post(User writer, String content) {
         this.writer = writer;
         this.content = content;
-        nest.getPosts().add(this);
     }
 }

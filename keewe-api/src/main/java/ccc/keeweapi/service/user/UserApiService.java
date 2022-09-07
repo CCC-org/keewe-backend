@@ -1,11 +1,10 @@
 package ccc.keeweapi.service.user;
 
-import ccc.keewecore.aop.annotations.FLogging;
 import ccc.keeweapi.config.security.jwt.JwtUtils;
 import ccc.keeweapi.dto.user.UserAssembler;
 import ccc.keeweapi.dto.user.UserSignUpResponse;
+import ccc.keewecore.aop.annotations.FLogging;
 import ccc.keewedomain.domain.user.User;
-import ccc.keewedomain.service.user.ProfileDomainService;
 import ccc.keewedomain.service.user.UserDomainService;
 import ccc.keeweinfra.vo.OauthAccount;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +19,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserApiService {
     private final UserDomainService userDomainService;
-    private final ProfileDomainService profileDomainService;
     private final UserAssembler userAssembler;
     private final JwtUtils jwtUtils;
 
@@ -41,7 +39,6 @@ public class UserApiService {
 
     private User signUpWithOauth(String email) {
         User user = userDomainService.save(userAssembler.toUserSignUpDto(email));
-        profileDomainService.save(user);
         return user;
     }
 
