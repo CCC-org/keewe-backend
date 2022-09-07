@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import java.text.BreakIterator;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class StringLengthUtil {
+public final class KeeweStringUtil {
 
     public static long getGraphemeLength(String s) {
         long length = getCharacterBoundaryCount(s) - get4ByteEmojiCount(s);
@@ -28,5 +28,9 @@ public final class StringLengthUtil {
         }
 
         return count;
+    }
+
+    public static String compressWhiteSpaces(String s) {
+        return s.trim().replaceAll("\b", "").replaceAll("\\s+", " ");
     }
 }

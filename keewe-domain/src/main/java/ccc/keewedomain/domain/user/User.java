@@ -1,20 +1,23 @@
 package ccc.keewedomain.domain.user;
 
+import ccc.keewecore.consts.KeeweRtnConsts;
+import ccc.keewecore.exception.KeeweException;
 import ccc.keewedomain.domain.common.BaseTimeEntity;
 import ccc.keewedomain.domain.common.Interest;
 import ccc.keewedomain.domain.user.enums.Privacy;
 import ccc.keewedomain.domain.user.enums.UserStatus;
 import ccc.keewedomain.dto.user.UserSignUpDto;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static ccc.keewedomain.domain.user.enums.Privacy.PUBLIC;
+import static ccc.keewedomain.domain.user.enums.UserStatus.ACTIVE;
 import static ccc.keewedomain.domain.user.enums.UserStatus.ONBOARD;
 import static javax.persistence.FetchType.LAZY;
 import static lombok.AccessLevel.PROTECTED;
@@ -22,8 +25,6 @@ import static lombok.AccessLevel.PROTECTED;
 @Entity
 @Table(name = "user")
 @Getter
-@Builder
-@AllArgsConstructor
 @NoArgsConstructor(access = PROTECTED)
 public class User extends BaseTimeEntity {
 
@@ -53,8 +54,7 @@ public class User extends BaseTimeEntity {
     private Privacy privacy = PUBLIC;
 
     @ElementCollection
-    @CollectionTable(name = "favorite_interests",joinColumns = @JoinColumn(name = "user_id"))
-    @Column(name = "interest")
+    @CollectionTable(name = "favorite_interests", joinColumns = @JoinColumn(name = "user_id"))
     private List<Interest> interests = new ArrayList<>();
 
     //FIXME
@@ -84,6 +84,19 @@ public class User extends BaseTimeEntity {
         user.phoneNumber = userSignUpDto.getPhoneNumber();
 
         return user;
+    }
+
+    public void initProfile(String nickname, Set<String> interests) {
+        verifyOnboardStatus();
+        this.nickname = nickname;
+        this.interests = interests.stream().map(Interest::of).collect(Collectors.toList());
+        this.status = ACTIVE;
+    }
+
+    public void verifyOnboardStatus() {
+        if (this.status != ONBOARD) {
+            throw new KeeweException(KeeweRtnConsts.ERR427);
+        }
     }
 }
 

@@ -41,10 +41,10 @@ CREATE TABLE IF NOT EXISTS `follow`
 CREATE TABLE IF NOT EXISTS `favorite_interests`
 (
     user_id      BIGINT(20)      NOT NULL,
-    interest     VARCHAR(255)    NOT NULL,
+    interest_name     VARCHAR(255)    NOT NULL,
 
     FOREIGN KEY (user_id) REFERENCES `user`(user_id),
-    CONSTRAINT `favorite_activities_constraint` UNIQUE (user_id, interest)
+    CONSTRAINT `favorite_activities_constraint` UNIQUE (user_id, interest_name)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS `nest`
