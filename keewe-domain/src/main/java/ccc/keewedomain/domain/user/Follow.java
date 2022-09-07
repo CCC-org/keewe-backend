@@ -1,24 +1,24 @@
 package ccc.keewedomain.domain.user;
 
 import ccc.keewedomain.domain.common.BaseTimeEntity;
+import ccc.keewedomain.domain.user.id.FollowId;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 import static javax.persistence.FetchType.LAZY;
 
+@Table(name = "follow")
 @Entity
-public class Buddy extends BaseTimeEntity {
-    @Id
-    private Long id;
+@IdClass(FollowId.class)
+public class Follow extends BaseTimeEntity {
 
+    @Id
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "follower_id")
-    private Profile follower;
+    private User follower;
 
+    @Id
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "followee_id")
-    private Profile followee;
+    private User followee;
 }

@@ -1,16 +1,18 @@
 package ccc.keeweapi.dto.user;
 
-import ccc.keewedomain.domain.user.Profile;
+import ccc.keeweapi.utils.SecurityUtil;
+import ccc.keewedomain.domain.user.User;
+import ccc.keewedomain.dto.user.OnboardDto;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ProfileAssembler {
 
-    public LinkCreateResponse toLinkCreateResponse(Profile profile) {
-        return LinkCreateResponse.of(profile.getLink(), profile.getProfileStatus());
+    public OnboardDto toOnboardDto(OnboardRequest request) {
+        return OnboardDto.of(SecurityUtil.getUserId(), request.getNickname(), request.getInterests());
     }
 
-    public NicknameCreateResponse toNicknameCreateResponse(Profile profile) {
-        return NicknameCreateResponse.of(profile.getNickname(), profile.getProfileStatus());
+    public OnboardResponse toOnboardResponse(User user) {
+        return OnboardResponse.of(user.getId(), user.getNickname(), user.getInterests());
     }
 }

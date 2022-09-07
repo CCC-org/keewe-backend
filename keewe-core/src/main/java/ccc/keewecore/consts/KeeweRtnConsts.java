@@ -13,7 +13,8 @@ public enum KeeweRtnConsts {
     ERR403(KeeweRtnGrp.Auth, 403, "토큰이 누락됐어요."),
     ERR404(KeeweRtnGrp.Auth, 404, "권한이 없는 유저입니다."),
 
-    ERR400(KeeweRtnGrp.Validation, 400, "잘못된 요청이에요."), // FIXME
+    ERR400(KeeweRtnGrp.Validation, 400, "유효하지 않은 값이에요."),
+
     ERR411(KeeweRtnGrp.Validation, 411, "유저를 찾을 수 없어요."),
     ERR412(KeeweRtnGrp.Validation, 412, "유저가 이메일 제공에 동의를 하지 않았어요."),
 
@@ -24,6 +25,7 @@ public enum KeeweRtnConsts {
     ERR424(KeeweRtnGrp.Validation, 424, "유효하지 않은 URL 입니다."),
     ERR425(KeeweRtnGrp.Validation, 425, "도메인과 링크 타입이 일치하지 않습니다."),
     ERR426(KeeweRtnGrp.Validation, 426, "소셜 링크의 개수가 초과됐어요."),
+    ERR427(KeeweRtnGrp.Validation, 427, "온보딩이 완료된 유저에요."),
 
     ERR430(KeeweRtnGrp.Validation, 430, "챌린지를 찾을 수 없어요."),
     ERR431(KeeweRtnGrp.Validation, 431, "이미 챌린지에 참여중이에요."),
@@ -34,7 +36,9 @@ public enum KeeweRtnConsts {
     ERR504(KeeweRtnGrp.System, 504, "지원하지 않는 소셜 타입이에요."),
     ERR505(KeeweRtnGrp.System, 505, "구글 회원가입 중 내부 오류가 발생했어요."),
 
-    ERR506(KeeweRtnGrp.System, 506, "지원하지 않는 게시글 타입이에요.");
+    ERR506(KeeweRtnGrp.System, 506, "지원하지 않는 게시글 타입이에요."),
+
+    ERR999(KeeweRtnGrp.System, 999, "처리되지 않은 예외가 발생했어요.");
 
     private KeeweRtnGrp grp;
     private int code;

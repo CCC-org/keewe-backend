@@ -64,6 +64,10 @@ public class ChallengeParticipation extends BaseTimeEntity {
         return participation;
     }
 
+    public void cancel() {
+        this.status = ChallengeParticipationStatus.CANCELED;
+    }
+
     private void initEndDate() {
         LocalDate createdDate = getCreatedAt().toLocalDate();
         this.endDate = createdDate.minusDays(1).plusWeeks(duration);
