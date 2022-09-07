@@ -5,7 +5,6 @@ import ccc.keewecore.consts.KeeweRegexs;
 import ccc.keewecore.utils.KeeweStringUtil;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
-import lombok.ToString;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -16,7 +15,9 @@ import java.util.List;
 public class OnboardRequest {
     @GraphemeLength(min = 1, max = 12)
     private String nickname;
+
     @NotNull
+    @Size(min = 1, max = 5)
     private List<@Size(min = 1, max = 8) @Pattern(regexp = KeeweRegexs.KOREAN_OR_ENGLISH) String> interests;
 
     @JsonProperty("nickname")
