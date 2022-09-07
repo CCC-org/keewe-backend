@@ -164,18 +164,14 @@ project(':keewe-api') {
 
 	ext {
 		logbackVersion = "1.2.11"
+		sentryVersion = "5.7.4"
 	}
 
 	dependencies {
-		implementation "ch.qos.logback:logback-core:${logbackVersion}"
-		implementation "ch.qos.logback:logback-classic:${logbackVersion}"
-		implementation(
-				"io.sentry:sentry-spring-boot-starter:1.7.30",
-				"io.sentry:sentry-logback:1.7.30"
-		)
-
 		implementation project(path: ':keewe-core', configuration: 'default')
 		implementation project(path: ':keewe-domain', configuration: 'default')
+		implementation "io.sentry:sentry-spring-boot-starter:${sentryVersion}"
+		implementation "io.sentry:sentry-logback:${sentryVersion}"
 		implementation 'org.springframework.boot:spring-boot-starter-web'
 		implementation 'org.springframework.boot:spring-boot-starter-security'
 		implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'

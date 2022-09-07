@@ -2,19 +2,12 @@ package ccc.keeweapi;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
 @ComponentScan("ccc")
 public class KeeweApiApplication {
     public static void main(String[] args) {
-
         SpringApplication.run(KeeweApiApplication.class, args);
-    }
-
-    @Bean
-    public String test(){
-        throw new IllegalArgumentException("봇 테스트");
     }
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    <springProperty name = "HOSTNAME" source = "env.hostname"/>
+    <springProperty name = "DSN" source = "env.sentry-dsn"/>
 
     <appender name="LAZY_SENTRY" class="ch.qos.logback.classic.sift.SiftingAppender">
         <discriminator>
@@ -10,7 +10,7 @@
         <sift>
             <appender name="SENTRY" class="io.sentry.logback.SentryAppender">
                 <options>
-                    <dsn>https://b67f6b1506e5491d9079caa28ab01683@o1394275.ingest.sentry.io/6716274</dsn>
+                    <dsn>${DSN}</dsn>
                 </options>
             </appender>
         </sift>
@@ -34,7 +34,6 @@
 
     <springProfile name="local">
         <root level="INFO">
-            <appender-ref ref="LAZY_SENTRY"/>
             <appender-ref ref="LAZY_CONSOLE"/>
         </root>
     </springProfile>
