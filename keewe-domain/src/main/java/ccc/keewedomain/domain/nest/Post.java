@@ -1,6 +1,7 @@
 package ccc.keewedomain.domain.nest;
 
 import ccc.keewedomain.domain.common.BaseTimeEntity;
+import ccc.keewedomain.domain.insight.Comment;
 import ccc.keewedomain.domain.nest.enums.PostType;
 import ccc.keewedomain.domain.user.User;
 import lombok.Getter;
@@ -42,8 +43,8 @@ public class Post extends BaseTimeEntity {
     @OneToMany(mappedBy = "post", fetch = LAZY)
     private List<PostLike> likes = new ArrayList<>();
 
-    @OneToMany(mappedBy = "post", fetch = LAZY)
-    private List<Comment> comments = new ArrayList<>();
+//    @OneToMany(mappedBy = "post", fetch = LAZY)
+//    private List<Comment> comments = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
     @Column(name = "post_type", insertable = false, updatable = false)

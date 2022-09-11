@@ -2,14 +2,11 @@ package ccc.keewedomain.domain.common;
 
 import ccc.keewecore.consts.KeeweRtnConsts;
 import ccc.keewecore.exception.KeeweException;
-import ccc.keewedomain.domain.common.enums.LinkType;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -21,21 +18,18 @@ public class Link {
     @Column(name = "url")
     private String url;
 
-    @Column(name = "type")
-    @Enumerated(EnumType.STRING)
-    private LinkType type;
-
-    public static Link of(String url, String typeStr) {
-        LinkType type = LinkType.valueOfOrElseThrow(typeStr);
-        checkUrlTypeOrElseThrow(url, type);
+    public static Link of(String url) {
+//        LinkType type = LinkType.valueOfOrElseThrow(typeStr);
+//        checkUrlTypeOrElseThrow(url);
         Link link = new Link();
         link.url = url;
-        link.type = type;
 
         return link;
     }
 
-    private static void checkUrlTypeOrElseThrow(String url, LinkType type) {
+
+    //FIXME
+    private static void checkUrlTypeOrElseThrow(String url) {
         URL urlObj;
         try {
             url = url.replaceFirst("www\\.", "");
@@ -44,8 +38,5 @@ public class Link {
             throw new KeeweException(KeeweRtnConsts.ERR424);
         }
 
-        if(!type.getDomain().equals(urlObj.getHost())) {
-            throw new KeeweException(KeeweRtnConsts.ERR425);
-        }
     }
 }

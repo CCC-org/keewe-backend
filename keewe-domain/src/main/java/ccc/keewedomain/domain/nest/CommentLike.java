@@ -1,6 +1,7 @@
 package ccc.keewedomain.domain.nest;
 
 import ccc.keewedomain.domain.common.BaseTimeEntity;
+import ccc.keewedomain.domain.insight.Comment;
 import ccc.keewedomain.domain.nest.id.CommentLikeId;
 import ccc.keewedomain.domain.user.User;
 
