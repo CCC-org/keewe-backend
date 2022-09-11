@@ -1,4 +1,4 @@
-package ccc.keewedomain.domain.nest;
+package ccc.keewedomain.domain.insight;
 
 import ccc.keewedomain.domain.common.BaseTimeEntity;
 import ccc.keewedomain.domain.user.User;
@@ -18,8 +18,8 @@ public class Comment extends BaseTimeEntity {
     private Long id;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "post_id", nullable = false)
-    private Post post;
+    @JoinColumn(name = "insight_id", nullable = false)
+    private Insight insight;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "writer_id", nullable = false)
