@@ -99,7 +99,7 @@ CREATE TABLE IF NOT EXISTS `insight`
     writer_id                   BIGINT          NOT NULL,
     challenge_participation_id  BIGINT          NOT NULL,
     contents                    VARCHAR(300)    NOT NULL,
-    url                         VARCHAR(256)    NOT NULL,
+    url                         VARCHAR(2000)    NOT NULL,
     deleted                     BIT             NOT NULL,
     created_at                  DATETIME(6)     NOT NULL,
     updated_at                  DATETIME(6)     NOT NULL,
