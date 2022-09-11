@@ -26,7 +26,7 @@ public class Insight extends BaseTimeEntity {
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "challenge_participation_id")
-    private ChallengeParticipation participation;
+    private ChallengeParticipation challengeParticipation;
 
     @Column(name = "contents", nullable = false, length = 300)
     private String contents;
