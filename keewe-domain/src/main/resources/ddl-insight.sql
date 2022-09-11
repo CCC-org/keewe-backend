@@ -29,5 +29,7 @@ CREATE TABLE IF NOT EXISTS 'reaction_aggregation'
 (
     insight_id             BIGINT      NOT NULL ,
     reaction_type          VARCHAR(15) NOT NULL,
-    count                  BIGINT      NOT NULL  DEFAULT 0
-)
+    count                  BIGINT      NOT NULL  DEFAULT 0,
+
+    PRIMARY KEY (insight_id, reaction_type)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
