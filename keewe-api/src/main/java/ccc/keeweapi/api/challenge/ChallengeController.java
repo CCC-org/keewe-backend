@@ -5,10 +5,7 @@ import ccc.keeweapi.dto.challenge.ChallengeCreateRequest;
 import ccc.keeweapi.dto.challenge.ChallengeParticipateRequest;
 import ccc.keeweapi.service.challenge.ChallengeApiService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -26,5 +23,10 @@ public class ChallengeController {
     @PostMapping(value = "/participation")
     public ApiResponse<?> participate(@RequestBody @Valid ChallengeParticipateRequest request) {
         return ApiResponse.ok(challengeApiService.participate(request));
+    }
+
+    @GetMapping(value = "/participation/check")
+    public ApiResponse<?> checkParticipation() {
+        return ApiResponse.ok(challengeApiService.checkParticipation());
     }
 }

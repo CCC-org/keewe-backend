@@ -41,6 +41,10 @@ public class ChallengeDomainService {
         return challengeRepository.findById(id).orElseThrow(() -> new KeeweException(KeeweRtnConsts.ERR430));
     }
 
+    public boolean checkParticipation(Long userId) {
+        return challengeParticipationRepository.existsByChallengerIdAndStatus(userId, CHALLENGING);
+    }
+
     private void exitCurrentChallengeIfExist(Long userId) {
         challengeParticipationRepository.findByChallengerIdAndStatus(userId, CHALLENGING)
                 .ifPresent(ChallengeParticipation::cancel);
