@@ -3,6 +3,7 @@ package ccc.keeweapi.api.challenge;
 import ccc.keeweapi.document.utils.ApiDocumentationTest;
 import ccc.keeweapi.dto.challenge.ChallengeCreateResponse;
 import ccc.keeweapi.dto.challenge.ChallengeParticipationResponse;
+import ccc.keeweapi.dto.challenge.ParticipationCheckResponse;
 import ccc.keeweapi.service.challenge.ChallengeApiService;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import org.json.JSONObject;
@@ -22,6 +23,7 @@ import static com.epages.restdocs.apispec.ResourceDocumentation.headerWithName;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -141,6 +143,35 @@ public class ChallengeControllerTest extends ApiDocumentationTest {
                                 fieldWithPath("data.insightPerWeek").description("주마다 올릴 인사이트 개수"),
                                 fieldWithPath("data.duration").description("참가 기간 단위: 주"),
                                 fieldWithPath("data.endDate").description("챌린지 참가 종료일 yyyy-mm-dd"))
+                        .tag("Challenge")
+                        .build()
+        )));
+    }
+
+    @Test
+    @DisplayName("챌린지 참여 여부 확인 API")
+    void check_participation() throws Exception {
+        when(challengeApiService.checkParticipation()).thenReturn(
+                ParticipationCheckResponse.of(true)
+        );
+
+        ResultActions resultActions = mockMvc.perform(get("/api/v1/challenge/participation/check")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        resultActions.andDo(restDocs.document(resource(
+                ResourceSnippetParameters.builder()
+                        .description("챌린지 참여 여부 API 입니다..")
+                        .summary("챌린지 참여 여부 API 입니다.")
+                        .requestHeaders(
+                                headerWithName("Authorization").description("유저의 JWT")
+                        )
+                        .responseFields(
+                                fieldWithPath("message").description("요청 결과 메세지"),
+                                fieldWithPath("code").description("결과 코드"),
+                                fieldWithPath("data.participation").description("챌린지 참여 여부")
+                        )
                         .tag("Challenge")
                         .build()
         )));

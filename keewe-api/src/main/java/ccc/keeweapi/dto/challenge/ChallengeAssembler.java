@@ -50,4 +50,8 @@ public class ChallengeAssembler {
                 request.getInsightPerWeek(),
                 request.getDuration());
     }
+
+    public ParticipationCheckResponse toParticipationCheckResponse(boolean participation) {
+        return ParticipationCheckResponse.of(participation);
+    }
 }
