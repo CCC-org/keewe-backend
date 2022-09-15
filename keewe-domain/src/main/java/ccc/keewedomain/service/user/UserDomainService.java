@@ -12,7 +12,7 @@ import ccc.keeweinfra.dto.NaverProfileResponse;
 import ccc.keeweinfra.service.GoogleInfraService;
 import ccc.keeweinfra.service.KakaoInfraService;
 import ccc.keeweinfra.service.NaverInfraService;
-import ccc.keeweinfra.vo.OauthResponse;
+import ccc.keeweinfra.dto.OauthResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

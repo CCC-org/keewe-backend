@@ -1,4 +1,4 @@
-package ccc.keeweinfra.vo;
+package ccc.keeweinfra.dto;
 
 public interface OauthResponse {
     String getId();

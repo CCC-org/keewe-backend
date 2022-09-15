@@ -7,7 +7,7 @@ import ccc.keewecore.aop.annotations.FLogging;
 import ccc.keewecore.utils.KeeweStringUtils;
 import ccc.keewedomain.domain.user.User;
 import ccc.keewedomain.service.user.UserDomainService;
-import ccc.keeweinfra.vo.OauthResponse;
+import ccc.keeweinfra.dto.OauthResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

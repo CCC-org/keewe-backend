@@ -1,6 +1,5 @@
 package ccc.keeweinfra.dto;
 
-import ccc.keeweinfra.vo.OauthResponse;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
