@@ -8,9 +8,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
-    Optional<User> findByEmail(String email);
+    Optional<User> findByVendorId(String vendorId);
 
-    default User findByEmailOrElseThrow(String email) {
-        return findByEmail(email).orElseThrow(() -> new KeeweException(KeeweRtnConsts.ERR411));
+    default User findByVendorIdOrElseThrow(String vendorId) {
+        return findByVendorId(vendorId).orElseThrow(() -> new KeeweException(KeeweRtnConsts.ERR411));
     }
 }

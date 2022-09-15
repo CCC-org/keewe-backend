@@ -42,13 +42,4 @@ public class UserController {
         log.info("[Google Signup] code {}", code);
         return ApiResponse.ok(userService.signupWithOauth(code, KeeweConsts.GOOGLE));
     }
-
-    //FIXME 컨트롤러보다 앞단에서 검증
-    private void verifySessionState(HttpSession session, String state) {
-        String sessionState = (String) session.getAttribute(naverState);
-        if (!state.equals(sessionState)) {
-            log.error("session의 state = {} / 전달 받은 state = {}", sessionState, state);
-            throw new KeeweException(KeeweRtnConsts.ERR503);
-        }
-    }
 }

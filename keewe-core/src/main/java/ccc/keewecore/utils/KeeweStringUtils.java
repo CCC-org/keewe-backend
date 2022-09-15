@@ -2,11 +2,12 @@ package ccc.keewecore.utils;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.springframework.util.StringUtils;
 
 import java.text.BreakIterator;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class KeeweStringUtil {
+public final class KeeweStringUtils {
 
     public static long getGraphemeLength(String s) {
         long length = getCharacterBoundaryCount(s) - get4ByteEmojiCount(s);
@@ -32,5 +33,10 @@ public final class KeeweStringUtil {
 
     public static String compressWhiteSpaces(String s) {
         return s.trim().replaceAll("\b", "").replaceAll("\\s+", " ");
+    }
+
+
+    public static String getOrDefault(String origin, String dft) {
+        return !StringUtils.hasText(origin) ? dft : origin;
     }
 }

@@ -33,7 +33,13 @@ public class User extends BaseTimeEntity {
     @Column(name = "user_id")
     private Long id;
 
-    @Column(name = "email", unique = true)
+    @Column(name = "vendor_id", unique = true)
+    private String vendorId;
+
+    @Column(name = "vendor_type")
+    private String vendorType;
+
+    @Column(name = "email")
     private String email; // 아이디
 
     @Column(name = "password")
@@ -79,6 +85,8 @@ public class User extends BaseTimeEntity {
 
     public static User from(UserSignUpDto userSignUpDto) {
         User user = new User();
+        user.vendorId = userSignUpDto.getVendorId();
+        user.vendorType = userSignUpDto.getVendorType();;
         user.email = userSignUpDto.getEmail();
         user.password = userSignUpDto.getPassword();
         user.phoneNumber = userSignUpDto.getPhoneNumber();

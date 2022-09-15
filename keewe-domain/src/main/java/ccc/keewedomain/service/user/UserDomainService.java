@@ -6,13 +6,13 @@ import ccc.keewecore.exception.KeeweException;
 import ccc.keewedomain.domain.user.User;
 import ccc.keewedomain.dto.user.UserSignUpDto;
 import ccc.keewedomain.repository.user.UserRepository;
+import ccc.keeweinfra.dto.GoogleProfileResponse;
+import ccc.keeweinfra.dto.KakaoProfileResponse;
+import ccc.keeweinfra.dto.NaverProfileResponse;
 import ccc.keeweinfra.service.GoogleInfraService;
 import ccc.keeweinfra.service.KakaoInfraService;
 import ccc.keeweinfra.service.NaverInfraService;
-import ccc.keeweinfra.vo.OauthAccount;
-import ccc.keeweinfra.vo.google.GoogleAccount;
-import ccc.keeweinfra.vo.kakao.KakaoAccount;
-import ccc.keeweinfra.vo.naver.NaverAccount;
+import ccc.keeweinfra.vo.OauthResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -27,7 +27,7 @@ public class UserDomainService {
     private final NaverInfraService naverInfraService;
     private final GoogleInfraService googleInfraService;
 
-    public <T extends OauthAccount> T getOauthProfile(String code, String company) {
+    public <T extends OauthResponse> T getOauthProfile(String code, String company) {
 
         switch (company) {
             case KeeweConsts.KAKAO:
@@ -42,27 +42,23 @@ public class UserDomainService {
 
     }
 
-    public Long save(User user) {
-        return userRepository.save(user).getId();
-    }
-
     public User save(UserSignUpDto userSignUpDto) {
         return userRepository.save(User.from(userSignUpDto));
     }
 
     public User getUserByEmailOrElseThrow(String email) {
-        return userRepository.findByEmailOrElseThrow(email);
+        return userRepository.findByVendorIdOrElseThrow(email);
     }
 
     public User getUserByIdOrElseThrow(Long id) {
         return userRepository.findById(id).orElseThrow(() -> new KeeweException(KeeweRtnConsts.ERR411));
     }
 
-    public Optional<User> getUserByEmail(String email) {
-        return userRepository.findByEmail(email);
+    public Optional<User> getUserByVendorId(String vendorId) {
+        return userRepository.findByVendorId(vendorId);
     }
 
-    private KakaoAccount getKakaoProfile(String code) {
+    private KakaoProfileResponse getKakaoProfile(String code) {
         try {
             return kakaoInfraService.getKakaoAccount(kakaoInfraService.getAccessToken(code));
         } catch (Exception e) {
@@ -71,7 +67,7 @@ public class UserDomainService {
         }
     }
 
-    private NaverAccount getNaverProfile(String code) {
+    private NaverProfileResponse getNaverProfile(String code) {
         try {
             return naverInfraService.getNaverAccount(naverInfraService.getAccessToken(code));
         } catch (Exception e) {
@@ -80,7 +76,7 @@ public class UserDomainService {
         }
     }
 
-    private GoogleAccount getGoogleProfile(String code) {
+    private GoogleProfileResponse getGoogleProfile(String code) {
         try {
             return googleInfraService.getGoogleAccount(googleInfraService.getAccessToken(code));
         } catch (Exception e) {

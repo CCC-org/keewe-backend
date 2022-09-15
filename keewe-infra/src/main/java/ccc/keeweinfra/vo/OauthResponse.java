@@ -1,6 +1,6 @@
 package ccc.keeweinfra.vo;
 
-public interface OauthAccount {
-
+public interface OauthResponse {
+    String getId();
     String getEmail();
 }

@@ -13,8 +13,10 @@ CREATE TABLE IF NOT EXISTS `profile_photo`
 
 CREATE TABLE IF NOT EXISTS `user`
 (
-    user_id             BIGINT   NOT NULL     AUTO_INCREMENT,
-    email               VARCHAR(255)    UNIQUE,
+    user_id             BIGINT          NOT NULL     AUTO_INCREMENT,
+    email               VARCHAR(255),
+    vendor_id           VARCHAR(50)     NOT NULL     UNIQUE,
+    vendor_type         VARCHAR(20)     NOT NULL,
     password            VARCHAR(255),
     phone_number        VARCHAR(255)    UNIQUE,
     nickname            VARCHAR(12),

@@ -11,7 +11,7 @@ public class UserAssembler {
         return UserSignUpResponse.of(user.getId(), accessToken);
     }
 
-    public UserSignUpDto toUserSignUpDto(String email) {
-        return UserSignUpDto.of(email, null, null);
+    public UserSignUpDto toUserSignUpDto(String vendorId, String vendorType, String email) {
+        return UserSignUpDto.of(vendorId, vendorType, email, null, null);
     }
 }
