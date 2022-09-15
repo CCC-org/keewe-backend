@@ -28,7 +28,9 @@ CREATE TABLE IF NOT EXISTS `user`
     updated_at          DATETIME(6)     NOT NULL,
 
     PRIMARY KEY(user_id),
-    FOREIGN KEY (profile_photo_id) REFERENCES  `profile_photo`(profile_photo_id)
+    FOREIGN KEY (profile_photo_id) REFERENCES  `profile_photo`(profile_photo_id),
+    CONSTRAINT `vendor_constraint` UNIQUE (`vendor_id`, `vendor_type`),
+    INDEX  `vendor_index` (`vendor_id`, `vendor_type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS `follow`

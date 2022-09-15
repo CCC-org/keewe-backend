@@ -13,8 +13,8 @@ public class UserDetailService implements UserDetailsService {
     private final UserDomainService userDomainService;
 
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        return new UserPrincipal(userDomainService.getUserByEmailOrElseThrow(email));
+    public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
+        return new UserPrincipal(userDomainService.getUserByIdOrElseThrow(Long.parseLong(userId)));
     }
 
 }

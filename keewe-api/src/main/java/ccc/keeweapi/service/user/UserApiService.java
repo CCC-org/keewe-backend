@@ -6,6 +6,7 @@ import ccc.keeweapi.dto.user.UserSignUpResponse;
 import ccc.keewecore.aop.annotations.FLogging;
 import ccc.keewecore.utils.KeeweStringUtils;
 import ccc.keewedomain.domain.user.User;
+import ccc.keewedomain.domain.user.enums.VendorType;
 import ccc.keewedomain.service.user.UserDomainService;
 import ccc.keeweinfra.dto.OauthResponse;
 import lombok.RequiredArgsConstructor;
@@ -27,10 +28,10 @@ public class UserApiService {
 
     @Transactional
     @FLogging
-    public <T extends OauthResponse> UserSignUpResponse signupWithOauth(String code, String company) {
-        T account = userDomainService.getOauthProfile(code, company);
+    public <T extends OauthResponse> UserSignUpResponse signupWithOauth(String code, VendorType vendorType) {
+        T account = userDomainService.getOauthProfile(code, vendorType);
         log.info("[UAS::signUp] account {}", account.toString());
-        Optional<User> userOps = userDomainService.getUserByVendorId(account.getId());
+        Optional<User> userOps = userDomainService.getUserByVendorIdAndVendorType(account.getId(), vendorType);
 
         if(userOps.isPresent()) {
             return userAssembler.toUserSignUpResponse(userOps.get(), getToken(userOps.get()));
@@ -38,18 +39,18 @@ public class UserApiService {
 
         User user = signUpWithOauth(
                 account.getId()
-                , company
+                , vendorType
                 , KeeweStringUtils.getOrDefault(account.getEmail(), "")
         );
 
         return userAssembler.toUserSignUpResponse(user, getToken(user));
     }
 
-    private User signUpWithOauth(String vendorId, String vendorType, String email) {
+    private User signUpWithOauth(String vendorId, VendorType vendorType, String email) {
         return userDomainService.save(userAssembler.toUserSignUpDto(vendorId, vendorType, email));
     }
 
     private String getToken(User user) {
-        return jwtUtils.createToken(user.getEmail(), List.of());
+        return jwtUtils.createToken(user.getId(), List.of());
     }
 }
