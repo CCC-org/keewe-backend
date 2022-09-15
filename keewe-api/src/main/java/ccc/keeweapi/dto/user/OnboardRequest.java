@@ -2,7 +2,7 @@ package ccc.keeweapi.dto.user;
 
 import ccc.keeweapi.validator.annotations.GraphemeLength;
 import ccc.keewecore.consts.KeeweRegexs;
-import ccc.keewecore.utils.KeeweStringUtil;
+import ccc.keewecore.utils.KeeweStringUtils;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 
@@ -22,6 +22,6 @@ public class OnboardRequest {
 
     @JsonProperty("nickname")
     private void setNickname(String nickname) {
-        this.nickname = KeeweStringUtil.compressWhiteSpaces(nickname);
+        this.nickname = KeeweStringUtils.compressWhiteSpaces(nickname);
     }
 }

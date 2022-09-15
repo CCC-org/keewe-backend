@@ -2,6 +2,7 @@ package ccc.keeweapi.security;
 
 import ccc.keeweapi.config.security.UserPrincipal;
 import ccc.keewedomain.domain.user.User;
+import ccc.keewedomain.domain.user.enums.VendorType;
 import ccc.keewedomain.dto.user.UserSignUpDto;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -14,7 +15,7 @@ public class WithKeeweUserSecurityFactory implements WithSecurityContextFactory<
     @Override
     public SecurityContext createSecurityContext(WithKeeweUser customUser) {
         SecurityContext context = SecurityContextHolder.createEmptyContext();
-        User user = User.from(UserSignUpDto.of(customUser.email(), null, null));
+        User user = User.from(UserSignUpDto.of("1111", VendorType.APPLE, customUser.email(), null, null));
         UserPrincipal principal = new UserPrincipal(user);
         Authentication auth = new UsernamePasswordAuthenticationToken(
                 principal,

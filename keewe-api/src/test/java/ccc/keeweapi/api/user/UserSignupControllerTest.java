@@ -11,10 +11,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.restdocs.RestDocumentationContextProvider;
-import org.springframework.test.util.ReflectionTestUtils;
-
 import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
@@ -44,7 +43,7 @@ public class UserSignupControllerTest extends ApiDocumentationTest {
         );
 
 
-        when(userApiService.signupWithOauth(anyString(), anyString())).thenReturn(userSignUpDto);
+        when(userApiService.signupWithOauth(anyString(), any())).thenReturn(userSignUpDto);
 
         mockMvc.perform(
                         get("/api/v1/user/kakao")
@@ -76,10 +75,9 @@ public class UserSignupControllerTest extends ApiDocumentationTest {
         );
 
         MockHttpSession session = new MockHttpSession();
-        ReflectionTestUtils.setField(userController, "naverState", naverState);
         session.setAttribute(naverState, state);
 
-        when(userApiService.signupWithOauth(anyString(), anyString())).thenReturn(userSignUpDto);
+        when(userApiService.signupWithOauth(anyString(), any())).thenReturn(userSignUpDto);
 
         mockMvc.perform(
                         get("/api/v1/user/naver")
@@ -114,7 +112,7 @@ public class UserSignupControllerTest extends ApiDocumentationTest {
         );
 
 
-        when(userApiService.signupWithOauth(anyString(), anyString())).thenReturn(userSignUpDto);
+        when(userApiService.signupWithOauth(anyString(), any())).thenReturn(userSignUpDto);
 
         mockMvc.perform(
                         get("/api/v1/user/google")

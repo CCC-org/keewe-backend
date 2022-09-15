@@ -1,7 +1,7 @@
 package ccc.keeweapi.validator;
 
 import ccc.keeweapi.validator.annotations.GraphemeLength;
-import ccc.keewecore.utils.KeeweStringUtil;
+import ccc.keewecore.utils.KeeweStringUtils;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
@@ -16,7 +16,7 @@ public class GraphemeLengthValidator implements ConstraintValidator<GraphemeLeng
         if (value == null) {
             return min == 0;
         }
-        int length = (int) KeeweStringUtil.getGraphemeLength(value);
+        int length = (int) KeeweStringUtils.getGraphemeLength(value);
         return length >= min && length <= max;
     }
 

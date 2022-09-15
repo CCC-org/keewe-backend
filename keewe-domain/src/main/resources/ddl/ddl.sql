@@ -13,8 +13,10 @@ CREATE TABLE IF NOT EXISTS `profile_photo`
 
 CREATE TABLE IF NOT EXISTS `user`
 (
-    user_id             BIGINT   NOT NULL     AUTO_INCREMENT,
-    email               VARCHAR(255)    UNIQUE,
+    user_id             BIGINT          NOT NULL     AUTO_INCREMENT,
+    email               VARCHAR(255),
+    vendor_id           VARCHAR(50)     NOT NULL     UNIQUE,
+    vendor_type         VARCHAR(20)     NOT NULL,
     password            VARCHAR(255),
     phone_number        VARCHAR(255)    UNIQUE,
     nickname            VARCHAR(12),
@@ -26,7 +28,9 @@ CREATE TABLE IF NOT EXISTS `user`
     updated_at          DATETIME(6)     NOT NULL,
 
     PRIMARY KEY(user_id),
-    FOREIGN KEY (profile_photo_id) REFERENCES  `profile_photo`(profile_photo_id)
+    FOREIGN KEY (profile_photo_id) REFERENCES  `profile_photo`(profile_photo_id),
+    CONSTRAINT `vendor_constraint` UNIQUE (`vendor_id`, `vendor_type`),
+    INDEX  `vendor_index` (`vendor_id`, `vendor_type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS `follow`

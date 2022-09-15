@@ -34,8 +34,8 @@ public class JwtUtils {
         secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
     }
 
-    public String createToken(String email, List<String> roles) {
-        Claims claims = Jwts.claims().setSubject(email);
+    public String createToken(Long id, List<String> roles) {
+        Claims claims = Jwts.claims().setSubject(String.valueOf(id));
         claims.put("roles", roles);
 
         Date now = new Date();
@@ -59,7 +59,7 @@ public class JwtUtils {
 
     public Authentication getAuthentication(String token) {
         UserDetails userDetails =
-                userDetailsService.loadUserByUsername(this.getUserEmailFromToken(token));
+                userDetailsService.loadUserByUsername(this.getUserIdFromToken(token));
 
         return new UsernamePasswordAuthenticationToken(userDetails
                 , ""
@@ -79,7 +79,7 @@ public class JwtUtils {
 
     }
 
-    private String getUserEmailFromToken(String token) {
+    private String getUserIdFromToken(String token) {
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody()
                 .getSubject();
     }
