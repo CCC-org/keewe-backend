@@ -45,8 +45,15 @@ public class ChallengeDomainService {
         return challengeParticipationRepository.existsByChallengerIdAndStatus(userId, CHALLENGING);
     }
 
+    public ChallengeParticipation getCurrentChallengeParticipation(Long userId) {
+        return findCurrentChallengeParticipation(userId).orElseThrow(() -> new KeeweException(KeeweRtnConsts.ERR432));
+    }
+
     private void exitCurrentChallengeIfExist(Long userId) {
-        challengeParticipationRepository.findByChallengerIdAndStatus(userId, CHALLENGING)
-                .ifPresent(ChallengeParticipation::cancel);
+        findCurrentChallengeParticipation(userId).ifPresent(ChallengeParticipation::cancel);
+    }
+
+    private Optional<ChallengeParticipation> findCurrentChallengeParticipation(Long userId) {
+        return challengeParticipationRepository.findByChallengerIdAndStatus(userId, CHALLENGING);
     }
 }
