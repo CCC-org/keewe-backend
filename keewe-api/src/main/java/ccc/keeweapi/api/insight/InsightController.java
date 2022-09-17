@@ -1,5 +1,6 @@
 package ccc.keeweapi.api.insight;
 
+import ccc.keeweapi.dto.ApiResponse;
 import ccc.keeweapi.dto.insight.InsightCreateRequest;
 import ccc.keeweapi.dto.insight.InsightCreateResponse;
 import ccc.keeweapi.service.insight.InsightApiService;
@@ -17,7 +18,7 @@ public class InsightController {
     private final InsightApiService insightApiService;
 
     @PostMapping
-    public ResponseEntity<InsightCreateResponse> create(InsightCreateRequest request) {
-        return ResponseEntity.ok(insightApiService.create(request));
+    public ApiResponse<InsightCreateResponse> create(InsightCreateRequest request) {
+        return ApiResponse.ok(insightApiService.create(request));
     }
 }
