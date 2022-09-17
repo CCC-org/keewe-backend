@@ -166,7 +166,10 @@ CREATE TABLE IF NOT EXISTS `comment_like`
 CREATE TABLE IF NOT EXISTS `drawer`
 (
     drawer_id       BIGINT          NOT NULL    AUTO_INCREMENT,
-    name            VARCHAR(255)    NOT NULL
+    name            VARCHAR(15)     NOT NULL,
+    deleted         BIT             NOT NULL,
+    created_at      DATETIME(6)     NOT NULL,
+    updated_at      DATETIME(6)     NOT NULL
 ) ENGINE = InnoDB DEFAULT CHARSET=utf8mb4;
 
 

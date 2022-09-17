@@ -55,10 +55,11 @@ public class Insight extends BaseTimeEntity {
     @JoinColumn(name = "drawer_id")
     private Drawer drawer;
 
-    public static Insight of(User writer, ChallengeParticipation challengeParticipation, String contents, Link link) {
+    public static Insight of(User writer, ChallengeParticipation challengeParticipation, Drawer drawer, String contents, Link link) {
         Insight insight = new Insight();
         insight.writer = writer;
         insight.challengeParticipation = challengeParticipation;
+        insight.drawer = drawer;
         insight.contents = contents;
         insight.link = link;
 
