@@ -163,4 +163,10 @@ CREATE TABLE IF NOT EXISTS `comment_like`
     FOREIGN KEY (user_id) REFERENCES `user`(user_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+CREATE TABLE IF NOT EXISTS `drawer`
+(
+    drawer_id       BIGINT          NOT NULL    AUTO_INCREMENT,
+    name            VARCHAR(255)    NOT NULL
+) ENGINE = InnoDB DEFAULT CHARSET=utf8mb4;
+
 
