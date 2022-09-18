@@ -1,5 +1,7 @@
 package ccc.keewedomain.service.insight;
 
+import ccc.keewecore.consts.KeeweRtnConsts;
+import ccc.keewecore.exception.KeeweException;
 import ccc.keewedomain.domain.insight.Drawer;
 import ccc.keewedomain.domain.user.User;
 import ccc.keewedomain.dto.insight.DrawerCreateDto;
@@ -19,6 +21,7 @@ public class DrawerDomainService {
     private final UserDomainService userDomainService;
 
     public Drawer create(DrawerCreateDto dto) {
+        validateNameDuplication(dto.getUserId(), dto.getName());
         User user = userDomainService.getUserByIdOrElseThrow(dto.getUserId());
         Drawer drawer = Drawer.of(user, dto.getName());
         return drawerRepository.save(drawer);
@@ -28,4 +31,9 @@ public class DrawerDomainService {
         return drawerRepository.findByIdAndAndDeletedFalse(id);
     }
 
+    private void validateNameDuplication(Long userId, String name) {
+        if(drawerRepository.existsByUserIdAndName(userId, name)) {
+            throw new KeeweException(KeeweRtnConsts.ERR441);
+        }
+    }
 }
