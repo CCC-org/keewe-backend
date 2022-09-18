@@ -33,6 +33,17 @@
 7. branch 삭제
 
 
+# 이벤트 처리 매커니즘
+- 조회수 처리 예시
+![image](https://user-images.githubusercontent.com/33655186/190893407-a0675b69-9324-413e-9e5d-fb30289b3240.png)
+
+
+
+
+---
+
+
+
 <p align="center">
 <img top="width="500" height="360" style="display: block; margin: 100 auto" src="https://user-images.githubusercontent.com/33655186/188508008-ef3abdf4-8ad0-4c7e-bfdc-65462b2ae6ba.png">
 </p>
