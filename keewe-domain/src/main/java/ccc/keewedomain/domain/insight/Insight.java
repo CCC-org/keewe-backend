@@ -21,7 +21,7 @@ import static javax.persistence.FetchType.LAZY;
 public class Insight extends BaseTimeEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "insight_id")
     private Long id;
 

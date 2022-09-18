@@ -6,9 +6,6 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
-public class InsightCreateRequest {
-    private String contents;
-    private String link;
-    private boolean participate;
-    private Long drawerId;
+public class DrawerCreateRequest {
+    private String name;
 }

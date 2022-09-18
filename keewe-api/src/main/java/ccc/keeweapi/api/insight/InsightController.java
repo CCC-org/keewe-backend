@@ -5,8 +5,8 @@ import ccc.keeweapi.dto.insight.InsightCreateRequest;
 import ccc.keeweapi.dto.insight.InsightCreateResponse;
 import ccc.keeweapi.service.insight.InsightApiService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,7 +18,7 @@ public class InsightController {
     private final InsightApiService insightApiService;
 
     @PostMapping
-    public ApiResponse<InsightCreateResponse> create(InsightCreateRequest request) {
+    public ApiResponse<InsightCreateResponse> create(@RequestBody InsightCreateRequest request) {
         return ApiResponse.ok(insightApiService.create(request));
     }
 }

@@ -25,8 +25,9 @@ public class InsightDomainService {
     //TODO 참가한 챌린지에 기록하기
     public Insight create(InsightCreateDto dto) {
         User writer = userDomainService.getUserByIdOrElseThrow(dto.getWriterId());
-        ChallengeParticipation participation = challengeDomainService.getCurrentChallengeParticipation(dto.getWriterId());
-        Drawer drawer = drawerDomainService.getById(dto.getDrawerId());
+        Drawer drawer = drawerDomainService.findById(dto.getDrawerId()).orElse(null);
+        ChallengeParticipation participation = challengeDomainService.findCurrentChallengeParticipation(dto.getWriterId())
+                .orElse(null);
 
         Insight insight = Insight.of(writer, participation, drawer, dto.getContents(), Link.of(dto.getLink()));
         return insightRepository.save(insight);

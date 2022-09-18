@@ -53,7 +53,7 @@ public class ChallengeDomainService {
         findCurrentChallengeParticipation(userId).ifPresent(ChallengeParticipation::cancel);
     }
 
-    private Optional<ChallengeParticipation> findCurrentChallengeParticipation(Long userId) {
+    public Optional<ChallengeParticipation> findCurrentChallengeParticipation(Long userId) {
         return challengeParticipationRepository.findByChallengerIdAndStatus(userId, CHALLENGING);
     }
 }
