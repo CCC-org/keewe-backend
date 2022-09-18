@@ -4,6 +4,7 @@ import ccc.keewedomain.domain.challenge.ChallengeParticipation;
 import ccc.keewedomain.domain.common.BaseTimeEntity;
 import ccc.keewedomain.domain.common.Link;
 import ccc.keewedomain.domain.user.User;
+import lombok.Getter;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ import java.util.List;
 import static javax.persistence.FetchType.LAZY;
 
 @Entity
+@Getter
 @Table(name = "insight")
 public class Insight extends BaseTimeEntity {
 
