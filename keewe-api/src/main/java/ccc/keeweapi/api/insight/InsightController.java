@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/api/v1/insight")
 @RequiredArgsConstructor
@@ -18,7 +20,7 @@ public class InsightController {
     private final InsightApiService insightApiService;
 
     @PostMapping
-    public ApiResponse<InsightCreateResponse> create(@RequestBody InsightCreateRequest request) {
+    public ApiResponse<InsightCreateResponse> create(@RequestBody @Valid InsightCreateRequest request) {
         return ApiResponse.ok(insightApiService.create(request));
     }
 }

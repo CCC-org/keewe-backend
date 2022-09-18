@@ -14,7 +14,7 @@ public class InsightAssembler {
         return InsightCreateDto.of(SecurityUtil.getUserId(),
                 request.getContents(),
                 request.getLink(),
-                request.isParticipate(),
+                request.isParticipation(),
                 request.getDrawerId());
     }
 

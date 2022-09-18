@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/api/v1/drawer")
 @RequiredArgsConstructor
@@ -18,7 +20,7 @@ public class DrawerController {
     private final DrawerApiService drawerApiService;
 
     @PostMapping
-    public ApiResponse<DrawerCreateResponse> create(@RequestBody DrawerCreateRequest request) {
+    public ApiResponse<DrawerCreateResponse> create(@RequestBody @Valid DrawerCreateRequest request) {
         return ApiResponse.ok(drawerApiService.create(request));
     }
 }
