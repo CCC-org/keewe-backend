@@ -38,7 +38,7 @@ public class InsightDomainService {
 
     private void aggregateReaction(Insight insight, ReactionType reactionType, Long value) {
         Optional<ReactionAggregation> optionalEntity = reactionAggregationRepository
-                .findById(ReactionAggregationId.of(insight.getId(), reactionType));
+                .findByIdForUpdate(ReactionAggregationId.of(insight.getId(), reactionType));
 
         if (optionalEntity.isEmpty()) {
             reactionAggregationRepository.save(ReactionAggregation.of(insight, reactionType, value));
