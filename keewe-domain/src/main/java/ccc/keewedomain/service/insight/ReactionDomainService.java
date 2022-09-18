@@ -20,7 +20,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class InsightDomainService {
+public class ReactionDomainService {
     private final ReactionRepository reactionRepository;
     private final ReactionAggregationRepository reactionAggregationRepository;
     private final UserDomainService userDomainService;

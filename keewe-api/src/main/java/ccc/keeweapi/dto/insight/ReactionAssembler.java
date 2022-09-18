@@ -6,7 +6,7 @@ import ccc.keewedomain.dto.insight.ReactionDto;
 import org.springframework.stereotype.Component;
 
 @Component
-public class InsightAssembler {
+public class ReactionAssembler {
     public ReactionDto toReactionDto(ReactionRequest request) {
         return ReactionDto.of(
                 request.getInsightId(),
