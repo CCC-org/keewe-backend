@@ -1,5 +1,5 @@
 package ccc.keewedomain.repository.insight;
 
-public interface DrawerRepositoryCustom {
+public interface DrawerQueryRepository {
     boolean existsByUserIdAndName(Long userId, String name);
 }

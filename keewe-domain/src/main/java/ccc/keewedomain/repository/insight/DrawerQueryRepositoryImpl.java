@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 import static ccc.keewedomain.domain.insight.QDrawer.drawer;
 
 @RequiredArgsConstructor
-public class DrawerRepositoryImpl implements DrawerRepositoryCustom {
+public class DrawerQueryRepositoryImpl implements DrawerQueryRepository {
 
     private final JPAQueryFactory queryFactory;
 

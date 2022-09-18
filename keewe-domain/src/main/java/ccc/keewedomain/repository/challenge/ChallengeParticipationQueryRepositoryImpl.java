@@ -8,7 +8,7 @@ import static ccc.keewedomain.domain.challenge.QChallengeParticipation.challenge
 import static ccc.keewedomain.domain.user.QUser.user;
 
 @RequiredArgsConstructor
-public class ChallengeParticipationRepositoryImpl implements ChallengeParticipationRepositoryCustom {
+public class ChallengeParticipationQueryRepositoryImpl implements ChallengeParticipationQueryRepository {
 
     private final JPAQueryFactory queryFactory;
 
