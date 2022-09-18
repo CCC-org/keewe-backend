@@ -4,9 +4,6 @@ import ccc.keewedomain.domain.challenge.ChallengeParticipation;
 import ccc.keewedomain.domain.common.BaseTimeEntity;
 import ccc.keewedomain.domain.common.Link;
 import ccc.keewedomain.domain.user.User;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -16,12 +13,10 @@ import static javax.persistence.FetchType.LAZY;
 
 @Entity
 @Table(name = "insight")
-@Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Insight extends BaseTimeEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "insight_id")
     private Long id;
 
@@ -50,20 +45,5 @@ public class Insight extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "insight", fetch = LAZY)
     private List<Comment> comments = new ArrayList<>();
-
-    @ManyToOne
-    @JoinColumn(name = "drawer_id")
-    private Drawer drawer;
-
-    public static Insight of(User writer, ChallengeParticipation challengeParticipation, Drawer drawer, String contents, Link link) {
-        Insight insight = new Insight();
-        insight.writer = writer;
-        insight.challengeParticipation = challengeParticipation;
-        insight.drawer = drawer;
-        insight.contents = contents;
-        insight.link = link;
-
-        return insight;
-    }
 
 }

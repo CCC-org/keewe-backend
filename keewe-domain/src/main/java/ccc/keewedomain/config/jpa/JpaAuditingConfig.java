@@ -1,4 +1,4 @@
-package ccc.keewedomain.config;
+package ccc.keewedomain.config.jpa;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
