@@ -138,7 +138,9 @@ project(':keewe-domain') {
 		implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.5.8'
 		implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
 		implementation "com.querydsl:querydsl-apt:${queryDslVersion}"
-		// todo ::jpa, redis import
+		implementation 'org.flywaydb:flyway-core'
+
+		// todo :: redis import
 	}
 
 

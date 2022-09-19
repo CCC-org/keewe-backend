@@ -25,7 +25,7 @@
         <sift>
             <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
                 <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-                    <pattern>%d{yy-MM-dd HH:mm:ss.SSS} [%-10.10thread][%-5level][%-36.36logger{5}] - %msg%n</pattern>
+                    <pattern>%d{yy-MM-dd HH:mm:ss.SSS} [%-10.10thread]%highlight([%-5level])[%-36.36logger{5}] - %msg%n</pattern>
                 </encoder>
             </appender>
         </sift>
