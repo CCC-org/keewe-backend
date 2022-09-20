@@ -97,6 +97,20 @@ CREATE TABLE IF NOT EXISTS `challenge_participation`
 /**
  * 인사이트 (게시물) 관련 테이블 정의
  */
+
+CREATE TABLE IF NOT EXISTS `drawer`
+(
+    drawer_id       BIGINT          NOT NULL    AUTO_INCREMENT,
+    user_id         BIGINT          NOT NULL,
+    name            VARCHAR(15)     NOT NULL,
+    deleted         BIT             NOT NULL,
+    created_at      DATETIME(6)     NOT NULL,
+    updated_at      DATETIME(6)     NOT NULL,
+
+    FOREIGN KEY (user_id) REFERENCES `user`(user_id),
+    CONSTRAINT `drawer_name_constraint` UNIQUE (user_id, name)
+) ENGINE = InnoDB DEFAULT CHARSET=utf8mb4;
+
 CREATE TABLE IF NOT EXISTS `insight`
 (
     insight_id                  BIGINT          NOT NULL    AUTO_INCREMENT,
@@ -111,7 +125,8 @@ CREATE TABLE IF NOT EXISTS `insight`
 
     PRIMARY KEY (insight_id),
     FOREIGN KEY (writer_id) REFERENCES `user`(user_id),
-    FOREIGN KEY (challenge_participation_id) REFERENCES `challenge_participation`(challenge_participation_id)
+    FOREIGN KEY (challenge_participation_id) REFERENCES `challenge_participation`(challenge_participation_id),
+    FOREIGN KEY (drawer_id) REFERENCES `drawer`(drawer_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS `reaction`
@@ -163,18 +178,5 @@ CREATE TABLE IF NOT EXISTS `comment_like`
     FOREIGN KEY (comment_id) REFERENCES `comment`(comment_id),
     FOREIGN KEY (user_id) REFERENCES `user`(user_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-CREATE TABLE IF NOT EXISTS `drawer`
-(
-    drawer_id       BIGINT          NOT NULL    AUTO_INCREMENT,
-    user_id         BIGINT          NOT NULL,
-    name            VARCHAR(15)     NOT NULL,
-    deleted         BIT             NOT NULL,
-    created_at      DATETIME(6)     NOT NULL,
-    updated_at      DATETIME(6)     NOT NULL,
-
-    FOREIGN KEY (user_id) REFERENCES `user`(user_id),
-    CONSTRAINT `drawer_name_constraint` UNIQUE (user_id, name)
-) ENGINE = InnoDB DEFAULT CHARSET=utf8mb4;
 
 
