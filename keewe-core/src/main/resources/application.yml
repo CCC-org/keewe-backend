@@ -1,1 +1,14 @@
 
+spring:
+  config:
+    activate:
+      on-profile: local
+
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: keewe
+    password: keewe
+
+
+---
