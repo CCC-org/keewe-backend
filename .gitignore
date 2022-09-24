@@ -43,5 +43,6 @@ logs/
 .gitsecret/keys/random_seed
 !*.secret
 keewe-domain/src/main/resources/application-domain.yml
+keewe-core/src/main/resources/application-core.yml
 /gpg-ownertrust.txt
 /gpg-secret.key

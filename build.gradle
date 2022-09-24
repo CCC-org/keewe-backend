@@ -72,7 +72,6 @@ project(':keewe-statistics') {
 	dependencies {
 		implementation project(path: ':keewe-core', configuration: 'default')
 		implementation project(path: ':keewe-domain', configuration: 'default')
-		implementation 'org.springframework.boot:spring-boot-starter-web'
 	}
 }
 
@@ -87,8 +86,7 @@ project(':keewe-infra') {
 
 	dependencies {
 		implementation project(path: ':keewe-core', configuration: 'default')
-		implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
-		// todo :: amqp import, aws config
+		implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'// todo :: aws config
 	}
 }
 

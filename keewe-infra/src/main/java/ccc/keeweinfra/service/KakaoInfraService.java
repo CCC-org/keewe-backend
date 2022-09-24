@@ -1,16 +1,13 @@
 package ccc.keeweinfra.service;
 
 import ccc.keewecore.consts.KeeweConsts;
-import ccc.keewecore.consts.KeeweRtnConsts;
 import ccc.keeweinfra.apis.KakaoApi;
 import ccc.keeweinfra.apis.KakaoAuthApi;
 import ccc.keeweinfra.dto.KakaoProfileResponse;
-import ccc.keeweinfra.vo.kakao.KakaoAccount;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
 
 
 @Service
@@ -33,11 +30,8 @@ public class KakaoInfraService {
         return kakaoAuthApi.getAccessToken(KeeweConsts.AUTH_CODE, clientId, redirectUrl, code, clientSecret).getAccessToken();
     }
 
-    public KakaoAccount getKakaoAccount(String accessToken) {
-        KakaoProfileResponse profile = kakaoApi.getKakaoUser(KeeweConsts.BEARER.concat(" " + accessToken));
-        Assert.notNull(profile.getKakaoAccount(), KeeweRtnConsts.ERR412.getDescription());
-        Assert.notNull(profile.getKakaoAccount().getEmail(), KeeweRtnConsts.ERR412.getDescription());
-        return profile.getKakaoAccount();
+    public KakaoProfileResponse getKakaoAccount(String accessToken) {
+        return kakaoApi.getKakaoUser(KeeweConsts.BEARER.concat(" " + accessToken));
     }
 
 }

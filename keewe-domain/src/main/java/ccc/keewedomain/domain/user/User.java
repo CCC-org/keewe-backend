@@ -6,6 +6,7 @@ import ccc.keewedomain.domain.common.BaseTimeEntity;
 import ccc.keewedomain.domain.common.Interest;
 import ccc.keewedomain.domain.user.enums.Privacy;
 import ccc.keewedomain.domain.user.enums.UserStatus;
+import ccc.keewedomain.domain.user.enums.VendorType;
 import ccc.keewedomain.dto.user.UserSignUpDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,7 +34,14 @@ public class User extends BaseTimeEntity {
     @Column(name = "user_id")
     private Long id;
 
-    @Column(name = "email", unique = true)
+    @Column(name = "vendor_id")
+    private String vendorId;
+
+    @Column(name = "vendor_type")
+    @Enumerated(value = EnumType.STRING)
+    private VendorType vendorType;
+
+    @Column(name = "email")
     private String email; // 아이디
 
     @Column(name = "password")
@@ -79,6 +87,8 @@ public class User extends BaseTimeEntity {
 
     public static User from(UserSignUpDto userSignUpDto) {
         User user = new User();
+        user.vendorId = userSignUpDto.getVendorId();
+        user.vendorType = userSignUpDto.getVendorType();
         user.email = userSignUpDto.getEmail();
         user.password = userSignUpDto.getPassword();
         user.phoneNumber = userSignUpDto.getPhoneNumber();
