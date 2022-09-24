@@ -29,4 +29,8 @@ public class InsightAssembler {
     public DrawerCreateResponse toDrawerCreateResponse(Drawer drawer) {
         return DrawerCreateResponse.of(drawer.getId());
     }
+
+    public InsightViewIncrementResponse toInsightViewIncrementResponse() {
+        return InsightViewIncrementResponse.of(0L);
+    }
 }
