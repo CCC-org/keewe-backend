@@ -1,1 +1,5 @@
+spring:
+  profiles:
+    include: core
 
+---

@@ -2,7 +2,6 @@ package ccc.keewedomain.service.insight;
 
 import ccc.keewedomain.KeeweDomainApplication;
 import ccc.keewedomain.repository.insight.ReactionAggregationRepository;
-import ccc.keewedomain.repository.insight.ReactionRepository;
 import ccc.keeweinfra.KeeweInfraApplication;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
