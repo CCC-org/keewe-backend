@@ -7,9 +7,9 @@ import lombok.Getter;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 public class InsightViewIncrementResponse {
-    private Long count;
+    private Long viewCount;
 
-    public static InsightViewIncrementResponse of(Long count) {
-        return new InsightViewIncrementResponse(count);
+    public static InsightViewIncrementResponse of(Long viewCount) {
+        return new InsightViewIncrementResponse(viewCount);
     }
 }
