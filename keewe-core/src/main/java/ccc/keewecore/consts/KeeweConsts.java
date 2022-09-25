@@ -10,5 +10,6 @@ public class KeeweConsts {
     public static final String QUESTION_POST = "question";
 
     public static final String DEFAULT_ROUTING_KEY = "";
-    public static final String INSIGHT_VIEW_INCREMENT_EXCHANGE = "INSIGHT-VIEW";
+    public static final String INSIGHT_VIEW_EXCHANGE = "INSIGHT-VIEW-EXCHANGE";
+    public static final String INSIGHT_VIEW_QUEUE = "INSIGHT-VIEW-QUEUE";
 }

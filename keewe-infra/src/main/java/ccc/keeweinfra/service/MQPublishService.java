@@ -14,7 +14,7 @@ public class MQPublishService {
 
     //TODO: retry handler 도입
     public void publish(Object body) {
-        rabbitTemplate.convertAndSend(KeeweConsts.INSIGHT_VIEW_INCREMENT_EXCHANGE
+        rabbitTemplate.convertAndSend(KeeweConsts.INSIGHT_VIEW_EXCHANGE
                 , KeeweConsts.DEFAULT_ROUTING_KEY
                 , body);
     }
