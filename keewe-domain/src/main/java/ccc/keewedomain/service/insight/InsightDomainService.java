@@ -15,7 +15,6 @@ import ccc.keeweinfra.service.MQPublishService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -44,7 +43,7 @@ public class InsightDomainService {
         mqPublishService.publish(KeeweConsts.INSIGHT_VIEW_EXCHANGE, String.valueOf(dto.getInsightId()));
     }
 
-    @Transactional(propagation = Propagation.NESTED)
+    @Transactional
     public Long incrementViewCount(Long insightId) {
         Insight insight = insightRepository.findByIdOrElseThrow(insightId);
         log.info("[IDS::incrementViewCount] Curr view {}, Next view {}", insight.getView(), insight.getView() + 1);

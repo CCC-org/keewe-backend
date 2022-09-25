@@ -36,7 +36,7 @@ public class InsightAssembler {
         return InsightViewIncrementDto.of(insightId);
     }
 
-    public InsightViewIncrementResponse toInsightViewIncrementResponse(Long count) {
-        return InsightViewIncrementResponse.of(count);
+    public InsightViewIncrementResponse toInsightViewIncrementResponse(Long viewCount) {
+        return InsightViewIncrementResponse.of(viewCount);
     }
 }
