@@ -20,7 +20,6 @@ public class ReactionApiService {
     private final ReactionAssembler insightAssembler;
 
     @Transactional
-    @Lock(value = LockModeType.PESSIMISTIC_WRITE)
     public ReactionResponse react(ReactionRequest request) {
         Reaction reaction = insightDomainService.react(insightAssembler.toReactionDto(request));
         return insightAssembler.toReactionResponse(reaction.getType());
