@@ -2,6 +2,7 @@ package ccc.keeweapi.api.user;
 
 import ccc.keeweapi.dto.ApiResponse;
 import ccc.keeweapi.dto.user.OnboardRequest;
+import ccc.keeweapi.dto.user.OnboardResponse;
 import ccc.keeweapi.service.user.ProfileApiService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,7 +20,7 @@ public class ProfileController {
     private final ProfileApiService profileApiService;
 
     @PostMapping
-    public ApiResponse<?> onboard(@RequestBody @Valid OnboardRequest request) {
+    public ApiResponse<OnboardResponse> onboard(@RequestBody @Valid OnboardRequest request) {
         return ApiResponse.ok(profileApiService.onboard(request));
     }
 }
