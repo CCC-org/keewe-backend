@@ -12,11 +12,11 @@ import java.util.Optional;
 
 public interface InsightRepository extends JpaRepository<Insight, Long> {
 
-//    @Lock(LockModeType.PESSIMISTIC_WRITE)
-//    @Query(value = "select i from Insight i where i.id = :id")
-    Optional<Insight> findById(Long id);
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query(value = "select i from Insight i where i.id = :id")
+    Optional<Insight> findByIdWithReadWriteLock(Long id);
 
     default Insight findByIdOrElseThrow(Long id) {
-        return findById(id).orElseThrow(() -> new KeeweException(KeeweRtnConsts.ERR445));
+        return findByIdWithReadWriteLock(id).orElseThrow(() -> new KeeweException(KeeweRtnConsts.ERR445));
     }
 }

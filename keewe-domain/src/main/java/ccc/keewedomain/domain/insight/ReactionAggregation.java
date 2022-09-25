@@ -1,5 +1,6 @@
 package ccc.keewedomain.domain.insight;
 
+import ccc.keewedomain.domain.common.BaseTimeEntity;
 import ccc.keewedomain.domain.insight.enums.ReactionType;
 import ccc.keewedomain.domain.insight.id.ReactionAggregationId;
 
@@ -10,7 +11,7 @@ import static javax.persistence.FetchType.LAZY;
 @Table(name = "reaction_aggregation")
 @Entity
 @IdClass(ReactionAggregationId.class)
-public class ReactionAggregation {
+public class ReactionAggregation extends BaseTimeEntity {
     @Id
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "insight_id")

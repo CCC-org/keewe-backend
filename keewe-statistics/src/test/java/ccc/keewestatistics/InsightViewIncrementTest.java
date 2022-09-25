@@ -1,32 +1,29 @@
 package ccc.keewestatistics;
 
-
 import ccc.keewedomain.domain.insight.Insight;
 import ccc.keewedomain.domain.user.User;
 import ccc.keewedomain.domain.user.enums.VendorType;
 import ccc.keewedomain.dto.insight.InsightCreateDto;
 import ccc.keewedomain.dto.user.UserSignUpDto;
 import ccc.keewedomain.repository.insight.InsightRepository;
+import ccc.keewedomain.repository.user.UserRepository;
 import ccc.keewedomain.service.insight.InsightDomainService;
 import ccc.keewedomain.service.user.UserDomainService;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Commit;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @SpringBootTest
 @ActiveProfiles("local")
-@Transactional
 public class InsightViewIncrementTest {
 
     @Autowired
@@ -38,40 +35,20 @@ public class InsightViewIncrementTest {
     @Autowired
     private InsightRepository insightRepository;
 
-    @Test
-    @Commit
-    void incrementWithMultiThread() {
+    @Autowired
+    private UserRepository userRepository;
 
+    private Long insightId;
+    private Long userId;
 
-        Insight insight = saveInsight();
-
-        int threadCnt = 5;
-
-        Insight finalInsight = insight; // for 람다 캡쳐링
-        List<Thread> threads = IntStream.rangeClosed(1, threadCnt)
-                .mapToObj(i -> new Thread(doIncrement(finalInsight.getId(), threadCnt)))
-                .collect(Collectors.toList());
-
-        threads.forEach(Thread::start);
-//        threads.forEach(thread -> {
-//            try {
-//                thread.join();
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//        });
-//
-//        Insight viewedInsight = insightRepository.findByIdOrElseThrow(insight.getId());
-//
-//        System.out.println(viewedInsight.getId());
-//
-//        Assertions.assertThat(viewedInsight.getView())
-//                .isEqualTo(threadCnt * threadCnt);
-
+    @AfterEach
+    void rollback() {
+        insightRepository.deleteById(insightId);
+        userRepository.deleteById(userId);
     }
 
-    @Transactional(propagation = Propagation.NESTED)
-    Insight saveInsight() {
+    @Test
+    void 멀티쓰레드_조회수_증가_성공() {
         User user = createUser();
 
         InsightCreateDto insightCreateDto = InsightCreateDto.of(user.getId()
@@ -80,7 +57,31 @@ public class InsightViewIncrementTest {
                 , false
                 , null);
 
-        return insightDomainService.create(insightCreateDto);
+        Insight insight = insightDomainService.create(insightCreateDto);
+
+        userId = user.getId();
+        insightId = insight.getId();
+
+        int threadCnt = 5;
+
+        List<Thread> threads = IntStream.rangeClosed(1, threadCnt)
+                .mapToObj(i -> new Thread(doIncrement(insightId, threadCnt)))
+                .collect(Collectors.toList());
+
+        threads.forEach(Thread::start);
+        threads.forEach(thread -> {
+            try {
+                thread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+
+        Optional<Insight> viewedInsight = insightRepository.findById(insightId);
+
+        Assertions.assertThat(viewedInsight.get().getView())
+                .isEqualTo(threadCnt * threadCnt);
+
     }
 
     private User createUser() {

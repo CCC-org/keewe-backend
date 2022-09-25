@@ -3,7 +3,6 @@ package ccc.keeweapi.service.insight;
 import ccc.keeweapi.component.InsightAssembler;
 import ccc.keeweapi.dto.insight.InsightCreateRequest;
 import ccc.keeweapi.dto.insight.InsightCreateResponse;
-import ccc.keeweapi.dto.insight.InsightViewIncrementResponse;
 import ccc.keewedomain.domain.insight.Insight;
 import ccc.keewedomain.service.insight.InsightDomainService;
 import lombok.RequiredArgsConstructor;
@@ -21,8 +20,7 @@ public class InsightApiService {
         return insightAssembler.toInsightCreateResponse(insight);
     }
 
-    public InsightViewIncrementResponse incrementViewCount(Long insightId) {
-        Long currentViewCount = insightDomainService.incrementViewCount(insightAssembler.toInsightViewIncrementDto(insightId));
-        return insightAssembler.toInsightViewIncrementResponse(currentViewCount);
+    public void incrementViewCount(Long insightId) {
+        insightDomainService.incrementViewCount(insightAssembler.toInsightViewIncrementDto(insightId));
     }
 }

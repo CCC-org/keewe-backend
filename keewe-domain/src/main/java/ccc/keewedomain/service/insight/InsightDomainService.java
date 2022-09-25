@@ -40,10 +40,8 @@ public class InsightDomainService {
         return insightRepository.save(insight);
     }
 
-    public Long incrementViewCount(InsightViewIncrementDto dto) {
-        //TODO redis 조회
+    public void incrementViewCount(InsightViewIncrementDto dto) {
         mqPublishService.publish(KeeweConsts.INSIGHT_VIEW_EXCHANGE, String.valueOf(dto.getInsightId()));
-        return 3263L + 1;
     }
 
     @Transactional(propagation = Propagation.NESTED)

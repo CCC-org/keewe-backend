@@ -134,18 +134,22 @@ CREATE TABLE IF NOT EXISTS `insight`
 
 CREATE TABLE IF NOT EXISTS `reaction`
 (
-    insight_id    BIGINT      NOT NULL,
-    reactor_id    BIGINT      NOT NULL,
-    reaction_type VARCHAR(15) NOT NULL,
+    insight_id          BIGINT      NOT NULL,
+    reactor_id          BIGINT      NOT NULL,
+    reaction_type       VARCHAR(15) NOT NULL,
+    created_at          DATETIME(6)     NOT NULL,
+    updated_at          DATETIME(6)     NOT NULL,
 
     PRIMARY KEY (insight_id, reactor_id, reaction_type)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS `reaction_aggregation`
 (
-    insight_id             BIGINT      NOT NULL ,
-    reaction_type          VARCHAR(15) NOT NULL,
-    count                  BIGINT      NOT NULL  DEFAULT 0,
+    insight_id          BIGINT      NOT NULL ,
+    reaction_type       VARCHAR(15) NOT NULL,
+    count               BIGINT      NOT NULL  DEFAULT 0,
+    created_at          DATETIME(6)     NOT NULL,
+    updated_at          DATETIME(6)     NOT NULL,
 
     PRIMARY KEY (insight_id, reaction_type)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -157,7 +161,7 @@ CREATE TABLE IF NOT EXISTS `reaction_aggregation`
 CREATE TABLE IF NOT EXISTS `comment`
 (
     comment_id          BIGINT(20)      NOT NULL    AUTO_INCREMENT,
-    insight_id             BIGINT          NOT NULL,
+    insight_id          BIGINT          NOT NULL,
     writer_id           BIGINT          NOT NULL,
     parent_comment_id   BIGINT,
     content             VARCHAR(140)    NOT NULL,
