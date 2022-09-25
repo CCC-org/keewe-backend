@@ -18,6 +18,8 @@ import org.springframework.test.web.servlet.ResultActions;
 import static com.epages.restdocs.apispec.ResourceDocumentation.headerWithName;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
@@ -74,6 +76,33 @@ public class InsightControllerTest extends ApiDocumentationTest {
                                 fieldWithPath("message").description("요청 결과 메세지"),
                                 fieldWithPath("code").description("결과 코드"),
                                 fieldWithPath("data.insightId").description("생성된 인사이트의 ID"))
+                        .tag("Insight")
+                        .build()
+        )));
+    }
+
+
+    @Test
+    @DisplayName("인사이트 조회수 증가 API")
+    void increment_insight_views() throws Exception {
+
+        doNothing().when(insightApiService).incrementViewCount(anyLong());
+
+        ResultActions resultActions = mockMvc.perform(post("/api/v1/insight/view/{insightId}", 1L)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        resultActions.andDo(restDocs.document(resource(
+                ResourceSnippetParameters.builder()
+                        .description("인사이트 조회수 증가 API 입니다.")
+                        .summary("인사이트 조회수 증가 API")
+                        .requestHeaders(
+                                headerWithName("Authorization").description("유저의 JWT"))
+                        .responseFields(
+                                fieldWithPath("message").description("요청 결과 메세지"),
+                                fieldWithPath("code").description("결과 코드"),
+                                fieldWithPath("data").description("데이터 없음"))
                         .tag("Insight")
                         .build()
         )));
