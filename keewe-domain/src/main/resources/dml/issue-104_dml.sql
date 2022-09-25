@@ -1,5 +1,5 @@
 ALTER TABLE `insight`
-    ADD COLUMN `view` BIGINT DEFAULT 0;
+    ADD COLUMN `view`              BIGINT          NOT NULL       DEFAULT 0;
 
 ALTER TABLE `reaction`
     ADD COLUMN    created_at       DATETIME(6)     NOT NULL,
