@@ -1,5 +1,6 @@
-package ccc.keeweapi.dto.user;
+package ccc.keeweapi.component;
 
+import ccc.keeweapi.dto.user.UserSignUpResponse;
 import ccc.keewedomain.domain.user.User;
 import ccc.keewedomain.domain.user.enums.VendorType;
 import ccc.keewedomain.dto.user.UserSignUpDto;

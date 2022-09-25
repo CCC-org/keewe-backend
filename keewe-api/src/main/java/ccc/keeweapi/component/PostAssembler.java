@@ -1,5 +1,8 @@
-package ccc.keeweapi.dto.nest;
+package ccc.keeweapi.component;
 
+import ccc.keeweapi.dto.nest.PostCreateRequest;
+import ccc.keeweapi.dto.nest.PostResponse;
+import ccc.keeweapi.dto.nest.VotePostCreateRequest;
 import ccc.keeweapi.utils.SecurityUtil;
 import ccc.keewecore.consts.KeeweConsts;
 import ccc.keewecore.exception.KeeweException;

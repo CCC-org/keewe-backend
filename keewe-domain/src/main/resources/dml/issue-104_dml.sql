@@ -1,0 +1,2 @@
+ALTER TABLE `insight`
+ADD COLUMN `view` BIGINT DEFAULT 0;

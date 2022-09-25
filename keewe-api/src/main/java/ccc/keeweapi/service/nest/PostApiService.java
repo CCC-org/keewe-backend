@@ -1,5 +1,6 @@
 package ccc.keeweapi.service.nest;
 
+import ccc.keeweapi.component.PostAssembler;
 import ccc.keeweapi.dto.nest.*;
 import ccc.keewecore.aop.annotations.FLogging;
 import ccc.keewedomain.service.nest.PostDomainService;

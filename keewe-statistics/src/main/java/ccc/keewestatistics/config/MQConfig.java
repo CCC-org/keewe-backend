@@ -20,7 +20,7 @@ public class MQConfig {
 
     @Bean
     Binding insightViewBinding(Queue insightViewQueue, Exchange insightViewExchange) {
-        return BindingBuilder.bind(insightViewQueue).to(insightViewExchange).with("").noargs();
+        return BindingBuilder.bind(insightViewQueue).to(insightViewExchange).with(KeeweConsts.DEFAULT_ROUTING_KEY).noargs();
     }
 
 }

@@ -121,8 +121,10 @@ CREATE TABLE IF NOT EXISTS `insight`
     contents                    VARCHAR(300)    NOT NULL,
     url                         VARCHAR(2000)   NOT NULL,
     deleted                     BIT             NOT NULL,
+    view                        BIGINT          DEFAULT  0,
     created_at                  DATETIME(6)     NOT NULL,
     updated_at                  DATETIME(6)     NOT NULL,
+
 
     PRIMARY KEY (insight_id),
     FOREIGN KEY (writer_id) REFERENCES `user`(user_id),

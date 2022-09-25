@@ -71,7 +71,6 @@ project(':keewe-push') {
 
 project(':keewe-statistics') {
 	dependencies {
-		implementation project(path: ':keewe-core', configuration: 'default')
 		implementation project(path: ':keewe-domain', configuration: 'default')
 	}
 }
@@ -129,7 +128,6 @@ project(':keewe-domain') {
 	}
 
 	dependencies {
-		implementation project(path: ':keewe-core', configuration: 'default')
 		implementation project(path: ':keewe-infra', configuration: 'default')
 		implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 		implementation 'mysql:mysql-connector-java'
@@ -166,7 +164,6 @@ project(':keewe-api') {
 	}
 
 	dependencies {
-		implementation project(path: ':keewe-core', configuration: 'default')
 		implementation project(path: ':keewe-domain', configuration: 'default')
 		implementation "io.sentry:sentry-spring-boot-starter:${sentryVersion}"
 		implementation "io.sentry:sentry-logback:${sentryVersion}"

@@ -2,7 +2,7 @@ package ccc.keeweapi.service.insight;
 
 import ccc.keeweapi.dto.insight.DrawerCreateRequest;
 import ccc.keeweapi.dto.insight.DrawerCreateResponse;
-import ccc.keeweapi.dto.insight.InsightAssembler;
+import ccc.keeweapi.component.InsightAssembler;
 import ccc.keewedomain.domain.insight.Drawer;
 import ccc.keewedomain.service.insight.DrawerDomainService;
 import lombok.RequiredArgsConstructor;

@@ -1,5 +1,5 @@
 spring:
   profiles:
-    include: core
+    include: domain, core
 
 ---

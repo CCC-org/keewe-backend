@@ -1,5 +1,6 @@
-package ccc.keeweapi.dto.challenge;
+package ccc.keeweapi.component;
 
+import ccc.keeweapi.dto.challenge.*;
 import ccc.keeweapi.utils.SecurityUtil;
 import ccc.keewedomain.domain.challenge.Challenge;
 import ccc.keewedomain.domain.challenge.ChallengeParticipation;

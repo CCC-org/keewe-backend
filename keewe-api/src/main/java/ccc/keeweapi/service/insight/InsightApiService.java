@@ -1,6 +1,6 @@
 package ccc.keeweapi.service.insight;
 
-import ccc.keeweapi.dto.insight.InsightAssembler;
+import ccc.keeweapi.component.InsightAssembler;
 import ccc.keeweapi.dto.insight.InsightCreateRequest;
 import ccc.keeweapi.dto.insight.InsightCreateResponse;
 import ccc.keeweapi.dto.insight.InsightViewIncrementResponse;
@@ -22,6 +22,7 @@ public class InsightApiService {
     }
 
     public InsightViewIncrementResponse incrementViewCount(Long insightId) {
-        return insightAssembler.toInsightViewIncrementResponse();
+        Long currentViewCount = insightDomainService.incrementViewCount(insightAssembler.toInsightViewIncrementDto(insightId));
+        return insightAssembler.toInsightViewIncrementResponse(currentViewCount);
     }
 }

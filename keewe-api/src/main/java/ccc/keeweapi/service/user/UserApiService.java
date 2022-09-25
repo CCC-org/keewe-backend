@@ -1,7 +1,7 @@
 package ccc.keeweapi.service.user;
 
 import ccc.keeweapi.config.security.jwt.JwtUtils;
-import ccc.keeweapi.dto.user.UserAssembler;
+import ccc.keeweapi.component.UserAssembler;
 import ccc.keeweapi.dto.user.UserSignUpResponse;
 import ccc.keewecore.aop.annotations.FLogging;
 import ccc.keewecore.utils.KeeweStringUtils;
