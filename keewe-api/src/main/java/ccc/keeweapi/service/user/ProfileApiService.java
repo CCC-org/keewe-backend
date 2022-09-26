@@ -2,7 +2,7 @@ package ccc.keeweapi.service.user;
 
 import ccc.keeweapi.dto.user.OnboardRequest;
 import ccc.keeweapi.dto.user.OnboardResponse;
-import ccc.keeweapi.dto.user.ProfileAssembler;
+import ccc.keeweapi.component.ProfileAssembler;
 import ccc.keewedomain.domain.user.User;
 import ccc.keewedomain.service.user.ProfileDomainService;
 import lombok.RequiredArgsConstructor;

@@ -31,6 +31,7 @@ subprojects {
 
 		implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.2'
 		implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.2'
+		implementation 'org.springframework.boot:spring-boot-starter-aop'
 
 		testCompileOnly 'org.projectlombok:lombok'
 		testAnnotationProcessor 'org.projectlombok:lombok'
@@ -70,7 +71,6 @@ project(':keewe-push') {
 
 project(':keewe-statistics') {
 	dependencies {
-		implementation project(path: ':keewe-core', configuration: 'default')
 		implementation project(path: ':keewe-domain', configuration: 'default')
 	}
 }
@@ -101,9 +101,7 @@ project(':keewe-core') {
 
 	dependencies {
 		implementation 'org.springframework.boot:spring-boot-starter-amqp'
-		compileOnly 'org.projectlombok:lombok'
-		implementation 'org.springframework.boot:spring-boot-starter-aop'
-		annotationProcessor 'org.projectlombok:lombok'
+		implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 	}
 }
 
@@ -130,7 +128,6 @@ project(':keewe-domain') {
 	}
 
 	dependencies {
-		implementation project(path: ':keewe-core', configuration: 'default')
 		implementation project(path: ':keewe-infra', configuration: 'default')
 		implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 		implementation 'mysql:mysql-connector-java'
@@ -138,7 +135,6 @@ project(':keewe-domain') {
 		implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.5.8'
 		implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
 		implementation "com.querydsl:querydsl-apt:${queryDslVersion}"
-		// todo ::jpa, redis import
 	}
 
 
@@ -168,7 +164,6 @@ project(':keewe-api') {
 	}
 
 	dependencies {
-		implementation project(path: ':keewe-core', configuration: 'default')
 		implementation project(path: ':keewe-domain', configuration: 'default')
 		implementation "io.sentry:sentry-spring-boot-starter:${sentryVersion}"
 		implementation "io.sentry:sentry-logback:${sentryVersion}"

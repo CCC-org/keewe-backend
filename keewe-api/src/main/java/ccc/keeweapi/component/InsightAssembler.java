@@ -1,10 +1,12 @@
-package ccc.keeweapi.dto.insight;
+package ccc.keeweapi.component;
 
+import ccc.keeweapi.dto.insight.*;
 import ccc.keeweapi.utils.SecurityUtil;
 import ccc.keewedomain.domain.insight.Drawer;
 import ccc.keewedomain.domain.insight.Insight;
 import ccc.keewedomain.dto.insight.DrawerCreateDto;
 import ccc.keewedomain.dto.insight.InsightCreateDto;
+import ccc.keewedomain.dto.insight.InsightViewIncrementDto;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -28,5 +30,13 @@ public class InsightAssembler {
 
     public DrawerCreateResponse toDrawerCreateResponse(Drawer drawer) {
         return DrawerCreateResponse.of(drawer.getId());
+    }
+
+    public InsightViewIncrementDto toInsightViewIncrementDto(Long insightId) {
+        return InsightViewIncrementDto.of(insightId);
+    }
+
+    public InsightViewIncrementResponse toInsightViewIncrementResponse(Long viewCount) {
+        return InsightViewIncrementResponse.of(viewCount);
     }
 }

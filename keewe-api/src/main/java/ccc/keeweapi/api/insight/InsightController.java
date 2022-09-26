@@ -5,10 +5,7 @@ import ccc.keeweapi.dto.insight.InsightCreateRequest;
 import ccc.keeweapi.dto.insight.InsightCreateResponse;
 import ccc.keeweapi.service.insight.InsightApiService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -23,4 +20,11 @@ public class InsightController {
     public ApiResponse<InsightCreateResponse> create(@RequestBody @Valid InsightCreateRequest request) {
         return ApiResponse.ok(insightApiService.create(request));
     }
+
+    @PostMapping("/view/{insightId}")
+    public ApiResponse incrementViewCount(@PathVariable Long insightId) {
+        insightApiService.incrementViewCount(insightId);
+        return ApiResponse.ok();
+    }
+
 }

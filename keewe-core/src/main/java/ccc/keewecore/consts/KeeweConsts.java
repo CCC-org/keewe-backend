@@ -8,4 +8,8 @@ public class KeeweConsts {
     public static final String ANNOUNCE_POST = "announcement";
     public static final String VOTE_POST = "vote";
     public static final String QUESTION_POST = "question";
+
+    public static final String DEFAULT_ROUTING_KEY = "";
+    public static final String INSIGHT_VIEW_EXCHANGE = "INSIGHT-VIEW-EXCHANGE";
+    public static final String INSIGHT_VIEW_QUEUE = "INSIGHT-VIEW-QUEUE";
 }

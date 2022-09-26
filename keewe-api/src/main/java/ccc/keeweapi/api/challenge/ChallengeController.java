@@ -1,8 +1,7 @@
 package ccc.keeweapi.api.challenge;
 
 import ccc.keeweapi.dto.ApiResponse;
-import ccc.keeweapi.dto.challenge.ChallengeCreateRequest;
-import ccc.keeweapi.dto.challenge.ChallengeParticipateRequest;
+import ccc.keeweapi.dto.challenge.*;
 import ccc.keeweapi.service.challenge.ChallengeApiService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -16,17 +15,17 @@ public class ChallengeController {
     private final ChallengeApiService challengeApiService;
 
     @PostMapping
-    public ApiResponse<?> create(@RequestBody @Valid ChallengeCreateRequest request) {
+    public ApiResponse<ChallengeCreateResponse> create(@RequestBody @Valid ChallengeCreateRequest request) {
         return ApiResponse.ok(challengeApiService.createChallenge(request));
     }
 
     @PostMapping(value = "/participation")
-    public ApiResponse<?> participate(@RequestBody @Valid ChallengeParticipateRequest request) {
+    public ApiResponse<ChallengeParticipationResponse> participate(@RequestBody @Valid ChallengeParticipateRequest request) {
         return ApiResponse.ok(challengeApiService.participate(request));
     }
 
     @GetMapping(value = "/participation/check")
-    public ApiResponse<?> checkParticipation() {
+    public ApiResponse<ParticipationCheckResponse> checkParticipation() {
         return ApiResponse.ok(challengeApiService.checkParticipation());
     }
 }

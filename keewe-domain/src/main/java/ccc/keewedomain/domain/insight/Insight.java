@@ -55,6 +55,9 @@ public class Insight extends BaseTimeEntity {
     @JoinColumn(name = "drawer_id")
     private Drawer drawer;
 
+    @Column(name = "view")
+    private Long view = 0L;
+
     public static Insight of(User writer, ChallengeParticipation challengeParticipation, Drawer drawer, String contents, Link link) {
         Insight insight = new Insight();
         insight.writer = writer;
@@ -64,6 +67,10 @@ public class Insight extends BaseTimeEntity {
         insight.link = link;
 
         return insight;
+    }
+
+    public Long incrementView() {
+        return view++;
     }
 
 }
