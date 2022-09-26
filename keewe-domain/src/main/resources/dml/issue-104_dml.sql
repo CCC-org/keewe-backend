@@ -3,8 +3,8 @@ ALTER TABLE `insight`
 
 ALTER TABLE `reaction`
     ADD COLUMN    created_at       DATETIME(6)     NOT NULL,
-    ADD COLUMN    updated_at       DATETIME(6)     NOT NULL,
+    ADD COLUMN    updated_at       DATETIME(6)     NOT NULL;
 
-ALTER TABLE `reaction_aggreation`
+ALTER TABLE `reaction_aggregation`
     ADD COLUMN    created_at       DATETIME(6)     NOT NULL,
-    ADD COLUMN    updated_at       DATETIME(6)     NOT NULL,
+    ADD COLUMN    updated_at       DATETIME(6)     NOT NULL;
