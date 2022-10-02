@@ -1,5 +1,6 @@
 package ccc.keewedomain.persistence.domain.insight;
 
+import ccc.keewedomain.domain.insight.ReactionAggregation;
 import ccc.keewedomain.persistence.domain.challenge.ChallengeParticipation;
 import ccc.keewedomain.persistence.domain.common.BaseTimeEntity;
 import ccc.keewedomain.persistence.domain.common.Link;
