@@ -20,7 +20,6 @@ import static com.epages.restdocs.apispec.ResourceDocumentation.headerWithName;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
@@ -43,14 +42,14 @@ public class InsightControllerTest extends ApiDocumentationTest {
     @DisplayName("인사이트 등록 API")
     void create_insight_test() throws Exception {
         String contents = "내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용";
-        String url = "https://tech.kakao.com/2022/03/17/2022-newkrew-onboarding-codereview/";
+        String link = "https://tech.kakao.com/2022/03/17/2022-newkrew-onboarding-codereview/";
         boolean participation = false;
         Long drawerId = 1L;
 
         JSONObject insightCreateRequest = new JSONObject();
         insightCreateRequest
                 .put("contents", contents)
-                .put("url", url)
+                .put("link", link)
                 .put("participation", participation)
                 .put("drawerId", drawerId);
 
@@ -70,7 +69,7 @@ public class InsightControllerTest extends ApiDocumentationTest {
                                 headerWithName("Authorization").description("유저의 JWT"))
                         .requestFields(
                                 fieldWithPath("contents").description("인사이트의 내용. 최대 300자, 문자 제한 없음"),
-                                fieldWithPath("url").description("등록한 링크의 url. 최대 2000자"),
+                                fieldWithPath("link").description("등록한 링크의 link. 최대 2000자"),
                                 fieldWithPath("participation").description("현재 진행중인 챌린지에 참가할 지 여부"),
                                 fieldWithPath("drawerId").description("서랍의 ID. 선택").optional())
                         .responseFields(
