@@ -2,13 +2,13 @@ package ccc.keewedomain.service.nest;
 
 import ccc.keewecore.consts.KeeweConsts;
 import ccc.keewecore.exception.KeeweException;
-import ccc.keewedomain.domain.nest.*;
-import ccc.keewedomain.domain.user.User;
+import ccc.keewedomain.persistence.domain.nest.*;
+import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.dto.nest.AnnouncementPostDto;
 import ccc.keewedomain.dto.nest.PostDto;
 import ccc.keewedomain.dto.nest.QuestionPostDto;
 import ccc.keewedomain.dto.nest.VotePostDto;
-import ccc.keewedomain.repository.nest.PostRepository;
+import ccc.keewedomain.persistence.repository.nest.PostRepository;
 import ccc.keewedomain.service.user.UserDomainService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -1,7 +1,7 @@
 package ccc.keeweapi.document.utils;
 
 import ccc.keeweapi.config.security.jwt.JwtUtils;
-import ccc.keewedomain.repository.user.UserRepository;
+import ccc.keewedomain.persistence.repository.user.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Disabled;
 import org.springframework.beans.factory.annotation.Autowired;

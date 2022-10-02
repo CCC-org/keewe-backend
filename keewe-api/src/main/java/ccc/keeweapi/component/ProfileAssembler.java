@@ -3,7 +3,7 @@ package ccc.keeweapi.component;
 import ccc.keeweapi.dto.user.OnboardRequest;
 import ccc.keeweapi.dto.user.OnboardResponse;
 import ccc.keeweapi.utils.SecurityUtil;
-import ccc.keewedomain.domain.user.User;
+import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.dto.user.OnboardDto;
 import org.springframework.stereotype.Component;
 

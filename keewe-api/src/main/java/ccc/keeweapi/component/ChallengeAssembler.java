@@ -2,8 +2,8 @@ package ccc.keeweapi.component;
 
 import ccc.keeweapi.dto.challenge.*;
 import ccc.keeweapi.utils.SecurityUtil;
-import ccc.keewedomain.domain.challenge.Challenge;
-import ccc.keewedomain.domain.challenge.ChallengeParticipation;
+import ccc.keewedomain.persistence.domain.challenge.Challenge;
+import ccc.keewedomain.persistence.domain.challenge.ChallengeParticipation;
 import ccc.keewedomain.dto.challenge.ChallengeCreateDto;
 import ccc.keewedomain.dto.challenge.ChallengeParticipateDto;
 import org.springframework.stereotype.Component;

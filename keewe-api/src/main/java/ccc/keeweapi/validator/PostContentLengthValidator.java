@@ -2,7 +2,7 @@ package ccc.keeweapi.validator;
 
 import ccc.keeweapi.validator.annotations.PostContent;
 import ccc.keewecore.utils.KeeweStringUtils;
-import ccc.keewedomain.domain.nest.Post;
+import ccc.keewedomain.persistence.domain.nest.Post;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;

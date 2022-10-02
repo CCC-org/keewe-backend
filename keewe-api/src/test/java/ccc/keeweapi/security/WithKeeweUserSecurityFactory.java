@@ -1,8 +1,8 @@
 package ccc.keeweapi.security;
 
 import ccc.keeweapi.config.security.UserPrincipal;
-import ccc.keewedomain.domain.user.User;
-import ccc.keewedomain.domain.user.enums.VendorType;
+import ccc.keewedomain.persistence.domain.user.User;
+import ccc.keewedomain.persistence.domain.user.enums.VendorType;
 import ccc.keewedomain.dto.user.UserSignUpDto;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;

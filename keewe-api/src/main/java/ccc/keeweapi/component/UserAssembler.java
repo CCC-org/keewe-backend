@@ -1,8 +1,8 @@
 package ccc.keeweapi.component;
 
 import ccc.keeweapi.dto.user.UserSignUpResponse;
-import ccc.keewedomain.domain.user.User;
-import ccc.keewedomain.domain.user.enums.VendorType;
+import ccc.keewedomain.persistence.domain.user.User;
+import ccc.keewedomain.persistence.domain.user.enums.VendorType;
 import ccc.keewedomain.dto.user.UserSignUpDto;
 import org.springframework.stereotype.Component;
 

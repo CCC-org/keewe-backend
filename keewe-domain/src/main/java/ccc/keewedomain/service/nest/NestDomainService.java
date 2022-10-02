@@ -1,7 +1,7 @@
 package ccc.keewedomain.service.nest;
 
 
-import ccc.keewedomain.repository.nest.NestRepository;
+import ccc.keewedomain.persistence.repository.nest.NestRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

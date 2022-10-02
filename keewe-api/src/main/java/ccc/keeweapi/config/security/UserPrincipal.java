@@ -1,6 +1,6 @@
 package ccc.keeweapi.config.security;
 
-import ccc.keewedomain.domain.user.User;
+import ccc.keewedomain.persistence.domain.user.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;

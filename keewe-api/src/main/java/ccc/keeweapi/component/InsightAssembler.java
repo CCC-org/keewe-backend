@@ -2,8 +2,8 @@ package ccc.keeweapi.component;
 
 import ccc.keeweapi.dto.insight.*;
 import ccc.keeweapi.utils.SecurityUtil;
-import ccc.keewedomain.domain.insight.Drawer;
-import ccc.keewedomain.domain.insight.Insight;
+import ccc.keewedomain.persistence.domain.insight.Drawer;
+import ccc.keewedomain.persistence.domain.insight.Insight;
 import ccc.keewedomain.dto.insight.DrawerCreateDto;
 import ccc.keewedomain.dto.insight.InsightCreateDto;
 import ccc.keewedomain.dto.insight.InsightViewIncrementDto;

@@ -1,6 +1,6 @@
 package ccc.keeweapi.dto.user;
 
-import ccc.keewedomain.domain.common.Interest;
+import ccc.keewedomain.persistence.domain.common.Interest;
 import lombok.Getter;
 
 import java.util.List;
