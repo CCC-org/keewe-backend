@@ -78,7 +78,6 @@ public class InsightDomainService {
                 .orElseGet(() -> {
                     log.info("[IDS::getViewCount] Initialize view count. insightId={}L", insightId);
                     CInsightView dftInsightView = CInsightView.of(insightId, 0L);
-                    cInsightViewRepository.save(dftInsightView);
                     return dftInsightView;
                 });
 
