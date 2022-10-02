@@ -1,12 +1,14 @@
 package ccc.keewestatistics;
 
-import ccc.keewedomain.domain.insight.Insight;
-import ccc.keewedomain.domain.user.User;
-import ccc.keewedomain.domain.user.enums.VendorType;
+import ccc.keewedomain.cache.domain.insight.CInsightView;
+import ccc.keewedomain.cache.repository.insight.CInsightViewRepository;
+import ccc.keewedomain.persistence.domain.insight.Insight;
+import ccc.keewedomain.persistence.domain.user.User;
+import ccc.keewedomain.persistence.domain.user.enums.VendorType;
 import ccc.keewedomain.dto.insight.InsightCreateDto;
 import ccc.keewedomain.dto.user.UserSignUpDto;
-import ccc.keewedomain.repository.insight.InsightRepository;
-import ccc.keewedomain.repository.user.UserRepository;
+import ccc.keewedomain.persistence.repository.insight.InsightRepository;
+import ccc.keewedomain.persistence.repository.user.UserRepository;
 import ccc.keewedomain.service.insight.InsightDomainService;
 import ccc.keewedomain.service.user.UserDomainService;
 import org.assertj.core.api.Assertions;
@@ -38,11 +40,15 @@ public class InsightViewIncrementTest {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private CInsightViewRepository cInsightViewRepository;
+
     private Long insightId;
     private Long userId;
 
     @AfterEach
     void rollback() {
+        cInsightViewRepository.deleteById(insightId);
         insightRepository.deleteById(insightId);
         userRepository.deleteById(userId);
     }
@@ -78,9 +84,13 @@ public class InsightViewIncrementTest {
         });
 
         Optional<Insight> viewedInsight = insightRepository.findById(insightId);
+        Optional<CInsightView> cachedView = cInsightViewRepository.findById(insightId);
 
         Assertions.assertThat(viewedInsight.get().getView())
                 .isEqualTo(threadCnt * threadCnt);
+
+        Assertions.assertThat(viewedInsight.get().getView())
+                .isEqualTo(cachedView.get().getViewCount());
 
     }
 

@@ -1,6 +1,6 @@
 package ccc.keewedomain.dto.user;
 
-import ccc.keewedomain.domain.user.enums.VendorType;
+import ccc.keewedomain.persistence.domain.user.enums.VendorType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 

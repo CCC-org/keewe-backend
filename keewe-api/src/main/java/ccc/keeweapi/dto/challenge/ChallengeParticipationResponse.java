@@ -1,6 +1,5 @@
 package ccc.keeweapi.dto.challenge;
 
-import ccc.keewedomain.domain.challenge.ChallengeParticipation;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

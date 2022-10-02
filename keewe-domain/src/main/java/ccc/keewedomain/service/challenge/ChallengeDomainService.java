@@ -2,20 +2,20 @@ package ccc.keewedomain.service.challenge;
 
 import ccc.keewecore.consts.KeeweRtnConsts;
 import ccc.keewecore.exception.KeeweException;
-import ccc.keewedomain.domain.challenge.Challenge;
-import ccc.keewedomain.domain.challenge.ChallengeParticipation;
-import ccc.keewedomain.domain.user.User;
+import ccc.keewedomain.persistence.domain.challenge.Challenge;
+import ccc.keewedomain.persistence.domain.challenge.ChallengeParticipation;
+import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.dto.challenge.ChallengeCreateDto;
 import ccc.keewedomain.dto.challenge.ChallengeParticipateDto;
-import ccc.keewedomain.repository.challenge.ChallengeParticipationRepository;
-import ccc.keewedomain.repository.challenge.ChallengeRepository;
+import ccc.keewedomain.persistence.repository.challenge.ChallengeParticipationRepository;
+import ccc.keewedomain.persistence.repository.challenge.ChallengeRepository;
 import ccc.keewedomain.service.user.UserDomainService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-import static ccc.keewedomain.domain.challenge.enums.ChallengeParticipationStatus.CHALLENGING;
+import static ccc.keewedomain.persistence.domain.challenge.enums.ChallengeParticipationStatus.CHALLENGING;
 
 @Service
 @RequiredArgsConstructor

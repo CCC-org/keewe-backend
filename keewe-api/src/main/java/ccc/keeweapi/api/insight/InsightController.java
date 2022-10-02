@@ -23,8 +23,7 @@ public class InsightController {
 
     @PostMapping("/view/{insightId}")
     public ApiResponse incrementViewCount(@PathVariable Long insightId) {
-        insightApiService.incrementViewCount(insightId);
-        return ApiResponse.ok();
+        return ApiResponse.ok(insightApiService.incrementViewCount(insightId));
     }
 
 }

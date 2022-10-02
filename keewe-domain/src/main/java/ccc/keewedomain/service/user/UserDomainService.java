@@ -2,10 +2,10 @@ package ccc.keewedomain.service.user;
 
 import ccc.keewecore.consts.KeeweRtnConsts;
 import ccc.keewecore.exception.KeeweException;
-import ccc.keewedomain.domain.user.User;
-import ccc.keewedomain.domain.user.enums.VendorType;
+import ccc.keewedomain.persistence.domain.user.User;
+import ccc.keewedomain.persistence.domain.user.enums.VendorType;
 import ccc.keewedomain.dto.user.UserSignUpDto;
-import ccc.keewedomain.repository.user.UserRepository;
+import ccc.keewedomain.persistence.repository.user.UserRepository;
 import ccc.keeweinfra.dto.GoogleProfileResponse;
 import ccc.keeweinfra.dto.KakaoProfileResponse;
 import ccc.keeweinfra.dto.NaverProfileResponse;
