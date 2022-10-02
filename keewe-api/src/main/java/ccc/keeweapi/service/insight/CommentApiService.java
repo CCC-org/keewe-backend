@@ -3,7 +3,7 @@ package ccc.keeweapi.service.insight;
 import ccc.keeweapi.component.InsightAssembler;
 import ccc.keeweapi.dto.insight.CommentCreateRequest;
 import ccc.keeweapi.dto.insight.CommentCreateResponse;
-import ccc.keewedomain.domain.insight.Comment;
+import ccc.keewedomain.persistence.domain.insight.Comment;
 import ccc.keewedomain.service.insight.CommentDomainService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
