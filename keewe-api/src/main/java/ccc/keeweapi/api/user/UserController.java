@@ -2,7 +2,7 @@ package ccc.keeweapi.api.user;
 
 import ccc.keeweapi.dto.ApiResponse;
 import ccc.keeweapi.service.user.UserApiService;
-import ccc.keewedomain.domain.user.enums.VendorType;
+import ccc.keewedomain.persistence.domain.user.enums.VendorType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;

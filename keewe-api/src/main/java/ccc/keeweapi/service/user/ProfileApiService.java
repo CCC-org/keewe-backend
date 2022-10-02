@@ -3,7 +3,7 @@ package ccc.keeweapi.service.user;
 import ccc.keeweapi.dto.user.OnboardRequest;
 import ccc.keeweapi.dto.user.OnboardResponse;
 import ccc.keeweapi.component.ProfileAssembler;
-import ccc.keewedomain.domain.user.User;
+import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.service.user.ProfileDomainService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

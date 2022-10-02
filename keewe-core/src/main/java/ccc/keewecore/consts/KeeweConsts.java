@@ -12,4 +12,7 @@ public class KeeweConsts {
     public static final String DEFAULT_ROUTING_KEY = "";
     public static final String INSIGHT_VIEW_EXCHANGE = "INSIGHT-VIEW-EXCHANGE";
     public static final String INSIGHT_VIEW_QUEUE = "INSIGHT-VIEW-QUEUE";
+
+    public static final String INSIGHT_VIEW_HASH_KEY = "insight-view";
+    public static final String HASH_KEY_DELIMITER = ":";
 }

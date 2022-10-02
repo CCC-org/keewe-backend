@@ -1,6 +1,6 @@
 package ccc.keewedomain.service.user;
 
-import ccc.keewedomain.domain.user.User;
+import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.dto.user.OnboardDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

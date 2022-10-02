@@ -2,10 +2,10 @@ package ccc.keewedomain.service.insight;
 
 import ccc.keewecore.consts.KeeweRtnConsts;
 import ccc.keewecore.exception.KeeweException;
-import ccc.keewedomain.domain.insight.Drawer;
-import ccc.keewedomain.domain.user.User;
+import ccc.keewedomain.persistence.domain.insight.Drawer;
+import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.dto.insight.DrawerCreateDto;
-import ccc.keewedomain.repository.insight.DrawerRepository;
+import ccc.keewedomain.persistence.repository.insight.DrawerRepository;
 import ccc.keewedomain.service.user.UserDomainService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

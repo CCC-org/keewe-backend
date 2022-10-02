@@ -3,7 +3,7 @@ package ccc.keeweapi.api.user;
 import ccc.keeweapi.document.utils.ApiDocumentationTest;
 import ccc.keeweapi.dto.user.OnboardResponse;
 import ccc.keeweapi.service.user.ProfileApiService;
-import ccc.keewedomain.domain.common.Interest;
+import ccc.keewedomain.persistence.domain.common.Interest;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import org.json.JSONArray;
 import org.json.JSONObject;

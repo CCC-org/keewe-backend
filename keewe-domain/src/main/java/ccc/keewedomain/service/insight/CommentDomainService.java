@@ -2,11 +2,11 @@ package ccc.keewedomain.service.insight;
 
 import ccc.keewecore.consts.KeeweRtnConsts;
 import ccc.keewecore.exception.KeeweException;
-import ccc.keewedomain.domain.insight.Comment;
-import ccc.keewedomain.domain.insight.Insight;
-import ccc.keewedomain.domain.user.User;
 import ccc.keewedomain.dto.insight.CommentCreateDto;
-import ccc.keewedomain.repository.insight.CommentRepository;
+import ccc.keewedomain.persistence.domain.insight.Comment;
+import ccc.keewedomain.persistence.domain.insight.Insight;
+import ccc.keewedomain.persistence.domain.user.User;
+import ccc.keewedomain.persistence.repository.insight.CommentRepository;
 import ccc.keewedomain.service.user.UserDomainService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

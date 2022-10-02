@@ -2,6 +2,7 @@ package ccc.keeweapi.api.insight;
 
 import ccc.keeweapi.document.utils.ApiDocumentationTest;
 import ccc.keeweapi.dto.insight.InsightCreateResponse;
+import ccc.keeweapi.dto.insight.InsightViewIncrementResponse;
 import ccc.keeweapi.service.insight.InsightApiService;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import org.json.JSONObject;
@@ -19,7 +20,6 @@ import static com.epages.restdocs.apispec.ResourceDocumentation.headerWithName;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
@@ -86,7 +86,7 @@ public class InsightControllerTest extends ApiDocumentationTest {
     @DisplayName("인사이트 조회수 증가 API")
     void increment_insight_views() throws Exception {
 
-        doNothing().when(insightApiService).incrementViewCount(anyLong());
+        when(insightApiService.incrementViewCount(anyLong())).thenReturn(InsightViewIncrementResponse.of(123L));
 
         ResultActions resultActions = mockMvc.perform(post("/api/v1/insight/view/{insightId}", 1L)
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
@@ -102,7 +102,7 @@ public class InsightControllerTest extends ApiDocumentationTest {
                         .responseFields(
                                 fieldWithPath("message").description("요청 결과 메세지"),
                                 fieldWithPath("code").description("결과 코드"),
-                                fieldWithPath("data").description("데이터 없음"))
+                                fieldWithPath("data.viewCount").description("조회수"))
                         .tag("Insight")
                         .build()
         )));

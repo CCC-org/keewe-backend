@@ -21,10 +21,17 @@ public class InsightViewListener {
 
     @RabbitListener(queues = KeeweConsts.INSIGHT_VIEW_QUEUE, ackMode = "MANUAL")
     public void onMessage(Message message, Channel channel, @Header(AmqpHeaders.DELIVERY_TAG) long tag) throws IOException {
-        Long insightId = Long.parseLong(new String(message.getBody()));
 
-        log.info("[IVL::onMessage] insightId {}", insightId);
-        insightDomainService.incrementViewCount(insightId);
-        channel.basicAck(tag, false);
+        try {
+            Long insightId = Long.parseLong(new String(message.getBody()));
+
+            log.info("[IVL::onMessage] insightId {}", insightId);
+            insightDomainService.incrementViewCount(insightId);
+            channel.basicAck(tag, false);
+        } catch (Throwable t) {
+            log.error(t.getMessage(), t);
+            channel.basicNack(tag, false, false);
+        }
+
     }
 }

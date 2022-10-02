@@ -3,7 +3,8 @@ package ccc.keeweapi.service.insight;
 import ccc.keeweapi.component.InsightAssembler;
 import ccc.keeweapi.dto.insight.InsightCreateRequest;
 import ccc.keeweapi.dto.insight.InsightCreateResponse;
-import ccc.keewedomain.domain.insight.Insight;
+import ccc.keeweapi.dto.insight.InsightViewIncrementResponse;
+import ccc.keewedomain.persistence.domain.insight.Insight;
 import ccc.keewedomain.service.insight.InsightDomainService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,7 +21,8 @@ public class InsightApiService {
         return insightAssembler.toInsightCreateResponse(insight);
     }
 
-    public void incrementViewCount(Long insightId) {
-        insightDomainService.incrementViewCount(insightAssembler.toInsightViewIncrementDto(insightId));
+    public InsightViewIncrementResponse incrementViewCount(Long insightId) {
+        Long viewCount = insightDomainService.incrementViewCount(insightAssembler.toInsightViewIncrementDto(insightId));
+        return insightAssembler.toInsightViewIncrementResponse(viewCount);
     }
 }

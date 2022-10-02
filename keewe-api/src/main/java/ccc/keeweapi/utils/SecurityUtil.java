@@ -3,7 +3,7 @@ package ccc.keeweapi.utils;
 import ccc.keeweapi.config.security.UserPrincipal;
 import ccc.keewecore.consts.KeeweRtnConsts;
 import ccc.keewecore.exception.KeeweException;
-import ccc.keewedomain.domain.user.User;
+import ccc.keewedomain.persistence.domain.user.User;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
