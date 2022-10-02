@@ -2,8 +2,10 @@ package ccc.keeweapi.component;
 
 import ccc.keeweapi.dto.insight.*;
 import ccc.keeweapi.utils.SecurityUtil;
+import ccc.keewedomain.domain.insight.Comment;
 import ccc.keewedomain.domain.insight.Drawer;
 import ccc.keewedomain.domain.insight.Insight;
+import ccc.keewedomain.dto.insight.CommentCreateDto;
 import ccc.keewedomain.dto.insight.DrawerCreateDto;
 import ccc.keewedomain.dto.insight.InsightCreateDto;
 import ccc.keewedomain.dto.insight.InsightViewIncrementDto;
@@ -38,5 +40,18 @@ public class InsightAssembler {
 
     public InsightViewIncrementResponse toInsightViewIncrementResponse(Long viewCount) {
         return InsightViewIncrementResponse.of(viewCount);
+    }
+
+    public CommentCreateDto toCommentCreateDto(CommentCreateRequest request) {
+        return CommentCreateDto.of(
+                SecurityUtil.getUserId(),
+                request.getInsightId(),
+                request.getParentId(),
+                request.getContent()
+        );
+    }
+
+    public CommentCreateResponse toCommentCreateResponse(Comment comment) {
+        return CommentCreateResponse.of(comment.getId());
     }
 }

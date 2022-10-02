@@ -1,6 +1,8 @@
 package ccc.keewedomain.service.insight;
 
 import ccc.keewecore.consts.KeeweConsts;
+import ccc.keewecore.consts.KeeweRtnConsts;
+import ccc.keewecore.exception.KeeweException;
 import ccc.keewedomain.domain.challenge.ChallengeParticipation;
 import ccc.keewedomain.domain.common.Link;
 import ccc.keewedomain.domain.insight.Drawer;
@@ -48,5 +50,10 @@ public class InsightDomainService {
         Insight insight = insightRepository.findByIdOrElseThrow(insightId);
         log.info("[IDS::incrementViewCount] Curr view {}, Next view {}", insight.getView(), insight.getView() + 1);
         return insight.incrementView();
+    }
+
+    //FIXME get과 find 역할 정확히 정리하기
+    public Insight getById(Long id) {
+        return insightRepository.findById(id).orElseThrow(() -> new KeeweException(KeeweRtnConsts.ERR445));
     }
 }
