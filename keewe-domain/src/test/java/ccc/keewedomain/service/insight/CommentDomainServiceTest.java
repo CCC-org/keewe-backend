@@ -30,7 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 @SpringBootTest(classes = {KeeweDomainApplication.class, KeeweInfraApplication.class})
 @TestPropertySource(properties = {"spring.config.location = classpath:application-domain.yml"})
-@ActiveProfiles("local")
+@ActiveProfiles("test")
 public class CommentDomainServiceTest {
 
     @Autowired
@@ -61,9 +61,7 @@ public class CommentDomainServiceTest {
 
     @AfterEach
     void clean() {
-        commentRepository.deleteAll();
-        insightRepository.deleteAll();
-        userRepository.deleteAll();
+        databaseCleaner.execute();
     }
 
     @Test
@@ -128,6 +126,5 @@ public class CommentDomainServiceTest {
         assertThatThrownBy(() -> commentDomainService.create(commentCreateDto))
                 .isExactlyInstanceOf(KeeweException.class)
                 .hasMessage(KeeweRtnConsts.ERR445.getDescription());
-
     }
 }

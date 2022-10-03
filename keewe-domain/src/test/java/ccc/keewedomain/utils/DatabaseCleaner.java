@@ -33,7 +33,7 @@ public class DatabaseCleaner {
         entityManager.flush();
         entityManager.createNativeQuery("SET REFERENTIAL_INTEGRITY FALSE").executeUpdate();
         tableNames.stream()
-                .forEach(tableName -> entityManager.createNativeQuery("TRUNCATE TABLE `" + tableName + "`").executeUpdate());
+                .forEach(tableName -> entityManager.createNativeQuery("TRUNCATE TABLE \"" + tableName + "\"").executeUpdate());
 
         entityManager.createNativeQuery("SET REFERENTIAL_INTEGRITY TRUE").executeUpdate();
     }
