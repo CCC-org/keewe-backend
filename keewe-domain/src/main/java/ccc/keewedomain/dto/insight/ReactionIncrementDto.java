@@ -1,20 +1,23 @@
 package ccc.keewedomain.dto.insight;
 
 import ccc.keewedomain.persistence.domain.insight.enums.ReactionType;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
+import java.io.Serializable;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class ReactionIncrementDto {
+@EqualsAndHashCode
+public class ReactionIncrementDto implements Serializable {
     private Long insightId;
+    private Long userId;
     private ReactionType reactionType;
     private Long value;
 
-    public static ReactionIncrementDto of(Long insightId, ReactionType reactionType, Long value) {
+    public static ReactionIncrementDto of(Long insightId, Long userId, ReactionType reactionType, Long value) {
         ReactionIncrementDto dto = new ReactionIncrementDto();
         dto.insightId = insightId;
+        dto.userId = userId;
         dto.reactionType = reactionType;
         dto.value = value;
 

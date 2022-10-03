@@ -1,14 +1,12 @@
 package ccc.keewedomain.cache.domain.insight;
 
 import ccc.keewecore.consts.KeeweConsts;
-import ccc.keewedomain.cache.domain.insight.id.CReactionCountId;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.redis.core.RedisHash;
 
 import javax.persistence.Id;
-import javax.persistence.IdClass;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
