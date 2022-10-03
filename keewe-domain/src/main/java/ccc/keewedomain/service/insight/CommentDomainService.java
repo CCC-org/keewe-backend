@@ -26,15 +26,15 @@ public class CommentDomainService {
         Insight insight = insightDomainService.getById(dto.getInsightId());
         User writer = userDomainService.getUserByIdOrElseThrow(dto.getWriterId());
 
-        Optional<Comment> optParent = findByIdAndInsightIdOrElseThrow(dto.getParentId(), dto.getInsightId());
+        Optional<Comment> optParent = findByIdAndInsightId(dto.getParentId(), dto.getInsightId());
         optParent.ifPresent(this::validateHasNoParent);
-        Comment parent = optParent.orElse(null);
+        Comment parent = optParent.get();
 
         Comment comment = Comment.of(insight, writer, parent, dto.getContent());
         return commentRepository.save(comment);
     }
 
-    private Optional<Comment> findByIdAndInsightIdOrElseThrow(Long id, Long insightId) {
+    private Optional<Comment> findByIdAndInsightId(Long id, Long insightId) {
         return commentRepository.findByIdAndInsightId(id, insightId);
     }
 

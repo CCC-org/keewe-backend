@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/api/v1/insight/comment")
+@RequestMapping("/api/v1/comment")
 @RequiredArgsConstructor
 public class CommentController {
 

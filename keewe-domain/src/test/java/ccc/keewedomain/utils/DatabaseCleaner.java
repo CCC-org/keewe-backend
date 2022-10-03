@@ -30,7 +30,6 @@ public class DatabaseCleaner {
 
     @Transactional
     public void execute() {
-        entityManager.flush();
         entityManager.createNativeQuery("SET REFERENTIAL_INTEGRITY FALSE").executeUpdate();
         tableNames.stream()
                 .forEach(tableName -> entityManager.createNativeQuery("TRUNCATE TABLE \"" + tableName + "\"").executeUpdate());
