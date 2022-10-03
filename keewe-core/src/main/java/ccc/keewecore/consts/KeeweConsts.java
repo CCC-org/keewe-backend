@@ -14,5 +14,6 @@ public class KeeweConsts {
     public static final String INSIGHT_VIEW_QUEUE = "INSIGHT-VIEW-QUEUE";
 
     public static final String INSIGHT_VIEW_HASH_KEY = "insight-view";
+    public static final String REACTION_COUNT_HASH_KEY = "reaction-count";
     public static final String HASH_KEY_DELIMITER = ":";
 }
