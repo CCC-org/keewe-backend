@@ -82,7 +82,7 @@ CREATE TABLE IF NOT EXISTS `challenge_participation`
     insight_per_week            INT             NOT NULL,
     duration                    INT             NOT NULL,
     deleted                     BIT             NOT NULL,
-    end_date                    DATETIME(6)     NOT NULL,
+    end_date                    DATE            NOT NULL,
     status                      VARCHAR(20)     NOT NULL,
     created_at                  DATETIME(6)     NOT NULL,
     updated_at                  DATETIME(6)     NOT NULL,
