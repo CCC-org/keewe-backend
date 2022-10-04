@@ -13,7 +13,6 @@ import ccc.keewedomain.persistence.domain.insight.Insight;
 import ccc.keewedomain.persistence.domain.insight.Reaction;
 import ccc.keewedomain.persistence.domain.insight.id.ReactionAggregationId;
 import ccc.keewedomain.persistence.domain.user.User;
-import ccc.keewedomain.persistence.repository.insight.InsightRepository;
 import ccc.keewedomain.persistence.repository.insight.ReactionAggregationRepository;
 import ccc.keewedomain.persistence.repository.insight.ReactionRepository;
 import ccc.keewedomain.service.user.UserDomainService;
@@ -32,7 +31,7 @@ public class ReactionDomainService {
     private final ReactionAggregationRepository reactionAggregationRepository;
     private final ReactionRepository reactionRepository;
     private final UserDomainService userDomainService;
-    private final InsightRepository insightRepository;
+    private final InsightDomainService insightDomainService;
 
     public ReactionDto react(ReactionIncrementDto dto) {
         String id = new CReactionCountId(dto.getInsightId(), dto.getReactionType()).toString(); // TODO : 통일된(효율적인) Key 생성
@@ -46,11 +45,9 @@ public class ReactionDomainService {
 
     @Transactional
     public Long applyReact(ReactionIncrementDto dto) {
-        Insight insight = insightRepository.findById(dto.getInsightId())
-                .orElseThrow(() -> new KeeweException(KeeweRtnConsts.ERR445));
+        Insight insight = insightDomainService.getById(dto.getInsightId());
         User user = userDomainService.getUserByIdOrElseThrow(dto.getUserId());
-        ReactionAggregation reactionAggregation = reactionAggregationRepository.findByIdWithReadWriteLock(new ReactionAggregationId(insight.getId(), dto.getReactionType()))
-                .orElseThrow(() -> new KeeweException(KeeweRtnConsts.ERR471));
+        ReactionAggregation reactionAggregation = getReactionAggregationByIdWithLock(new ReactionAggregationId(insight.getId(), dto.getReactionType()));
 
         reactionAggregation.incrementCountByValue(dto.getValue());
         reactionRepository.save(Reaction.of(insight, user, dto.getReactionType()));
@@ -61,6 +58,11 @@ public class ReactionDomainService {
         log.info("[RDS::applyReact] count {}", reactionAggregation.getCount());
 
         return reactionAggregation.getCount();
+    }
+
+    public ReactionAggregation getReactionAggregationByIdWithLock(ReactionAggregationId reactionAggregationId) {
+        return reactionAggregationRepository.findByIdWithReadWriteLock(reactionAggregationId)
+                .orElseThrow(() -> new KeeweException(KeeweRtnConsts.ERR471));
     }
 
     private Long getCurrentReactionCount(String id) {
