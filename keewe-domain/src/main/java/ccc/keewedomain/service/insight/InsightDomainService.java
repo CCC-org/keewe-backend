@@ -4,6 +4,8 @@ import ccc.keewecore.consts.KeeweConsts;
 import ccc.keewedomain.cache.domain.insight.CInsightView;
 import ccc.keewedomain.cache.repository.insight.CInsightViewRepository;
 import ccc.keewedomain.domain.insight.ReactionAggregation;
+import ccc.keewecore.consts.KeeweRtnConsts;
+import ccc.keewecore.exception.KeeweException;
 import ccc.keewedomain.dto.insight.InsightCreateDto;
 import ccc.keewedomain.dto.insight.InsightViewIncrementDto;
 import ccc.keewedomain.persistence.domain.challenge.ChallengeParticipation;
@@ -96,5 +98,10 @@ public class InsightDomainService {
                 });
 
         return insightView.getViewCount() + 1;
+    }
+
+    //FIXME get과 find 역할 정확히 정리하기
+    public Insight getById(Long id) {
+        return insightRepository.findById(id).orElseThrow(() -> new KeeweException(KeeweRtnConsts.ERR445));
     }
 }
