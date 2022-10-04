@@ -1,7 +1,4 @@
 ALTER TABLE `reaction`
-DROP COLUMN `reaction_id`;
-
-ALTER TABLE `reaction`
     ADD COLUMN `reaction_id`    BIGINT  NOT NULL;
 
 ALTER TABLE `reaction`
