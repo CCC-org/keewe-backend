@@ -2,10 +2,8 @@ package ccc.keeweapi.api.insight;
 
 import ccc.keeweapi.document.utils.ApiDocumentationTest;
 import ccc.keeweapi.dto.insight.CommentCreateResponse;
-import ccc.keeweapi.dto.insight.DrawerCreateResponse;
 import ccc.keeweapi.service.insight.CommentApiService;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -56,7 +54,7 @@ public class CommentControllerTest extends ApiDocumentationTest {
 
         when(commentApiService.create(any())).thenReturn(CommentCreateResponse.of(commentId));
 
-        ResultActions resultActions = mockMvc.perform(post("/api/v1/insight/comment")
+        ResultActions resultActions = mockMvc.perform(post("/api/v1/comment")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
                         .content(commentCreateRequest.toString())
                         .contentType(MediaType.APPLICATION_JSON))
