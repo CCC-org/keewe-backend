@@ -134,13 +134,14 @@ CREATE TABLE IF NOT EXISTS `insight`
 
 CREATE TABLE IF NOT EXISTS `reaction`
 (
+    reaction_id         BIGINT      NOT NULL AUTO_INCREMENT,
     insight_id          BIGINT      NOT NULL,
     reactor_id          BIGINT      NOT NULL,
     reaction_type       VARCHAR(15) NOT NULL,
     created_at          DATETIME(6)     NOT NULL,
     updated_at          DATETIME(6)     NOT NULL,
 
-    PRIMARY KEY (insight_id, reactor_id, reaction_type)
+    PRIMARY KEY (reacition_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS `reaction_aggregation`
