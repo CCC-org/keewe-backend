@@ -49,8 +49,8 @@ public class ReactionDomainService {
         Insight insight = insightRepository.findById(dto.getInsightId())
                 .orElseThrow(() -> new KeeweException(KeeweRtnConsts.ERR445));
         User user = userDomainService.getUserByIdOrElseThrow(dto.getUserId());
-        ReactionAggregation reactionAggregation = reactionAggregationRepository.findById(new ReactionAggregationId(insight.getId(), dto.getReactionType()))
-                .orElseThrow(() -> new KeeweException(KeeweRtnConsts.ERR471)); // TODO : 비관적 LOCK 적용
+        ReactionAggregation reactionAggregation = reactionAggregationRepository.findByIdWithReadWriteLock(new ReactionAggregationId(insight.getId(), dto.getReactionType()))
+                .orElseThrow(() -> new KeeweException(KeeweRtnConsts.ERR471));
 
         reactionAggregation.incrementCountByValue(dto.getValue());
         reactionRepository.save(Reaction.of(insight, user, dto.getReactionType()));
