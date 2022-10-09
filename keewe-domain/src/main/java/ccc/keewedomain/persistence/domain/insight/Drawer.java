@@ -1,5 +1,7 @@
 package ccc.keewedomain.persistence.domain.insight;
 
+import ccc.keewecore.consts.KeeweRtnConsts;
+import ccc.keewecore.exception.KeeweException;
 import ccc.keewedomain.persistence.domain.common.BaseTimeEntity;
 import ccc.keewedomain.persistence.domain.user.User;
 import lombok.AccessLevel;
@@ -42,5 +44,11 @@ public class Drawer extends BaseTimeEntity {
         drawer.name = name;
 
         return drawer;
+    }
+
+    public void validateOwner(User user) {
+        if (this.user != user) {
+            throw new KeeweException(KeeweRtnConsts.ERR444);
+        }
     }
 }

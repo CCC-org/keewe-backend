@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -40,5 +41,16 @@ public class DrawerDomainService {
         if(drawerRepository.existsByUserIdAndName(userId, name)) {
             throw new KeeweException(KeeweRtnConsts.ERR441);
         }
+    }
+
+    public Drawer getDrawerIfOwner(Long drawerId, User user) {
+        if (Objects.isNull(drawerId)) {
+            return null;
+        }
+
+        Drawer drawer = drawerRepository.findByIdOrElseThrow(drawerId);
+        drawer.validateOwner(user);
+
+        return drawer;
     }
 }
