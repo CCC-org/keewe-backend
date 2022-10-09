@@ -34,6 +34,7 @@ public enum KeeweRtnConsts {
     ERR440(KeeweRtnGrp.Validation, 440, "서랍을 찾을 수 없어요"),
     ERR441(KeeweRtnGrp.Validation, 441, "이미 등록된 서랍 이름이에요"),
     ERR442(KeeweRtnGrp.Validation, 442, "댓글을 찾을 수 없어요"),
+    ERR444(KeeweRtnGrp.Validation, 444, "서랍의 주인이 아니에요."),
     ERR443(KeeweRtnGrp.Validation, 443, "답글은 부모 댓글이 될 수 없어요."),
     ERR445(KeeweRtnGrp.Validation, 445, "인사이트를 찾을 수 없어요."),
 

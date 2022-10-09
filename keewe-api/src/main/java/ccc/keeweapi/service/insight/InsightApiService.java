@@ -1,6 +1,7 @@
 package ccc.keeweapi.service.insight;
 
 import ccc.keeweapi.component.InsightAssembler;
+import ccc.keeweapi.dto.insight.InsightAuthorAreaResponse;
 import ccc.keeweapi.dto.insight.InsightCreateRequest;
 import ccc.keeweapi.dto.insight.InsightCreateResponse;
 import ccc.keeweapi.dto.insight.InsightGetResponse;
@@ -19,6 +20,7 @@ public class InsightApiService {
     private final InsightDomainService insightDomainService;
     private final InsightAssembler insightAssembler;
 
+    @Transactional
     public InsightCreateResponse create(InsightCreateRequest request) {
         Insight insight = insightDomainService.create(insightAssembler.toInsightCreateDto(request));
         return insightAssembler.toInsightCreateResponse(insight);
@@ -32,5 +34,11 @@ public class InsightApiService {
     public InsightGetResponse getInsight(Long insightId) {
         InsightGetDto insightGetDto = insightDomainService.getInsight(insightId);
         return insightAssembler.toInsightGetResponse(insightGetDto);
+    }
+
+    @Transactional(readOnly = true)
+    public InsightAuthorAreaResponse getInsightAuthorAreaInfo(Long insightId) {
+        Insight insight = insightDomainService.getByIdWithWriter(insightId);
+        return insightAssembler.toInsightAuthorAreaResponse(insight);
     }
 }
