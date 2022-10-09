@@ -33,7 +33,11 @@ public enum KeeweRtnConsts {
 
     ERR440(KeeweRtnGrp.Validation, 440, "서랍을 찾을 수 없어요"),
     ERR441(KeeweRtnGrp.Validation, 441, "이미 등록된 서랍 이름이에요"),
+    ERR442(KeeweRtnGrp.Validation, 442, "댓글을 찾을 수 없어요"),
+    ERR443(KeeweRtnGrp.Validation, 443, "답글은 부모 댓글이 될 수 없어요."),
     ERR445(KeeweRtnGrp.Validation, 445, "인사이트를 찾을 수 없어요."),
+
+    ERR471(KeeweRtnGrp.Validation, 471, "관련된 반응 통계를 찾을 수 없어요."),
 
     ERR501(KeeweRtnGrp.System, 501, "카카오 회원가입 중 내부 오류가 발생했어요."),
     ERR502(KeeweRtnGrp.System, 502, "네이버 회원가입 중 내부 오류가 발생했어요."),

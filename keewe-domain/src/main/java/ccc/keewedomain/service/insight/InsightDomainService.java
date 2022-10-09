@@ -3,15 +3,20 @@ package ccc.keewedomain.service.insight;
 import ccc.keewecore.consts.KeeweConsts;
 import ccc.keewedomain.cache.domain.insight.CInsightView;
 import ccc.keewedomain.cache.repository.insight.CInsightViewRepository;
+import ccc.keewedomain.domain.insight.ReactionAggregation;
+import ccc.keewecore.consts.KeeweRtnConsts;
+import ccc.keewecore.exception.KeeweException;
 import ccc.keewedomain.dto.insight.InsightCreateDto;
 import ccc.keewedomain.dto.insight.InsightViewIncrementDto;
 import ccc.keewedomain.persistence.domain.challenge.ChallengeParticipation;
 import ccc.keewedomain.persistence.domain.common.Link;
 import ccc.keewedomain.persistence.domain.insight.Drawer;
 import ccc.keewedomain.persistence.domain.insight.Insight;
+import ccc.keewedomain.persistence.domain.insight.enums.ReactionType;
 import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.persistence.repository.insight.InsightQueryRepository;
 import ccc.keewedomain.persistence.repository.insight.InsightRepository;
+import ccc.keewedomain.persistence.repository.insight.ReactionAggregationRepository;
 import ccc.keewedomain.service.challenge.ChallengeDomainService;
 import ccc.keewedomain.service.user.UserDomainService;
 import ccc.keeweinfra.service.MQPublishService;
@@ -20,12 +25,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class InsightDomainService {
 
     private final InsightRepository insightRepository;
+    private final ReactionAggregationRepository reactionAggregationRepository;
     private final MQPublishService mqPublishService;
     private final UserDomainService userDomainService;
     private final ChallengeDomainService challengeDomainService;
@@ -41,7 +49,15 @@ public class InsightDomainService {
                 .orElse(null);
 
         Insight insight = Insight.of(writer, participation, drawer, dto.getContents(), Link.of(dto.getLink()));
-        return insightRepository.save(insight);
+        insightRepository.save(insight);
+        createReactionAggregations(insight);
+        return insight;
+    }
+
+    private void createReactionAggregations(Insight insight) {
+        Arrays.stream(ReactionType.values()).forEach((reactionType) -> {
+            reactionAggregationRepository.save(ReactionAggregation.of(insight, reactionType, 0L));
+        });
     }
 
     public Long incrementViewCount(InsightViewIncrementDto dto) {
@@ -87,5 +103,10 @@ public class InsightDomainService {
                 });
 
         return insightView.getViewCount() + 1;
+    }
+
+    //FIXME get과 find 역할 정확히 정리하기
+    public Insight getById(Long id) {
+        return insightRepository.findById(id).orElseThrow(() -> new KeeweException(KeeweRtnConsts.ERR445));
     }
 }

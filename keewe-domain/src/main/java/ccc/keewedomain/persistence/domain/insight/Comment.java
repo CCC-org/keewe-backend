@@ -2,6 +2,9 @@ package ccc.keewedomain.persistence.domain.insight;
 
 import ccc.keewedomain.persistence.domain.common.BaseTimeEntity;
 import ccc.keewedomain.persistence.domain.user.User;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -11,6 +14,8 @@ import static javax.persistence.FetchType.LAZY;
 
 @Entity
 @Table(name = "comment")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
 public class Comment extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,4 +42,14 @@ public class Comment extends BaseTimeEntity {
 
     @Column(name = "deleted", nullable = false)
     private boolean deleted = false;
+
+    public static Comment of(Insight insight, User writer, Comment parent, String content) {
+        Comment comment = new Comment();
+        comment.insight = insight;
+        comment.writer = writer;
+        comment.parent = parent;
+        comment.content = content;
+
+        return comment;
+    }
 }
