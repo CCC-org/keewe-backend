@@ -77,7 +77,7 @@ public class InsightDomainService {
         return incrementViewCount(insight);
     }
 
-    public Insight getInsight(Long insightId) {
+    public Insight getByIdWithWriter(Long insightId) {
         return insightQueryRepository.findByIdWithWriter(insightId);
     }
 

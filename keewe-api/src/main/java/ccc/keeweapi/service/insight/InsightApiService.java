@@ -30,7 +30,7 @@ public class InsightApiService {
 
     @Transactional(readOnly = true)
     public InsightAuthorAreaResponse getInsightAuthorAreaInfo(Long insightId) {
-        Insight insight = insightDomainService.getInsight(insightId);
+        Insight insight = insightDomainService.getByIdWithWriter(insightId);
         return insightAssembler.toInsightAuthorAreaResponse(insight);
     }
 }
