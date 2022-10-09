@@ -8,6 +8,7 @@ import ccc.keewedomain.persistence.domain.insight.Insight;
 import ccc.keewedomain.service.insight.InsightDomainService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -16,6 +17,7 @@ public class InsightApiService {
     private final InsightDomainService insightDomainService;
     private final InsightAssembler insightAssembler;
 
+    @Transactional
     public InsightCreateResponse create(InsightCreateRequest request) {
         Insight insight = insightDomainService.create(insightAssembler.toInsightCreateDto(request));
         return insightAssembler.toInsightCreateResponse(insight);
