@@ -2,8 +2,11 @@ package ccc.keeweapi.api.insight;
 
 import ccc.keeweapi.document.utils.ApiDocumentationTest;
 import ccc.keeweapi.dto.insight.InsightCreateResponse;
+import ccc.keeweapi.dto.insight.InsightGetResponse;
 import ccc.keeweapi.dto.insight.InsightViewIncrementResponse;
+import ccc.keeweapi.dto.insight.ReactionAggregationResponse;
 import ccc.keeweapi.service.insight.InsightApiService;
+import ccc.keewedomain.persistence.domain.common.Link;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,11 +19,14 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.test.web.servlet.ResultActions;
 
+import java.nio.charset.StandardCharsets;
+
 import static com.epages.restdocs.apispec.ResourceDocumentation.headerWithName;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -76,6 +82,46 @@ public class InsightControllerTest extends ApiDocumentationTest {
                                 fieldWithPath("message").description("요청 결과 메세지"),
                                 fieldWithPath("code").description("결과 코드"),
                                 fieldWithPath("data.insightId").description("생성된 인사이트의 ID"))
+                        .tag("Insight")
+                        .build()
+        )));
+    }
+
+    @Test
+    @DisplayName("인사이트 조회 API")
+    void get_insight_test() throws Exception {
+        Long insightId = 1L;
+
+        when(insightApiService.getInsight(insightId)).thenReturn(InsightGetResponse.of(
+                insightId,
+                "인사이트 내용입니다. 즐거운 개발 되세요!",
+                Link.of("www.keewe.com"),
+                ReactionAggregationResponse.of(1L, 2L, 3L, 4L, 5L, 6L)
+                )
+        );
+
+        ResultActions resultActions = mockMvc.perform(get("/api/v1/insight/{insightId}", insightId)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT))
+                .andExpect(status().isOk());
+
+        resultActions.andDo(restDocs.document(resource(
+                ResourceSnippetParameters.builder()
+                        .description("인사이트 조회 API 입니다.")
+                        .summary("인사이트 조회 API")
+                        .requestHeaders(
+                                headerWithName("Authorization").description("유저의 JWT"))
+                        .responseFields(
+                                fieldWithPath("message").description("요청 결과 메세지"),
+                                fieldWithPath("code").description("결과 코드"),
+                                fieldWithPath("data.id").description("인사이트 ID"),
+                                fieldWithPath("data.contents").description("인사이트 내용"),
+                                fieldWithPath("data.link.url").description("인사이트 링크"),
+                                fieldWithPath("data.reaction.clap").description("인사이트 박수 반응 수"),
+                                fieldWithPath("data.reaction.heart").description("인사이트 하트 반응 수"),
+                                fieldWithPath("data.reaction.sad").description("인사이트 슬픔 반응 수"),
+                                fieldWithPath("data.reaction.surprise").description("인사이트 놀람 반응 수"),
+                                fieldWithPath("data.reaction.fire").description("인사이트 불 반응 수"),
+                                fieldWithPath("data.reaction.eyes").description("인사이트 눈 반응 수"))
                         .tag("Insight")
                         .build()
         )));

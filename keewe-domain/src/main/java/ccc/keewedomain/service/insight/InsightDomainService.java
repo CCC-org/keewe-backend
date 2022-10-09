@@ -31,8 +31,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 
-import static ccc.keewecore.consts.KeeweRtnConsts.ERR471;
-
 @Service
 @RequiredArgsConstructor
 @Slf4j
