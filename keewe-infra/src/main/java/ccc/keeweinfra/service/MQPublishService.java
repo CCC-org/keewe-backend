@@ -13,7 +13,7 @@ public class MQPublishService {
     private final RabbitTemplate rabbitTemplate;
 
     //TODO: retry handler 도입
-    public void publish(String exchange, Object body) {
+    public <T> void publish(String exchange, T body) {
         rabbitTemplate.convertAndSend(exchange
                 , KeeweConsts.DEFAULT_ROUTING_KEY
                 , body);

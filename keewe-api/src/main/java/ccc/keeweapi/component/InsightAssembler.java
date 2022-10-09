@@ -2,13 +2,14 @@ package ccc.keeweapi.component;
 
 import ccc.keeweapi.dto.insight.*;
 import ccc.keeweapi.utils.SecurityUtil;
-import ccc.keewedomain.persistence.domain.insight.Drawer;
-import ccc.keewedomain.persistence.domain.insight.Insight;
-import ccc.keewedomain.persistence.domain.insight.Comment;
 import ccc.keewedomain.dto.insight.CommentCreateDto;
 import ccc.keewedomain.dto.insight.DrawerCreateDto;
 import ccc.keewedomain.dto.insight.InsightCreateDto;
 import ccc.keewedomain.dto.insight.InsightViewIncrementDto;
+import ccc.keewedomain.persistence.domain.insight.Comment;
+import ccc.keewedomain.persistence.domain.insight.Drawer;
+import ccc.keewedomain.persistence.domain.insight.Insight;
+import ccc.keewedomain.persistence.domain.user.User;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -53,5 +54,14 @@ public class InsightAssembler {
 
     public CommentCreateResponse toCommentCreateResponse(Comment comment) {
         return CommentCreateResponse.of(comment.getId());
+    }
+
+    public InsightAuthorAreaResponse toInsightAuthorAreaResponse(Insight insight) {
+        User writer = insight.getWriter();
+        return InsightAuthorAreaResponse.of(insight.getId(), writer.getNickname(), "title", writer.getInterests(), "www.api-keewe.com/images" , isAuthor(insight), insight.getCreatedAt().toString());
+    }
+
+    private boolean isAuthor(Insight insight) {
+        return insight.getWriter().getId() == SecurityUtil.getUserId();
     }
 }
