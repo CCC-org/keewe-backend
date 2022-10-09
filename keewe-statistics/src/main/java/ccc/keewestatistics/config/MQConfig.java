@@ -23,4 +23,19 @@ public class MQConfig {
         return BindingBuilder.bind(insightViewQueue).to(insightViewExchange).with(KeeweConsts.DEFAULT_ROUTING_KEY).noargs();
     }
 
+    @Bean
+    Queue insightReactQueue() {
+        return QueueBuilder.durable(KeeweConsts.INSIGHT_REACT_QUEUE).build();
+    }
+
+    @Bean
+    Exchange insightReactExchange() {
+        return ExchangeBuilder.directExchange(KeeweConsts.INSIGHT_REACT_EXCHANGE).build();
+    }
+
+    @Bean
+    Binding insightReactBinding(Queue insightReactQueue, Exchange insightReactExchange) {
+        return BindingBuilder.bind(insightReactQueue).to(insightReactExchange).with(KeeweConsts.DEFAULT_ROUTING_KEY).noargs();
+    }
+
 }
