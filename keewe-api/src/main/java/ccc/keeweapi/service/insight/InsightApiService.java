@@ -18,6 +18,7 @@ public class InsightApiService {
     private final InsightDomainService insightDomainService;
     private final InsightAssembler insightAssembler;
 
+    @Transactional
     public InsightCreateResponse create(InsightCreateRequest request) {
         Insight insight = insightDomainService.create(insightAssembler.toInsightCreateDto(request));
         return insightAssembler.toInsightCreateResponse(insight);

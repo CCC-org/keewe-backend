@@ -56,6 +56,10 @@ public class InsightAssembler {
         return CommentCreateResponse.of(comment.getId());
     }
 
+    public DrawerResponse toDrawerResponse(Drawer drawer) {
+        return DrawerResponse.of(drawer.getId(), drawer.getName());
+    }
+
     public InsightAuthorAreaResponse toInsightAuthorAreaResponse(Insight insight) {
         User writer = insight.getWriter();
         return InsightAuthorAreaResponse.of(insight.getId(), writer.getNickname(), "title", writer.getInterests(), "www.api-keewe.com/images" , isAuthor(insight), insight.getCreatedAt().toString());

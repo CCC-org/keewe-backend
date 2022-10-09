@@ -33,6 +33,7 @@ public class ChallengeApiService {
         return challengeAssembler.toChallengeParticipationResponse(participation);
     }
 
+    @Transactional(readOnly = true)
     public ParticipationCheckResponse checkParticipation() {
         boolean participation = challengeDomainService.checkParticipation(SecurityUtil.getUserId());
         return challengeAssembler.toParticipationCheckResponse(participation);

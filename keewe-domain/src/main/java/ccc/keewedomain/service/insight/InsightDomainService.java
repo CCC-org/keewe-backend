@@ -44,7 +44,7 @@ public class InsightDomainService {
     //TODO 참가한 챌린지에 기록하기
     public Insight create(InsightCreateDto dto) {
         User writer = userDomainService.getUserByIdOrElseThrow(dto.getWriterId());
-        Drawer drawer = drawerDomainService.findById(dto.getDrawerId()).orElse(null);
+        Drawer drawer = drawerDomainService.getDrawerIfOwner(dto.getDrawerId(), writer);
         ChallengeParticipation participation = challengeDomainService.findCurrentChallengeParticipation(dto.getWriterId())
                 .orElse(null);
 
@@ -109,4 +109,5 @@ public class InsightDomainService {
     public Insight getById(Long id) {
         return insightRepository.findById(id).orElseThrow(() -> new KeeweException(KeeweRtnConsts.ERR445));
     }
+
 }
