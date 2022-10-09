@@ -17,7 +17,7 @@ public interface InsightRepository extends JpaRepository<Insight, Long> {
     @Query(value = "select i from Insight i where i.id = :id")
     Optional<Insight> findByIdWithReadWriteLock(@Param("id") Long id);
 
-    default Insight findByIdOrElseThrow(Long id) {
+    default Insight findByIdWithLockOrElseThrow(Long id) {
         return findByIdWithReadWriteLock(id).orElseThrow(() -> new KeeweException(KeeweRtnConsts.ERR445));
     }
 }

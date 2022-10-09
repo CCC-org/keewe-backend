@@ -1,9 +1,11 @@
 package ccc.keeweapi.api.insight;
 
 import ccc.keeweapi.document.utils.ApiDocumentationTest;
+import ccc.keeweapi.dto.insight.InsightAuthorAreaResponse;
 import ccc.keeweapi.dto.insight.InsightCreateResponse;
 import ccc.keeweapi.dto.insight.InsightViewIncrementResponse;
 import ccc.keeweapi.service.insight.InsightApiService;
+import ccc.keewedomain.persistence.domain.common.Interest;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,11 +18,15 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.test.web.servlet.ResultActions;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 import static com.epages.restdocs.apispec.ResourceDocumentation.headerWithName;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -107,4 +113,48 @@ public class InsightControllerTest extends ApiDocumentationTest {
                         .build()
         )));
     }
+
+    @Test
+    @DisplayName("인사이트 작성자 프로필 조회 API")
+    void insight_author_get() throws Exception {
+
+        when(insightApiService.getInsightAuthorAreaInfo(anyLong())).thenReturn(
+                InsightAuthorAreaResponse.of(1L,
+                        "nickname",
+                        "고급 기록가",
+                        List.of(Interest.of("운동"), Interest.of("영화")),
+                        "www.api-keewe.com/images/128398681",
+                        true,
+                        LocalDateTime.now().toString()
+                )
+        );
+
+        ResultActions resultActions = mockMvc.perform(get("/api/v1/insight/author/{insightId}", 1L)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        resultActions.andDo(restDocs.document(resource(
+                ResourceSnippetParameters.builder()
+                        .description("인사이트 상세 조회 작성자 프로필 조회 API 입니다.")
+                        .summary("인사이트 작성자 프로필 조회 API")
+                        .requestHeaders(
+                                headerWithName("Authorization").description("유저의 JWT"))
+                        .responseFields(
+                                fieldWithPath("message").description("요청 결과 메세지"),
+                                fieldWithPath("code").description("결과 코드"),
+                                fieldWithPath("data.authorId").description("작성자 ID (유저 ID)"),
+                                fieldWithPath("data.nickname").description("작성자 닉네임"),
+                                fieldWithPath("data.title").description("작성자 대표 타이틀 (업적)"),
+                                fieldWithPath("data.interests[].name").description("작성자 관심사 목록"),
+                                fieldWithPath("data.image").description("작성자 프로필 이미지 링크"),
+                                fieldWithPath("data.author").description("인사이트 조회자와 작성자 일치 여부"),
+                                fieldWithPath("data.createdAt").description("작성자 닉네임"))
+                        .tag("Insight")
+                        .build()
+        )));
+
+    }
+
+
 }

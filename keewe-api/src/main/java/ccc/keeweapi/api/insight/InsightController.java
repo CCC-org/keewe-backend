@@ -1,6 +1,7 @@
 package ccc.keeweapi.api.insight;
 
 import ccc.keeweapi.dto.ApiResponse;
+import ccc.keeweapi.dto.insight.InsightAuthorAreaResponse;
 import ccc.keeweapi.dto.insight.InsightCreateRequest;
 import ccc.keeweapi.dto.insight.InsightCreateResponse;
 import ccc.keeweapi.service.insight.InsightApiService;
@@ -24,6 +25,11 @@ public class InsightController {
     @PostMapping("/view/{insightId}")
     public ApiResponse incrementViewCount(@PathVariable Long insightId) {
         return ApiResponse.ok(insightApiService.incrementViewCount(insightId));
+    }
+
+    @GetMapping("/author/{insightId}")
+    public ApiResponse<InsightAuthorAreaResponse> getInsightAuthorAreaInfo(@PathVariable Long insightId) {
+        return ApiResponse.ok(insightApiService.getInsightAuthorAreaInfo(insightId));
     }
 
 }

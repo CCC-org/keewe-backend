@@ -14,6 +14,7 @@ import ccc.keewedomain.persistence.domain.insight.Drawer;
 import ccc.keewedomain.persistence.domain.insight.Insight;
 import ccc.keewedomain.persistence.domain.insight.enums.ReactionType;
 import ccc.keewedomain.persistence.domain.user.User;
+import ccc.keewedomain.persistence.repository.insight.InsightQueryRepository;
 import ccc.keewedomain.persistence.repository.insight.InsightRepository;
 import ccc.keewedomain.persistence.repository.insight.ReactionAggregationRepository;
 import ccc.keewedomain.service.challenge.ChallengeDomainService;
@@ -37,7 +38,7 @@ public class InsightDomainService {
     private final UserDomainService userDomainService;
     private final ChallengeDomainService challengeDomainService;
     private final DrawerDomainService drawerDomainService;
-
+    private final InsightQueryRepository insightQueryRepository;
     private final CInsightViewRepository cInsightViewRepository;
 
     //TODO 참가한 챌린지에 기록하기
@@ -71,9 +72,13 @@ public class InsightDomainService {
 
     @Transactional
     public Long incrementViewCount(Long insightId) {
-        Insight insight = insightRepository.findByIdOrElseThrow(insightId);
+        Insight insight = insightRepository.findByIdWithLockOrElseThrow(insightId);
         log.info("[IDS::incrementViewCount] DB Curr view {}, Next view {}", insight.getView(), insight.getView() + 1);
         return incrementViewCount(insight);
+    }
+
+    public Insight getByIdWithWriter(Long insightId) {
+        return insightQueryRepository.findByIdWithWriter(insightId);
     }
 
     private Long incrementViewCount(Insight insight) {

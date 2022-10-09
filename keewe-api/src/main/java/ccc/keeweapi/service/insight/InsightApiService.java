@@ -1,6 +1,7 @@
 package ccc.keeweapi.service.insight;
 
 import ccc.keeweapi.component.InsightAssembler;
+import ccc.keeweapi.dto.insight.InsightAuthorAreaResponse;
 import ccc.keeweapi.dto.insight.InsightCreateRequest;
 import ccc.keeweapi.dto.insight.InsightCreateResponse;
 import ccc.keeweapi.dto.insight.InsightViewIncrementResponse;
@@ -26,5 +27,11 @@ public class InsightApiService {
     public InsightViewIncrementResponse incrementViewCount(Long insightId) {
         Long viewCount = insightDomainService.incrementViewCount(insightAssembler.toInsightViewIncrementDto(insightId));
         return insightAssembler.toInsightViewIncrementResponse(viewCount);
+    }
+
+    @Transactional(readOnly = true)
+    public InsightAuthorAreaResponse getInsightAuthorAreaInfo(Long insightId) {
+        Insight insight = insightDomainService.getByIdWithWriter(insightId);
+        return insightAssembler.toInsightAuthorAreaResponse(insight);
     }
 }
