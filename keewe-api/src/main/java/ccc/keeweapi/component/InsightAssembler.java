@@ -54,4 +54,8 @@ public class InsightAssembler {
     public CommentCreateResponse toCommentCreateResponse(Comment comment) {
         return CommentCreateResponse.of(comment.getId());
     }
+
+    public DrawerResponse toDrawerResponse(Drawer drawer) {
+        return DrawerResponse.of(drawer.getId(), drawer.getName());
+    }
 }

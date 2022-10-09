@@ -3,14 +3,13 @@ package ccc.keeweapi.api.insight;
 import ccc.keeweapi.dto.ApiResponse;
 import ccc.keeweapi.dto.insight.DrawerCreateRequest;
 import ccc.keeweapi.dto.insight.DrawerCreateResponse;
+import ccc.keeweapi.dto.insight.DrawerResponse;
 import ccc.keeweapi.service.insight.DrawerApiService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/drawer")
@@ -22,5 +21,10 @@ public class DrawerController {
     @PostMapping
     public ApiResponse<DrawerCreateResponse> create(@RequestBody @Valid DrawerCreateRequest request) {
         return ApiResponse.ok(drawerApiService.create(request));
+    }
+
+    @GetMapping
+    public ApiResponse<List<DrawerResponse>> getMyDrawers() {
+        return ApiResponse.ok(drawerApiService.getMyDrawers());
     }
 }
