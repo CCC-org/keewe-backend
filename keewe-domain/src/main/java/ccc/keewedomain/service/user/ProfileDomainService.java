@@ -36,12 +36,12 @@ public class ProfileDomainService {
                         .ifPresentOrElse(
                                 follow -> {
                                     log.info("[PDS::toggleFollowership] Found Relation followee {}, follower {}", user.getId(), target.getId());
-                                    follow.removeRelation(user, target);
+                                    follow.removeRelation(target, user);
                                     followRepository.delete(follow);
                                 },
                                 () -> {
                                     log.info("[PDS::toggleFollowership] Not Found Relation followee {}, follower {}", user.getId(), target.getId());
-                                    Follow relation = Follow.makeRelation(user, target);
+                                    Follow relation = Follow.makeRelation(target, user);
                                     followRepository.save(relation);
                                 }
                         );
