@@ -1,6 +1,7 @@
 package ccc.keeweapi.api.user;
 
 import ccc.keeweapi.document.utils.ApiDocumentationTest;
+import ccc.keeweapi.dto.user.FollowToggleResponse;
 import ccc.keeweapi.dto.user.OnboardResponse;
 import ccc.keeweapi.service.user.ProfileApiService;
 import ccc.keewedomain.persistence.domain.common.Interest;
@@ -23,6 +24,7 @@ import java.util.stream.Collectors;
 import static com.epages.restdocs.apispec.ResourceDocumentation.headerWithName;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
@@ -79,6 +81,34 @@ public class ProfileControllerTest extends ApiDocumentationTest {
                                 fieldWithPath("data.userId").description("유저의 ID"),
                                 fieldWithPath("data.nickname").description("등록된 닉네임"),
                                 fieldWithPath("data.interests[].name").description("등록한 관심사 이름"))
+                        .tag("Profile")
+                        .build()
+        )));
+    }
+
+
+    @Test
+    @DisplayName("팔로잉")
+    void following_test() throws Exception {
+        when(profileApiService.toggleFollowership(anyLong())).thenReturn(
+                FollowToggleResponse.of(true)
+        );
+
+        ResultActions resultActions = mockMvc.perform(post("/api/v1/user/profile/follow/{userId}", 1L)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        resultActions.andDo(restDocs.document(resource(
+                ResourceSnippetParameters.builder()
+                        .description("팔로잉 API 입니다.")
+                        .summary("유저 팔로잉 API")
+                        .requestHeaders(
+                                headerWithName("Authorization").description("유저의 JWT"))
+                        .responseFields(
+                                fieldWithPath("message").description("요청 결과 메세지"),
+                                fieldWithPath("code").description("결과 코드"),
+                                fieldWithPath("data.following").description("팔로잉 토글 결과 (true: 팔로잉 상태, false: 언팔로잉 상태)"))
                         .tag("Profile")
                         .build()
         )));

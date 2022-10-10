@@ -21,4 +21,21 @@ public class Follow extends BaseTimeEntity {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "followee_id")
     private User followee;
+
+    public static Follow makeRelation(User follower, User followee) {
+        Follow follow = new Follow();
+        follow.follower = follower;
+        follow.followee = followee;
+
+        follower.getFollowees().add(follow);
+        followee.getFollowers().add(follow);
+
+        return follow;
+    }
+
+
+    public void removeRelation(User follower, User followee) {
+        follower.getFollowees().remove(this);
+        followee.getFollowers().remove(this);
+    }
 }
