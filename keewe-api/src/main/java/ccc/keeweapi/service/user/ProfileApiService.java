@@ -1,5 +1,6 @@
 package ccc.keeweapi.service.user;
 
+import ccc.keeweapi.dto.user.FollowToggleResponse;
 import ccc.keeweapi.dto.user.OnboardRequest;
 import ccc.keeweapi.dto.user.OnboardResponse;
 import ccc.keeweapi.component.ProfileAssembler;
@@ -21,5 +22,11 @@ public class ProfileApiService {
     public OnboardResponse onboard(OnboardRequest request) {
         User user = profileDomainService.onboard(profileAssembler.toOnboardDto(request));
         return profileAssembler.toOnboardResponse(user);
+    }
+
+    @Transactional
+    public FollowToggleResponse toggleFollowership(Long targetId) {
+        boolean following = profileDomainService.toggleFollowership(profileAssembler.toFollowToggleDto(targetId));
+        return profileAssembler.toFollowToggleResponse(following);
     }
 }
