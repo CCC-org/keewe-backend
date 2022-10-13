@@ -1,5 +1,6 @@
 package ccc.keewedomain.persistence.repository.insight;
 
+import ccc.keewedomain.persistence.domain.challenge.ChallengeParticipation;
 import ccc.keewedomain.persistence.domain.insight.Insight;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -24,5 +25,14 @@ public class InsightQueryRepository {
                 .fetchJoin()
                 .fetchOne();
 
+    }
+
+    public Long countValidForParticipation(ChallengeParticipation participation) {
+        return queryFactory.select(insight.id.count())
+                .from(insight)
+                .where(insight.challengeParticipation.id.eq(participation.getId())
+                        .and(insight.deleted.isFalse())
+                        .and(insight.valid.isTrue()))
+                .fetchFirst();
     }
 }

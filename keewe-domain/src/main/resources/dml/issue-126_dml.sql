@@ -1,0 +1,2 @@
+ALTER TABLE insight
+    ADD COLUMN valid BIT NOT NULL
