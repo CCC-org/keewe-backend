@@ -40,6 +40,9 @@ public class Insight extends BaseTimeEntity {
     @Embedded
     private Link link;
 
+    @Column(name = "valid", nullable = false)
+    private boolean valid = false;
+
     @Column(name = "deleted", nullable = false)
     private boolean deleted = false;
 
@@ -59,13 +62,14 @@ public class Insight extends BaseTimeEntity {
     @Column(name = "view")
     private Long view = 0L;
 
-    public static Insight of(User writer, ChallengeParticipation challengeParticipation, Drawer drawer, String contents, Link link) {
+    public static Insight of(User writer, ChallengeParticipation participation, Drawer drawer, String contents, Link link, boolean valid) {
         Insight insight = new Insight();
         insight.writer = writer;
-        insight.challengeParticipation = challengeParticipation;
+        insight.challengeParticipation = participation;
         insight.drawer = drawer;
         insight.contents = contents;
         insight.link = link;
+        insight.valid = valid;
 
         return insight;
     }

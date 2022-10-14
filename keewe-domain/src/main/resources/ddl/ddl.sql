@@ -121,6 +121,7 @@ CREATE TABLE IF NOT EXISTS `insight`
     contents                    VARCHAR(300)    NOT NULL,
     url                         VARCHAR(2000)   NOT NULL,
     deleted                     BIT             NOT NULL,
+    valid                       BIT             NOT NULL,
     view                        BIGINT          NOT NULL   DEFAULT  0,
     created_at                  DATETIME(6)     NOT NULL,
     updated_at                  DATETIME(6)     NOT NULL,
@@ -141,7 +142,7 @@ CREATE TABLE IF NOT EXISTS `reaction`
     created_at          DATETIME(6)     NOT NULL,
     updated_at          DATETIME(6)     NOT NULL,
 
-    PRIMARY KEY (reacition_id)
+    PRIMARY KEY (reaction_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS `reaction_aggregation`

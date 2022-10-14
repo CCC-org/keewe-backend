@@ -1,11 +1,11 @@
 package ccc.keewedomain.service.insight;
 
 import ccc.keewecore.consts.KeeweConsts;
+import ccc.keewecore.consts.KeeweRtnConsts;
+import ccc.keewecore.exception.KeeweException;
 import ccc.keewedomain.cache.domain.insight.CInsightView;
 import ccc.keewedomain.cache.repository.insight.CInsightViewRepository;
 import ccc.keewedomain.domain.insight.ReactionAggregation;
-import ccc.keewecore.consts.KeeweRtnConsts;
-import ccc.keewecore.exception.KeeweException;
 import ccc.keewedomain.dto.insight.InsightCreateDto;
 import ccc.keewedomain.dto.insight.InsightViewIncrementDto;
 import ccc.keewedomain.persistence.domain.challenge.ChallengeParticipation;
@@ -45,10 +45,14 @@ public class InsightDomainService {
     public Insight create(InsightCreateDto dto) {
         User writer = userDomainService.getUserByIdOrElseThrow(dto.getWriterId());
         Drawer drawer = drawerDomainService.getDrawerIfOwner(dto.getDrawerId(), writer);
-        ChallengeParticipation participation = challengeDomainService.findCurrentChallengeParticipation(dto.getWriterId())
-                .orElse(null);
+        ChallengeParticipation participation = null;
+        boolean valid = false;
+        if (dto.isParticipate()) {
+            participation = challengeDomainService.getCurrentChallengeParticipation(writer);
+            valid = isRecordable(participation);
+        }
 
-        Insight insight = Insight.of(writer, participation, drawer, dto.getContents(), Link.of(dto.getLink()));
+        Insight insight = Insight.of(writer, participation, drawer, dto.getContents(), Link.of(dto.getLink()), valid);
         insightRepository.save(insight);
         createReactionAggregations(insight);
         return insight;
@@ -108,6 +112,13 @@ public class InsightDomainService {
     //FIXME get과 find 역할 정확히 정리하기
     public Insight getById(Long id) {
         return insightRepository.findById(id).orElseThrow(() -> new KeeweException(KeeweRtnConsts.ERR445));
+    }
+
+    private boolean isRecordable(ChallengeParticipation participation) {
+        Long count = insightQueryRepository.countValidForParticipation(participation);
+        long weeks = participation.getCurrentWeek();
+        log.info("[IDS:isRecordable] count={} weeks={}", count, weeks);
+        return count < weeks * participation.getInsightPerWeek();
     }
 
 }

@@ -49,8 +49,8 @@ public class CommentDomainServiceTest {
     DatabaseCleaner databaseCleaner;
 
     User user = User.from(UserSignUpDto.of("vendorId", VendorType.NAVER, "boseong844@naver.com", null, null));;
-    Insight insight = Insight.of(user, null, null, "인사이트 내용", Link.of("https://naver.com"));;
-    Comment comment = Comment.of(insight, user, null, "댓글 내용");;
+    Insight insight = Insight.of(user, null, null, "인사이트 내용", Link.of("https://naver.com"), false);;
+    Comment comment = Comment.of(insight, user, null, "댓글 내용");
 
     @BeforeEach
     void setup() {

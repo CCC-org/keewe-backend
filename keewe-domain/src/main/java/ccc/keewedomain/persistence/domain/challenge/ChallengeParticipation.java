@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
 import java.time.LocalDate;
+import java.time.Period;
 
 import static javax.persistence.FetchType.LAZY;
 import static lombok.AccessLevel.PROTECTED;
@@ -71,5 +72,14 @@ public class ChallengeParticipation extends BaseTimeEntity {
     private void initEndDate() {
         LocalDate createdDate = getCreatedAt().toLocalDate();
         this.endDate = createdDate.minusDays(1).plusWeeks(duration);
+    }
+
+    // 현재가 몇 주차인지
+    public long getCurrentWeek() {
+        LocalDate createdAt = getCreatedAt().toLocalDate();
+        LocalDate today = LocalDate.now();
+        Period between = Period.between(today, createdAt);
+
+        return between.getDays() / 7 + 1; // 1주차부터 시작
     }
 }

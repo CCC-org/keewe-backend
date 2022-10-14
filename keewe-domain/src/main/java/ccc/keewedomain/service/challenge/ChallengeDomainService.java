@@ -32,7 +32,7 @@ public class ChallengeDomainService {
 
     public ChallengeParticipation participate(ChallengeParticipateDto dto) {
         User challenger = userDomainService.getUserByIdOrElseThrow(dto.getChallengerId());
-        exitCurrentChallengeIfExist(dto.getChallengerId());
+        exitCurrentChallengeIfExist(challenger);
         Challenge challenge = getByIdOrElseThrow(dto.getChallengeId());
         return challenge.participate(challenger, dto.getMyTopic(), dto.getInsightPerWeek(), dto.getDuration());
     }
@@ -45,15 +45,15 @@ public class ChallengeDomainService {
         return challengeParticipationRepository.existsByChallengerIdAndStatus(userId, CHALLENGING);
     }
 
-    public ChallengeParticipation getCurrentChallengeParticipation(Long userId) {
-        return findCurrentChallengeParticipation(userId).orElseThrow(() -> new KeeweException(KeeweRtnConsts.ERR432));
+    public ChallengeParticipation getCurrentChallengeParticipation(User challenger) {
+        return findCurrentChallengeParticipation(challenger).orElseThrow(() -> new KeeweException(KeeweRtnConsts.ERR432));
     }
 
-    private void exitCurrentChallengeIfExist(Long userId) {
-        findCurrentChallengeParticipation(userId).ifPresent(ChallengeParticipation::cancel);
+    private void exitCurrentChallengeIfExist(User challenger) {
+        findCurrentChallengeParticipation(challenger).ifPresent(ChallengeParticipation::cancel);
     }
 
-    public Optional<ChallengeParticipation> findCurrentChallengeParticipation(Long userId) {
-        return challengeParticipationRepository.findByChallengerIdAndStatus(userId, CHALLENGING);
+    public Optional<ChallengeParticipation> findCurrentChallengeParticipation(User challenger) {
+        return challengeParticipationRepository.findByChallengerAndStatusAndDeletedFalse(challenger, CHALLENGING);
     }
 }

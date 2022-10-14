@@ -13,6 +13,6 @@ public interface DrawerRepository extends JpaRepository<Drawer, Long>, DrawerQue
     List<Drawer> findAllByUserIdAndDeletedFalse(Long userId);
 
     default Drawer findByIdOrElseThrow(Long id) {
-        return findByIdAndDeletedFalse(id).orElseThrow(() -> new KeeweException(KeeweRtnConsts.ERR442));
+        return findByIdAndDeletedFalse(id).orElseThrow(() -> new KeeweException(KeeweRtnConsts.ERR440));
     }
 }
