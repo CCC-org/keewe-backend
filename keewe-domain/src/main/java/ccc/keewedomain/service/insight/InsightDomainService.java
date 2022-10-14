@@ -51,7 +51,7 @@ public class InsightDomainService {
         ChallengeParticipation participation = null;
         boolean valid = false;
         if (dto.isParticipate()) {
-            participation = challengeDomainService.getCurrentChallengeParticipation(dto.getWriterId());
+            participation = challengeDomainService.getCurrentChallengeParticipation(writer);
             valid = isRecordable(participation);
         }
 
