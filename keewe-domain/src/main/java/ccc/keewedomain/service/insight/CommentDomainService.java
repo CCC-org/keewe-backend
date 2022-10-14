@@ -28,7 +28,7 @@ public class CommentDomainService {
 
         Optional<Comment> optParent = findByIdAndInsightId(dto.getParentId(), dto.getInsightId());
         optParent.ifPresent(this::validateHasNoParent);
-        Comment parent = optParent.get();
+        Comment parent = optParent.orElse(null);
 
         Comment comment = Comment.of(insight, writer, parent, dto.getContent());
         return commentRepository.save(comment);
