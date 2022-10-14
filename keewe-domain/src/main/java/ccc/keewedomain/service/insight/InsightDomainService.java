@@ -1,11 +1,11 @@
 package ccc.keewedomain.service.insight;
 
 import ccc.keewecore.consts.KeeweConsts;
+import ccc.keewecore.consts.KeeweRtnConsts;
+import ccc.keewecore.exception.KeeweException;
 import ccc.keewedomain.cache.domain.insight.CInsightView;
 import ccc.keewedomain.cache.repository.insight.CInsightViewRepository;
 import ccc.keewedomain.domain.insight.ReactionAggregation;
-import ccc.keewecore.consts.KeeweRtnConsts;
-import ccc.keewecore.exception.KeeweException;
 import ccc.keewedomain.dto.insight.InsightCreateDto;
 import ccc.keewedomain.dto.insight.InsightViewIncrementDto;
 import ccc.keewedomain.persistence.domain.challenge.ChallengeParticipation;
@@ -25,9 +25,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.Period;
 import java.util.Arrays;
 
 @Service
@@ -119,7 +116,7 @@ public class InsightDomainService {
 
     private boolean isRecordable(ChallengeParticipation participation) {
         Long count = insightQueryRepository.countValidForParticipation(participation);
-        long weeks = participation.getCurrentWeeks();
+        long weeks = participation.getCurrentWeek();
         log.info("[IDS:isRecordable] count={} weeks={}", count, weeks);
         return count < weeks * participation.getInsightPerWeek();
     }

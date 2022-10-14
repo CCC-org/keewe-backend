@@ -75,7 +75,7 @@ public class ChallengeParticipation extends BaseTimeEntity {
     }
 
     // 현재가 몇 주차인지
-    public long getCurrentWeeks() {
+    public long getCurrentWeek() {
         LocalDate createdAt = getCreatedAt().toLocalDate();
         LocalDate today = LocalDate.now();
         Period between = Period.between(today, createdAt);
