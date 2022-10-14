@@ -3,7 +3,6 @@ package ccc.keewedomain.service.insight;
 import ccc.keewecore.consts.KeeweRtnConsts;
 import ccc.keewecore.exception.KeeweException;
 import ccc.keewedomain.KeeweDomainApplication;
-import ccc.keewedomain.dto.insight.DrawerCreateDto;
 import ccc.keewedomain.dto.insight.InsightCreateDto;
 import ccc.keewedomain.dto.user.UserSignUpDto;
 import ccc.keewedomain.persistence.domain.challenge.Challenge;
@@ -37,7 +36,6 @@ import java.util.stream.Collectors;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest(classes = {KeeweDomainApplication.class, KeeweInfraApplication.class})
 @TestPropertySource(properties = {"spring.config.location = classpath:application-domain.yml"})
@@ -91,9 +89,12 @@ public class InsightDomainServiceTest {
     @Test
     @DisplayName("챌린지 기록 없이 인사이트 생성")
     void create_without_participate() {
+        //given
         InsightCreateDto dto = InsightCreateDto.of(user.getId(), "인사이트 내용", "https://comic.naver.com", false, null);
+        //when
         Insight insight = insightDomainService.create(dto);
 
+        //then
         assertAll(
                 () -> assertThat(insight.isValid()).isFalse(),
                 () -> assertThat(insightRepository.findById(insight.getId())).isPresent()
@@ -103,9 +104,12 @@ public class InsightDomainServiceTest {
     @Test
     @DisplayName("챌린지 기록하면서 인사이트 생성")
     void create_with_participate() {
+        //given
         InsightCreateDto dto = InsightCreateDto.of(user.getId(), "인사이트 내용", "https://comic.naver.com", true, null);
+        //when
         Insight newInsight = insightDomainService.create(dto);
 
+        //then
         assertAll(
                 () -> assertThat(newInsight.isValid()).isTrue(),
                 () -> assertThat(insightRepository.findById(newInsight.getId())).isPresent(),
@@ -117,12 +121,14 @@ public class InsightDomainServiceTest {
     @Test
     @DisplayName("이번 주 목표 기록 완료 시 기록 불가능")
     void valid_false_if_completed() {
+        //given
         List<InsightCreateDto> dtos = List.of(
                 InsightCreateDto.of(user.getId(), "인사이트 내용1", "https://comic.naver.com", true, null),
                 InsightCreateDto.of(user.getId(), "인사이트 내용2", "https://comic.naver.com", true, null),
                 InsightCreateDto.of(user.getId(), "인사이트 내용3", "https://comic.naver.com", true, null)
         );
 
+        //when
         List<Insight> insights = dtos.stream()
                 .map(dto -> insightDomainService.create(dto))
                 .collect(Collectors.toList());
@@ -131,6 +137,7 @@ public class InsightDomainServiceTest {
         Insight insight2 = insights.get(1);
         Insight insight3 = insights.get(2);
 
+        //then
         assertAll(
                 () -> assertThat(insight1.isValid()).isTrue(),
                 () -> assertThat(insight2.isValid()).isTrue(),
@@ -143,8 +150,10 @@ public class InsightDomainServiceTest {
     @Test
     @DisplayName("서랍이 존재하지 않으면 실패")
     void throw_if_drawer_not_exist() {
+        //given
         InsightCreateDto dto = InsightCreateDto.of(user.getId(), "인사이트 내용", "https://comic.naver.com", true, 9999L);
 
+        //when, then
         assertThatThrownBy(() -> insightDomainService.create(dto))
                 .isExactlyInstanceOf(KeeweException.class)
                 .hasMessage(KeeweRtnConsts.ERR440.getDescription());
@@ -153,11 +162,13 @@ public class InsightDomainServiceTest {
     @Test
     @DisplayName("자신의 서랍이 아니면 실패")
     void throw_if_not_owner_of_drawer() {
+        //given
         User other = User.from(UserSignUpDto.of("vendorId222", VendorType.NAVER, "boseong844@naver.com", null, null));
         userRepository.save(other);
         Drawer drawer = drawerRepository.save(Drawer.of(other, "서랍"));
-
         InsightCreateDto dto = InsightCreateDto.of(user.getId(), "인사이트 내용", "https://comic.naver.com", true, drawer.getId());
+
+        //when, then
         assertThatThrownBy(() -> insightDomainService.create(dto))
                 .isExactlyInstanceOf(KeeweException.class)
                 .hasMessage(KeeweRtnConsts.ERR444.getDescription());
