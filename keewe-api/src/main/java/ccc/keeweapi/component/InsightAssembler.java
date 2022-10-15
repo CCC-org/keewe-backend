@@ -2,13 +2,14 @@ package ccc.keeweapi.component;
 
 import ccc.keeweapi.dto.insight.*;
 import ccc.keeweapi.utils.SecurityUtil;
+import ccc.keewedomain.dto.insight.*;
+import ccc.keewedomain.persistence.domain.insight.Drawer;
+import ccc.keewedomain.persistence.domain.insight.Insight;
+import ccc.keewedomain.persistence.domain.insight.Comment;
 import ccc.keewedomain.dto.insight.CommentCreateDto;
 import ccc.keewedomain.dto.insight.DrawerCreateDto;
 import ccc.keewedomain.dto.insight.InsightCreateDto;
 import ccc.keewedomain.dto.insight.InsightViewIncrementDto;
-import ccc.keewedomain.persistence.domain.insight.Comment;
-import ccc.keewedomain.persistence.domain.insight.Drawer;
-import ccc.keewedomain.persistence.domain.insight.Insight;
 import ccc.keewedomain.persistence.domain.user.User;
 import org.springframework.stereotype.Component;
 
@@ -54,6 +55,26 @@ public class InsightAssembler {
 
     public CommentCreateResponse toCommentCreateResponse(Comment comment) {
         return CommentCreateResponse.of(comment.getId());
+    }
+
+    public InsightGetResponse toInsightGetResponse(InsightGetDto dto) {
+        return InsightGetResponse.of(
+                dto.getId(),
+                dto.getContents(),
+                dto.getLink(),
+                toReactionAggregationResponse(dto.getReaction())
+        );
+    }
+
+    private ReactionAggregationResponse toReactionAggregationResponse(ReactionAggregationGetDto dto) {
+        return ReactionAggregationResponse.of(
+                dto.getClap(),
+                dto.getHeart(),
+                dto.getSad(),
+                dto.getSurprise(),
+                dto.getFire(),
+                dto.getEyes()
+        );
     }
 
     public DrawerResponse toDrawerResponse(Drawer drawer) {

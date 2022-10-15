@@ -65,7 +65,7 @@ public class ReactionDomainService {
                 .orElseThrow(() -> new KeeweException(KeeweRtnConsts.ERR471));
     }
 
-    private Long getCurrentReactionCount(String id) {
+    public Long getCurrentReactionCount(String id) {
         CReactionCount cReactionCount = cReactionCountRepository.findById(id)
                 .orElseGet(() -> {
                     log.info("[RDS::getReactionCount] No reaction. id={}", id);

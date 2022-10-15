@@ -4,6 +4,7 @@ import ccc.keeweapi.dto.ApiResponse;
 import ccc.keeweapi.dto.insight.InsightAuthorAreaResponse;
 import ccc.keeweapi.dto.insight.InsightCreateRequest;
 import ccc.keeweapi.dto.insight.InsightCreateResponse;
+import ccc.keeweapi.dto.insight.InsightGetResponse;
 import ccc.keeweapi.service.insight.InsightApiService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -27,9 +28,13 @@ public class InsightController {
         return ApiResponse.ok(insightApiService.incrementViewCount(insightId));
     }
 
+    @GetMapping("/{insightId}")
+    public ApiResponse<InsightGetResponse> getInsight(@PathVariable Long insightId) {
+        return ApiResponse.ok(insightApiService.getInsight(insightId));
+    }
+
     @GetMapping("/author/{insightId}")
     public ApiResponse<InsightAuthorAreaResponse> getInsightAuthorAreaInfo(@PathVariable Long insightId) {
         return ApiResponse.ok(insightApiService.getInsightAuthorAreaInfo(insightId));
     }
-
 }

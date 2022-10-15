@@ -4,10 +4,15 @@ import ccc.keewecore.consts.KeeweConsts;
 import ccc.keewecore.consts.KeeweRtnConsts;
 import ccc.keewecore.exception.KeeweException;
 import ccc.keewedomain.cache.domain.insight.CInsightView;
+import ccc.keewedomain.cache.domain.insight.CReactionCount;
+import ccc.keewedomain.cache.domain.insight.id.CReactionCountId;
 import ccc.keewedomain.cache.repository.insight.CInsightViewRepository;
+import ccc.keewedomain.cache.repository.insight.CReactionCountRepository;
 import ccc.keewedomain.domain.insight.ReactionAggregation;
 import ccc.keewedomain.dto.insight.InsightCreateDto;
+import ccc.keewedomain.dto.insight.InsightGetDto;
 import ccc.keewedomain.dto.insight.InsightViewIncrementDto;
+import ccc.keewedomain.dto.insight.ReactionAggregationGetDto;
 import ccc.keewedomain.persistence.domain.challenge.ChallengeParticipation;
 import ccc.keewedomain.persistence.domain.common.Link;
 import ccc.keewedomain.persistence.domain.insight.Drawer;
@@ -40,6 +45,7 @@ public class InsightDomainService {
     private final DrawerDomainService drawerDomainService;
     private final InsightQueryRepository insightQueryRepository;
     private final CInsightViewRepository cInsightViewRepository;
+    private final CReactionCountRepository cReactionCountRepository;
 
     //TODO 참가한 챌린지에 기록하기
     public Insight create(InsightCreateDto dto) {
@@ -62,6 +68,33 @@ public class InsightDomainService {
         Arrays.stream(ReactionType.values()).forEach((reactionType) -> {
             reactionAggregationRepository.save(ReactionAggregation.of(insight, reactionType, 0L));
         });
+    }
+
+    public InsightGetDto getInsight(Long insightId) {
+        Insight entity = getById(insightId);
+        ReactionAggregationGetDto reactionAggregationGetDto = getReactionAggregation(insightId);
+
+        return InsightGetDto.of(insightId, entity.getContents(), entity.getLink(), reactionAggregationGetDto);
+    }
+
+    private ReactionAggregationGetDto getReactionAggregation(Long insightId) {
+        Long clap = 0L, heart = 0L, sad = 0L, surprise = 0L, fire = 0L, eyes = 0L;
+        for (ReactionType r : ReactionType.values()) {
+            String id = new CReactionCountId(insightId, r).toString();
+            Long count = cReactionCountRepository.findById(id).orElseGet(() -> CReactionCount.of(id, 0L)).getCount();
+
+            switch (r) {
+                case CLAP: clap = count;
+                case HEART: heart = count;
+                case SAD: sad = count;
+                case SURPRISE: surprise = count;
+                case FIRE: fire = count;
+                case EYES: eyes = count;
+            }
+
+        }
+
+        return ReactionAggregationGetDto.of(clap, heart, sad, surprise, fire, eyes);
     }
 
     public Long incrementViewCount(InsightViewIncrementDto dto) {
