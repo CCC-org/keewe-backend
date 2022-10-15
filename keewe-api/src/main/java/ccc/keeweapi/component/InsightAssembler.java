@@ -56,7 +56,7 @@ public class InsightAssembler {
     public CommentCreateResponse toCommentCreateResponse(Comment comment) {
         return CommentCreateResponse.of(comment.getId());
     }
-    
+
     public InsightGetResponse toInsightGetResponse(InsightGetDto dto) {
         return InsightGetResponse.of(
                 dto.getId(),

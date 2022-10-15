@@ -31,6 +31,7 @@ public class InsightApiService {
         return insightAssembler.toInsightViewIncrementResponse(viewCount);
     }
 
+    @Transactional(readOnly = true)
     public InsightGetResponse getInsight(Long insightId) {
         InsightGetDto insightGetDto = insightDomainService.getInsight(insightId);
         return insightAssembler.toInsightGetResponse(insightGetDto);
