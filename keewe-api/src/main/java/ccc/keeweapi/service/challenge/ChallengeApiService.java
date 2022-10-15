@@ -6,9 +6,13 @@ import ccc.keeweapi.utils.SecurityUtil;
 import ccc.keewedomain.persistence.domain.challenge.Challenge;
 import ccc.keewedomain.persistence.domain.challenge.ChallengeParticipation;
 import ccc.keewedomain.service.challenge.ChallengeDomainService;
+import ccc.keewedomain.service.insight.InsightDomainService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Objects;
+import java.util.Optional;
 
 
 @Service
@@ -16,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class ChallengeApiService {
     private final ChallengeDomainService challengeDomainService;
+    private final InsightDomainService insightDomainService;
     private final ChallengeAssembler challengeAssembler;
 
     @Transactional
@@ -37,5 +42,20 @@ public class ChallengeApiService {
     public ParticipationCheckResponse checkParticipation() {
         boolean participation = challengeDomainService.checkParticipation(SecurityUtil.getUserId());
         return challengeAssembler.toParticipationCheckResponse(participation);
+    }
+
+    @Transactional(readOnly = true)
+    public ParticipationProgressResponse getMyParticipationProgress() {
+        Long userId = SecurityUtil.getUserId();
+        ChallengeParticipation participation =
+                challengeDomainService.findCurrentParticipationWithChallenge(userId).orElse(null);
+
+        if (Objects.isNull(participation)) {
+            return null;
+        }
+
+        Long current = insightDomainService.getRecordedInsightNumber(participation);
+
+        return challengeAssembler.toParticipationProgressResponse(participation, current);
     }
 }
