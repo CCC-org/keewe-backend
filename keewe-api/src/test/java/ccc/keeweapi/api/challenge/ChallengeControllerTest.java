@@ -3,6 +3,7 @@ package ccc.keeweapi.api.challenge;
 import ccc.keeweapi.document.utils.ApiDocumentationTest;
 import ccc.keeweapi.dto.challenge.ChallengeCreateResponse;
 import ccc.keeweapi.dto.challenge.ChallengeParticipationResponse;
+import ccc.keeweapi.dto.challenge.InsightProgressResponse;
 import ccc.keeweapi.dto.challenge.ParticipationCheckResponse;
 import ccc.keeweapi.service.challenge.ChallengeApiService;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
@@ -171,6 +172,40 @@ public class ChallengeControllerTest extends ApiDocumentationTest {
                                 fieldWithPath("message").description("요청 결과 메세지"),
                                 fieldWithPath("code").description("결과 코드"),
                                 fieldWithPath("data.participation").description("챌린지 참여 여부")
+                        )
+                        .tag("Challenge")
+                        .build()
+        )));
+    }
+
+    @Test
+    @DisplayName("인사이트 생성 시 챌린지 현황 조회 API")
+    void insight_create_progress() throws Exception {
+        String name = "챌린지 이름";
+        Long current = 4L;
+        Long total = 16L;
+        when(challengeApiService.getMyParticipationProgress())
+                .thenReturn(InsightProgressResponse.of(name, current, total));
+
+        ResultActions resultActions = mockMvc.perform(get("/api/v1/challenge/participation/progress/insight")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        resultActions.andDo(restDocs.document(resource(
+                ResourceSnippetParameters.builder()
+                        .description("인사이트 생성 시 챌린지 현황 조회 API 입니다.")
+                        .summary("인사이트 생성 시 챌린지 현황 조회 API")
+                        .requestHeaders(
+                                headerWithName("Authorization").description("유저의 JWT")
+                        )
+                        .responseFields(
+                                fieldWithPath("message").description("요청 결과 메세지"),
+                                fieldWithPath("code").description("결과 코드"),
+                                fieldWithPath("data").description("참가중이지 않은 경우 null"),
+                                fieldWithPath("data.name").description("참가중인 챌린지의 이름"),
+                                fieldWithPath("data.current").description("지금까지 기록한 인사이트의 수"),
+                                fieldWithPath("data.total").description("총 기록해야 하는 인사이트의 수")
                         )
                         .tag("Challenge")
                         .build()
