@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
-import java.util.Optional;
 
 
 @Service
@@ -45,7 +44,7 @@ public class ChallengeApiService {
     }
 
     @Transactional(readOnly = true)
-    public ParticipationProgressResponse getMyParticipationProgress() {
+    public InsightProgressResponse getMyParticipationProgress() {
         Long userId = SecurityUtil.getUserId();
         ChallengeParticipation participation =
                 challengeDomainService.findCurrentParticipationWithChallenge(userId).orElse(null);

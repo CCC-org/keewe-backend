@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor(staticName = "of")
-public class ParticipationProgressResponse {
+public class InsightProgressResponse {
     private String name;
     private Long current;
     private Long total;

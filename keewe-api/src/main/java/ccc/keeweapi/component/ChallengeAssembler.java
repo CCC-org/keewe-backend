@@ -56,8 +56,8 @@ public class ChallengeAssembler {
         return ParticipationCheckResponse.of(participation);
     }
 
-    public ParticipationProgressResponse toParticipationProgressResponse(ChallengeParticipation participation, Long current) {
-        return ParticipationProgressResponse.of(
+    public InsightProgressResponse toParticipationProgressResponse(ChallengeParticipation participation, Long current) {
+        return InsightProgressResponse.of(
                 participation.getChallenge().getName(),
                 current,
                 participation.getTotalInsightNumber()
