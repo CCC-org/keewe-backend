@@ -82,4 +82,8 @@ public class ChallengeParticipation extends BaseTimeEntity {
 
         return between.getDays() / 7 + 1; // 1주차부터 시작
     }
+
+    public Long getTotalInsightNumber() {
+        return (long) (insightPerWeek * duration);
+    }
 }

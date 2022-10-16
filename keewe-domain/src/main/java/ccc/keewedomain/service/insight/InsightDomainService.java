@@ -148,10 +148,13 @@ public class InsightDomainService {
     }
 
     private boolean isRecordable(ChallengeParticipation participation) {
-        Long count = insightQueryRepository.countValidForParticipation(participation);
+        Long count = getRecordedInsightNumber(participation);
         long weeks = participation.getCurrentWeek();
         log.info("[IDS:isRecordable] count={} weeks={}", count, weeks);
         return count < weeks * participation.getInsightPerWeek();
     }
 
+    public Long getRecordedInsightNumber(ChallengeParticipation participation) {
+        return insightQueryRepository.countValidForParticipation(participation);
+    }
 }

@@ -55,4 +55,12 @@ public class ChallengeAssembler {
     public ParticipationCheckResponse toParticipationCheckResponse(boolean participation) {
         return ParticipationCheckResponse.of(participation);
     }
+
+    public InsightProgressResponse toParticipationProgressResponse(ChallengeParticipation participation, Long current) {
+        return InsightProgressResponse.of(
+                participation.getChallenge().getName(),
+                current,
+                participation.getTotalInsightNumber()
+        );
+    }
 }

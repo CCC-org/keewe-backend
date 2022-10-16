@@ -28,4 +28,9 @@ public class ChallengeController {
     public ApiResponse<ParticipationCheckResponse> checkParticipation() {
         return ApiResponse.ok(challengeApiService.checkParticipation());
     }
+
+    @GetMapping("/participation/progress/insight")
+    public ApiResponse<InsightProgressResponse> getMyParticipationProgress() {
+        return ApiResponse.ok(challengeApiService.getMyParticipationProgress());
+    }
 }
