@@ -46,15 +46,12 @@ public class ChallengeApiService {
     @Transactional(readOnly = true)
     public InsightProgressResponse getMyParticipationProgress() {
         Long userId = SecurityUtil.getUserId();
-        ChallengeParticipation participation =
-                challengeDomainService.findCurrentParticipationWithChallenge(userId).orElse(null);
 
-        if (Objects.isNull(participation)) {
-            return null;
-        }
-
-        Long current = insightDomainService.getRecordedInsightNumber(participation);
-
-        return challengeAssembler.toParticipationProgressResponse(participation, current);
+        return challengeDomainService.findCurrentParticipationWithChallenge(userId)
+                .map(participation -> {
+                    Long current = insightDomainService.getRecordedInsightNumber(participation);
+                    return challengeAssembler.toParticipationProgressResponse(participation, current);
+                })
+                .orElse(null);
     }
 }
