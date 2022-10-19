@@ -6,11 +6,13 @@ import ccc.keewedomain.dto.insight.CommentCreateDto;
 import ccc.keewedomain.persistence.domain.insight.Comment;
 import ccc.keewedomain.persistence.domain.insight.Insight;
 import ccc.keewedomain.persistence.domain.user.User;
+import ccc.keewedomain.persistence.repository.insight.CommentQueryRepository;
 import ccc.keewedomain.persistence.repository.insight.CommentRepository;
 import ccc.keewedomain.service.user.UserDomainService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -18,6 +20,7 @@ import java.util.Optional;
 public class CommentDomainService {
 
     private final CommentRepository commentRepository;
+    private final CommentQueryRepository commentQueryRepository;
 
     private final InsightDomainService insightDomainService;
     private final UserDomainService userDomainService;
@@ -42,5 +45,25 @@ public class CommentDomainService {
         if (comment.getParent() != null) {
             throw new KeeweException(KeeweRtnConsts.ERR443);
         }
+    }
+
+    public List<Comment> getRepresentativeCommentsWithWriter(Long insightId) {
+        final Long commentNumber = 3L;
+
+        List<Comment> comments = commentQueryRepository.findByReplyNumberDescWithUser(insightId, 1L);
+        if (comments.isEmpty()) {
+            System.out.println("멈춰!");
+            comments = commentQueryRepository.findByInsightIdOrderByIdAsc(insightId, Long.MIN_VALUE, commentNumber);
+        }
+
+        return comments;
+    }
+
+    public Long getCommentNumberByInsightId(Long insightId) {
+        return commentQueryRepository.countByInsightId(insightId);
+    }
+
+    public List<Comment> getRepliesWithWriter(Long parentId, Long cursor, Long limit) {
+        return commentQueryRepository.findByParentWithWriter(parentId, cursor, limit);
     }
 }

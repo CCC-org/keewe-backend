@@ -22,11 +22,8 @@ public class CommentController {
         return ApiResponse.ok(commentApiService.create(request));
     }
 
-    // 인사이트의 대표 댓글
-    // 답글의 수가 가장 많은 댓글 1개 + 답글 최대 2개
-    // 모든 댓글에 답글이 없는 경우 작성순 댓글 3개
     @GetMapping("/insight/{insightId}")
-    public ApiResponse<InsightCommentResponse> getInsightComment(@PathVariable Long insightId) {
-        return ApiResponse.ok();
+    public ApiResponse<InsightCommentResponse> getRepresentativeComments(@PathVariable Long insightId) {
+        return ApiResponse.ok(commentApiService.getRepresentativeComments(insightId));
     }
 }
