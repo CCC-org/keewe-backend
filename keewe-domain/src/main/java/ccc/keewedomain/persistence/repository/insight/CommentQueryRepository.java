@@ -1,6 +1,7 @@
 package ccc.keewedomain.persistence.repository.insight;
 
 import ccc.keewedomain.persistence.domain.insight.Comment;
+import com.querydsl.core.group.GroupBy;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -8,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 
 import static ccc.keewedomain.persistence.domain.insight.QComment.comment;
 import static ccc.keewedomain.persistence.domain.user.QUser.user;
@@ -95,5 +97,13 @@ public class CommentQueryRepository {
                 .from(comment)
                 .groupBy(comment.parent.id)
                 .where(comment.parent.in(parents));
+    }
+
+    public Map<Long, Long> getReplyNumbers(List<Comment> parents) {
+        return queryFactory
+                .from(comment)
+                .groupBy(comment.parent.id)
+                .where(comment.parent.in(parents))
+                .transform(GroupBy.groupBy(comment.parent.id).as(comment.count()));
     }
 }

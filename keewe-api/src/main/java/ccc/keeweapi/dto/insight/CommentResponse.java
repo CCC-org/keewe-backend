@@ -15,4 +15,5 @@ public class CommentResponse {
     private String content;
     private String createdAt;
     private List<ReplyResponse> replies;
+    private Long totalReply;
 }

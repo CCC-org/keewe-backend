@@ -11,22 +11,31 @@ import java.util.stream.Collectors;
 @Component
 public class CommentAssembler {
 
-    public InsightCommentResponse toInsightCommentResponse(List<Comment> comments, Map<Long, List<Comment>> replyPerParentId, Long total) {
+    public InsightCommentResponse toInsightCommentResponse(
+            List<Comment> comments,
+            Map<Long, List<Comment>> replyPerParentId,
+            Map<Long, Long> replyNumberPerParentId,
+            Long total) {
         List<CommentResponse> commentResponses = comments.stream()
-                .map(comment -> toCommentResponse(comment, replyPerParentId.getOrDefault(comment.getId(), List.of())))
+                .map(comment -> toCommentResponse(
+                        comment,
+                        replyPerParentId.getOrDefault(comment.getId(), List.of()),
+                        replyNumberPerParentId.getOrDefault(comment.getId(), 0L)
+                ))
                 .collect(Collectors.toList());
 
         return InsightCommentResponse.of(total, commentResponses);
     }
 
-    public CommentResponse toCommentResponse(Comment comment, List<Comment> replies) {
+    public CommentResponse toCommentResponse(Comment comment, List<Comment> replies, Long replyNumber) {
 
         return CommentResponse.of(
                 comment.getId(),
                 toCommentWriterResponse(comment.getWriter()),
                 comment.getContent(),
                 comment.getCreatedAt().toString(),
-                replies.stream().map(this::toReplyResponse).collect(Collectors.toList())
+                replies.stream().map(this::toReplyResponse).collect(Collectors.toList()),
+                replyNumber
         );
     }
 

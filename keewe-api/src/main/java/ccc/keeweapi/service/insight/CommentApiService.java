@@ -39,6 +39,8 @@ public class CommentApiService {
         final Long replyLimit = 2L;
 
         List<Comment> comments = commentDomainService.getRepresentativeCommentsWithWriter(insightId);
+        Map<Long, Long> replyNumberPerParentId = commentDomainService.getReplyNumbers(comments);
+        Long total = commentDomainService.getCommentNumberByInsightId(insightId);
         Map<Long, List<Comment>> replyPerParentId = new HashMap<>();
 
         if (comments.size() == 1) {
@@ -50,7 +52,6 @@ public class CommentApiService {
                     .collect(Collectors.groupingBy(reply -> reply.getParent().getId()));
         }
 
-        Long total = commentDomainService.getCommentNumberByInsightId(insightId);
-        return commentAssembler.toInsightCommentResponse(comments, replyPerParentId, total);
+        return commentAssembler.toInsightCommentResponse(comments, replyPerParentId, replyNumberPerParentId, total);
     }
 }

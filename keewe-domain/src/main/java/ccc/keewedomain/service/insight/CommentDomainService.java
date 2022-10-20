@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -52,7 +53,6 @@ public class CommentDomainService {
 
         List<Comment> comments = commentQueryRepository.findByReplyNumberDescWithUser(insightId, 1L);
         if (comments.isEmpty()) {
-            System.out.println("멈춰!");
             comments = commentQueryRepository.findByInsightIdOrderByIdAsc(insightId, Long.MIN_VALUE, commentNumber);
         }
 
@@ -65,5 +65,9 @@ public class CommentDomainService {
 
     public List<Comment> getRepliesWithWriter(Long parentId, Long cursor, Long limit) {
         return commentQueryRepository.findByParentWithWriter(parentId, cursor, limit);
+    }
+
+    public Map<Long, Long> getReplyNumbers(List<Comment> parents) {
+        return commentQueryRepository.getReplyNumbers(parents);
     }
 }
