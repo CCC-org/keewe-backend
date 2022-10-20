@@ -1,11 +1,7 @@
 package ccc.keeweapi.service.insight;
 
 import ccc.keeweapi.component.InsightAssembler;
-import ccc.keeweapi.dto.insight.CommentAssembler;
-import ccc.keeweapi.dto.insight.CommentCreateRequest;
-import ccc.keeweapi.dto.insight.CommentCreateResponse;
-import ccc.keeweapi.dto.insight.RepresentativeCommentResponse;
-import ccc.keeweapi.dto.insight.CommentResponse;
+import ccc.keeweapi.dto.insight.*;
 import ccc.keewedomain.persistence.domain.insight.Comment;
 import ccc.keewedomain.persistence.repository.utils.CursorPageable;
 import ccc.keewedomain.service.insight.CommentDomainService;
@@ -68,6 +64,12 @@ public class CommentApiService {
                         firstReplyPerParentId.getOrDefault(comment.getId(), null),
                         replyNumberPerParentId.getOrDefault(comment.getId(), 0L)
                 ))
+                .collect(Collectors.toList());
+    }
+
+    public List<ReplyResponse> getReplies(Long parentId, CursorPageable<Long> cPage) {
+        return commentDomainService.getReplies(parentId, cPage).stream()
+                .map(commentAssembler::toReplyResponse)
                 .collect(Collectors.toList());
     }
 }

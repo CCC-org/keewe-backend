@@ -1,10 +1,7 @@
 package ccc.keeweapi.api.insight;
 
 import ccc.keeweapi.dto.ApiResponse;
-import ccc.keeweapi.dto.insight.CommentCreateRequest;
-import ccc.keeweapi.dto.insight.CommentCreateResponse;
-import ccc.keeweapi.dto.insight.CommentResponse;
-import ccc.keeweapi.dto.insight.RepresentativeCommentResponse;
+import ccc.keeweapi.dto.insight.*;
 import ccc.keeweapi.service.insight.CommentApiService;
 import ccc.keewedomain.persistence.repository.utils.CursorPageable;
 import lombok.RequiredArgsConstructor;
@@ -37,5 +34,14 @@ public class CommentController {
             @RequestParam Long limit) {
 
         return ApiResponse.ok(commentApiService.getCommentsWithFirstReply(insightId, CursorPageable.of(cursor, limit)));
+    }
+
+    @GetMapping("{parentId}/replies")
+    public ApiResponse<List<ReplyResponse>> getReplies(
+            @PathVariable Long parentId,
+            @RequestParam Long cursor,
+            @RequestParam Long limit) {
+
+        return ApiResponse.ok(commentApiService.getReplies(parentId, CursorPageable.of(cursor, limit)));
     }
 }

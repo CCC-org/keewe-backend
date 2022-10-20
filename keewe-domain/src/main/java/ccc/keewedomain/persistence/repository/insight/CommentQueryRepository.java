@@ -5,6 +5,7 @@ import ccc.keewedomain.persistence.repository.utils.CursorPageable;
 import com.querydsl.core.group.GroupBy;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.JPQLQuery;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -22,15 +23,15 @@ public class CommentQueryRepository {
     private final JPAQueryFactory queryFactory;
 
     //오래된 순으로 limit 개의 댓글 조회 (답글X)
-    public List<Comment> findByInsightIdOrderByIdAsc(Long insightId, CursorPageable<Long> page) {
+    public List<Comment> findByInsightIdOrderByIdAsc(Long insightId, CursorPageable<Long> cPage) {
 
         return queryFactory
                 .select(comment)
                 .from(comment)
                 .innerJoin(comment.writer, user)
                 .fetchJoin()
-                .where(comment.insight.id.eq(insightId).and(comment.id.gt(page.getCursor())).and(comment.parent.isNull()))
-                .limit(page.getLimit())
+                .where(comment.insight.id.eq(insightId).and(comment.id.gt(cPage.getCursor())).and(comment.parent.isNull()))
+                .limit(cPage.getLimit())
                 .fetch();
     }
 
@@ -88,6 +89,17 @@ public class CommentQueryRepository {
                 .fetchJoin()
                 .where(comment.id.in(findFirstReplyIds(parents)))
                 .transform(GroupBy.groupBy(comment.parent.id).as(comment));
+    }
+
+    public List<Comment> findRepliesWithWriter(Long parentId, CursorPageable<Long> cPage) {
+        return queryFactory
+                .select(comment)
+                .from(comment)
+                .innerJoin(comment.writer, user)
+                .fetchJoin()
+                .where(comment.parent.id.eq(parentId).and(comment.id.gt(cPage.getCursor())))
+                .limit(cPage.getLimit())
+                .fetch();
     }
 
     //각 부모 댓글의 첫 답글의 id 조회

@@ -79,4 +79,8 @@ public class CommentDomainService {
     public Map<Long, Comment> getFirstReplies(List<Comment> parents) {
         return commentQueryRepository.findFirstRepliesWithWriter(parents);
     }
+
+    public List<Comment> getReplies(Long parentId, CursorPageable<Long> cPage) {
+        return commentQueryRepository.findRepliesWithWriter(parentId, cPage);
+    }
 }
