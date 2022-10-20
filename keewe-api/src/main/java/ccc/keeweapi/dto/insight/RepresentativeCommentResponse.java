@@ -7,7 +7,7 @@ import java.util.List;
 
 @Getter
 @AllArgsConstructor(staticName = "of")
-public class InsightCommentResponse {
+public class RepresentativeCommentResponse {
 
     private Long total;
     private List<CommentResponse> comments;

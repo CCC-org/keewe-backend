@@ -6,12 +6,13 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Component
 public class CommentAssembler {
 
-    public InsightCommentResponse toInsightCommentResponse(
+    public RepresentativeCommentResponse toRepresentativeCommentResponse(
             List<Comment> comments,
             Map<Long, List<Comment>> replyPerParentId,
             Map<Long, Long> replyNumberPerParentId,
@@ -24,7 +25,7 @@ public class CommentAssembler {
                 ))
                 .collect(Collectors.toList());
 
-        return InsightCommentResponse.of(total, commentResponses);
+        return RepresentativeCommentResponse.of(total, commentResponses);
     }
 
     public CommentResponse toCommentResponse(Comment comment, List<Comment> replies, Long replyNumber) {
@@ -35,6 +36,17 @@ public class CommentAssembler {
                 comment.getContent(),
                 comment.getCreatedAt().toString(),
                 replies.stream().map(this::toReplyResponse).collect(Collectors.toList()),
+                replyNumber
+        );
+    }
+
+    public CommentResponse toCommentResponse(Comment comment, Comment reply, Long replyNumber) {
+        return CommentResponse.of(
+                comment.getId(),
+                toCommentWriterResponse(comment.getWriter()),
+                comment.getContent(),
+                comment.getCreatedAt().toString(),
+                Objects.nonNull(reply) ? List.of(toReplyResponse(reply)) : List.of(),
                 replyNumber
         );
     }

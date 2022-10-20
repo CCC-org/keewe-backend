@@ -8,6 +8,7 @@ import ccc.keewedomain.persistence.domain.insight.Insight;
 import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.persistence.repository.insight.CommentQueryRepository;
 import ccc.keewedomain.persistence.repository.insight.CommentRepository;
+import ccc.keewedomain.persistence.repository.utils.CursorPageable;
 import ccc.keewedomain.service.user.UserDomainService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -53,7 +54,7 @@ public class CommentDomainService {
 
         List<Comment> comments = commentQueryRepository.findByReplyNumberDescWithUser(insightId, 1L);
         if (comments.isEmpty()) {
-            comments = commentQueryRepository.findByInsightIdOrderByIdAsc(insightId, Long.MIN_VALUE, commentNumber);
+            comments = commentQueryRepository.findByInsightIdOrderByIdAsc(insightId, CursorPageable.of(0L, commentNumber));
         }
 
         return comments;
@@ -69,5 +70,13 @@ public class CommentDomainService {
 
     public Map<Long, Long> getReplyNumbers(List<Comment> parents) {
         return commentQueryRepository.getReplyNumbers(parents);
+    }
+
+    public List<Comment> getComments(Long insightId, CursorPageable<Long> cursorPageable) {
+        return commentQueryRepository.findByInsightIdOrderByIdAsc(insightId, cursorPageable);
+    }
+
+    public Map<Long, Comment> getFirstReplies(List<Comment> parents) {
+        return commentQueryRepository.findFirstRepliesWithWriter(parents);
     }
 }
