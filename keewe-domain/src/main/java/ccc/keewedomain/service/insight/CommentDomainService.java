@@ -72,8 +72,8 @@ public class CommentDomainService {
         return commentQueryRepository.getReplyNumbers(parents);
     }
 
-    public List<Comment> getComments(Long insightId, CursorPageable<Long> cursorPageable) {
-        return commentQueryRepository.findByInsightIdOrderByIdAsc(insightId, cursorPageable);
+    public List<Comment> getComments(Long insightId, CursorPageable<Long> cPage) {
+        return commentQueryRepository.findByInsightIdOrderByIdAsc(insightId, cPage);
     }
 
     public Map<Long, Comment> getFirstReplies(List<Comment> parents) {

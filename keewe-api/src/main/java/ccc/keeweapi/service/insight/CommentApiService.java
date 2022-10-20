@@ -53,8 +53,8 @@ public class CommentApiService {
         return commentAssembler.toRepresentativeCommentResponse(comments, replyPerParentId, replyNumberPerParentId, total);
     }
 
-    public List<CommentResponse> getCommentsWithFirstReply(Long insightId, CursorPageable<Long> cursorPageable) {
-        List<Comment> comments = commentDomainService.getComments(insightId, cursorPageable);
+    public List<CommentResponse> getCommentsWithFirstReply(Long insightId, CursorPageable<Long> cPage) {
+        List<Comment> comments = commentDomainService.getComments(insightId, cPage);
         Map<Long, Comment> firstReplyPerParentId = commentDomainService.getFirstReplies(comments);
         Map<Long, Long> replyNumberPerParentId = commentDomainService.getReplyNumbers(comments);
 
