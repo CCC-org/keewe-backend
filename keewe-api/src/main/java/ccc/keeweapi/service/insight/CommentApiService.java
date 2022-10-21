@@ -61,7 +61,7 @@ public class CommentApiService {
         return comments.stream()
                 .map(comment -> commentAssembler.toCommentResponse(
                         comment,
-                        firstReplyPerParentId.getOrDefault(comment.getId(), null),
+                        firstReplyPerParentId.get(comment.getId()),
                         replyNumberPerParentId.getOrDefault(comment.getId(), 0L)
                 ))
                 .collect(Collectors.toList());

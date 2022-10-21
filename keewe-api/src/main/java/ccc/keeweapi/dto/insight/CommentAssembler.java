@@ -17,6 +17,7 @@ public class CommentAssembler {
             Map<Long, List<Comment>> replyPerParentId,
             Map<Long, Long> replyNumberPerParentId,
             Long total) {
+
         List<CommentResponse> commentResponses = comments.stream()
                 .map(comment -> toCommentResponse(
                         comment,
