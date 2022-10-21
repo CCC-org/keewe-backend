@@ -41,14 +41,7 @@ public class CommentAssembler {
     }
 
     public CommentResponse toCommentResponse(Comment comment, Comment reply, Long replyNumber) {
-        return CommentResponse.of(
-                comment.getId(),
-                toCommentWriterResponse(comment.getWriter()),
-                comment.getContent(),
-                comment.getCreatedAt().toString(),
-                Objects.nonNull(reply) ? List.of(toReplyResponse(reply)) : List.of(),
-                replyNumber
-        );
+        return toCommentResponse(comment, Objects.nonNull(reply) ? List.of(reply) : List.of(), replyNumber);
     }
 
     public CommentWriterResponse toCommentWriterResponse(User writer) {
