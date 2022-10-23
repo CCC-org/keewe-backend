@@ -1,5 +1,9 @@
-package ccc.keeweapi.dto.insight;
+package ccc.keeweapi.component;
 
+import ccc.keeweapi.dto.insight.CommentResponse;
+import ccc.keeweapi.dto.insight.CommentWriterResponse;
+import ccc.keeweapi.dto.insight.ReplyResponse;
+import ccc.keeweapi.dto.insight.RepresentativeCommentResponse;
 import ccc.keewedomain.persistence.domain.insight.Comment;
 import ccc.keewedomain.persistence.domain.user.User;
 import org.springframework.stereotype.Component;

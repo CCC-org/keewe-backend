@@ -9,19 +9,19 @@ import ccc.keewedomain.cache.domain.insight.id.CReactionCountId;
 import ccc.keewedomain.cache.repository.insight.CInsightViewRepository;
 import ccc.keewedomain.cache.repository.insight.CReactionCountRepository;
 import ccc.keewedomain.domain.insight.ReactionAggregation;
-import ccc.keewedomain.dto.insight.InsightCreateDto;
-import ccc.keewedomain.dto.insight.InsightGetDto;
-import ccc.keewedomain.dto.insight.InsightViewIncrementDto;
-import ccc.keewedomain.dto.insight.ReactionAggregationGetDto;
+import ccc.keewedomain.dto.insight.*;
 import ccc.keewedomain.persistence.domain.challenge.ChallengeParticipation;
 import ccc.keewedomain.persistence.domain.common.Link;
+import ccc.keewedomain.persistence.domain.insight.Bookmark;
 import ccc.keewedomain.persistence.domain.insight.Drawer;
 import ccc.keewedomain.persistence.domain.insight.Insight;
 import ccc.keewedomain.persistence.domain.insight.enums.ReactionType;
+import ccc.keewedomain.persistence.domain.insight.id.BookmarkId;
 import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.persistence.repository.insight.InsightQueryRepository;
 import ccc.keewedomain.persistence.repository.insight.InsightRepository;
 import ccc.keewedomain.persistence.repository.insight.ReactionAggregationRepository;
+import ccc.keewedomain.persistence.repository.user.BookmarkRepository;
 import ccc.keewedomain.service.challenge.ChallengeDomainService;
 import ccc.keewedomain.service.user.UserDomainService;
 import ccc.keeweinfra.service.MQPublishService;
@@ -39,6 +39,7 @@ public class InsightDomainService {
 
     private final InsightRepository insightRepository;
     private final ReactionAggregationRepository reactionAggregationRepository;
+    private final BookmarkRepository bookmarkRepository;
     private final MQPublishService mqPublishService;
     private final UserDomainService userDomainService;
     private final ChallengeDomainService challengeDomainService;
@@ -64,37 +65,11 @@ public class InsightDomainService {
         return insight;
     }
 
-    private void createReactionAggregations(Insight insight) {
-        Arrays.stream(ReactionType.values()).forEach((reactionType) -> {
-            reactionAggregationRepository.save(ReactionAggregation.of(insight, reactionType, 0L));
-        });
-    }
-
     public InsightGetDto getInsight(Long insightId) {
-        Insight entity = getById(insightId);
+        Insight entity = getByIdOrElseThrow(insightId);
         ReactionAggregationGetDto reactionAggregationGetDto = getReactionAggregation(insightId);
 
         return InsightGetDto.of(insightId, entity.getContents(), entity.getLink(), reactionAggregationGetDto);
-    }
-
-    private ReactionAggregationGetDto getReactionAggregation(Long insightId) {
-        Long clap = 0L, heart = 0L, sad = 0L, surprise = 0L, fire = 0L, eyes = 0L;
-        for (ReactionType r : ReactionType.values()) {
-            String id = new CReactionCountId(insightId, r).toString();
-            Long count = cReactionCountRepository.findById(id).orElseGet(() -> CReactionCount.of(id, 0L)).getCount();
-
-            switch (r) {
-                case CLAP: clap = count;
-                case HEART: heart = count;
-                case SAD: sad = count;
-                case SURPRISE: surprise = count;
-                case FIRE: fire = count;
-                case EYES: eyes = count;
-            }
-
-        }
-
-        return ReactionAggregationGetDto.of(clap, heart, sad, surprise, fire, eyes);
     }
 
     public Long incrementViewCount(InsightViewIncrementDto dto) {
@@ -118,6 +93,42 @@ public class InsightDomainService {
         return insightQueryRepository.findByIdWithWriter(insightId);
     }
 
+    //FIXME get과 find 역할 정확히 정리하기
+    public Insight getByIdOrElseThrow(Long id) {
+        return insightRepository.findById(id).orElseThrow(() -> new KeeweException(KeeweRtnConsts.ERR445));
+    }
+
+    public Long getRecordedInsightNumber(ChallengeParticipation participation) {
+        return insightQueryRepository.countValidForParticipation(participation);
+    }
+
+    @Transactional
+    public boolean toggleInsightBookmark(BookmarkToggleDto dto) {
+        User user = userDomainService.getUserByIdOrElseThrow(dto.getUserId());
+        Insight insight = this.getByIdOrElseThrow(dto.getInsightId());
+
+        BookmarkId bookmarkId = BookmarkId.of(dto.getUserId(), dto.getInsightId());
+
+        bookmarkRepository.findById(bookmarkId)
+                .ifPresentOrElse(
+                        bookmark -> {
+                            log.info("[IDS::toggleInsightBookmark] Found Bookmark user {}, insight {}", bookmarkId.getUser(), bookmarkId.getInsight());
+                            bookmarkRepository.delete(bookmark);
+                        },
+                        () -> {
+                            log.info("[IDS::toggleInsightBookmark] Not Found Bookmark user {}, insight {}", bookmarkId.getUser(), bookmarkId.getInsight());
+                            bookmarkRepository.save(Bookmark.of(user, insight));
+                        }
+                );
+
+        return bookmarkRepository.existsById(bookmarkId);
+    }
+
+
+    /*****************************************************************
+     ********************** private 메소드 영역 분리 *********************
+     *****************************************************************/
+
     private Long incrementViewCount(Insight insight) {
         Long viewCount = insight.incrementView();
 
@@ -127,12 +138,12 @@ public class InsightDomainService {
         );
 
         cInsightViewRepository.save(cInsightView);
-        log.info("[IDS::incrementViewCount] DB view {}, Cache view {}", viewCount, insight.getView(), cInsightView.getViewCount());
+        log.info("[IDS::incrementViewCount] DB view {}, Cache view {}", insight.getView(), cInsightView.getViewCount());
         return viewCount;
     }
 
     private Long getViewCount(Long insightId) {
-       CInsightView insightView = cInsightViewRepository.findById(insightId)
+        CInsightView insightView = cInsightViewRepository.findById(insightId)
                 .orElseGet(() -> {
                     log.info("[IDS::getViewCount] Initialize view count. insightId={}L", insightId);
                     CInsightView dftInsightView = CInsightView.of(insightId, 0L);
@@ -142,19 +153,36 @@ public class InsightDomainService {
         return insightView.getViewCount() + 1;
     }
 
-    //FIXME get과 find 역할 정확히 정리하기
-    public Insight getById(Long id) {
-        return insightRepository.findById(id).orElseThrow(() -> new KeeweException(KeeweRtnConsts.ERR445));
+    private void createReactionAggregations(Insight insight) {
+        Arrays.stream(ReactionType.values()).forEach((reactionType) -> {
+            reactionAggregationRepository.save(ReactionAggregation.of(insight, reactionType, 0L));
+        });
+    }
+
+    private ReactionAggregationGetDto getReactionAggregation(Long insightId) {
+        Long clap = 0L, heart = 0L, sad = 0L, surprise = 0L, fire = 0L, eyes = 0L;
+        for (ReactionType r : ReactionType.values()) {
+            String id = new CReactionCountId(insightId, r).toString();
+            Long count = cReactionCountRepository.findById(id).orElseGet(() -> CReactionCount.of(id, 0L)).getCount();
+
+            switch (r) {
+                case CLAP: clap = count;
+                case HEART: heart = count;
+                case SAD: sad = count;
+                case SURPRISE: surprise = count;
+                case FIRE: fire = count;
+                case EYES: eyes = count;
+            }
+
+        }
+
+        return ReactionAggregationGetDto.of(clap, heart, sad, surprise, fire, eyes);
     }
 
     private boolean isRecordable(ChallengeParticipation participation) {
         Long count = getRecordedInsightNumber(participation);
         long weeks = participation.getCurrentWeek();
-        log.info("[IDS:isRecordable] count={} weeks={}", count, weeks);
+        log.info("[IDS::isRecordable] count={} weeks={}", count, weeks);
         return count < weeks * participation.getInsightPerWeek();
-    }
-
-    public Long getRecordedInsightNumber(ChallengeParticipation participation) {
-        return insightQueryRepository.countValidForParticipation(participation);
     }
 }

@@ -2,6 +2,7 @@ package ccc.keewedomain.service.user;
 
 import ccc.keewecore.consts.KeeweRtnConsts;
 import ccc.keewecore.exception.KeeweException;
+import ccc.keewedomain.dto.user.FollowCheckDto;
 import ccc.keewedomain.dto.user.FollowToggleDto;
 import ccc.keewedomain.persistence.domain.user.Follow;
 import ccc.keewedomain.persistence.domain.user.User;
@@ -46,7 +47,11 @@ public class ProfileDomainService {
                                 }
                         );
 
-        return followRepository.existsById(followId);
+        return isFollowing(FollowCheckDto.of(target.getId(), user.getId()));
+    }
+
+    public boolean isFollowing(FollowCheckDto followCheckDto) {
+        return followRepository.existsById(FollowId.of(followCheckDto.getTargetId(), followCheckDto.getUserId()));
     }
 
     private void validateSelfFollowing(FollowToggleDto followDto) {
