@@ -11,7 +11,7 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 public class InsightCreateRequest {
-    @GraphemeLength(min = 1, max = 300)
+    @GraphemeLength(min = 1, max = 400)
     private String contents;
 
     @Size(min = 1, max = 2000)
