@@ -8,7 +8,7 @@ import java.io.Serializable;
 @AllArgsConstructor(staticName = "of")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class BookmarkId implements Serializable{
+public class BookmarkId implements Serializable {
     private Long user;
     private Long insight;
 }
