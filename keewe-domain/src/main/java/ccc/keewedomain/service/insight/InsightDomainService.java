@@ -138,7 +138,7 @@ public class InsightDomainService {
         );
 
         cInsightViewRepository.save(cInsightView);
-        log.info("[IDS::incrementViewCount] DB view {}, Cache view {}", viewCount, insight.getView(), cInsightView.getViewCount());
+        log.info("[IDS::incrementViewCount] DB view {}, Cache view {}", insight.getView(), cInsightView.getViewCount());
         return viewCount;
     }
 
