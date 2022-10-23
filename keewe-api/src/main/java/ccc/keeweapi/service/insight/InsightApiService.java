@@ -1,11 +1,7 @@
 package ccc.keeweapi.service.insight;
 
 import ccc.keeweapi.component.InsightAssembler;
-import ccc.keeweapi.dto.insight.InsightAuthorAreaResponse;
-import ccc.keeweapi.dto.insight.InsightCreateRequest;
-import ccc.keeweapi.dto.insight.InsightCreateResponse;
-import ccc.keeweapi.dto.insight.InsightGetResponse;
-import ccc.keeweapi.dto.insight.InsightViewIncrementResponse;
+import ccc.keeweapi.dto.insight.*;
 import ccc.keewedomain.dto.insight.InsightGetDto;
 import ccc.keewedomain.persistence.domain.insight.Insight;
 import ccc.keewedomain.service.insight.InsightDomainService;
@@ -41,5 +37,10 @@ public class InsightApiService {
     public InsightAuthorAreaResponse getInsightAuthorAreaInfo(Long insightId) {
         Insight insight = insightDomainService.getByIdWithWriter(insightId);
         return insightAssembler.toInsightAuthorAreaResponse(insight);
+    }
+
+    public BookmarkToggleResponse toggleInsightBookmark(Long insightId) {
+        boolean isBookmark = insightDomainService.toggleInsightBookmark(insightAssembler.toBookmarkToggleDto(insightId));
+        return insightAssembler.toBookmarkToggleResponse(isBookmark);
     }
 }

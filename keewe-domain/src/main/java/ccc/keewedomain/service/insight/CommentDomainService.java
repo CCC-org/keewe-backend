@@ -28,7 +28,7 @@ public class CommentDomainService {
     private final UserDomainService userDomainService;
 
     public Comment create(CommentCreateDto dto) {
-        Insight insight = insightDomainService.getById(dto.getInsightId());
+        Insight insight = insightDomainService.getByIdOrElseThrow(dto.getInsightId());
         User writer = userDomainService.getUserByIdOrElseThrow(dto.getWriterId());
 
         Optional<Comment> optParent = findByIdAndInsightId(dto.getParentId(), dto.getInsightId());

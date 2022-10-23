@@ -1,9 +1,11 @@
-package ccc.keewedomain.persistence.domain.user;
+package ccc.keewedomain.persistence.domain.insight;
 
 import ccc.keewedomain.persistence.domain.common.BaseTimeEntity;
-import ccc.keewedomain.persistence.domain.insight.Insight;
-import ccc.keewedomain.persistence.domain.user.id.BookmarkId;
+import ccc.keewedomain.persistence.domain.insight.id.BookmarkId;
+import ccc.keewedomain.persistence.domain.user.User;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
@@ -13,6 +15,7 @@ import static javax.persistence.FetchType.LAZY;
 @Table(name = "bookmark")
 @Getter
 @IdClass(BookmarkId.class)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Bookmark extends BaseTimeEntity {
     @Id
     @ManyToOne(fetch = LAZY)
@@ -23,4 +26,11 @@ public class Bookmark extends BaseTimeEntity {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "insight_id")
     private Insight insight;
+
+    public static Bookmark of(User user, Insight insight) {
+        Bookmark bookmark = new Bookmark();
+        bookmark.user = user;
+        bookmark.insight = insight;
+        return bookmark;
+    }
 }

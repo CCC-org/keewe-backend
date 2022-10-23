@@ -1,5 +1,6 @@
 package ccc.keeweapi.service.insight;
 
+import ccc.keeweapi.component.CommentAssembler;
 import ccc.keeweapi.component.InsightAssembler;
 import ccc.keeweapi.dto.insight.*;
 import ccc.keewedomain.persistence.domain.insight.Comment;

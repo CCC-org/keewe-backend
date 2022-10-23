@@ -45,7 +45,7 @@ public class ReactionDomainService {
 
     @Transactional
     public Long applyReact(ReactionIncrementDto dto) {
-        Insight insight = insightDomainService.getById(dto.getInsightId());
+        Insight insight = insightDomainService.getByIdOrElseThrow(dto.getInsightId());
         User user = userDomainService.getUserByIdOrElseThrow(dto.getUserId());
         ReactionAggregation reactionAggregation = getReactionAggregationByIdWithLock(new ReactionAggregationId(insight.getId(), dto.getReactionType()));
 

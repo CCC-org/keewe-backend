@@ -86,6 +86,14 @@ public class InsightAssembler {
         return InsightAuthorAreaResponse.of(insight.getId(), writer.getNickname(), "title", writer.getInterests(), "www.api-keewe.com/images" , isAuthor(insight), insight.getCreatedAt().toString());
     }
 
+    public BookmarkToggleResponse toBookmarkToggleResponse(boolean isBookmark) {
+        return BookmarkToggleResponse.of(isBookmark);
+    }
+
+    public BookmarkToggleDto toBookmarkToggleDto(Long insightId) {
+        return BookmarkToggleDto.of(SecurityUtil.getUserId(), insightId);
+    }
+
     private boolean isAuthor(Insight insight) {
         return insight.getWriter().getId() == SecurityUtil.getUserId();
     }
