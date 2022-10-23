@@ -16,5 +16,6 @@ public class InsightAuthorAreaResponse {
     private List<Interest> interests;
     private String image;
     private boolean isAuthor;
+    private boolean isFollowing;
     private String createdAt;
 }

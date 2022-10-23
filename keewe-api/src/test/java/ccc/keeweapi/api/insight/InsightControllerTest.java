@@ -1,11 +1,7 @@
 package ccc.keeweapi.api.insight;
 
 import ccc.keeweapi.document.utils.ApiDocumentationTest;
-import ccc.keeweapi.dto.insight.InsightAuthorAreaResponse;
-import ccc.keeweapi.dto.insight.InsightCreateResponse;
-import ccc.keeweapi.dto.insight.InsightGetResponse;
-import ccc.keeweapi.dto.insight.InsightViewIncrementResponse;
-import ccc.keeweapi.dto.insight.ReactionAggregationResponse;
+import ccc.keeweapi.dto.insight.*;
 import ccc.keeweapi.service.insight.InsightApiService;
 import ccc.keewedomain.persistence.domain.common.Link;
 import ccc.keewedomain.persistence.domain.common.Interest;
@@ -167,6 +163,7 @@ public class InsightControllerTest extends ApiDocumentationTest {
                         List.of(Interest.of("운동"), Interest.of("영화")),
                         "www.api-keewe.com/images/128398681",
                         true,
+                        true,
                         LocalDateTime.now().toString()
                 )
         );
@@ -191,7 +188,37 @@ public class InsightControllerTest extends ApiDocumentationTest {
                                 fieldWithPath("data.interests[].name").description("작성자 관심사 목록"),
                                 fieldWithPath("data.image").description("작성자 프로필 이미지 링크"),
                                 fieldWithPath("data.author").description("인사이트 조회자와 작성자 일치 여부"),
+                                fieldWithPath("data.following").description("인사이트 작성자 팔로잉 여부 (작성자와 조회자가 같을 경우 항상 false)"),
                                 fieldWithPath("data.createdAt").description("작성자 닉네임"))
+                        .tag("Insight")
+                        .build()
+        )));
+
+    }
+
+    @Test
+    @DisplayName("인사이트 북마크 토글 API")
+    void insight_bookmark() throws Exception {
+
+        when(insightApiService.toggleInsightBookmark(anyLong())).thenReturn(
+                BookmarkToggleResponse.of(true)
+        );
+
+        ResultActions resultActions = mockMvc.perform(post("/api/v1/insight/bookmark/{insightId}", 1L)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        resultActions.andDo(restDocs.document(resource(
+                ResourceSnippetParameters.builder()
+                        .description("인사이트 북마크 등록/제거 (토글) API 입니다.")
+                        .summary("인사이트 북마크 토글 API")
+                        .requestHeaders(
+                                headerWithName("Authorization").description("유저의 JWT"))
+                        .responseFields(
+                                fieldWithPath("message").description("요청 결과 메세지"),
+                                fieldWithPath("code").description("결과 코드"),
+                                fieldWithPath("data.bookmark").description("북마크 여부 (토글이므로 false, true를 왔다갔다 함)"))
                         .tag("Insight")
                         .build()
         )));

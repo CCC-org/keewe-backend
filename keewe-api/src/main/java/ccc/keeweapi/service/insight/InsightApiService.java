@@ -1,10 +1,12 @@
 package ccc.keeweapi.service.insight;
 
 import ccc.keeweapi.component.InsightAssembler;
+import ccc.keeweapi.component.ProfileAssembler;
 import ccc.keeweapi.dto.insight.*;
 import ccc.keewedomain.dto.insight.InsightGetDto;
 import ccc.keewedomain.persistence.domain.insight.Insight;
 import ccc.keewedomain.service.insight.InsightDomainService;
+import ccc.keewedomain.service.user.ProfileDomainService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,7 +16,10 @@ import org.springframework.transaction.annotation.Transactional;
 public class InsightApiService {
 
     private final InsightDomainService insightDomainService;
+    private final ProfileDomainService profileDomainService;
     private final InsightAssembler insightAssembler;
+    private final ProfileAssembler profileAssembler;
+
 
     @Transactional
     public InsightCreateResponse create(InsightCreateRequest request) {
@@ -36,7 +41,8 @@ public class InsightApiService {
     @Transactional(readOnly = true)
     public InsightAuthorAreaResponse getInsightAuthorAreaInfo(Long insightId) {
         Insight insight = insightDomainService.getByIdWithWriter(insightId);
-        return insightAssembler.toInsightAuthorAreaResponse(insight);
+        boolean isFollowing = profileDomainService.isFollowing(profileAssembler.toFollowCheckDto(insight.getWriter().getId()));
+        return insightAssembler.toInsightAuthorAreaResponse(insight, isFollowing);
     }
 
     public BookmarkToggleResponse toggleInsightBookmark(Long insightId) {

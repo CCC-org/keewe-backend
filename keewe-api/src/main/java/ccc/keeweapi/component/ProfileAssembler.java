@@ -4,6 +4,7 @@ import ccc.keeweapi.dto.user.FollowToggleResponse;
 import ccc.keeweapi.dto.user.OnboardRequest;
 import ccc.keeweapi.dto.user.OnboardResponse;
 import ccc.keeweapi.utils.SecurityUtil;
+import ccc.keewedomain.dto.user.FollowCheckDto;
 import ccc.keewedomain.dto.user.FollowToggleDto;
 import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.dto.user.OnboardDto;
@@ -26,5 +27,9 @@ public class ProfileAssembler {
 
     public FollowToggleResponse toFollowToggleResponse(boolean following) {
         return FollowToggleResponse.of(following);
+    }
+
+    public FollowCheckDto toFollowCheckDto(Long targetId) {
+        return FollowCheckDto.of(targetId, SecurityUtil.getUserId());
     }
 }

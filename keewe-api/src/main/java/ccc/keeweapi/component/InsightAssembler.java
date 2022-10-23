@@ -81,9 +81,18 @@ public class InsightAssembler {
         return DrawerResponse.of(drawer.getId(), drawer.getName());
     }
 
-    public InsightAuthorAreaResponse toInsightAuthorAreaResponse(Insight insight) {
+    public InsightAuthorAreaResponse toInsightAuthorAreaResponse(Insight insight, boolean isFollowing) {
         User writer = insight.getWriter();
-        return InsightAuthorAreaResponse.of(insight.getId(), writer.getNickname(), "title", writer.getInterests(), "www.api-keewe.com/images" , isAuthor(insight), insight.getCreatedAt().toString());
+        return InsightAuthorAreaResponse.of(
+                insight.getId(),
+                writer.getNickname(),
+                "title",
+                writer.getInterests(),
+                "www.api-keewe.com/images",
+                isAuthor(insight),
+                isFollowing,
+                insight.getCreatedAt().toString()
+        );
     }
 
     public BookmarkToggleResponse toBookmarkToggleResponse(boolean isBookmark) {
