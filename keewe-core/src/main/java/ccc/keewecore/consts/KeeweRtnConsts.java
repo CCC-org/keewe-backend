@@ -49,7 +49,6 @@ public enum KeeweRtnConsts {
 
     ERR506(KeeweRtnGrp.System, 506, "지원하지 않는 게시글 타입이에요."),
 
-    ERR900(KeeweRtnGrp.System, 900, "캐시 키 매핑과정에서 에러가 발생했어요."),
     ERR999(KeeweRtnGrp.System, 999, "처리되지 않은 예외가 발생했어요.");
 
     private KeeweRtnGrp grp;
