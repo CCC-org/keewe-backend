@@ -11,6 +11,7 @@ import ccc.keewedomain.dto.insight.ReactionDto;
 import ccc.keewedomain.dto.insight.ReactionIncrementDto;
 import ccc.keewedomain.persistence.domain.insight.Insight;
 import ccc.keewedomain.persistence.domain.insight.Reaction;
+import ccc.keewedomain.persistence.domain.insight.enums.ReactionType;
 import ccc.keewedomain.persistence.domain.insight.id.ReactionAggregationId;
 import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.persistence.repository.insight.ReactionAggregationRepository;
@@ -34,7 +35,7 @@ public class ReactionDomainService {
     private final InsightDomainService insightDomainService;
 
     public ReactionDto react(ReactionIncrementDto dto) {
-        String id = new CReactionCountId(dto.getInsightId(), dto.getReactionType()).toString(); // TODO : 통일된(효율적인) Key 생성
+        CReactionCountId id = new CReactionCountId(dto.getInsightId(), dto.getReactionType()); // TODO : 통일된(효율적인) Key 생성
         Long reactionCount = getCurrentReactionCount(id)
                 + dto.getValue();
 
@@ -65,12 +66,29 @@ public class ReactionDomainService {
                 .orElseThrow(() -> new KeeweException(KeeweRtnConsts.ERR471));
     }
 
-    public Long getCurrentReactionCount(String id) {
-        CReactionCount cReactionCount = cReactionCountRepository.findById(id)
+    public Long getCurrentReactionCount(CReactionCountId id) {
+        CReactionCount cReactionCount = cReactionCountRepository.findById(id.toString())
                 .orElseGet(() -> {
-                    log.info("[RDS::getReactionCount] No reaction. id={}", id);
-                    return CReactionCount.of(id, 0L);
+                    log.info("[RDS::getReactionCount] cache miss. id={}", id);
+                    return cacheMiss(id);
                 });
         return cReactionCount.getCount();
+    }
+
+    // TODO: 일반화 리펙토링 (cache miss 인터페이스?)
+    private CReactionCount cacheMiss(CReactionCountId id) {
+        Long insightId = id.getInsightId();
+        ReactionType reactionType = id.getReactionType();
+
+        ReactionAggregationId reactionAggregationId = new ReactionAggregationId(insightId, reactionType);
+        ReactionAggregation reactionAggregation = reactionAggregationRepository.findById(reactionAggregationId)
+                .orElseThrow(() -> {
+                    throw new KeeweException(KeeweRtnConsts.ERR471);
+                });
+
+        CReactionCount cReactionCount = CReactionCount.of(id.toString(), reactionAggregation.getCount());
+        cReactionCountRepository.save(cReactionCount);
+
+        return cReactionCount;
     }
 }

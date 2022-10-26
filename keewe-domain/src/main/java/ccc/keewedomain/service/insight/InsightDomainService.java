@@ -156,6 +156,9 @@ public class InsightDomainService {
     private void createReactionAggregations(Insight insight) {
         Arrays.stream(ReactionType.values()).forEach((reactionType) -> {
             reactionAggregationRepository.save(ReactionAggregation.of(insight, reactionType, 0L));
+            cReactionCountRepository.save(CReactionCount.of(
+                    new CReactionCountId(insight.getId(), reactionType).toString(), 0L
+            ));
         });
     }
 
@@ -166,12 +169,18 @@ public class InsightDomainService {
             Long count = cReactionCountRepository.findById(id).orElseGet(() -> CReactionCount.of(id, 0L)).getCount();
 
             switch (r) {
-                case CLAP: clap = count;
-                case HEART: heart = count;
-                case SAD: sad = count;
-                case SURPRISE: surprise = count;
-                case FIRE: fire = count;
-                case EYES: eyes = count;
+                case CLAP:
+                    clap = count;
+                case HEART:
+                    heart = count;
+                case SAD:
+                    sad = count;
+                case SURPRISE:
+                    surprise = count;
+                case FIRE:
+                    fire = count;
+                case EYES:
+                    eyes = count;
             }
 
         }
