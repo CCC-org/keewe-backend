@@ -36,8 +36,7 @@ public class ReactionDomainService {
 
     public ReactionDto react(ReactionIncrementDto dto) {
         CReactionCountId id = new CReactionCountId(dto.getInsightId(), dto.getReactionType()); // TODO : 통일된(효율적인) Key 생성
-        Long reactionCount = getCurrentReactionCount(id)
-                + dto.getValue();
+        Long reactionCount = getCurrentReactionCount(id) + dto.getValue();
 
         log.info("[RDS::react] React message pub. id={}", id);
         mqPublishService.publish(KeeweConsts.INSIGHT_REACT_EXCHANGE, dto);
@@ -66,29 +65,8 @@ public class ReactionDomainService {
                 .orElseThrow(() -> new KeeweException(KeeweRtnConsts.ERR471));
     }
 
-    public Long getCurrentReactionCount(CReactionCountId id) {
-        CReactionCount cReactionCount = cReactionCountRepository.findById(id.toString())
-                .orElseGet(() -> {
-                    log.info("[RDS::getReactionCount] cache miss. id={}", id);
-                    return cacheMiss(id);
-                });
+    private Long getCurrentReactionCount(CReactionCountId id) {
+        CReactionCount cReactionCount = cReactionCountRepository.findByIdWithMissHandle(id, reactionAggregationRepository);
         return cReactionCount.getCount();
-    }
-
-    // TODO: 일반화 리펙토링 (cache miss 인터페이스?)
-    private CReactionCount cacheMiss(CReactionCountId id) {
-        Long insightId = id.getInsightId();
-        ReactionType reactionType = id.getReactionType();
-
-        ReactionAggregationId reactionAggregationId = new ReactionAggregationId(insightId, reactionType);
-        ReactionAggregation reactionAggregation = reactionAggregationRepository.findById(reactionAggregationId)
-                .orElseThrow(() -> {
-                    throw new KeeweException(KeeweRtnConsts.ERR471);
-                });
-
-        CReactionCount cReactionCount = CReactionCount.of(id.toString(), reactionAggregation.getCount());
-        cReactionCountRepository.save(cReactionCount);
-
-        return cReactionCount;
     }
 }

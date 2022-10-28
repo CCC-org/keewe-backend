@@ -165,8 +165,8 @@ public class InsightDomainService {
     private ReactionAggregationGetDto getReactionAggregation(Long insightId) {
         Long clap = 0L, heart = 0L, sad = 0L, surprise = 0L, fire = 0L, eyes = 0L;
         for (ReactionType r : ReactionType.values()) {
-            String id = new CReactionCountId(insightId, r).toString();
-            Long count = cReactionCountRepository.findById(id).orElseGet(() -> CReactionCount.of(id, 0L)).getCount();
+            CReactionCountId id = new CReactionCountId(insightId, r);
+            Long count = cReactionCountRepository.findByIdWithMissHandle(id, reactionAggregationRepository).getCount();
 
             switch (r) {
                 case CLAP:
