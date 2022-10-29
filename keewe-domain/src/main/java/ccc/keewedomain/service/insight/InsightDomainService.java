@@ -22,6 +22,7 @@ import ccc.keewedomain.persistence.repository.insight.InsightQueryRepository;
 import ccc.keewedomain.persistence.repository.insight.InsightRepository;
 import ccc.keewedomain.persistence.repository.insight.ReactionAggregationRepository;
 import ccc.keewedomain.persistence.repository.user.BookmarkRepository;
+import ccc.keewedomain.persistence.repository.utils.CursorPageable;
 import ccc.keewedomain.service.challenge.ChallengeDomainService;
 import ccc.keewedomain.service.user.UserDomainService;
 import ccc.keeweinfra.service.MQPublishService;
@@ -31,6 +32,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -70,6 +73,12 @@ public class InsightDomainService {
         ReactionAggregationGetDto reactionAggregationGetDto = getReactionAggregation(insightId);
 
         return InsightGetDto.of(insightId, entity.getContents(), entity.getLink(), reactionAggregationGetDto);
+    }
+
+    public List<InsightGetDto> getInsightsForHome(User user, CursorPageable<Long> cPage) {
+        return insightQueryRepository.findForHome(user, cPage).stream().map(i ->
+            InsightGetDto.of(i.getId(), i.getContents(), i.getLink(), getReactionAggregation(i.getId()))
+        ).collect(Collectors.toList());
     }
 
     public Long incrementViewCount(InsightViewIncrementDto dto) {
@@ -173,7 +182,6 @@ public class InsightDomainService {
                 case FIRE: fire = count;
                 case EYES: eyes = count;
             }
-
         }
 
         return ReactionAggregationGetDto.of(clap, heart, sad, surprise, fire, eyes);

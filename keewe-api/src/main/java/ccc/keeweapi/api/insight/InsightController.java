@@ -3,10 +3,12 @@ package ccc.keeweapi.api.insight;
 import ccc.keeweapi.dto.ApiResponse;
 import ccc.keeweapi.dto.insight.*;
 import ccc.keeweapi.service.insight.InsightApiService;
+import ccc.keewedomain.persistence.repository.utils.CursorPageable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/insight")
@@ -28,6 +30,14 @@ public class InsightController {
     @GetMapping("/{insightId}")
     public ApiResponse<InsightGetResponse> getInsight(@PathVariable Long insightId) {
         return ApiResponse.ok(insightApiService.getInsight(insightId));
+    }
+
+    @GetMapping
+    public ApiResponse<List<InsightGetResponse>> getInsightsForHome(
+            @RequestParam Long cursor,
+            @RequestParam Long limit
+    ) {
+        return ApiResponse.ok(insightApiService.getInsightsForHome(CursorPageable.of(cursor, limit)));
     }
 
     @GetMapping("/author/{insightId}")

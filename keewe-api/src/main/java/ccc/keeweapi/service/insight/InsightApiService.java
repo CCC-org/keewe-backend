@@ -3,13 +3,18 @@ package ccc.keeweapi.service.insight;
 import ccc.keeweapi.component.InsightAssembler;
 import ccc.keeweapi.component.ProfileAssembler;
 import ccc.keeweapi.dto.insight.*;
+import ccc.keeweapi.utils.SecurityUtil;
 import ccc.keewedomain.dto.insight.InsightGetDto;
 import ccc.keewedomain.persistence.domain.insight.Insight;
+import ccc.keewedomain.persistence.repository.utils.CursorPageable;
 import ccc.keewedomain.service.insight.InsightDomainService;
 import ccc.keewedomain.service.user.ProfileDomainService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -48,5 +53,13 @@ public class InsightApiService {
     public BookmarkToggleResponse toggleInsightBookmark(Long insightId) {
         boolean isBookmark = insightDomainService.toggleInsightBookmark(insightAssembler.toBookmarkToggleDto(insightId));
         return insightAssembler.toBookmarkToggleResponse(isBookmark);
+    }
+
+    @Transactional(readOnly = true)
+    public List<InsightGetResponse> getInsightsForHome(CursorPageable<Long> cPage) {
+        List<InsightGetDto> insights = insightDomainService.getInsightsForHome(SecurityUtil.getUser(), cPage);
+        return insightDomainService.getInsightsForHome(SecurityUtil.getUser(), cPage).stream()
+                .map(insightAssembler::toInsightGetResponse)
+                .collect(Collectors.toList());
     }
 }

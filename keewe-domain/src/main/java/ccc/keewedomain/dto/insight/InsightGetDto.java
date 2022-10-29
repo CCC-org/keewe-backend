@@ -1,6 +1,7 @@
 package ccc.keewedomain.dto.insight;
 
 import ccc.keewedomain.persistence.domain.common.Link;
+import ccc.keewedomain.persistence.domain.insight.Insight;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
