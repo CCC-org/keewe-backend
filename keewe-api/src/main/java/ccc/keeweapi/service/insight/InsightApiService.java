@@ -57,7 +57,6 @@ public class InsightApiService {
 
     @Transactional(readOnly = true)
     public List<InsightGetResponse> getInsightsForHome(CursorPageable<Long> cPage) {
-        List<InsightGetDto> insights = insightDomainService.getInsightsForHome(SecurityUtil.getUser(), cPage);
         return insightDomainService.getInsightsForHome(SecurityUtil.getUser(), cPage).stream()
                 .map(insightAssembler::toInsightGetResponse)
                 .collect(Collectors.toList());
