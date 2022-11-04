@@ -17,6 +17,7 @@ import ccc.keewedomain.persistence.domain.insight.Drawer;
 import ccc.keewedomain.persistence.domain.insight.Insight;
 import ccc.keewedomain.persistence.domain.insight.enums.ReactionType;
 import ccc.keewedomain.persistence.domain.insight.id.BookmarkId;
+import ccc.keewedomain.persistence.domain.insight.id.ReactionAggregationId;
 import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.persistence.repository.insight.InsightQueryRepository;
 import ccc.keewedomain.persistence.repository.insight.InsightRepository;
@@ -166,7 +167,9 @@ public class InsightDomainService {
         Long clap = 0L, heart = 0L, sad = 0L, surprise = 0L, fire = 0L, eyes = 0L;
         for (ReactionType r : ReactionType.values()) {
             CReactionCountId id = new CReactionCountId(insightId, r);
-            Long count = cReactionCountRepository.findByIdWithMissHandle(id, reactionAggregationRepository).getCount();
+            Long count = cReactionCountRepository.findByIdWithMissHandle(id, () ->
+                    reactionAggregationRepository.findByIdOrElseThrow(new ReactionAggregationId(id.getInsightId(), id.getReactionType()))
+            ).getCount();
 
             switch (r) {
                 case CLAP:

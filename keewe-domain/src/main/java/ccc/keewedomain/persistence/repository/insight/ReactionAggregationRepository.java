@@ -1,5 +1,7 @@
 package ccc.keewedomain.persistence.repository.insight;
 
+import ccc.keewecore.consts.KeeweRtnConsts;
+import ccc.keewecore.exception.KeeweException;
 import ccc.keewedomain.domain.insight.ReactionAggregation;
 import ccc.keewedomain.persistence.domain.insight.id.ReactionAggregationId;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,4 +16,10 @@ public interface ReactionAggregationRepository extends JpaRepository<ReactionAgg
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select ra from ReactionAggregation ra where ra.id = :id")
     Optional<ReactionAggregation> findByIdWithReadWriteLock(@Param("id") ReactionAggregationId id);
+
+    default ReactionAggregation findByIdOrElseThrow(ReactionAggregationId id) {
+        return findById(id).orElseThrow(() -> {
+            throw new KeeweException(KeeweRtnConsts.ERR471);
+        });
+    }
 }

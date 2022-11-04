@@ -11,7 +11,6 @@ import ccc.keewedomain.dto.insight.ReactionDto;
 import ccc.keewedomain.dto.insight.ReactionIncrementDto;
 import ccc.keewedomain.persistence.domain.insight.Insight;
 import ccc.keewedomain.persistence.domain.insight.Reaction;
-import ccc.keewedomain.persistence.domain.insight.enums.ReactionType;
 import ccc.keewedomain.persistence.domain.insight.id.ReactionAggregationId;
 import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.persistence.repository.insight.ReactionAggregationRepository;
@@ -66,7 +65,9 @@ public class ReactionDomainService {
     }
 
     private Long getCurrentReactionCount(CReactionCountId id) {
-        CReactionCount cReactionCount = cReactionCountRepository.findByIdWithMissHandle(id, reactionAggregationRepository);
+        CReactionCount cReactionCount = cReactionCountRepository.findByIdWithMissHandle(id, () ->
+            reactionAggregationRepository.findByIdOrElseThrow(new ReactionAggregationId(id.getInsightId(), id.getReactionType()))
+        );
         return cReactionCount.getCount();
     }
 }
