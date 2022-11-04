@@ -3,6 +3,8 @@ package ccc.keeweapi.component;
 import ccc.keeweapi.dto.insight.*;
 import ccc.keeweapi.utils.SecurityUtil;
 import ccc.keewedomain.dto.insight.*;
+import ccc.keewedomain.persistence.domain.challenge.Challenge;
+import ccc.keewedomain.persistence.domain.challenge.ChallengeParticipation;
 import ccc.keewedomain.persistence.domain.insight.Drawer;
 import ccc.keewedomain.persistence.domain.insight.Insight;
 import ccc.keewedomain.persistence.domain.insight.Comment;
@@ -101,6 +103,15 @@ public class InsightAssembler {
 
     public BookmarkToggleDto toBookmarkToggleDto(Long insightId) {
         return BookmarkToggleDto.of(SecurityUtil.getUserId(), insightId);
+    }
+
+    public ChallengeRecordResponse toChallengeRecordResponse(ChallengeParticipation participation, Long order) {
+        Challenge challenge = participation.getChallenge();
+        return ChallengeRecordResponse.of(challenge.getId(), challenge.getName(), order, participation.getTotalInsightNumber());
+    }
+
+    public ChallengeRecordResponse toChallengeRecordResponse(Challenge challenge) {
+        return ChallengeRecordResponse.of(challenge.getId(), challenge.getName(), null, null);
     }
 
     private boolean isAuthor(Insight insight) {

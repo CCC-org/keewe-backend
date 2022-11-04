@@ -4,12 +4,18 @@ import ccc.keeweapi.component.InsightAssembler;
 import ccc.keeweapi.component.ProfileAssembler;
 import ccc.keeweapi.dto.insight.*;
 import ccc.keewedomain.dto.insight.InsightGetDto;
+import ccc.keewedomain.persistence.domain.challenge.Challenge;
+import ccc.keewedomain.persistence.domain.challenge.ChallengeParticipation;
 import ccc.keewedomain.persistence.domain.insight.Insight;
+import ccc.keewedomain.service.challenge.ChallengeDomainService;
 import ccc.keewedomain.service.insight.InsightDomainService;
 import ccc.keewedomain.service.user.ProfileDomainService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -17,6 +23,7 @@ public class InsightApiService {
 
     private final InsightDomainService insightDomainService;
     private final ProfileDomainService profileDomainService;
+    private final ChallengeDomainService challengeDomainService;
     private final InsightAssembler insightAssembler;
     private final ProfileAssembler profileAssembler;
 
@@ -48,5 +55,22 @@ public class InsightApiService {
     public BookmarkToggleResponse toggleInsightBookmark(Long insightId) {
         boolean isBookmark = insightDomainService.toggleInsightBookmark(insightAssembler.toBookmarkToggleDto(insightId));
         return insightAssembler.toBookmarkToggleResponse(isBookmark);
+    }
+
+    @Transactional(readOnly = true)
+    public ChallengeRecordResponse getChallengeRecord(Long insightId) {
+        Insight insight = insightDomainService.getByIdWithChallengeOrElseThrow(insightId);
+        ChallengeParticipation participation = insight.getChallengeParticipation();
+
+        if (Objects.isNull(participation)) {
+            return null;
+        }
+
+        if (insight.isValid()) {
+            Long order = insightDomainService.getRecordOrder(participation, insightId);
+            return insightAssembler.toChallengeRecordResponse(participation, order);
+        }
+
+        return insightAssembler.toChallengeRecordResponse(participation.getChallenge());
     }
 }

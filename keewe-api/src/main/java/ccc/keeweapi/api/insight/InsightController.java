@@ -39,4 +39,9 @@ public class InsightController {
     public ApiResponse<BookmarkToggleResponse> toggleBookmark(@PathVariable Long insightId) {
         return ApiResponse.ok(insightApiService.toggleInsightBookmark(insightId));
     }
+
+    @GetMapping("/{insightId}/challenge-record")
+    public ApiResponse<ChallengeRecordResponse> getChallengeRecord(@PathVariable Long insightId) {
+        return ApiResponse.ok(insightApiService.getChallengeRecord(insightId));
+    }
 }

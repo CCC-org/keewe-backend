@@ -99,7 +99,7 @@ public class InsightDomainService {
     }
 
     public Long getRecordedInsightNumber(ChallengeParticipation participation) {
-        return insightQueryRepository.countValidForParticipation(participation);
+        return insightQueryRepository.countValidByParticipation(participation);
     }
 
     @Transactional
@@ -124,6 +124,16 @@ public class InsightDomainService {
         return bookmarkRepository.existsById(bookmarkId);
     }
 
+    @Transactional(readOnly = true)
+    public Long getRecordOrder(ChallengeParticipation participation, Long insightId) {
+        return insightQueryRepository.countValidByIdBeforeAndParticipation(participation, insightId) + 1;
+    }
+
+    @Transactional(readOnly = true)
+    public Insight getByIdWithChallengeOrElseThrow(Long insightId) {
+        return insightQueryRepository.findByIdWithParticipationAndChallenge(insightId)
+                .orElseThrow(() -> new KeeweException(KeeweRtnConsts.ERR445));
+    }
 
     /*****************************************************************
      ********************** private 메소드 영역 분리 *********************
