@@ -16,4 +16,4 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
       - name: Test with Gradle
-        run: ./gradlew --info test
+        run: ./gradlew --info keewe-api:test #FIXME
