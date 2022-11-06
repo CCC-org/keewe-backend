@@ -7,9 +7,9 @@ import ccc.keewedomain.dto.challenge.ChallengeParticipateDto;
 import ccc.keewedomain.persistence.domain.challenge.Challenge;
 import ccc.keewedomain.persistence.domain.challenge.ChallengeParticipation;
 import ccc.keewedomain.persistence.domain.user.User;
+import ccc.keewedomain.persistence.repository.challenge.ChallengeParticipationQueryRepository;
 import ccc.keewedomain.persistence.repository.challenge.ChallengeParticipationRepository;
 import ccc.keewedomain.persistence.repository.challenge.ChallengeRepository;
-import ccc.keewedomain.persistence.repository.insight.InsightQueryRepository;
 import ccc.keewedomain.service.user.UserDomainService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,7 +23,7 @@ import static ccc.keewedomain.persistence.domain.challenge.enums.ChallengePartic
 public class ChallengeDomainService {
     private final ChallengeRepository challengeRepository;
     private final ChallengeParticipationRepository challengeParticipationRepository;
-    private final InsightQueryRepository insightQueryRepository;
+    private final ChallengeParticipationQueryRepository challengeParticipationQueryRepository;
 
     private final UserDomainService userDomainService;
 
@@ -45,7 +45,7 @@ public class ChallengeDomainService {
     }
 
     public boolean checkParticipation(Long userId) {
-        return challengeParticipationRepository.existsByChallengerIdAndStatus(userId, CHALLENGING);
+        return challengeParticipationQueryRepository.existsByChallengerIdAndStatus(userId, CHALLENGING);
     }
 
     public ChallengeParticipation getCurrentChallengeParticipation(User challenger) {
@@ -53,7 +53,7 @@ public class ChallengeDomainService {
     }
 
     public Optional<ChallengeParticipation> findCurrentParticipationWithChallenge(Long challengerId) {
-        return challengeParticipationRepository.findByChallengerIdAndStatusWithChallenge(challengerId, CHALLENGING);
+        return challengeParticipationQueryRepository.findByChallengerIdAndStatusWithChallenge(challengerId, CHALLENGING);
     }
 
     private void exitCurrentChallengeIfExist(User challenger) {
