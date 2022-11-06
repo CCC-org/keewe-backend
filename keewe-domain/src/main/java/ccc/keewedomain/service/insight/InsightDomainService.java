@@ -17,6 +17,7 @@ import ccc.keewedomain.persistence.domain.insight.Drawer;
 import ccc.keewedomain.persistence.domain.insight.Insight;
 import ccc.keewedomain.persistence.domain.insight.enums.ReactionType;
 import ccc.keewedomain.persistence.domain.insight.id.BookmarkId;
+import ccc.keewedomain.persistence.domain.insight.id.ReactionAggregationId;
 import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.persistence.repository.insight.InsightQueryRepository;
 import ccc.keewedomain.persistence.repository.insight.InsightRepository;
@@ -166,22 +167,33 @@ public class InsightDomainService {
     private void createReactionAggregations(Insight insight) {
         Arrays.stream(ReactionType.values()).forEach((reactionType) -> {
             reactionAggregationRepository.save(ReactionAggregation.of(insight, reactionType, 0L));
+            cReactionCountRepository.save(CReactionCount.of(
+                    new CReactionCountId(insight.getId(), reactionType).toString(), 0L
+            ));
         });
     }
 
     private ReactionAggregationGetDto getReactionAggregation(Long insightId) {
         Long clap = 0L, heart = 0L, sad = 0L, surprise = 0L, fire = 0L, eyes = 0L;
         for (ReactionType r : ReactionType.values()) {
-            String id = new CReactionCountId(insightId, r).toString();
-            Long count = cReactionCountRepository.findById(id).orElseGet(() -> CReactionCount.of(id, 0L)).getCount();
+            CReactionCountId id = new CReactionCountId(insightId, r);
+            Long count = cReactionCountRepository.findByIdWithMissHandle(id, () ->
+                    reactionAggregationRepository.findByIdOrElseThrow(new ReactionAggregationId(id.getInsightId(), id.getReactionType()))
+            ).getCount();
 
             switch (r) {
-                case CLAP: clap = count;
-                case HEART: heart = count;
-                case SAD: sad = count;
-                case SURPRISE: surprise = count;
-                case FIRE: fire = count;
-                case EYES: eyes = count;
+                case CLAP:
+                    clap = count;
+                case HEART:
+                    heart = count;
+                case SAD:
+                    sad = count;
+                case SURPRISE:
+                    surprise = count;
+                case FIRE:
+                    fire = count;
+                case EYES:
+                    eyes = count;
             }
 
         }
