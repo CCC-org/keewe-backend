@@ -5,8 +5,10 @@ import ccc.keeweapi.component.ProfileAssembler;
 import ccc.keeweapi.dto.insight.*;
 import ccc.keeweapi.utils.SecurityUtil;
 import ccc.keewedomain.dto.insight.InsightGetDto;
+import ccc.keewedomain.persistence.domain.challenge.ChallengeParticipation;
 import ccc.keewedomain.persistence.domain.insight.Insight;
 import ccc.keewedomain.persistence.repository.utils.CursorPageable;
+import ccc.keewedomain.service.challenge.ChallengeDomainService;
 import ccc.keewedomain.service.insight.InsightDomainService;
 import ccc.keewedomain.service.user.ProfileDomainService;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +25,7 @@ public class InsightApiService {
 
     private final InsightDomainService insightDomainService;
     private final ProfileDomainService profileDomainService;
+    private final ChallengeDomainService challengeDomainService;
     private final InsightAssembler insightAssembler;
     private final ProfileAssembler profileAssembler;
 
@@ -39,7 +43,7 @@ public class InsightApiService {
 
     @Transactional(readOnly = true)
     public InsightGetResponse getInsight(Long insightId) {
-        InsightGetDto insightGetDto = insightDomainService.getInsight(insightId);
+        InsightGetDto insightGetDto = insightDomainService.getInsight(insightAssembler.toInsightDetailDto(insightId));
         return insightAssembler.toInsightGetResponse(insightGetDto);
     }
 
@@ -60,5 +64,21 @@ public class InsightApiService {
         return insightDomainService.getInsightsForHome(SecurityUtil.getUser(), cPage).stream()
                 .map(insightAssembler::toInsightGetForHomeResponse)
                 .collect(Collectors.toList());
+    }
+
+    public ChallengeRecordResponse getChallengeRecord(Long insightId) {
+        Insight insight = insightDomainService.getByIdWithChallengeOrElseThrow(insightId);
+        ChallengeParticipation participation = insight.getChallengeParticipation();
+
+        if (Objects.isNull(participation)) {
+            return null;
+        }
+
+        if (insight.isValid()) {
+            Long order = insightDomainService.getRecordOrder(participation, insightId);
+            return insightAssembler.toChallengeRecordResponse(participation, order);
+        }
+
+        return insightAssembler.toChallengeRecordResponse(participation.getChallenge());
     }
 }

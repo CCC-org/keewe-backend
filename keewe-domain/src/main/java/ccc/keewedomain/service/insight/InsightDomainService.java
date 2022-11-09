@@ -17,6 +17,7 @@ import ccc.keewedomain.persistence.domain.insight.Drawer;
 import ccc.keewedomain.persistence.domain.insight.Insight;
 import ccc.keewedomain.persistence.domain.insight.enums.ReactionType;
 import ccc.keewedomain.persistence.domain.insight.id.BookmarkId;
+import ccc.keewedomain.persistence.domain.insight.id.ReactionAggregationId;
 import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.persistence.repository.insight.InsightQueryRepository;
 import ccc.keewedomain.persistence.repository.insight.InsightRepository;
@@ -68,11 +69,12 @@ public class InsightDomainService {
         return insight;
     }
 
-    public InsightGetDto getInsight(Long insightId) {
-        Insight entity = getByIdOrElseThrow(insightId);
-        ReactionAggregationGetDto reactionAggregationGetDto = getReactionAggregation(insightId);
+    public InsightGetDto getInsight(InsightDetailDto detailDto) {
+        Insight entity = getByIdOrElseThrow(detailDto.getInsightId());
+        ReactionAggregationGetDto reactionAggregationGetDto = getReactionAggregation(detailDto.getInsightId());
+        BookmarkId bookmarkId = BookmarkId.of(detailDto.getUserId(), detailDto.getInsightId());
 
-        return InsightGetDto.of(insightId, entity.getContents(), entity.getLink(), reactionAggregationGetDto);
+        return InsightGetDto.of(detailDto.getInsightId(), entity.getContents(), entity.getLink(), reactionAggregationGetDto, isBookmark(bookmarkId));
     }
 
     public List<InsightGetForHomeDto> getInsightsForHome(User user, CursorPageable<Long> cPage) {
@@ -120,7 +122,7 @@ public class InsightDomainService {
     }
 
     public Long getRecordedInsightNumber(ChallengeParticipation participation) {
-        return insightQueryRepository.countValidForParticipation(participation);
+        return insightQueryRepository.countValidByParticipation(participation);
     }
 
     @Transactional
@@ -142,9 +144,23 @@ public class InsightDomainService {
                         }
                 );
 
-        return bookmarkRepository.existsById(bookmarkId);
+        return isBookmark(bookmarkId);
     }
 
+    @Transactional(readOnly = true)
+    public Long getRecordOrder(ChallengeParticipation participation, Long insightId) {
+        return insightQueryRepository.countValidByIdBeforeAndParticipation(participation, insightId) + 1;
+    }
+
+    @Transactional(readOnly = true)
+    public Insight getByIdWithChallengeOrElseThrow(Long insightId) {
+        return insightQueryRepository.findByIdWithParticipationAndChallenge(insightId)
+                .orElseThrow(() -> new KeeweException(KeeweRtnConsts.ERR445));
+    }
+
+    public boolean isBookmark(BookmarkId bookmarkId) {
+        return bookmarkRepository.existsById(bookmarkId);
+    }
 
     /*****************************************************************
      ********************** private 메소드 영역 분리 *********************
@@ -177,22 +193,33 @@ public class InsightDomainService {
     private void createReactionAggregations(Insight insight) {
         Arrays.stream(ReactionType.values()).forEach((reactionType) -> {
             reactionAggregationRepository.save(ReactionAggregation.of(insight, reactionType, 0L));
+            cReactionCountRepository.save(CReactionCount.of(
+                    new CReactionCountId(insight.getId(), reactionType).toString(), 0L
+            ));
         });
     }
 
     private ReactionAggregationGetDto getReactionAggregation(Long insightId) {
         Long clap = 0L, heart = 0L, sad = 0L, surprise = 0L, fire = 0L, eyes = 0L;
         for (ReactionType r : ReactionType.values()) {
-            String id = new CReactionCountId(insightId, r).toString();
-            Long count = cReactionCountRepository.findById(id).orElseGet(() -> CReactionCount.of(id, 0L)).getCount();
+            CReactionCountId id = new CReactionCountId(insightId, r);
+            Long count = cReactionCountRepository.findByIdWithMissHandle(id, () ->
+                    reactionAggregationRepository.findByIdOrElseThrow(new ReactionAggregationId(id.getInsightId(), id.getReactionType()))
+            ).getCount();
 
             switch (r) {
-                case CLAP: clap = count;
-                case HEART: heart = count;
-                case SAD: sad = count;
-                case SURPRISE: surprise = count;
-                case FIRE: fire = count;
-                case EYES: eyes = count;
+                case CLAP:
+                    clap = count;
+                case HEART:
+                    heart = count;
+                case SAD:
+                    sad = count;
+                case SURPRISE:
+                    surprise = count;
+                case FIRE:
+                    fire = count;
+                case EYES:
+                    eyes = count;
             }
         }
 

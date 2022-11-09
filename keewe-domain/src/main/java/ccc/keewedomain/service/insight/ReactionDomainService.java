@@ -34,9 +34,8 @@ public class ReactionDomainService {
     private final InsightDomainService insightDomainService;
 
     public ReactionDto react(ReactionIncrementDto dto) {
-        String id = new CReactionCountId(dto.getInsightId(), dto.getReactionType()).toString(); // TODO : 통일된(효율적인) Key 생성
-        Long reactionCount = getCurrentReactionCount(id)
-                + dto.getValue();
+        CReactionCountId id = new CReactionCountId(dto.getInsightId(), dto.getReactionType()); // TODO : 통일된(효율적인) Key 생성
+        Long reactionCount = getCurrentReactionCount(id) + dto.getValue();
 
         log.info("[RDS::react] React message pub. id={}", id);
         mqPublishService.publish(KeeweConsts.INSIGHT_REACT_EXCHANGE, dto);
@@ -65,12 +64,10 @@ public class ReactionDomainService {
                 .orElseThrow(() -> new KeeweException(KeeweRtnConsts.ERR471));
     }
 
-    public Long getCurrentReactionCount(String id) {
-        CReactionCount cReactionCount = cReactionCountRepository.findById(id)
-                .orElseGet(() -> {
-                    log.info("[RDS::getReactionCount] No reaction. id={}", id);
-                    return CReactionCount.of(id, 0L);
-                });
+    private Long getCurrentReactionCount(CReactionCountId id) {
+        CReactionCount cReactionCount = cReactionCountRepository.findByIdWithMissHandle(id, () ->
+            reactionAggregationRepository.findByIdOrElseThrow(new ReactionAggregationId(id.getInsightId(), id.getReactionType()))
+        );
         return cReactionCount.getCount();
     }
 }

@@ -11,4 +11,5 @@ public class InsightGetDto {
     private String contents;
     private Link link;
     private ReactionAggregationGetDto reaction;
+    private boolean isBookmark;
 }

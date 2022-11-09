@@ -2,6 +2,7 @@ package ccc.keeweapi.api.user;
 
 import ccc.keeweapi.dto.ApiResponse;
 import ccc.keeweapi.service.user.UserApiService;
+import ccc.keewecore.aop.annotations.LocalOnlyApi;
 import ccc.keewedomain.persistence.domain.user.enums.VendorType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,5 +32,11 @@ public class UserController {
     public ApiResponse<?> signUpWithGoogle(@RequestParam String code) {
         log.info("[Google Signup] code {}", code);
         return ApiResponse.ok(userService.signupWithOauth(code, VendorType.GOOGLE));
+    }
+
+    @GetMapping("/force-signup/{userId}")
+    @LocalOnlyApi
+    public ApiResponse<?> getToken(@PathVariable Long userId) {
+        return ApiResponse.ok(userService.getToken(userId));
     }
 }

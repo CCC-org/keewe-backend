@@ -113,7 +113,7 @@ public class InsightDomainServiceTest {
         assertAll(
                 () -> assertThat(newInsight.isValid()).isTrue(),
                 () -> assertThat(insightRepository.findById(newInsight.getId())).isPresent(),
-                () -> assertThat(insightQueryRepository.countValidForParticipation(newInsight.getChallengeParticipation()))
+                () -> assertThat(insightQueryRepository.countValidByParticipation(newInsight.getChallengeParticipation()))
                         .isEqualTo(1L)
         );
     }
@@ -142,7 +142,7 @@ public class InsightDomainServiceTest {
                 () -> assertThat(insight1.isValid()).isTrue(),
                 () -> assertThat(insight2.isValid()).isTrue(),
                 () -> assertThat(insight3.isValid()).isFalse(),
-                () -> assertThat(insightQueryRepository.countValidForParticipation(insight3.getChallengeParticipation()))
+                () -> assertThat(insightQueryRepository.countValidByParticipation(insight3.getChallengeParticipation()))
                 .isEqualTo(2L)
         );
     }

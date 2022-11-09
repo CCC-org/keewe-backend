@@ -94,7 +94,8 @@ public class InsightControllerTest extends ApiDocumentationTest {
                 insightId,
                 "인사이트 내용입니다. 즐거운 개발 되세요!",
                 Link.of("www.keewe.com"),
-                ReactionAggregationResponse.of(1L, 2L, 3L, 4L, 5L, 6L)
+                ReactionAggregationResponse.of(1L, 2L, 3L, 4L, 5L, 6L),
+                true
                 )
         );
 
@@ -119,7 +120,8 @@ public class InsightControllerTest extends ApiDocumentationTest {
                                 fieldWithPath("data.reaction.sad").description("인사이트 슬픔 반응 수"),
                                 fieldWithPath("data.reaction.surprise").description("인사이트 놀람 반응 수"),
                                 fieldWithPath("data.reaction.fire").description("인사이트 불 반응 수"),
-                                fieldWithPath("data.reaction.eyes").description("인사이트 눈 반응 수"))
+                                fieldWithPath("data.reaction.eyes").description("인사이트 눈 반응 수"),
+                                fieldWithPath("data.bookmark").description("인사이트 북마크 여부"))
                         .tag("Insight")
                         .build()
         )));
@@ -225,5 +227,35 @@ public class InsightControllerTest extends ApiDocumentationTest {
 
     }
 
+    @Test
+    @DisplayName("인사이트의 챌린지 기록 조회 API")
+    void insight_challenge_record() throws Exception {
+
+        when(insightApiService.getChallengeRecord(anyLong())).thenReturn(
+                ChallengeRecordResponse.of(1L, "챌린지 이름", 1L, 12L)
+        );
+
+        ResultActions resultActions = mockMvc.perform(get("/api/v1/insight/{insightId}/challenge-record", 1L)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        resultActions.andDo(restDocs.document(resource(
+                ResourceSnippetParameters.builder()
+                        .description("인사이트 챌린지 기록 조회 API 입니다.")
+                        .summary("인사이트 챌린지 기록 조회 API")
+                        .requestHeaders(
+                                headerWithName("Authorization").description("유저의 JWT"))
+                        .responseFields(
+                                fieldWithPath("message").description("요청 결과 메세지"),
+                                fieldWithPath("code").description("결과 코드"),
+                                fieldWithPath("data.challengeId").description("챌린지의 ID"),
+                                fieldWithPath("data.challengeName").description("챌린지 이름"),
+                                fieldWithPath("data.order").description("기록된 순서(몇 번째 기록인지)"),
+                                fieldWithPath("data.total").description("기록해야 하는 인사이트의 총 개수"))
+                        .tag("Insight")
+                        .build()
+        )));
+    }
 
 }
