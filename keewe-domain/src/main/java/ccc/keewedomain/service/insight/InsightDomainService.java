@@ -66,11 +66,12 @@ public class InsightDomainService {
         return insight;
     }
 
-    public InsightGetDto getInsight(Long insightId) {
-        Insight entity = getByIdOrElseThrow(insightId);
-        ReactionAggregationGetDto reactionAggregationGetDto = getReactionAggregation(insightId);
+    public InsightGetDto getInsight(InsightDetailDto detailDto) {
+        Insight entity = getByIdOrElseThrow(detailDto.getInsightId());
+        ReactionAggregationGetDto reactionAggregationGetDto = getReactionAggregation(detailDto.getInsightId());
+        BookmarkId bookmarkId = BookmarkId.of(detailDto.getUserId(), detailDto.getInsightId());
 
-        return InsightGetDto.of(insightId, entity.getContents(), entity.getLink(), reactionAggregationGetDto);
+        return InsightGetDto.of(detailDto.getInsightId(), entity.getContents(), entity.getLink(), reactionAggregationGetDto, isBookmark(bookmarkId));
     }
 
     public Long incrementViewCount(InsightViewIncrementDto dto) {
@@ -122,7 +123,7 @@ public class InsightDomainService {
                         }
                 );
 
-        return bookmarkRepository.existsById(bookmarkId);
+        return isBookmark(bookmarkId);
     }
 
     @Transactional(readOnly = true)
@@ -134,6 +135,10 @@ public class InsightDomainService {
     public Insight getByIdWithChallengeOrElseThrow(Long insightId) {
         return insightQueryRepository.findByIdWithParticipationAndChallenge(insightId)
                 .orElseThrow(() -> new KeeweException(KeeweRtnConsts.ERR445));
+    }
+
+    public boolean isBookmark(BookmarkId bookmarkId) {
+        return bookmarkRepository.existsById(bookmarkId);
     }
 
     /*****************************************************************

@@ -59,12 +59,17 @@ public class InsightAssembler {
         return CommentCreateResponse.of(comment.getId());
     }
 
+    public InsightDetailDto toInsightDetailDto(Long insightId) {
+        return InsightDetailDto.of(SecurityUtil.getUserId(), insightId);
+    }
+
     public InsightGetResponse toInsightGetResponse(InsightGetDto dto) {
         return InsightGetResponse.of(
                 dto.getId(),
                 dto.getContents(),
                 dto.getLink(),
-                toReactionAggregationResponse(dto.getReaction())
+                toReactionAggregationResponse(dto.getReaction()),
+                dto.isBookmark()
         );
     }
 
