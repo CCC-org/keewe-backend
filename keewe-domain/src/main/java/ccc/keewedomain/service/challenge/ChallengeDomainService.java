@@ -14,6 +14,10 @@ import ccc.keewedomain.service.user.UserDomainService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.Map;
 import java.util.Optional;
 
 import static ccc.keewedomain.persistence.domain.challenge.enums.ChallengeParticipationStatus.CHALLENGING;
@@ -62,5 +66,17 @@ public class ChallengeDomainService {
 
     public Optional<ChallengeParticipation> findCurrentChallengeParticipation(User challenger) {
         return challengeParticipationRepository.findByChallengerAndStatusAndDeletedFalse(challenger, CHALLENGING);
+    }
+
+    public Map<String, Long> getRecordCountPerDate(ChallengeParticipation participation) {
+        LocalDate startDate = participation.getStartDateOfThisWeek();
+        LocalDateTime startDateTime = LocalDateTime.of(startDate, LocalTime.MIN);
+        return challengeParticipationQueryRepository.getRecordCountPerDate(participation, startDateTime, startDateTime.plusDays(7L));
+    }
+
+    public ChallengeParticipation getCurrentParticipationWithChallenge(Long challengerId) {
+        return findCurrentParticipationWithChallenge(challengerId).orElseThrow(
+                () -> new KeeweException(KeeweRtnConsts.ERR432)
+        );
     }
 }

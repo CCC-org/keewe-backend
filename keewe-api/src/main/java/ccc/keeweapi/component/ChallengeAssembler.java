@@ -8,6 +8,11 @@ import ccc.keewedomain.dto.challenge.ChallengeCreateDto;
 import ccc.keewedomain.dto.challenge.ChallengeParticipateDto;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 @Component
 public class ChallengeAssembler {
     public ChallengeCreateResponse toChallengeCreateResponse(Challenge challenge, ChallengeParticipation participation) {
@@ -61,6 +66,31 @@ public class ChallengeAssembler {
                 participation.getChallenge().getName(),
                 current,
                 participation.getTotalInsightNumber()
+        );
+    }
+
+    public WeekProgressResponse toWeekProgressResponse(
+            List<String> dates,
+            Map<String, Long> recordCountPerDate,
+            ChallengeParticipation participation,
+            LocalDate startDate) {
+
+        List<DayProgressResponse> dayProgresses = dates.stream()
+                .map(recordCountPerDate::containsKey)
+                .map(DayProgressResponse::of)
+                .collect(Collectors.toList());
+
+        long recorded = recordCountPerDate.values().stream()
+                .mapToLong(v -> v)
+                .sum();
+
+        Challenge challenge = participation.getChallenge();
+
+        return WeekProgressResponse.of(challenge.getId(),
+                participation.getInsightPerWeek() - recorded,
+                challenge.getName(),
+                startDate,
+                dayProgresses
         );
     }
 }
