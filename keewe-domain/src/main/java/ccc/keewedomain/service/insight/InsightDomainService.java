@@ -75,9 +75,21 @@ public class InsightDomainService {
         return InsightGetDto.of(insightId, entity.getContents(), entity.getLink(), reactionAggregationGetDto);
     }
 
-    public List<InsightGetDto> getInsightsForHome(User user, CursorPageable<Long> cPage) {
+    public List<InsightGetForHomeDto> getInsightsForHome(User user, CursorPageable<Long> cPage) {
         return insightQueryRepository.findForHome(user, cPage).stream().map(i ->
-            InsightGetDto.of(i.getId(), i.getContents(), i.getLink(), getReactionAggregation(i.getId()))
+            InsightGetForHomeDto.of(
+                    i.getId(),
+                    i.getContents(),
+                    i.getLink(),
+                    getReactionAggregation(i.getId()),
+                    i.getCreatedAt(),
+                    InsightWriterDto.of(
+                            i.getWriter().getId(),
+                            i.getWriter().getNickname(),
+                            "Dummy Title.",
+                            "Dummy Profile Photo Link."
+                    )
+            )
         ).collect(Collectors.toList());
     }
 

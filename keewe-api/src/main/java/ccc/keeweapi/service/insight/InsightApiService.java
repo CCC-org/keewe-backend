@@ -56,9 +56,9 @@ public class InsightApiService {
     }
 
     @Transactional(readOnly = true)
-    public List<InsightGetResponse> getInsightsForHome(CursorPageable<Long> cPage) {
+    public List<InsightGetForHomeResponse> getInsightsForHome(CursorPageable<Long> cPage) {
         return insightDomainService.getInsightsForHome(SecurityUtil.getUser(), cPage).stream()
-                .map(insightAssembler::toInsightGetResponse)
+                .map(insightAssembler::toInsightGetForHomeResponse)
                 .collect(Collectors.toList());
     }
 }

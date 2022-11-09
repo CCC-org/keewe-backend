@@ -4,11 +4,15 @@ import ccc.keewedomain.persistence.domain.common.Link;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.time.LocalDateTime;
+
 @Getter
 @AllArgsConstructor(staticName = "of")
-public class InsightGetDto {
+public class InsightGetForHomeDto {
     private Long id;
     private String contents;
     private Link link;
     private ReactionAggregationGetDto reaction;
+    private LocalDateTime createAt;
+    private InsightWriterDto writer;
 }

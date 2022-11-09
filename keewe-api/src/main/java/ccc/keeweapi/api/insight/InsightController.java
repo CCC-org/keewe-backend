@@ -33,7 +33,7 @@ public class InsightController {
     }
 
     @GetMapping
-    public ApiResponse<List<InsightGetResponse>> getInsightsForHome(
+    public ApiResponse<List<InsightGetForHomeResponse>> getInsightsForHome(
             @RequestParam Long cursor,
             @RequestParam Long limit
     ) {

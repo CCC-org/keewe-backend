@@ -50,6 +50,8 @@ public class InsightQueryRepository {
                 .where(insight.writer.in(findFollowers(user))
                         .and(insight.id.lt(cPage.getCursor()))
                 )
+                .innerJoin(insight.writer, QUser.user)
+                .fetchJoin()
                 .orderBy(insight.id.desc())
                 .limit(cPage.getLimit())
                 .fetch();
