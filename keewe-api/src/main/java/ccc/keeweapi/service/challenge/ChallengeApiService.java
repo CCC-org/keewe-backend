@@ -63,7 +63,6 @@ public class ChallengeApiService {
     @Transactional(readOnly = true)
     public WeekProgressResponse getWeekProgress() {
         return challengeDomainService.findCurrentChallengeParticipation(SecurityUtil.getUser())
-                .filter(Objects::nonNull)
                 .map(participation -> {
                     Map<String, Long> recordCountPerDate = challengeDomainService.getRecordCountPerDate(participation);
                     LocalDate startDateOfWeek = participation.getStartDateOfThisWeek();
