@@ -47,7 +47,7 @@ public class InsightQueryRepository {
     public List<Insight> findForHome(User user, CursorPageable<Long> cPage) {
         return queryFactory.select(insight)
                 .from(insight)
-                .where(insight.writer.in(findFollowers(user))
+                .where(insight.writer.in(findFollowees(user))
                         .and(insight.id.lt(cPage.getCursor()))
                 )
                 .innerJoin(insight.writer, QUser.user)
@@ -57,11 +57,11 @@ public class InsightQueryRepository {
                 .fetch();
     }
 
-    private JPQLQuery<User> findFollowers(User user) {
+    private JPQLQuery<User> findFollowees(User user) {
         return JPAExpressions
-                .select(QUser.user)
+                .select(follow.followee)
                 .from(QUser.user)
                 .innerJoin(QUser.user.followers, follow)
-                .where(follow.followee.eq(user));
+                .where(follow.follower.eq(user));
     }
 }
