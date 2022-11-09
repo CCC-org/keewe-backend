@@ -14,4 +14,5 @@ public class InsightGetResponse {
     private String contents;
     private Link link;
     private ReactionAggregationResponse reaction;
+    private boolean isBookmark;
 }

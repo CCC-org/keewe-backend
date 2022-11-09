@@ -94,7 +94,8 @@ public class InsightControllerTest extends ApiDocumentationTest {
                 insightId,
                 "인사이트 내용입니다. 즐거운 개발 되세요!",
                 Link.of("www.keewe.com"),
-                ReactionAggregationResponse.of(1L, 2L, 3L, 4L, 5L, 6L)
+                ReactionAggregationResponse.of(1L, 2L, 3L, 4L, 5L, 6L),
+                true
                 )
         );
 
@@ -119,7 +120,8 @@ public class InsightControllerTest extends ApiDocumentationTest {
                                 fieldWithPath("data.reaction.sad").description("인사이트 슬픔 반응 수"),
                                 fieldWithPath("data.reaction.surprise").description("인사이트 놀람 반응 수"),
                                 fieldWithPath("data.reaction.fire").description("인사이트 불 반응 수"),
-                                fieldWithPath("data.reaction.eyes").description("인사이트 눈 반응 수"))
+                                fieldWithPath("data.reaction.eyes").description("인사이트 눈 반응 수"),
+                                fieldWithPath("data.bookmark").description("인사이트 북마크 여부"))
                         .tag("Insight")
                         .build()
         )));

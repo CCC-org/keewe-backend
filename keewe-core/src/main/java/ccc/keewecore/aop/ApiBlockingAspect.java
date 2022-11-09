@@ -17,7 +17,7 @@ public class ApiBlockingAspect {
     @Value("${spring.config.activate.on-profile}")
     private String profile;
 
-    @Around("@annotation(ccc.keewecore.aop.annotations.LocalOnlyAllowedApi)")
+    @Around("@annotation(ccc.keewecore.aop.annotations.LocalOnlyApi)")
     public <T> T checkApiAcceptingCondition(ProceedingJoinPoint joinPoint) throws Throwable {
         log.info("[ABA::checkApiAcceptingCondition] environment={}", profile);
         if("local".equals(profile)) {

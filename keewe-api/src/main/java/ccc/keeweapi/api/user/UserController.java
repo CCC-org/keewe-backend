@@ -2,7 +2,7 @@ package ccc.keeweapi.api.user;
 
 import ccc.keeweapi.dto.ApiResponse;
 import ccc.keeweapi.service.user.UserApiService;
-import ccc.keewecore.aop.annotations.LocalOnlyAllowedApi;
+import ccc.keewecore.aop.annotations.LocalOnlyApi;
 import ccc.keewedomain.persistence.domain.user.enums.VendorType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,7 +35,7 @@ public class UserController {
     }
 
     @GetMapping("/force-signup/{userId}")
-    @LocalOnlyAllowedApi
+    @LocalOnlyApi
     public ApiResponse<?> getToken(@PathVariable Long userId) {
         return ApiResponse.ok(userService.getToken(userId));
     }
