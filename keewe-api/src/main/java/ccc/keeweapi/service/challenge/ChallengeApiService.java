@@ -16,6 +16,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 
 @Service
@@ -61,12 +62,15 @@ public class ChallengeApiService {
 
     @Transactional(readOnly = true)
     public WeekProgressResponse getWeekProgress() {
-        ChallengeParticipation participation = challengeDomainService.getCurrentParticipationWithChallenge(SecurityUtil.getUserId());
-        Map<String, Long> recordCountPerDate = challengeDomainService.getRecordCountPerDate(participation);
-        LocalDate startDateOfWeek = participation.getStartDateOfThisWeek();
-        List<String> dates = datesOfWeek(startDateOfWeek);
-
-        return challengeAssembler.toWeekProgressResponse(dates, recordCountPerDate, participation, startDateOfWeek);
+        return challengeDomainService.findCurrentChallengeParticipation(SecurityUtil.getUser())
+                .filter(Objects::nonNull)
+                .map(participation -> {
+                    Map<String, Long> recordCountPerDate = challengeDomainService.getRecordCountPerDate(participation);
+                    LocalDate startDateOfWeek = participation.getStartDateOfThisWeek();
+                    List<String> dates = datesOfWeek(startDateOfWeek);
+                    return challengeAssembler.toWeekProgressResponse(dates, recordCountPerDate, participation, startDateOfWeek);
+                })
+                .orElse(null);
     }
 
     private List<String> datesOfWeek(LocalDate startDate) {
