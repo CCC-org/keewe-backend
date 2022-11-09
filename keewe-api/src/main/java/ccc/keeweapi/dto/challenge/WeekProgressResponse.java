@@ -14,6 +14,6 @@ public class WeekProgressResponse {
     private Long challengeId;
     private Long remain;
     private String challengeName;
-    private LocalDate startDate;
+    private String startDate;
     private List<DayProgressResponse> dayProgresses;
 }

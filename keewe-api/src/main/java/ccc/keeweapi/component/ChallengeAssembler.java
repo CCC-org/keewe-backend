@@ -89,7 +89,7 @@ public class ChallengeAssembler {
         return WeekProgressResponse.of(challenge.getId(),
                 participation.getInsightPerWeek() - recorded,
                 challenge.getName(),
-                startDate,
+                startDate.toString(),
                 dayProgresses
         );
     }

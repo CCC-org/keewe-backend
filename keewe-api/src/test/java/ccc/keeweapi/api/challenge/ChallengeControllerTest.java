@@ -228,7 +228,7 @@ public class ChallengeControllerTest extends ApiDocumentationTest {
         );
 
         when(challengeApiService.getWeekProgress())
-                .thenReturn(WeekProgressResponse.of(challengeId, remain, challengeName, startDate, dayProgresses));
+                .thenReturn(WeekProgressResponse.of(challengeId, remain, challengeName, startDate.toString(), dayProgresses));
 
         ResultActions resultActions = mockMvc.perform(get("/api/v1/challenge/participation/my-week-progress")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
