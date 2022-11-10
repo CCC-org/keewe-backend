@@ -48,18 +48,17 @@ public class InsightQueryRepository {
     }
 
     public List<Insight> findForHome(User user, CursorPageable<Long> cPage) {
-        List<Insight> a =  queryFactory.select(insight)
+        return queryFactory.select(insight)
                 .from(insight)
                 .where(insight.writer.id.in(findFolloweesId(user))
                         .and(insight.id.lt(cPage.getCursor()))
+                        .and(insight.writer.ne(user))
                 )
                 .innerJoin(insight.writer, QUser.user)
                 .fetchJoin()
                 .orderBy(insight.id.desc())
                 .limit(cPage.getLimit())
                 .fetch();
-        System.out.println("asdfasdfasdfasdfasdfasdf");
-        return a;
     }
 
     private JPQLQuery<Long> findFolloweesId(User user) {
