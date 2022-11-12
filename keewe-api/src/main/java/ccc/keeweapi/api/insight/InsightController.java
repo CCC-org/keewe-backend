@@ -5,6 +5,7 @@ import ccc.keeweapi.dto.insight.*;
 import ccc.keeweapi.service.insight.InsightApiService;
 import ccc.keewedomain.persistence.repository.utils.CursorPageable;
 import lombok.RequiredArgsConstructor;
+import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -35,9 +36,10 @@ public class InsightController {
     @GetMapping
     public ApiResponse<List<InsightGetForHomeResponse>> getInsightsForHome(
             @RequestParam Long cursor,
-            @RequestParam Long limit
+            @RequestParam Long limit,
+            @RequestParam @Nullable Boolean follow
     ) {
-        return ApiResponse.ok(insightApiService.getInsightsForHome(CursorPageable.of(cursor, limit)));
+        return ApiResponse.ok(insightApiService.getInsightsForHome(CursorPageable.of(cursor, limit), follow));
     }
 
     @GetMapping("/author/{insightId}")

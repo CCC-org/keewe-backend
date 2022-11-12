@@ -77,8 +77,8 @@ public class InsightDomainService {
         return InsightGetDto.of(detailDto.getInsightId(), entity.getContents(), entity.getLink(), reactionAggregationGetDto, isBookmark(bookmarkId));
     }
 
-    public List<InsightGetForHomeDto> getInsightsForHome(User user, CursorPageable<Long> cPage) {
-        return insightQueryRepository.findForHome(user, cPage).stream().map(i ->
+    public List<InsightGetForHomeDto> getInsightsForHome(User user, CursorPageable<Long> cPage, Boolean follow) {
+        return insightQueryRepository.findForHome(user, cPage, follow).stream().map(i ->
             InsightGetForHomeDto.of(
                     i.getId(),
                     i.getContents(),

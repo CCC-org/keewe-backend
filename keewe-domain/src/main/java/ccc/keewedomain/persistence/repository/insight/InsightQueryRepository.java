@@ -5,6 +5,9 @@ import ccc.keewedomain.persistence.domain.insight.Insight;
 import ccc.keewedomain.persistence.domain.user.QUser;
 import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.persistence.repository.utils.CursorPageable;
+import com.querydsl.core.types.Expression;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -47,10 +50,14 @@ public class InsightQueryRepository {
                 .fetchFirst();
     }
 
-    public List<Insight> findForHome(User user, CursorPageable<Long> cPage) {
+    public List<Insight> findForHome(User user, CursorPageable<Long> cPage, Boolean follow) {
+        BooleanExpression followFilter = Expressions.asBoolean(true).isTrue();
+        if (follow != null && follow)
+            followFilter = insight.writer.id.in(findFolloweesId(user));
+
         return queryFactory.select(insight)
                 .from(insight)
-                .where(insight.writer.id.in(findFolloweesId(user))
+                .where(followFilter
                         .and(insight.id.lt(cPage.getCursor()))
                         .and(insight.writer.ne(user))
                 )
