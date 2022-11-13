@@ -79,7 +79,7 @@ public class InsightAssembler {
                 dto.getContents(),
                 dto.getLink(),
                 dto.getReaction(),
-                dto.getCreateAt(),
+                dto.getCreateAt().toString(),
                 dto.getWriter()
         );
     }

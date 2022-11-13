@@ -3,6 +3,8 @@ package ccc.keeweapi.api.insight;
 import ccc.keeweapi.document.utils.ApiDocumentationTest;
 import ccc.keeweapi.dto.insight.*;
 import ccc.keeweapi.service.insight.InsightApiService;
+import ccc.keewedomain.dto.insight.InsightWriterDto;
+import ccc.keewedomain.dto.insight.ReactionAggregationGetDto;
 import ccc.keewedomain.persistence.domain.common.Link;
 import ccc.keewedomain.persistence.domain.common.Interest;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
@@ -19,8 +21,9 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import static com.epages.restdocs.apispec.ResourceDocumentation.headerWithName;
-import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
+
+import static com.epages.restdocs.apispec.ResourceDocumentation.*;
+import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
@@ -122,6 +125,61 @@ public class InsightControllerTest extends ApiDocumentationTest {
                                 fieldWithPath("data.reaction.fire").description("인사이트 불 반응 수"),
                                 fieldWithPath("data.reaction.eyes").description("인사이트 눈 반응 수"),
                                 fieldWithPath("data.bookmark").description("인사이트 북마크 여부"))
+                        .tag("Insight")
+                        .build()
+        )));
+    }
+
+    @Test
+    @DisplayName("홈 인사이트 조회 API")
+    void get_insight_for_home_test() throws Exception {
+        Long insightId = 1L;
+        long cursor = Long.MAX_VALUE;
+        long limit = 10L;
+
+        when(insightApiService.getInsightsForHome(any(), any())).thenReturn(List.of(InsightGetForHomeResponse.of(
+                insightId,
+                "인사이트 내용입니다. 즐거운 개발 되세요!",
+                Link.of("www.keewe.com"),
+                ReactionAggregationGetDto.of(1L, 2L, 3L, 4L, 5L, 6L),
+                LocalDateTime.now().toString(),
+                InsightWriterDto.of(1L, "nickname", "title", "image")
+        )));
+
+        ResultActions resultActions = mockMvc.perform(get("/api/v1/insight", insightId)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
+                        .param("follow", "false")
+                        .param("cursor", Long.toString(cursor))
+                        .param("limit", Long.toString(limit)))
+                .andExpect(status().isOk());
+
+        resultActions.andDo(restDocs.document(resource(
+                ResourceSnippetParameters.builder()
+                        .description("홈 인사이트 조회 API 입니다.")
+                        .summary("홈 인사이트 조회 API")
+                        .requestHeaders(
+                                headerWithName("Authorization").description("유저의 JWT"))
+                        .requestParameters(
+                                parameterWithName("follow").description("팔로우 필터 여부"),
+                                parameterWithName("cursor").description("마지막으로 받은 인사이트 ID"),
+                                parameterWithName("limit").description("가져올 인사이트 개수"))
+                        .responseFields(
+                                fieldWithPath("message").description("요청 결과 메세지"),
+                                fieldWithPath("code").description("결과 코드"),
+                                fieldWithPath("data[].id").description("인사이트 ID"),
+                                fieldWithPath("data[].contents").description("인사이트 내용"),
+                                fieldWithPath("data[].link.url").description("인사이트 링크"),
+                                fieldWithPath("data[].reaction.clap").description("인사이트 박수 반응 수"),
+                                fieldWithPath("data[].reaction.heart").description("인사이트 하트 반응 수"),
+                                fieldWithPath("data[].reaction.sad").description("인사이트 슬픔 반응 수"),
+                                fieldWithPath("data[].reaction.surprise").description("인사이트 놀람 반응 수"),
+                                fieldWithPath("data[].reaction.fire").description("인사이트 불 반응 수"),
+                                fieldWithPath("data[].reaction.eyes").description("인사이트 눈 반응 수"),
+                                fieldWithPath("data[].createAt").description("인사이트 생성 시간"),
+                                fieldWithPath("data[].writer.writerId").description("인사이트 저자 ID"),
+                                fieldWithPath("data[].writer.nickname").description("인사이트 저자 닉네임"),
+                                fieldWithPath("data[].writer.title").description("인사이트 저자 타이틀"),
+                                fieldWithPath("data[].writer.image").description("인사이트 저자 사진"))
                         .tag("Insight")
                         .build()
         )));

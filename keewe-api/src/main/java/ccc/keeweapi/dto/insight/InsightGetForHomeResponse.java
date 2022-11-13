@@ -18,6 +18,6 @@ public class InsightGetForHomeResponse {
     private String contents;
     private Link link;
     private ReactionAggregationGetDto reaction;
-    private LocalDateTime createAt;
+    private String createAt;
     private InsightWriterDto writer;
 }
