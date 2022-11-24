@@ -5,7 +5,6 @@ import ccc.keewedomain.persistence.domain.insight.Insight;
 import ccc.keewedomain.persistence.domain.user.QUser;
 import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.persistence.repository.utils.CursorPageable;
-import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;

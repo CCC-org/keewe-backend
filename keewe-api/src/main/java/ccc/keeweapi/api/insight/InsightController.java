@@ -37,7 +37,7 @@ public class InsightController {
     public ApiResponse<List<InsightGetForHomeResponse>> getInsightsForHome(
             @RequestParam Long cursor,
             @RequestParam Long limit,
-            @RequestParam @Nullable Boolean follow
+            @RequestParam(required = false, defaultValue = "false") Boolean follow
     ) {
         return ApiResponse.ok(insightApiService.getInsightsForHome(CursorPageable.of(cursor, limit), follow));
     }
