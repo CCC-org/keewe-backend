@@ -39,7 +39,7 @@ public class ChallengeRecordCheckConfiguration {
 
     private final InsightDomainService insightDomainService;
 
-    private final int chunkSize = 10;
+    private final int chunkSize = 100;
     public static final String JOB_NAME = "challengeRecordCheck";
 
     @Bean
