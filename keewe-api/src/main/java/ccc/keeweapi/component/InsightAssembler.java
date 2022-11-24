@@ -78,7 +78,7 @@ public class InsightAssembler {
                 dto.getId(),
                 dto.getContents(),
                 dto.getLink(),
-                dto.getReaction(),
+                toReactionAggregationResponse(dto.getReaction()),
                 dto.getCreateAt().toString(),
                 dto.getWriter()
         );

@@ -141,7 +141,7 @@ public class InsightControllerTest extends ApiDocumentationTest {
                 insightId,
                 "인사이트 내용입니다. 즐거운 개발 되세요!",
                 Link.of("www.keewe.com"),
-                ReactionAggregationGetDto.of(1L, 2L, 3L, 4L, 5L, 6L),
+                ReactionAggregationResponse.of(1L, 2L, 3L, 4L, 5L, 6L),
                 LocalDateTime.now().toString(),
                 InsightWriterDto.of(1L, "nickname", "title", "image")
         )));
@@ -160,7 +160,7 @@ public class InsightControllerTest extends ApiDocumentationTest {
                         .requestHeaders(
                                 headerWithName("Authorization").description("유저의 JWT"))
                         .requestParameters(
-                                parameterWithName("follow").description("팔로우 필터 여부"),
+                                parameterWithName("follow").description("팔로우 필터 여부").optional(),
                                 parameterWithName("cursor").description("마지막으로 받은 인사이트 ID"),
                                 parameterWithName("limit").description("가져올 인사이트 개수"))
                         .responseFields(
@@ -175,7 +175,7 @@ public class InsightControllerTest extends ApiDocumentationTest {
                                 fieldWithPath("data[].reaction.surprise").description("인사이트 놀람 반응 수"),
                                 fieldWithPath("data[].reaction.fire").description("인사이트 불 반응 수"),
                                 fieldWithPath("data[].reaction.eyes").description("인사이트 눈 반응 수"),
-                                fieldWithPath("data[].createAt").description("인사이트 생성 시간"),
+                                fieldWithPath("data[].createdAt").description("인사이트 생성 시간"),
                                 fieldWithPath("data[].writer.writerId").description("인사이트 저자 ID"),
                                 fieldWithPath("data[].writer.nickname").description("인사이트 저자 닉네임"),
                                 fieldWithPath("data[].writer.title").description("인사이트 저자 타이틀"),
