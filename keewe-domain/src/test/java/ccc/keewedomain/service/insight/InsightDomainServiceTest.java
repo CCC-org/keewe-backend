@@ -4,6 +4,7 @@ import ccc.keewecore.consts.KeeweRtnConsts;
 import ccc.keewecore.exception.KeeweException;
 import ccc.keewedomain.KeeweDomainApplication;
 import ccc.keewedomain.dto.insight.InsightCreateDto;
+import ccc.keewedomain.dto.user.FollowToggleDto;
 import ccc.keewedomain.dto.user.UserSignUpDto;
 import ccc.keewedomain.persistence.domain.challenge.Challenge;
 import ccc.keewedomain.persistence.domain.challenge.ChallengeParticipation;
@@ -19,6 +20,8 @@ import ccc.keewedomain.persistence.repository.insight.InsightQueryRepository;
 import ccc.keewedomain.persistence.repository.insight.InsightRepository;
 import ccc.keewedomain.persistence.repository.insight.ReactionAggregationRepository;
 import ccc.keewedomain.persistence.repository.user.UserRepository;
+import ccc.keewedomain.persistence.repository.utils.CursorPageable;
+import ccc.keewedomain.service.user.ProfileDomainService;
 import ccc.keewedomain.utils.DatabaseCleaner;
 import ccc.keeweinfra.KeeweInfraApplication;
 import org.junit.jupiter.api.AfterEach;
@@ -29,6 +32,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -44,6 +48,9 @@ public class InsightDomainServiceTest {
 
     @Autowired
     InsightDomainService insightDomainService;
+
+    @Autowired
+    ProfileDomainService profileDomainService;
 
     @Autowired
     UserRepository userRepository;
@@ -81,6 +88,7 @@ public class InsightDomainServiceTest {
         challengeRepository.save(challenge);
     }
 
+    // TODO : redis 캐시 저장 시 rollback
     @AfterEach
     void clean() {
         databaseCleaner.execute();
@@ -172,5 +180,23 @@ public class InsightDomainServiceTest {
         assertThatThrownBy(() -> insightDomainService.create(dto))
                 .isExactlyInstanceOf(KeeweException.class)
                 .hasMessage(KeeweRtnConsts.ERR444.getDescription());
+    }
+
+    @Test
+    @DisplayName("홈 화면 조회 팔로우 필터 테스트")
+    @Transactional
+    void get_for_home_follow_filter() {
+        Boolean follow = true;
+        User other = User.from(UserSignUpDto.of("vendorId222", VendorType.NAVER, "boseong844@naver.com", null, null));
+        userRepository.save(other);
+
+        // user(other) follows no one
+        int noOne = insightDomainService.getInsightsForHome(other, CursorPageable.of(Long.MAX_VALUE, 10L), follow).size();
+        assertThat(noOne).isEqualTo(0);
+
+        // user(other) follows user
+        profileDomainService.toggleFollowership(FollowToggleDto.of(other.getId(), user.getId()));
+        int followUser = insightDomainService.getInsightsForHome(other, CursorPageable.of(Long.MAX_VALUE, 10L), follow).size();
+        assertThat(followUser).isEqualTo(1);
     }
 }

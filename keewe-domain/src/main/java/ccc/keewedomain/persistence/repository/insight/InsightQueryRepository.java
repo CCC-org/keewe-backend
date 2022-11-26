@@ -2,10 +2,18 @@ package ccc.keewedomain.persistence.repository.insight;
 
 import ccc.keewedomain.persistence.domain.challenge.ChallengeParticipation;
 import ccc.keewedomain.persistence.domain.insight.Insight;
+import ccc.keewedomain.persistence.domain.user.QUser;
+import ccc.keewedomain.persistence.domain.user.User;
+import ccc.keewedomain.persistence.repository.utils.CursorPageable;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.jpa.JPAExpressions;
+import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -13,6 +21,7 @@ import static ccc.keewedomain.persistence.domain.challenge.QChallenge.challenge;
 import static ccc.keewedomain.persistence.domain.challenge.QChallengeParticipation.challengeParticipation;
 import static ccc.keewedomain.persistence.domain.common.QInterest.interest;
 import static ccc.keewedomain.persistence.domain.insight.QInsight.insight;
+import static ccc.keewedomain.persistence.domain.user.QFollow.follow;
 import static ccc.keewedomain.persistence.domain.user.QUser.user;
 
 @Repository
@@ -41,6 +50,31 @@ public class InsightQueryRepository {
                 .fetchFirst();
     }
 
+    public List<Insight> findForHome(User user, CursorPageable<Long> cPage, Boolean follow) {
+        BooleanExpression followFilter = Expressions.asBoolean(true).isTrue();
+        if (follow != null && follow)
+            followFilter = insight.writer.id.in(findFolloweesId(user));
+
+        return queryFactory.select(insight)
+                .from(insight)
+                .where(followFilter
+                        .and(insight.id.lt(cPage.getCursor()))
+                        .and(insight.writer.ne(user))
+                )
+                .innerJoin(insight.writer, QUser.user)
+                .fetchJoin()
+                .orderBy(insight.id.desc())
+                .limit(cPage.getLimit())
+                .fetch();
+    }
+
+    private JPQLQuery<Long> findFolloweesId(User user) {
+        return JPAExpressions
+                .select(follow.followee.id)
+                .from(follow)
+                .where(follow.follower.id.eq(user.getId()));
+    }
+
     public Long countByParticipationBetween(ChallengeParticipation participation, LocalDateTime startDate, LocalDateTime endDate) {
         return queryFactory.select(insight.id.count())
                 .from(insight)
@@ -62,6 +96,7 @@ public class InsightQueryRepository {
                 .where(insight.id.eq(insightId))
                 .fetchOne());
     }
+
     // countByValidTrueAndIdBefore
     public Long countValidByIdBeforeAndParticipation(ChallengeParticipation participation, Long insightId) {
         return queryFactory

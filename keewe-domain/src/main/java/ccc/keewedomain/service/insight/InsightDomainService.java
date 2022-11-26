@@ -23,6 +23,7 @@ import ccc.keewedomain.persistence.repository.insight.InsightQueryRepository;
 import ccc.keewedomain.persistence.repository.insight.InsightRepository;
 import ccc.keewedomain.persistence.repository.insight.ReactionAggregationRepository;
 import ccc.keewedomain.persistence.repository.user.BookmarkRepository;
+import ccc.keewedomain.persistence.repository.utils.CursorPageable;
 import ccc.keewedomain.service.challenge.ChallengeDomainService;
 import ccc.keewedomain.service.user.UserDomainService;
 import ccc.keeweinfra.service.MQPublishService;
@@ -33,6 +34,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -73,6 +76,24 @@ public class InsightDomainService {
         BookmarkId bookmarkId = BookmarkId.of(detailDto.getUserId(), detailDto.getInsightId());
 
         return InsightGetDto.of(detailDto.getInsightId(), entity.getContents(), entity.getLink(), reactionAggregationGetDto, isBookmark(bookmarkId));
+    }
+
+    public List<InsightGetForHomeDto> getInsightsForHome(User user, CursorPageable<Long> cPage, Boolean follow) {
+        return insightQueryRepository.findForHome(user, cPage, follow).stream().map(i ->
+            InsightGetForHomeDto.of(
+                    i.getId(),
+                    i.getContents(),
+                    i.getLink(),
+                    getReactionAggregation(i.getId()),
+                    i.getCreatedAt(),
+                    InsightWriterDto.of(
+                            i.getWriter().getId(),
+                            i.getWriter().getNickname(),
+                            "Dummy Title.",
+                            "Dummy Profile Photo Link."
+                    )
+            )
+        ).collect(Collectors.toList());
     }
 
     public Long incrementViewCount(InsightViewIncrementDto dto) {
@@ -207,7 +228,6 @@ public class InsightDomainService {
                 case EYES:
                     eyes = count;
             }
-
         }
 
         return ReactionAggregationGetDto.of(clap, heart, sad, surprise, fire, eyes);
