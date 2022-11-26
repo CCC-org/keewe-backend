@@ -54,7 +54,7 @@ public class CommentDomainService {
 
         List<Comment> comments = commentQueryRepository.findByReplyNumberDescWithUser(insightId, 1L);
         if (comments.isEmpty()) {
-            comments = commentQueryRepository.findByInsightIdOrderByIdAsc(insightId, CursorPageable.of(0L, commentNumber));
+            comments = commentQueryRepository.findByInsightIdOrderByIdDesc(insightId, CursorPageable.of(0L, commentNumber));
         }
 
         return comments;
@@ -73,7 +73,7 @@ public class CommentDomainService {
     }
 
     public List<Comment> getComments(Long insightId, CursorPageable<Long> cPage) {
-        return commentQueryRepository.findByInsightIdOrderByIdAsc(insightId, cPage);
+        return commentQueryRepository.findByInsightIdOrderByIdDesc(insightId, cPage);
     }
 
     public Map<Long, Comment> getFirstReplies(List<Comment> parents) {

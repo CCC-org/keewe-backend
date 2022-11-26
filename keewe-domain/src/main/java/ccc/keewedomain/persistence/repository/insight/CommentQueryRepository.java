@@ -21,15 +21,18 @@ public class CommentQueryRepository {
 
     private final JPAQueryFactory queryFactory;
 
-    //오래된 순으로 limit 개의 댓글 조회 (답글X)
-    public List<Comment> findByInsightIdOrderByIdAsc(Long insightId, CursorPageable<Long> cPage) {
+    //최신순으로 limit 개의 댓글 조회 (답글X)
+    public List<Comment> findByInsightIdOrderByIdDesc(Long insightId, CursorPageable<Long> cPage) {
 
         return queryFactory
                 .select(comment)
                 .from(comment)
                 .innerJoin(comment.writer, user)
                 .fetchJoin()
-                .where(comment.insight.id.eq(insightId).and(comment.id.gt(cPage.getCursor())).and(comment.parent.isNull()))
+                .where(comment.insight.id.eq(insightId)
+                        .and(comment.id.lt(cPage.getCursor()))
+                        .and(comment.parent.isNull())
+                        .and(comment.deleted.isFalse()))
                 .limit(cPage.getLimit())
                 .fetch();
     }
@@ -60,7 +63,6 @@ public class CommentQueryRepository {
 
     //인사이트의 총 댓글 개수 조회
     public Long countByInsightId(Long insightId) {
-
         return queryFactory
                 .select(comment.count())
                 .from(comment)
@@ -68,14 +70,16 @@ public class CommentQueryRepository {
                 .fetchFirst();
     }
 
-    //오래된 순서대로 cursor 답글 이후의 부모 댓글의 답글 n개를 작성자와 함께 조회
+    //최신순으로 cursor 답글 이전의 부모 댓글의 답글 n개를 작성자와 함께 조회
     public List<Comment> findByParentWithWriter(Long parentId, Long cursor, Long limit) {
         return queryFactory
                 .select(comment)
                 .from(comment)
                 .innerJoin(comment.writer, user)
                 .fetchJoin()
-                .where(comment.parent.id.eq(parentId).and(comment.id.gt(cursor)))
+                .where(comment.parent.id.eq(parentId)
+                        .and(comment.id.lt(cursor))
+                        .and(comment.deleted.isFalse()))
                 .limit(limit)
                 .fetch();
     }
@@ -96,7 +100,9 @@ public class CommentQueryRepository {
                 .from(comment)
                 .innerJoin(comment.writer, user)
                 .fetchJoin()
-                .where(comment.parent.id.eq(parentId).and(comment.id.gt(cPage.getCursor())))
+                .where(comment.parent.id.eq(parentId)
+                        .and(comment.id.lt(cPage.getCursor()))
+                        .and(comment.deleted.isFalse()))
                 .limit(cPage.getLimit())
                 .fetch();
     }
@@ -104,7 +110,7 @@ public class CommentQueryRepository {
     //각 부모 댓글의 첫 답글의 id 조회
     private JPQLQuery<Long> findFirstReplyIds(List<Comment> parents) {
         return JPAExpressions
-                .select(comment.id.min())
+                .select(comment.id.max())
                 .from(comment)
                 .groupBy(comment.parent.id)
                 .where(comment.parent.in(parents));
