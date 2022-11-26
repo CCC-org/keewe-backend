@@ -5,7 +5,7 @@ echo "> Auto batch deploy starting...."
 mkdir $JAR_DIR
 cd $JAR_DIR
 
-ORIGIN_JAR_PATH= "{$JAR_DIR}/*.jar"
+ORIGIN_JAR_PATH= "${JAR_DIR}/*.jar"
 ORIGIN_JAR_NAME=$(basename ${ORIGIN_JAR_PATH})
 TARGET_PATH="${JAR_DIR}/batch-application.jar"
 
