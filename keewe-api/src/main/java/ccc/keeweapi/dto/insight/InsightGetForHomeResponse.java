@@ -16,6 +16,6 @@ public class InsightGetForHomeResponse {
     private String contents;
     private Link link;
     private ReactionAggregationResponse reaction;
-    private String createAt;
+    private String createdAt;
     private InsightWriterDto writer;
 }

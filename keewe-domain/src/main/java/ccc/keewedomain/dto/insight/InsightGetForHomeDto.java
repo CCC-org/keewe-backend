@@ -13,6 +13,6 @@ public class InsightGetForHomeDto {
     private String contents;
     private Link link;
     private ReactionAggregationGetDto reaction;
-    private LocalDateTime createAt;
+    private LocalDateTime createdAt;
     private InsightWriterDto writer;
 }
