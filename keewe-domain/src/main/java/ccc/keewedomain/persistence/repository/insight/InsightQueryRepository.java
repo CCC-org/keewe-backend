@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static ccc.keewedomain.persistence.domain.challenge.QChallenge.challenge;
@@ -72,6 +73,16 @@ public class InsightQueryRepository {
                 .select(follow.followee.id)
                 .from(follow)
                 .where(follow.follower.id.eq(user.getId()));
+    }
+
+    public Long countByParticipationBetween(ChallengeParticipation participation, LocalDateTime startDate, LocalDateTime endDate) {
+        return queryFactory.select(insight.id.count())
+                .from(insight)
+                .where(insight.challengeParticipation.id.eq(participation.getId())
+                        .and(insight.deleted.isFalse())
+                        .and(insight.valid.isTrue())
+                        .and(insight.createdAt.goe(startDate).and(insight.createdAt.lt(endDate))))
+                .fetchFirst();
     }
 
     public Optional<Insight> findByIdWithParticipationAndChallenge(Long insightId) {

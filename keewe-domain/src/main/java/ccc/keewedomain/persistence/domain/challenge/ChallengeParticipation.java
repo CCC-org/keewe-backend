@@ -89,4 +89,12 @@ public class ChallengeParticipation extends BaseTimeEntity {
     public Long getTotalInsightNumber() {
         return (long) (insightPerWeek * duration);
     }
+
+    public void expire() {
+        this.status = ChallengeParticipationStatus.EXPIRED;
+    }
+
+    public void complete() {
+        this.status = ChallengeParticipationStatus.COMPLETED;
+    }
 }
