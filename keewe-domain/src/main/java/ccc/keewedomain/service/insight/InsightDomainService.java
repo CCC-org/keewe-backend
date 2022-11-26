@@ -31,6 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 
 @Service
@@ -139,6 +140,12 @@ public class InsightDomainService {
 
     public boolean isBookmark(BookmarkId bookmarkId) {
         return bookmarkRepository.existsById(bookmarkId);
+    }
+
+    @Transactional(readOnly = true)
+    public Long getThisWeekCount(ChallengeParticipation participation, LocalDateTime endDate) {
+        LocalDateTime startDate = endDate.minusWeeks(1);
+        return insightQueryRepository.countByParticipationBetween(participation, startDate, endDate);
     }
 
     /*****************************************************************

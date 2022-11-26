@@ -6,6 +6,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static ccc.keewedomain.persistence.domain.challenge.QChallenge.challenge;
@@ -37,6 +38,16 @@ public class InsightQueryRepository {
                 .where(insight.challengeParticipation.id.eq(participation.getId())
                         .and(insight.deleted.isFalse())
                         .and(insight.valid.isTrue()))
+                .fetchFirst();
+    }
+
+    public Long countByParticipationBetween(ChallengeParticipation participation, LocalDateTime startDate, LocalDateTime endDate) {
+        return queryFactory.select(insight.id.count())
+                .from(insight)
+                .where(insight.challengeParticipation.id.eq(participation.getId())
+                        .and(insight.deleted.isFalse())
+                        .and(insight.valid.isTrue())
+                        .and(insight.createdAt.goe(startDate).and(insight.createdAt.lt(endDate))))
                 .fetchFirst();
     }
 
