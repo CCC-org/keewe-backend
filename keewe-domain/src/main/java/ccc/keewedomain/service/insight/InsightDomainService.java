@@ -215,17 +215,13 @@ public class InsightDomainService {
     }
 
     private ReactionAggregationGetDto getReactionAggregation(Long insightId) {
-        Map<ReactionType, Long> reactCntMap = new HashMap<>();
-
-        Arrays.stream(ReactionType.values()).parallel()
-                .forEach(r -> {
+        Map<ReactionType, Long> reactCntMap = Arrays.stream(values()).parallel()
+                .collect(Collectors.toMap(r -> r, r -> {
                     CReactionCountId id = new CReactionCountId(insightId, r);
-                    Long count = cReactionCountRepository.findByIdWithMissHandle(id, () ->
+                    return cReactionCountRepository.findByIdWithMissHandle(id, () ->
                             reactionAggregationRepository.findByIdOrElseThrow(new ReactionAggregationId(id.getInsightId(), id.getReactionType()))
                     ).getCount();
-
-                    reactCntMap.put(r, count);
-                });
+                }));
 
         return ReactionAggregationGetDto.of(reactCntMap.get(CLAP), reactCntMap.get(HEART), reactCntMap.get(SAD), reactCntMap.get(SURPRISE), reactCntMap.get(FIRE), reactCntMap.get(EYES));
     }
