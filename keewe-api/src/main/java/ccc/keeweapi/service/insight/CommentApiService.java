@@ -43,10 +43,9 @@ public class CommentApiService {
         Map<Long, List<Comment>> replyPerParentId = new HashMap<>();
 
         if (comments.size() == 1) {
-            replyPerParentId = commentDomainService.getRepliesWithWriter(
+            replyPerParentId = commentDomainService.getReplies(
                             comments.get(0).getId(),
-                            Long.MIN_VALUE,
-                            REPRESENTATIVE_COMMENT_REPLY_LIMIT
+                            CursorPageable.of(Long.MAX_VALUE, REPRESENTATIVE_COMMENT_REPLY_LIMIT)
                     ).stream()
                     .collect(Collectors.groupingBy(reply -> reply.getParent().getId()));
         }

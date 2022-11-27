@@ -64,10 +64,6 @@ public class CommentDomainService {
         return commentQueryRepository.countByInsightId(insightId);
     }
 
-    public List<Comment> getRepliesWithWriter(Long parentId, Long cursor, Long limit) {
-        return commentQueryRepository.findByParentWithWriter(parentId, cursor, limit);
-    }
-
     public Map<Long, Long> getReplyNumbers(List<Comment> parents) {
         return commentQueryRepository.getReplyNumbers(parents);
     }
