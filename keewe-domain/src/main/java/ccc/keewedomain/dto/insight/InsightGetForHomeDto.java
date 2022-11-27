@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 public class InsightGetForHomeDto {
     private Long id;
     private String contents;
+    private boolean isBookmark;
     private Link link;
     private ReactionAggregationGetDto reaction;
     private LocalDateTime createdAt;

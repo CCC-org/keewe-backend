@@ -77,6 +77,7 @@ public class InsightAssembler {
         return InsightGetForHomeResponse.of(
                 dto.getId(),
                 dto.getContents(),
+                dto.isBookmark(),
                 dto.getLink(),
                 toReactionAggregationResponse(dto.getReaction()),
                 dto.getCreatedAt().toString(),

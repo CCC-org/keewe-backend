@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 public class InsightGetForHomeResponse {
     private Long id;
     private String contents;
+    private boolean isBookmark;
     private Link link;
     private ReactionAggregationResponse reaction;
     private String createdAt;

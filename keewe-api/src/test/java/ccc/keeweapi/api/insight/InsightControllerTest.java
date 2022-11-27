@@ -140,6 +140,7 @@ public class InsightControllerTest extends ApiDocumentationTest {
         when(insightApiService.getInsightsForHome(any(), any())).thenReturn(List.of(InsightGetForHomeResponse.of(
                 insightId,
                 "인사이트 내용입니다. 즐거운 개발 되세요!",
+                true,
                 Link.of("www.keewe.com"),
                 ReactionAggregationResponse.of(1L, 2L, 3L, 4L, 5L, 6L),
                 LocalDateTime.now().toString(),
@@ -168,6 +169,7 @@ public class InsightControllerTest extends ApiDocumentationTest {
                                 fieldWithPath("code").description("결과 코드"),
                                 fieldWithPath("data[].id").description("인사이트 ID"),
                                 fieldWithPath("data[].contents").description("인사이트 내용"),
+                                fieldWithPath("data[].bookmark").description("인사이트 북마크 여부"),
                                 fieldWithPath("data[].link.url").description("인사이트 링크"),
                                 fieldWithPath("data[].reaction.clap").description("인사이트 박수 반응 수"),
                                 fieldWithPath("data[].reaction.heart").description("인사이트 하트 반응 수"),
