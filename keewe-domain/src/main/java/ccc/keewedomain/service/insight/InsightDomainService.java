@@ -22,6 +22,7 @@ import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.persistence.repository.insight.InsightQueryRepository;
 import ccc.keewedomain.persistence.repository.insight.InsightRepository;
 import ccc.keewedomain.persistence.repository.insight.ReactionAggregationRepository;
+import ccc.keewedomain.persistence.repository.user.BookmarkQueryRepository;
 import ccc.keewedomain.persistence.repository.user.BookmarkRepository;
 import ccc.keewedomain.persistence.repository.utils.CursorPageable;
 import ccc.keewedomain.service.challenge.ChallengeDomainService;
@@ -31,11 +32,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
+import static ccc.keewedomain.persistence.domain.insight.enums.ReactionType.*;
 
 @Service
 @RequiredArgsConstructor
@@ -45,6 +48,7 @@ public class InsightDomainService {
     private final InsightRepository insightRepository;
     private final ReactionAggregationRepository reactionAggregationRepository;
     private final BookmarkRepository bookmarkRepository;
+    private final BookmarkQueryRepository bookmarkQueryRepository;
     private final MQPublishService mqPublishService;
     private final UserDomainService userDomainService;
     private final ChallengeDomainService challengeDomainService;
@@ -79,10 +83,14 @@ public class InsightDomainService {
     }
 
     public List<InsightGetForHomeDto> getInsightsForHome(User user, CursorPageable<Long> cPage, Boolean follow) {
-        return insightQueryRepository.findForHome(user, cPage, follow).stream().map(i ->
+        List<Insight> forHome = insightQueryRepository.findForHome(user, cPage, follow);
+        Map<Long, Boolean> bookmarkPresence = bookmarkQueryRepository.getBookmarkPresenceMap(user, forHome);
+
+        return forHome.parallelStream().map(i ->
             InsightGetForHomeDto.of(
                     i.getId(),
                     i.getContents(),
+                    bookmarkPresence.getOrDefault(i.getId(), false),
                     i.getLink(),
                     getReactionAggregation(i.getId()),
                     i.getCreatedAt(),
@@ -207,31 +215,19 @@ public class InsightDomainService {
     }
 
     private ReactionAggregationGetDto getReactionAggregation(Long insightId) {
-        Long clap = 0L, heart = 0L, sad = 0L, surprise = 0L, fire = 0L, eyes = 0L;
-        for (ReactionType r : ReactionType.values()) {
-            CReactionCountId id = new CReactionCountId(insightId, r);
-            Long count = cReactionCountRepository.findByIdWithMissHandle(id, () ->
-                    reactionAggregationRepository.findByIdOrElseThrow(new ReactionAggregationId(id.getInsightId(), id.getReactionType()))
-            ).getCount();
+        Map<ReactionType, Long> reactCntMap = new HashMap<>();
 
-            switch (r) {
-                case CLAP:
-                    clap = count;
-                case HEART:
-                    heart = count;
-                case SAD:
-                    sad = count;
-                case SURPRISE:
-                    surprise = count;
-                case FIRE:
-                    fire = count;
-                case EYES:
-                    eyes = count;
-            }
+        Arrays.stream(ReactionType.values()).parallel()
+                .forEach(r -> {
+                    CReactionCountId id = new CReactionCountId(insightId, r);
+                    Long count = cReactionCountRepository.findByIdWithMissHandle(id, () ->
+                            reactionAggregationRepository.findByIdOrElseThrow(new ReactionAggregationId(id.getInsightId(), id.getReactionType()))
+                    ).getCount();
 
-        }
+                    reactCntMap.put(r, count);
+                });
 
-        return ReactionAggregationGetDto.of(clap, heart, sad, surprise, fire, eyes);
+        return ReactionAggregationGetDto.of(reactCntMap.get(CLAP), reactCntMap.get(HEART), reactCntMap.get(SAD), reactCntMap.get(SURPRISE), reactCntMap.get(FIRE), reactCntMap.get(EYES));
     }
 
     private boolean isRecordable(ChallengeParticipation participation) {
