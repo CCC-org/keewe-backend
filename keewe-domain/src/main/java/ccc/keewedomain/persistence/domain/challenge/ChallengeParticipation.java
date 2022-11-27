@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-
 import java.time.LocalDate;
 import java.time.Period;
 
@@ -83,7 +82,19 @@ public class ChallengeParticipation extends BaseTimeEntity {
         return between.getDays() / 7 + 1; // 1주차부터 시작
     }
 
+    public LocalDate getStartDateOfThisWeek() {
+        return getCreatedAt().plusWeeks(getCurrentWeek() - 1).toLocalDate();
+    }
+
     public Long getTotalInsightNumber() {
         return (long) (insightPerWeek * duration);
+    }
+
+    public void expire() {
+        this.status = ChallengeParticipationStatus.EXPIRED;
+    }
+
+    public void complete() {
+        this.status = ChallengeParticipationStatus.COMPLETED;
     }
 }

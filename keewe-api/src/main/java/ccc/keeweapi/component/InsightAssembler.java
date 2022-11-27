@@ -73,6 +73,17 @@ public class InsightAssembler {
         );
     }
 
+    public InsightGetForHomeResponse toInsightGetForHomeResponse(InsightGetForHomeDto dto) {
+        return InsightGetForHomeResponse.of(
+                dto.getId(),
+                dto.getContents(),
+                dto.getLink(),
+                toReactionAggregationResponse(dto.getReaction()),
+                dto.getCreatedAt().toString(),
+                dto.getWriter()
+        );
+    }
+
     private ReactionAggregationResponse toReactionAggregationResponse(ReactionAggregationGetDto dto) {
         return ReactionAggregationResponse.of(
                 dto.getClap(),

@@ -32,17 +32,17 @@ public class ProfileDomainService {
         User user = userDomainService.getUserByIdOrElseThrow(followDto.getUserId());
         User target = userDomainService.getUserByIdOrElseThrow(followDto.getTargetId());
 
-        FollowId followId = FollowId.of(target.getId(), user.getId());
+        FollowId followId = FollowId.of(user.getId(), target.getId());
         followRepository.findById(followId)
                         .ifPresentOrElse(
                                 follow -> {
                                     log.info("[PDS::toggleFollowership] Found Relation followee {}, follower {}", user.getId(), target.getId());
-                                    follow.removeRelation(target, user);
+                                    follow.removeRelation(user, target);
                                     followRepository.delete(follow);
                                 },
                                 () -> {
                                     log.info("[PDS::toggleFollowership] Not Found Relation followee {}, follower {}", user.getId(), target.getId());
-                                    Follow relation = Follow.makeRelation(target, user);
+                                    Follow relation = Follow.makeRelation(user, target);
                                     followRepository.save(relation);
                                 }
                         );

@@ -3,10 +3,11 @@ package ccc.keeweapi.service.insight;
 import ccc.keeweapi.component.InsightAssembler;
 import ccc.keeweapi.component.ProfileAssembler;
 import ccc.keeweapi.dto.insight.*;
+import ccc.keeweapi.utils.SecurityUtil;
 import ccc.keewedomain.dto.insight.InsightGetDto;
-import ccc.keewedomain.persistence.domain.challenge.Challenge;
 import ccc.keewedomain.persistence.domain.challenge.ChallengeParticipation;
 import ccc.keewedomain.persistence.domain.insight.Insight;
+import ccc.keewedomain.persistence.repository.utils.CursorPageable;
 import ccc.keewedomain.service.challenge.ChallengeDomainService;
 import ccc.keewedomain.service.insight.InsightDomainService;
 import ccc.keewedomain.service.user.ProfileDomainService;
@@ -14,8 +15,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import java.util.Objects;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -58,6 +60,12 @@ public class InsightApiService {
     }
 
     @Transactional(readOnly = true)
+    public List<InsightGetForHomeResponse> getInsightsForHome(CursorPageable<Long> cPage, Boolean follow) {
+        return insightDomainService.getInsightsForHome(SecurityUtil.getUser(), cPage, follow).stream()
+                .map(insightAssembler::toInsightGetForHomeResponse)
+                .collect(Collectors.toList());
+    }
+
     public ChallengeRecordResponse getChallengeRecord(Long insightId) {
         Insight insight = insightDomainService.getByIdWithChallengeOrElseThrow(insightId);
         ChallengeParticipation participation = insight.getChallengeParticipation();
