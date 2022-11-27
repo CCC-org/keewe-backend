@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
+import static ccc.keewecore.consts.KeeweConsts.LONG_MAX_STRING;
+
 @RestController
 @RequestMapping("/api/v1/comments")
 @RequiredArgsConstructor
@@ -30,7 +32,7 @@ public class CommentController {
     @GetMapping("/insights/{insightId}")
     public ApiResponse<List<CommentResponse>> getComments(
             @PathVariable Long insightId,
-            @RequestParam Long cursor,
+            @RequestParam(required = false, defaultValue = LONG_MAX_STRING) Long cursor,
             @RequestParam Long limit) {
 
         return ApiResponse.ok(commentApiService.getCommentsWithFirstReply(insightId, CursorPageable.of(cursor, limit)));
@@ -39,7 +41,7 @@ public class CommentController {
     @GetMapping("{parentId}/replies")
     public ApiResponse<List<ReplyResponse>> getReplies(
             @PathVariable Long parentId,
-            @RequestParam Long cursor,
+            @RequestParam(required = false, defaultValue = LONG_MAX_STRING) Long cursor,
             @RequestParam Long limit) {
 
         return ApiResponse.ok(commentApiService.getReplies(parentId, CursorPageable.of(cursor, limit)));

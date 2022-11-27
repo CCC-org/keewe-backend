@@ -68,7 +68,7 @@ public class ChallengeRecordCheckConfiguration {
 
         Map<String, Object> params = new HashMap<>();
         params.put("weekday", weekday);
-        params.put("endDate", endDateTime);
+        params.put("endDate", endDateTime.minusDays(1L));
 
         return new JpaCursorItemReaderBuilder<ChallengeParticipation>()
                 .name("sampleReader")
