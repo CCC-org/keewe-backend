@@ -27,4 +27,9 @@ public class DrawerController {
     public ApiResponse<List<DrawerResponse>> getMyDrawers() {
         return ApiResponse.ok(drawerApiService.getMyDrawers());
     }
+
+    @GetMapping("/{userId}")
+    public ApiResponse<List<DrawerResponse>> getDrawers(@PathVariable Long userId) {
+        return ApiResponse.ok(drawerApiService.getDrawers(userId));
+    }
 }

@@ -36,4 +36,11 @@ public class DrawerApiService {
                 .map(insightAssembler::toDrawerResponse)
                 .collect(Collectors.toList());
     }
+
+    @Transactional(readOnly = true)
+    public List<DrawerResponse> getDrawers(Long userId) {
+        return drawerDomainService.findAllByUserId(userId).stream()
+                .map(insightAssembler::toDrawerResponse)
+                .collect(Collectors.toList());
+    }
 }

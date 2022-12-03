@@ -105,4 +105,39 @@ public class DrawerControllerTest extends ApiDocumentationTest {
                         .build()
         )));
     }
+
+    @Test
+    @DisplayName("유저의 서랍 조회 API")
+    void get_drawers_test() throws Exception {
+
+        Long userId = 1L;
+
+        List<DrawerResponse> responses = List.of(
+                DrawerResponse.of(1L, "개발"),
+                DrawerResponse.of(2L, "공부"),
+                DrawerResponse.of(3L, "디자인")
+        );
+
+        when(drawerApiService.getDrawers(userId)).thenReturn(responses);
+
+        ResultActions resultActions = mockMvc.perform(get("/api/v1/drawer/{userId}", userId)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        resultActions.andDo(restDocs.document(resource(
+                ResourceSnippetParameters.builder()
+                        .description("유저의 서랍 조회 API 입니다.")
+                        .summary("유저의 서랍 조회 API")
+                        .requestHeaders(
+                                headerWithName("Authorization").description("유저의 JWT"))
+                        .responseFields(
+                                fieldWithPath("message").description("요청 결과 메세지"),
+                                fieldWithPath("code").description("결과 코드"),
+                                fieldWithPath("data.[].id").description("서랍의 ID"),
+                                fieldWithPath("data.[].name").description("서랍의 이름"))
+                        .tag("Insight")
+                        .build()
+        )));
+    }
 }
