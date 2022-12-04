@@ -137,7 +137,7 @@ public class InsightAssembler {
                 dto.getContents(),
                 dto.getLink(),
                 toReactionAggregationResponse(dto.getReaction()),
-                dto.getCreatedAt(),
+                dto.getCreatedAt().toString(),
                 dto.isBookmark()
         );
     }

@@ -4,8 +4,6 @@ import ccc.keewedomain.persistence.domain.common.Link;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import java.time.LocalDateTime;
-
 @Getter
 @AllArgsConstructor(staticName = "of")
 public class InsightMyPageResponse {
@@ -13,6 +11,6 @@ public class InsightMyPageResponse {
     private String contents;
     private Link link;
     private ReactionAggregationResponse reaction;
-    private LocalDateTime createdAt;
+    private String createdAt;
     private boolean isBookmark;
 }

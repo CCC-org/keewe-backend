@@ -7,6 +7,7 @@ import ccc.keewedomain.dto.insight.InsightWriterDto;
 import ccc.keewedomain.dto.insight.ReactionAggregationGetDto;
 import ccc.keewedomain.persistence.domain.common.Link;
 import ccc.keewedomain.persistence.domain.common.Interest;
+import ccc.keewedomain.persistence.repository.utils.CursorPageable;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
@@ -313,6 +314,84 @@ public class InsightControllerTest extends ApiDocumentationTest {
                                 fieldWithPath("data.challengeName").description("챌린지 이름"),
                                 fieldWithPath("data.order").description("기록된 순서(몇 번째 기록인지)"),
                                 fieldWithPath("data.total").description("기록해야 하는 인사이트의 총 개수"))
+                        .tag("Insight")
+                        .build()
+        )));
+    }
+
+    @Test
+    @DisplayName("마이페이지 인사이트 조회 API")
+    void get_insight_my_page_test() throws Exception {
+        Long targetUserId = 1L;
+        Long drawerId = 5L;
+        CursorPageable<Long> cPage = CursorPageable.of(15L, 3L);
+
+        InsightMyPageResponse insight1 = InsightMyPageResponse.of(
+                30L,
+                "세 번째 인사이트 내용입니다. 즐거운 개발 되세요!",
+                Link.of("www.keewe.com"),
+                ReactionAggregationResponse.of(1L, 2L, 3L, 4L, 5L, 6L),
+                LocalDateTime.now().toString(),
+                true
+        );
+
+        InsightMyPageResponse insight2 = InsightMyPageResponse.of(
+                24L,
+                "두 번째 인사이트 내용입니다. 즐거운 개발 되세요!",
+                Link.of("www.keewe.com"),
+                ReactionAggregationResponse.of(1L, 2L, 3L, 4L, 5L, 6L),
+                LocalDateTime.now().minusDays(1L).toString(),
+                true
+        );
+
+        InsightMyPageResponse insight3 = InsightMyPageResponse.of(
+                7L,
+                "첫 번째 인사이트 내용입니다. 즐거운 개발 되세요!",
+                Link.of("www.keewe.com"),
+                ReactionAggregationResponse.of(1L, 2L, 3L, 4L, 5L, 6L),
+                LocalDateTime.now().minusDays(2L).toString(),
+                true
+        );
+
+
+
+
+        when(insightApiService.getInsightsForMyPage(any(), any(), any()))
+                .thenReturn(List.of(insight1, insight2, insight3));
+
+        ResultActions resultActions = mockMvc.perform(get("/api/v1/insight/my-page/{userId}", targetUserId)
+                        .param("cursor", String.valueOf(cPage.getCursor()))
+                        .param("limit", String.valueOf(cPage.getLimit()))
+                        .param("drawerId", String.valueOf(drawerId))
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT))
+                .andExpect(status().isOk());
+
+        resultActions.andDo(restDocs.document(resource(
+                ResourceSnippetParameters.builder()
+                        .description("마이페이지 인사이트 조회 API 입니다. 파라미터 optional 표시 잘 봐주세요")
+                        .summary("마이페이지 인사이트 조회 API")
+                        .pathParameters(
+                                parameterWithName("userId").description("대상 유저의 ID"))
+                        .requestParameters(
+                                parameterWithName("cursor").description("대상 인사이트의 ID(첫 조회시 비우세요").optional(),
+                                parameterWithName("limit").description("가져올 인사이트의 개수"),
+                                parameterWithName("drawerId").description("폴더의 ID(전체 조회 시 비우세요)").optional())
+                        .requestHeaders(
+                                headerWithName("Authorization").description("유저의 JWT"))
+                        .responseFields(
+                                fieldWithPath("message").description("요청 결과 메세지"),
+                                fieldWithPath("code").description("결과 코드"),
+                                fieldWithPath("data[].id").description("인사이트 ID"),
+                                fieldWithPath("data[].contents").description("인사이트 내용"),
+                                fieldWithPath("data[].link.url").description("인사이트 링크"),
+                                fieldWithPath("data[].createdAt").description("인사이트 생성 시각"),
+                                fieldWithPath("data[].reaction.clap").description("인사이트 박수 반응 수"),
+                                fieldWithPath("data[].reaction.heart").description("인사이트 하트 반응 수"),
+                                fieldWithPath("data[].reaction.sad").description("인사이트 슬픔 반응 수"),
+                                fieldWithPath("data[].reaction.surprise").description("인사이트 놀람 반응 수"),
+                                fieldWithPath("data[].reaction.fire").description("인사이트 불 반응 수"),
+                                fieldWithPath("data[].reaction.eyes").description("인사이트 눈 반응 수"),
+                                fieldWithPath("data[].bookmark").description("인사이트 북마크 여부"))
                         .tag("Insight")
                         .build()
         )));
