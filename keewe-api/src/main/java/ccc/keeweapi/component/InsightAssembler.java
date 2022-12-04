@@ -131,6 +131,17 @@ public class InsightAssembler {
         return ChallengeRecordResponse.of(challenge.getId(), challenge.getName(), null, null);
     }
 
+    public InsightMyPageResponse toInsightMyPageResponse(InsightMyPageDto dto) {
+        return InsightMyPageResponse.of(
+                dto.getId(),
+                dto.getContents(),
+                dto.getLink(),
+                toReactionAggregationResponse(dto.getReaction()),
+                dto.getCreatedAt(),
+                dto.isBookmark()
+        );
+    }
+
     private boolean isAuthor(Insight insight) {
         return insight.getWriter().getId() == SecurityUtil.getUserId();
     }

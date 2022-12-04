@@ -3,6 +3,7 @@ package ccc.keeweapi.api.insight;
 import ccc.keeweapi.dto.ApiResponse;
 import ccc.keeweapi.dto.insight.*;
 import ccc.keeweapi.service.insight.InsightApiService;
+import ccc.keewecore.consts.KeeweConsts;
 import ccc.keewedomain.persistence.repository.utils.CursorPageable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.lang.Nullable;
@@ -55,5 +56,15 @@ public class InsightController {
     @GetMapping("/{insightId}/challenge-record")
     public ApiResponse<ChallengeRecordResponse> getChallengeRecord(@PathVariable Long insightId) {
         return ApiResponse.ok(insightApiService.getChallengeRecord(insightId));
+    }
+
+    @GetMapping("/my-page/{userId}")
+    public ApiResponse<List<InsightMyPageResponse>> getInsightForMyPage(
+            @PathVariable Long userId,
+            @RequestParam(required = false) Long drawerId,
+            @RequestParam(required = false, defaultValue = KeeweConsts.LONG_MAX_STRING) Long cursor,
+            @RequestParam Long limit) {
+
+        return ApiResponse.ok(insightApiService.getInsightsForMyPage(userId, drawerId, CursorPageable.of(cursor, limit)));
     }
 }
