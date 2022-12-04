@@ -1,6 +1,6 @@
 JAR_DIR='/home/ubuntu/'$2
 
-cp keewe-batch/build/libs/keewe-batch-0.0.1-SNAPSHOT.jar ${JAR_DIR}/
+cp keewe-batch/build/libs/keewe-batch-0.0.1-SNAPSHOT.jar ${JAR_DIR}
 
 echo "> Auto batch deploy starting...."
 
