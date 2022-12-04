@@ -55,7 +55,7 @@ public class Insight extends BaseTimeEntity {
     @OneToMany(mappedBy = "insight", fetch = LAZY)
     private List<Comment> comments = new ArrayList<>();
 
-    @ManyToOne
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "drawer_id")
     private Drawer drawer;
 

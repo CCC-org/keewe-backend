@@ -81,4 +81,11 @@ public class InsightApiService {
 
         return insightAssembler.toChallengeRecordResponse(participation.getChallenge());
     }
+
+    @Transactional(readOnly = true)
+    public List<InsightMyPageResponse> getInsightsForMyPage(Long userId, Long drawerId, CursorPageable<Long> cPage) {
+        return insightDomainService.getInsightsForMyPage(SecurityUtil.getUser(), userId, drawerId, cPage).stream()
+                .map(insightAssembler::toInsightMyPageResponse)
+                .collect(Collectors.toList());
+    }
 }

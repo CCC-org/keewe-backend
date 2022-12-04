@@ -34,7 +34,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -175,6 +174,22 @@ public class InsightDomainService {
     public Long getThisWeekCount(ChallengeParticipation participation, LocalDateTime endDate) {
         LocalDateTime startDate = endDate.minusWeeks(1);
         return insightQueryRepository.countByParticipationBetween(participation, startDate, endDate);
+    }
+
+    @Transactional(readOnly = true)
+    public List<InsightMyPageDto> getInsightsForMyPage(User user, Long targetUserId, Long drawerId, CursorPageable<Long> cPage) {
+        List<Insight> insights = insightQueryRepository.findByUserIdAndDrawerId(targetUserId, drawerId, cPage);
+        Map<Long, Boolean> bookmarkPresenceMap = bookmarkQueryRepository.getBookmarkPresenceMap(user, insights);
+        return insights.parallelStream()
+                .map(insight -> InsightMyPageDto.of(
+                        insight.getId(),
+                        insight.getContents(),
+                        insight.getLink(),
+                        getReactionAggregation(insight.getId()),
+                        insight.getCreatedAt(),
+                        bookmarkPresenceMap.getOrDefault(insight.getId(), false)
+                ))
+                .collect(Collectors.toList());
     }
 
     /*****************************************************************

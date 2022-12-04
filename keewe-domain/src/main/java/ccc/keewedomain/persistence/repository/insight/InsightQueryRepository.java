@@ -108,4 +108,22 @@ public class InsightQueryRepository {
                         .and(insight.id.lt(insightId)))
                 .fetchFirst();
     }
+
+    public List<Insight> findByUserIdAndDrawerId(Long userId, Long drawerId, CursorPageable<Long> cPage) {
+        return queryFactory
+                .select(insight)
+                .from(insight)
+                .where(insight.writer.id.eq(userId)
+                        .and(insight.id.lt(cPage.getCursor()))
+                        .and(drawerIdEq(drawerId))
+                )
+                .orderBy(insight.id.desc())
+                .limit(cPage.getLimit())
+                .fetch();
+    }
+
+
+    private BooleanExpression drawerIdEq(Long drawerId) {
+        return drawerId != null ? insight.drawer.id.eq(drawerId) : null;
+    }
 }
