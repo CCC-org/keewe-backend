@@ -177,7 +177,7 @@ public class InsightDomainService {
     }
 
     @Transactional(readOnly = true)
-    public List<InsightMyPageDto> getByUserId(User user, Long targetUserId, Long drawerId, CursorPageable<Long> cPage) {
+    public List<InsightMyPageDto> getInsightsForMyPage(User user, Long targetUserId, Long drawerId, CursorPageable<Long> cPage) {
         List<Insight> insights = insightQueryRepository.findByUserIdAndDrawerId(targetUserId, drawerId, cPage);
         Map<Long, Boolean> bookmarkPresenceMap = bookmarkQueryRepository.getBookmarkPresenceMap(user, insights);
         return insights.parallelStream()

@@ -84,7 +84,7 @@ public class InsightApiService {
 
     @Transactional(readOnly = true)
     public List<InsightMyPageResponse> getInsightsForMyPage(Long userId, Long drawerId, CursorPageable<Long> cPage) {
-        return insightDomainService.getByUserId(SecurityUtil.getUser(), userId, drawerId, cPage).stream()
+        return insightDomainService.getInsightsForMyPage(SecurityUtil.getUser(), userId, drawerId, cPage).stream()
                 .map(insightAssembler::toInsightMyPageResponse)
                 .collect(Collectors.toList());
     }
