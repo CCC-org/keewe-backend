@@ -5,7 +5,6 @@ import ccc.keewecore.consts.KeeweRtnConsts;
 import ccc.keewecore.exception.KeeweException;
 import ccc.keewedomain.cache.domain.insight.CInsightView;
 import ccc.keewedomain.cache.domain.insight.CReactionCount;
-import ccc.keewedomain.cache.domain.insight.id.CReactionCountId;
 import ccc.keewedomain.cache.repository.insight.CInsightViewRepository;
 import ccc.keewedomain.cache.repository.insight.CReactionCountRepository;
 import ccc.keewedomain.domain.insight.ReactionAggregation;
@@ -17,7 +16,6 @@ import ccc.keewedomain.persistence.domain.insight.Drawer;
 import ccc.keewedomain.persistence.domain.insight.Insight;
 import ccc.keewedomain.persistence.domain.insight.enums.ReactionType;
 import ccc.keewedomain.persistence.domain.insight.id.BookmarkId;
-import ccc.keewedomain.persistence.domain.insight.id.ReactionAggregationId;
 import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.persistence.repository.insight.InsightQueryRepository;
 import ccc.keewedomain.persistence.repository.insight.InsightRepository;
@@ -37,7 +35,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import static ccc.keewedomain.persistence.domain.insight.enums.ReactionType.*;
 
 @Service
 @RequiredArgsConstructor
@@ -223,22 +220,16 @@ public class InsightDomainService {
     private void createReactionAggregations(Insight insight) {
         Arrays.stream(ReactionType.values()).forEach((reactionType) -> {
             reactionAggregationRepository.save(ReactionAggregation.of(insight, reactionType, 0L));
-            cReactionCountRepository.save(CReactionCount.of(
-                    new CReactionCountId(insight.getId(), reactionType).toString(), 0L
-            ));
         });
+        cReactionCountRepository.save(CReactionCount.of(insight.getId(), 0L, 0L, 0L, 0L, 0L, 0L));
     }
 
     private ReactionAggregationGetDto getReactionAggregation(Long insightId) {
-        Map<ReactionType, Long> reactCntMap = Arrays.stream(values()).parallel()
-                .collect(Collectors.toMap(r -> r, r -> {
-                    CReactionCountId id = new CReactionCountId(insightId, r);
-                    return cReactionCountRepository.findByIdWithMissHandle(id, () ->
-                            reactionAggregationRepository.findByIdOrElseThrow(new ReactionAggregationId(id.getInsightId(), id.getReactionType()))
-                    ).getCount();
-                }));
+        CReactionCount cnt = cReactionCountRepository.findByIdWithMissHandle(insightId, () ->
+                reactionAggregationRepository.findDtoByInsightId(insightId)
+        );
 
-        return ReactionAggregationGetDto.of(reactCntMap.get(CLAP), reactCntMap.get(HEART), reactCntMap.get(SAD), reactCntMap.get(SURPRISE), reactCntMap.get(FIRE), reactCntMap.get(EYES));
+        return ReactionAggregationGetDto.createByCnt(cnt);
     }
 
     private boolean isRecordable(ChallengeParticipation participation) {
