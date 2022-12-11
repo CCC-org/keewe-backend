@@ -36,7 +36,7 @@ public class InsightController {
 
     @GetMapping
     public ApiResponse<List<InsightGetForHomeResponse>> getInsightsForHome(
-            @RequestParam Long cursor,
+            @RequestParam(required = false, defaultValue = KeeweConsts.LONG_MAX_STRING) Long cursor,
             @RequestParam Long limit,
             @RequestParam(required = false, defaultValue = "false") Boolean follow
     ) {
