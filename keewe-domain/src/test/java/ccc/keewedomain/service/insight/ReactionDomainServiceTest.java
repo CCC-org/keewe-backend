@@ -1,7 +1,10 @@
 package ccc.keewedomain.service.insight;
 
 import ccc.keewedomain.KeeweDomainApplication;
+import ccc.keewedomain.cache.domain.insight.CReactionCount;
+import ccc.keewedomain.cache.repository.insight.CReactionCountRepository;
 import ccc.keewedomain.dto.insight.InsightCreateDto;
+import ccc.keewedomain.dto.insight.ReactionAggregationGetDto;
 import ccc.keewedomain.dto.insight.ReactionDto;
 import ccc.keewedomain.dto.insight.ReactionIncrementDto;
 import ccc.keewedomain.dto.user.UserSignUpDto;
@@ -9,14 +12,12 @@ import ccc.keewedomain.persistence.domain.insight.Insight;
 import ccc.keewedomain.persistence.domain.insight.enums.ReactionType;
 import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.persistence.domain.user.enums.VendorType;
+import ccc.keewedomain.persistence.repository.insight.ReactionAggregationRepository;
 import ccc.keewedomain.persistence.repository.user.UserRepository;
 import ccc.keewedomain.utils.DatabaseCleaner;
 import ccc.keeweinfra.KeeweInfraApplication;
 import ccc.keeweinfra.service.MQPublishService;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,7 @@ import org.springframework.test.context.TestPropertySource;
 
 import static ccc.keewecore.consts.KeeweConsts.INSIGHT_REACT_EXCHANGE;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
 
 @SpringBootTest(classes = {KeeweDomainApplication.class, KeeweInfraApplication.class})
@@ -42,6 +44,12 @@ public class ReactionDomainServiceTest {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    ReactionAggregationRepository reactionAggregationRepository;
+
+    @Autowired
+    CReactionCountRepository cReactionCountRepository;
 
     @Autowired
     DatabaseCleaner databaseCleaner;
@@ -62,6 +70,7 @@ public class ReactionDomainServiceTest {
         userRepository.save(user);
     }
 
+    // TODO : local cache clear
     @AfterEach
     void clean() {
         databaseCleaner.execute();
@@ -84,5 +93,26 @@ public class ReactionDomainServiceTest {
         assertThat(reactionDto.getReactionType()).isEqualTo(reactionType);
         assertThat(strCaptor.getValue()).isEqualTo(INSIGHT_REACT_EXCHANGE);
         assertThat(rIDCaptor.getValue().getInsightId()).isEqualTo(insightId);
+    }
+
+    @Test
+    @DisplayName("applyReact 테스트 (반응 메세지 컨슈머 호출 함수)")
+    void apply_react_test() {
+        InsightCreateDto insightCreateDto = InsightCreateDto.of(user.getId(), "인사이트 내용", "https://comic.naver.com", false, null);
+        Insight insight = insightDomainService.create(insightCreateDto);
+        Long insightId = insight.getId();
+        ReactionType reactionType = ReactionType.CLAP;
+        Long value = 1L;
+        ReactionIncrementDto reactionIncrementDto = ReactionIncrementDto.of(insightId, user.getId(), reactionType, value);
+
+        reactionDomainService.applyReact(reactionIncrementDto);
+
+        ReactionAggregationGetDto dto = reactionAggregationRepository.findDtoByInsightId(insightId);
+        assertThat(dto.getByType(reactionType)).isEqualTo(value);
+        assertThat(dto.getEyes()).isEqualTo(0L);
+
+        CReactionCount cnt = cReactionCountRepository.findByIdWithMissHandle(insightId, () -> dto);
+        ReactionAggregationGetDto byCnt = ReactionAggregationGetDto.createByCnt(cnt);
+        assertEquals(dto, byCnt);
     }
 }

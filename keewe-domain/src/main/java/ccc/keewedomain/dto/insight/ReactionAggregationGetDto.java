@@ -2,12 +2,10 @@ package ccc.keewedomain.dto.insight;
 
 import ccc.keewedomain.cache.domain.insight.CReactionCount;
 import ccc.keewedomain.persistence.domain.insight.enums.ReactionType;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Getter
+@EqualsAndHashCode
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(staticName = "of")
 public class ReactionAggregationGetDto {
