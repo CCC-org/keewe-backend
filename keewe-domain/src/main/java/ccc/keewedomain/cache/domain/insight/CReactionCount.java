@@ -25,22 +25,22 @@ public class CReactionCount {
         switch (type) {
             case CLAP:
                 clap = cnt;
-                break;
+                return;
             case HEART:
                 heart = cnt;
-                break;
+                return;
             case SAD:
                 sad = cnt;
-                break;
+                return;
             case SURPRISE:
                 surprise = cnt;
-                break;
+                return;
             case FIRE:
                 fire = cnt;
-                break;
+                return;
             case EYES:
                 eyes = cnt;
-                break;
+                return;
         }
     }
 }
