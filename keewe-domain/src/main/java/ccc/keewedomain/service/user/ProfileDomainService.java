@@ -47,7 +47,7 @@ public class ProfileDomainService {
                                 }
                         );
 
-        return isFollowing(FollowCheckDto.of(target.getId(), user.getId()));
+        return isFollowing(FollowCheckDto.of(user.getId(), target.getId()));
     }
 
     public boolean isFollowing(FollowCheckDto followCheckDto) {
