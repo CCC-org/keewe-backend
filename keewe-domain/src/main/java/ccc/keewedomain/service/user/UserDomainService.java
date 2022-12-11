@@ -5,6 +5,7 @@ import ccc.keewecore.exception.KeeweException;
 import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.persistence.domain.user.enums.VendorType;
 import ccc.keewedomain.dto.user.UserSignUpDto;
+import ccc.keewedomain.persistence.repository.user.UserQueryRepository;
 import ccc.keewedomain.persistence.repository.user.UserRepository;
 import ccc.keeweinfra.dto.GoogleProfileResponse;
 import ccc.keeweinfra.dto.KakaoProfileResponse;
@@ -24,6 +25,7 @@ import java.util.Optional;
 @Slf4j
 public class UserDomainService {
     private final UserRepository userRepository;
+    private final UserQueryRepository userQueryRepository;
     private final KakaoInfraService kakaoInfraService;
     private final NaverInfraService naverInfraService;
     private final GoogleInfraService googleInfraService;
@@ -53,6 +55,10 @@ public class UserDomainService {
 
     public Optional<User> getUserByVendorIdAndVendorType(String vendorId, VendorType vendorType) {
         return userRepository.findByVendorIdAndVendorType(vendorId, vendorType);
+    }
+
+    public User getUserByIdWithInterests(Long id) {
+        return userQueryRepository.findByIdWithInterests(id).orElseThrow(() -> new KeeweException(KeeweRtnConsts.ERR411));
     }
 
     private KakaoProfileResponse getKakaoProfile(String code) {

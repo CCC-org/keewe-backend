@@ -2,6 +2,7 @@ package ccc.keeweapi.api.user;
 
 import ccc.keeweapi.dto.ApiResponse;
 import ccc.keeweapi.dto.user.FollowToggleResponse;
+import ccc.keeweapi.dto.user.ProfileMyPageResponse;
 import ccc.keeweapi.dto.user.OnboardRequest;
 import ccc.keeweapi.dto.user.OnboardResponse;
 import ccc.keeweapi.service.user.ProfileApiService;
@@ -24,5 +25,10 @@ public class ProfileController {
     @PostMapping("/follow/{targetId}")
     public ApiResponse<FollowToggleResponse> toggleFollowership(@PathVariable Long targetId) {
         return ApiResponse.ok(profileApiService.toggleFollowership(targetId));
+    }
+
+    @GetMapping("/{targetId}")
+    public ApiResponse<ProfileMyPageResponse> getMyPageProfile(@PathVariable Long targetId) {
+        return ApiResponse.ok(profileApiService.getMyPageProfile(targetId));
     }
 }
