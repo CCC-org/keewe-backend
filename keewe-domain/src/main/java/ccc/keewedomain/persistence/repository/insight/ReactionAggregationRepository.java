@@ -12,6 +12,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import javax.persistence.LockModeType;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -32,10 +33,13 @@ public interface ReactionAggregationRepository extends JpaRepository<ReactionAgg
             throw new KeeweException(KeeweRtnConsts.ERR471);
         });
     }
-
-    // TODO : 예외 처리
+    
     default ReactionAggregationGetDto findDtoByInsightId(Long insightId) {
         Map<ReactionType, Long> reactCntMap = findAllByInsightId(insightId).stream().collect(Collectors.toMap(ReactionAggregation::getType, ReactionAggregation::getCount));
+        Arrays.stream(values()).forEach((reactionType) -> {
+            if (reactCntMap.get(reactionType) == null)
+                throw new KeeweException(KeeweRtnConsts.ERR471);
+        });
         return ReactionAggregationGetDto.of(reactCntMap.get(CLAP), reactCntMap.get(HEART), reactCntMap.get(SAD), reactCntMap.get(SURPRISE), reactCntMap.get(FIRE), reactCntMap.get(EYES));
     }
 }
