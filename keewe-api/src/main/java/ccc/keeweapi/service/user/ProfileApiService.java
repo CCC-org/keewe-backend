@@ -44,6 +44,7 @@ public class ProfileApiService {
         boolean isFollowing = profileDomainService.isFollowing(FollowCheckDto.of(targetId, userId));
         Long followerCount = profileDomainService.getFollowerCount(targetUser);
         Long followingCount = profileDomainService.getFollowingCount(targetUser);
+
         String challengeName = challengeDomainService.findCurrentParticipationWithChallenge(targetId)
                 .map(challengeParticipation -> challengeParticipation.getChallenge().getName())
                 .orElse(null);

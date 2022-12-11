@@ -14,7 +14,7 @@ public class ProfileMyPageResponse {
     private String title;
     private String introduction;
     private List<String> interests;
-    private Boolean isFollow;
+    private boolean isFollow;
     private Long followerCount;
     private Long followingCount;
     private String challengeName;

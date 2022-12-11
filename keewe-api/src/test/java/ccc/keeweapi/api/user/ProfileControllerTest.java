@@ -154,7 +154,7 @@ public class ProfileControllerTest extends ApiDocumentationTest {
                                 fieldWithPath("data.title").description("대표 타이틀"),
                                 fieldWithPath("data.introduction").description("자기소개"),
                                 fieldWithPath("data.interests[]").description("관심사 리스트"),
-                                fieldWithPath("data.isFollow").description("팔로잉 여부 (true: 팔로잉 상태, false: 언팔로잉 상태)"),
+                                fieldWithPath("data.follow").description("팔로잉 여부 (true: 팔로잉 상태, false: 언팔로잉 상태)"),
                                 fieldWithPath("data.followerCount").description("팔로워 수"),
                                 fieldWithPath("data.followingCount").description("팔로우 하는 수"),
                                 fieldWithPath("data.challengeName").description("진행중인 챌린지 이름"))
