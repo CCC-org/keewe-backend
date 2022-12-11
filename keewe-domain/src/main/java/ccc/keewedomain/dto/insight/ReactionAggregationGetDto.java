@@ -27,16 +27,22 @@ public class ReactionAggregationGetDto {
         switch (reactionType) {
             case CLAP:
                 value = clap;
+                break;
             case HEART:
                 value =  heart;
+                break;
             case SAD:
                 value = sad;
+                break;
             case SURPRISE:
                 value = surprise;
+                break;
             case FIRE:
                 value = fire;
+                break;
             case EYES:
                 value = eyes;
+                break;
         }
         return value;
     }

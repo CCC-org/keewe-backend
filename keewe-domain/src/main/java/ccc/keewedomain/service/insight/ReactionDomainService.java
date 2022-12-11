@@ -40,7 +40,7 @@ public class ReactionDomainService {
         log.info("[RDS::react] React message pub. id={}", dto.getInsightId());
         mqPublishService.publish(KeeweConsts.INSIGHT_REACT_EXCHANGE, dto);
         ReactionType type = dto.getReactionType();
-        return ReactionDto.of(dto.getInsightId(), type, reactionAggregation.getByType(type));
+        return ReactionDto.of(dto.getInsightId(), type, reactionAggregation.getByType(type) + 1L);
     }
 
     @Transactional
