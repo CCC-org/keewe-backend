@@ -9,11 +9,11 @@ import java.util.function.Supplier;
 public interface CReactionCountRepository extends CrudRepository<CReactionCount, Long> {
     org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(CReactionCountRepository.class);
 
-    default CReactionCount findByIdWithMissHandle(Long id, Supplier<ReactionAggregationGetDto> supplier) {
+    default CReactionCount findByIdWithMissHandle(Long id, Supplier<ReactionAggregationGetDto> fromDatabase) {
         return findById(id).orElseGet(() -> {
             log.info("[CRCR::findByIdWithMissHandle] cache miss. insightId={}", id);
 
-            ReactionAggregationGetDto dto = supplier.get();
+            ReactionAggregationGetDto dto = fromDatabase.get();
 
             CReactionCount cReactionCount = CReactionCount.of(
                     id,
