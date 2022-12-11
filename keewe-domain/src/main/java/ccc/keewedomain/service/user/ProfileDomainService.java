@@ -59,4 +59,12 @@ public class ProfileDomainService {
             throw new KeeweException(KeeweRtnConsts.ERR446);
         }
     }
+
+    public Long getFollowerCount(User user) {
+        return followRepository.countByFollowee(user);
+    }
+
+    public Long getFollowingCount(User user) {
+        return followRepository.countByFollower(user);
+    }
 }
