@@ -3,6 +3,7 @@ package ccc.keeweapi.api.user;
 import ccc.keeweapi.document.utils.ApiDocumentationTest;
 import ccc.keeweapi.dto.user.FollowToggleResponse;
 import ccc.keeweapi.dto.user.OnboardResponse;
+import ccc.keeweapi.dto.user.ProfileMyPageResponse;
 import ccc.keeweapi.service.user.ProfileApiService;
 import ccc.keewedomain.persistence.domain.common.Interest;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
@@ -21,12 +22,12 @@ import org.springframework.test.web.servlet.ResultActions;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.epages.restdocs.apispec.ResourceDocumentation.headerWithName;
-import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
+import static com.epages.restdocs.apispec.ResourceDocumentation.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -110,6 +111,54 @@ public class ProfileControllerTest extends ApiDocumentationTest {
                                 fieldWithPath("code").description("결과 코드"),
                                 fieldWithPath("data.following").description("팔로잉 토글 결과 (true: 팔로잉 상태, false: 언팔로잉 상태)"))
                         .tag("Profile")
+                        .build()
+        )));
+    }
+
+    @Test
+    @DisplayName("마이페이지 프로필 조회 테스트")
+    void my_page_profile() throws Exception {
+        when(profileApiService.getMyPageProfile(anyLong())).thenReturn(
+                ProfileMyPageResponse.of(
+                        "닉네임",
+                        "www.api-keewe.com/images/128398681",
+                        "대표 타이틀",
+                        "안녕하세요. 키위입니다.",
+                        List.of("개발", "백엔드", "프론트엔드"),
+                        false,
+                        342L,
+                        55231L,
+                        "출근하기"
+                )
+        );
+
+        ResultActions resultActions = mockMvc.perform(get("/api/v1/user/profile/{targetId}", 1L)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        resultActions.andDo(restDocs.document(resource(
+                ResourceSnippetParameters.builder()
+                        .description("팔로잉 API 입니다.")
+                        .summary("유저 팔로잉 API")
+                        .pathParameters(
+                            parameterWithName("targetId").description("대상 유저의 ID")
+                        )
+                        .requestHeaders(
+                                headerWithName("Authorization").description("유저의 JWT"))
+                        .responseFields(
+                                fieldWithPath("message").description("요청 결과 메세지"),
+                                fieldWithPath("code").description("결과 코드"),
+                                fieldWithPath("data.nickname").description("닉네임"),
+                                fieldWithPath("data.image").description("프로필 이미지 링크"),
+                                fieldWithPath("data.title").description("대표 타이틀"),
+                                fieldWithPath("data.introduction").description("자기소개"),
+                                fieldWithPath("data.interests[]").description("관심사 리스트"),
+                                fieldWithPath("data.isFollow").description("팔로잉 여부 (true: 팔로잉 상태, false: 언팔로잉 상태)"),
+                                fieldWithPath("data.followerCount").description("팔로워 수"),
+                                fieldWithPath("data.followingCount").description("팔로우 하는 수"),
+                                fieldWithPath("data.challengeName").description("진행중인 챌린지 이름"))
+                        .tag("MyPage")
                         .build()
         )));
     }

@@ -10,7 +10,7 @@ import java.util.List;
 public class ProfileMyPageResponse {
 
     private String nickname;
-    private String profilePhoto;
+    private String image;
     private String title;
     private String introduction;
     private List<String> interests;
