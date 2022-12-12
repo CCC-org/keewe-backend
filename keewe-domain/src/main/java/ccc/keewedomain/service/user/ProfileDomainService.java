@@ -47,7 +47,7 @@ public class ProfileDomainService {
                                 }
                         );
 
-        return isFollowing(FollowCheckDto.of(target.getId(), user.getId()));
+        return isFollowing(FollowCheckDto.of(user.getId(), target.getId()));
     }
 
     public boolean isFollowing(FollowCheckDto followCheckDto) {
@@ -58,5 +58,13 @@ public class ProfileDomainService {
         if(followDto.getTargetId() == followDto.getUserId()) {
             throw new KeeweException(KeeweRtnConsts.ERR446);
         }
+    }
+
+    public Long getFollowerCount(User user) {
+        return followRepository.countByFollowee(user);
+    }
+
+    public Long getFollowingCount(User user) {
+        return followRepository.countByFollower(user);
     }
 }

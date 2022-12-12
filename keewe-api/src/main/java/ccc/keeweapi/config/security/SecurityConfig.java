@@ -23,7 +23,7 @@ import static org.springframework.http.HttpMethod.GET;
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final String[] SWAGGER_URL = {"/", "/docs/openapi3.yaml", "/favicon.ico"};
-    private final String SIGNUP_URL = "/api/v1/user/**";
+    private final String SIGNUP_URL = "/api/v1/user/*";
     private final String HEALTH_CHECK_URL = "/api/health-check";
 
     private final UserDetailsService userService;
