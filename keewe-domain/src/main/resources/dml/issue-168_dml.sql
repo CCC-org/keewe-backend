@@ -1,0 +1,2 @@
+ALTER TABLE insight
+    ADD COLUMN image VARCHAR(255) NOT NULL

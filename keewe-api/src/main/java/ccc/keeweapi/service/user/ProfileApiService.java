@@ -4,12 +4,14 @@ import ccc.keeweapi.dto.user.FollowToggleResponse;
 import ccc.keeweapi.dto.user.OnboardRequest;
 import ccc.keeweapi.dto.user.OnboardResponse;
 import ccc.keeweapi.component.ProfileAssembler;
+import ccc.keeweapi.dto.user.UploadProfilePhotoResponse;
 import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.service.user.ProfileDomainService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
-import javax.transaction.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -28,5 +30,11 @@ public class ProfileApiService {
     public FollowToggleResponse toggleFollowership(Long targetId) {
         boolean following = profileDomainService.toggleFollowership(profileAssembler.toFollowToggleDto(targetId));
         return profileAssembler.toFollowToggleResponse(following);
+    }
+
+    @Transactional
+    public UploadProfilePhotoResponse uploadProfilePhoto(MultipartFile imageFile) {
+        String image = profileDomainService.uploadProfilePhoto(profileAssembler.toUploadProfilePhotoDto(imageFile));
+        return UploadProfilePhotoResponse.of(image);
     }
 }

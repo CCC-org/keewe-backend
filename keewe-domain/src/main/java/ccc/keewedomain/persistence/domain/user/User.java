@@ -50,7 +50,7 @@ public class User extends BaseTimeEntity {
     @Column(name = "nickname")
     private String nickname;
 
-    @OneToOne(fetch = LAZY)
+    @OneToOne(fetch = LAZY, cascade = CascadeType.PERSIST, orphanRemoval = true)
     @JoinColumn(name = "profile_photo_id")
     private ProfilePhoto profilePhoto;
 
@@ -104,6 +104,10 @@ public class User extends BaseTimeEntity {
         if (this.status != UserStatus.ONBOARD) {
             throw new KeeweException(KeeweRtnConsts.ERR427);
         }
+    }
+
+    public void setProfilePhoto(ProfilePhoto profilePhoto) {
+        this.profilePhoto = profilePhoto;
     }
 }
 

@@ -1,11 +1,15 @@
 package ccc.keewedomain.persistence.domain.user;
 
 import ccc.keewedomain.persistence.domain.common.BaseTimeEntity;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "profile_photo")
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ProfilePhoto extends BaseTimeEntity {
 
     @Id
@@ -13,6 +17,16 @@ public class ProfilePhoto extends BaseTimeEntity {
     @Column(name = "profile_photo_id")
     private Long id;
 
+    @Column(name = "image")
+    private String image;
+
     @Column(name = "deleted", nullable = false)
     private boolean deleted;
+
+    public static ProfilePhoto of(String image) {
+        ProfilePhoto entity = new ProfilePhoto();
+        entity.image = image;
+        entity.deleted = false;
+        return entity;
+    }
 }
