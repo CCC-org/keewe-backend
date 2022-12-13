@@ -4,13 +4,14 @@ import ccc.keewecore.consts.KeeweConsts;
 import ccc.keewecore.consts.KeeweRtnConsts;
 import ccc.keewecore.exception.KeeweException;
 import ccc.keewedomain.cache.domain.insight.CReactionCount;
-import ccc.keewedomain.cache.domain.insight.id.CReactionCountId;
 import ccc.keewedomain.cache.repository.insight.CReactionCountRepository;
 import ccc.keewedomain.domain.insight.ReactionAggregation;
+import ccc.keewedomain.dto.insight.ReactionAggregationGetDto;
 import ccc.keewedomain.dto.insight.ReactionDto;
 import ccc.keewedomain.dto.insight.ReactionIncrementDto;
 import ccc.keewedomain.persistence.domain.insight.Insight;
 import ccc.keewedomain.persistence.domain.insight.Reaction;
+import ccc.keewedomain.persistence.domain.insight.enums.ReactionType;
 import ccc.keewedomain.persistence.domain.insight.id.ReactionAggregationId;
 import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.persistence.repository.insight.ReactionAggregationRepository;
@@ -34,26 +35,25 @@ public class ReactionDomainService {
     private final InsightDomainService insightDomainService;
 
     public ReactionDto react(ReactionIncrementDto dto) {
-        CReactionCountId id = new CReactionCountId(dto.getInsightId(), dto.getReactionType()); // TODO : 통일된(효율적인) Key 생성
-        Long reactionCount = getCurrentReactionCount(id) + dto.getValue();
+        ReactionAggregationGetDto reactionAggregation = getCurrentReactionAggregation(dto.getInsightId());
 
-        log.info("[RDS::react] React message pub. id={}", id);
+        log.info("[RDS::react] React message pub. id={}", dto.getInsightId());
         mqPublishService.publish(KeeweConsts.INSIGHT_REACT_EXCHANGE, dto);
-        return ReactionDto.of(dto.getInsightId(), dto.getReactionType(), reactionCount);
+        ReactionType type = dto.getReactionType();
+        return ReactionDto.of(dto.getInsightId(), type, reactionAggregation.getByType(type) + 1L);
     }
 
     @Transactional
     public Long applyReact(ReactionIncrementDto dto) {
-        Insight insight = insightDomainService.getByIdOrElseThrow(dto.getInsightId());
+        Long insightId = dto.getInsightId();
+        Insight insight = insightDomainService.getByIdOrElseThrow(insightId);
         User user = userDomainService.getUserByIdOrElseThrow(dto.getUserId());
-        ReactionAggregation reactionAggregation = getReactionAggregationByIdWithLock(new ReactionAggregationId(insight.getId(), dto.getReactionType()));
+        ReactionAggregation reactionAggregation = getReactionAggregationByIdWithLock(new ReactionAggregationId(insightId, dto.getReactionType()));
 
+        ReactionAggregationGetDto reactionCnt = reactionAggregationRepository.findDtoByInsightId(insightId);
         reactionAggregation.incrementCountByValue(dto.getValue());
         reactionRepository.save(Reaction.of(insight, user, dto.getReactionType()));
-        cReactionCountRepository.save(CReactionCount.of(
-                new CReactionCountId(dto.getInsightId(), dto.getReactionType()).toString(),
-                reactionAggregation.getCount()
-        ));
+        cReactionCountRepository.save(createCReactionCountForUpdate(insightId, reactionAggregation, reactionCnt));
         log.info("[RDS::applyReact] count {}", reactionAggregation.getCount());
 
         return reactionAggregation.getCount();
@@ -64,10 +64,25 @@ public class ReactionDomainService {
                 .orElseThrow(() -> new KeeweException(KeeweRtnConsts.ERR471));
     }
 
-    private Long getCurrentReactionCount(CReactionCountId id) {
-        CReactionCount cReactionCount = cReactionCountRepository.findByIdWithMissHandle(id, () ->
-            reactionAggregationRepository.findByIdOrElseThrow(new ReactionAggregationId(id.getInsightId(), id.getReactionType()))
+    private ReactionAggregationGetDto getCurrentReactionAggregation(Long id) {
+        return ReactionAggregationGetDto.createByCnt(cReactionCountRepository.findByIdWithMissHandle(id, () ->
+                reactionAggregationRepository.findDtoByInsightId(id)
+        ));
+    }
+
+    // TODO : 리팩토링...
+    private CReactionCount createCReactionCountForUpdate(Long insightId, ReactionAggregation reactionAggregation, ReactionAggregationGetDto reactionCnt) {
+        CReactionCount cnt = CReactionCount.of(
+                insightId,
+                reactionCnt.getClap(),
+                reactionCnt.getHeart(),
+                reactionCnt.getSad(),
+                reactionCnt.getSurprise(),
+                reactionCnt.getFire(),
+                reactionCnt.getEyes()
         );
-        return cReactionCount.getCount();
+        cnt.setByType(reactionAggregation.getType(), reactionAggregation.getCount());
+
+        return cnt;
     }
 }

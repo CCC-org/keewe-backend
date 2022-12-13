@@ -54,7 +54,7 @@ public class CommentDomainService {
 
         List<Comment> comments = commentQueryRepository.findByReplyNumberDescWithUser(insightId, 1L);
         if (comments.isEmpty()) {
-            comments = commentQueryRepository.findByInsightIdOrderByIdDesc(insightId, CursorPageable.of(0L, commentNumber));
+            comments = commentQueryRepository.findByInsightIdOrderByIdDesc(insightId, CursorPageable.of(Long.MAX_VALUE, commentNumber));
         }
 
         return comments;
