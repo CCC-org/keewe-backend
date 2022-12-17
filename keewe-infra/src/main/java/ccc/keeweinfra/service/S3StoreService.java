@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -34,5 +36,20 @@ public class S3StoreService implements StoreService {
         }
 
         return amazonS3.getUrl(bucket, s3FileName).toString();
+    }
+
+    @Override
+    public void delete(String url) {
+        amazonS3.deleteObject(bucket, urlToKey(url));
+    }
+
+    private String urlToKey(String url) {
+        URL urlObject = null;
+        try {
+            urlObject = new URL(url);
+        } catch (MalformedURLException e) {
+            throw new KeeweException(KeeweRtnConsts.ERR424);
+        }
+        return urlObject.getPath();
     }
 }

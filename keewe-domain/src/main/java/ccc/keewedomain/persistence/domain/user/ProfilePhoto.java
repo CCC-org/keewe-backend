@@ -3,10 +3,12 @@ package ccc.keewedomain.persistence.domain.user;
 import ccc.keewedomain.persistence.domain.common.BaseTimeEntity;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+@Getter
 @Entity
 @Table(name = "profile_photo")
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
