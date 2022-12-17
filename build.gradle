@@ -140,7 +140,6 @@ project(':keewe-domain') {
 		implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.5.8'
 		implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
 		implementation "com.querydsl:querydsl-apt:${queryDslVersion}"
-		implementation 'net.coobird:thumbnailator:0.4.18'
 
 		testImplementation group: 'com.h2database', name: 'h2', version: '2.1.214'
 
