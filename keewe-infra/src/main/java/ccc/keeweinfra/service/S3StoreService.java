@@ -25,7 +25,7 @@ public class S3StoreService implements StoreService {
 
     @Override
     public String upload(MultipartFile multipartFile) {
-        String s3FileName = UUID.randomUUID() + "-" + multipartFile.getOriginalFilename();
+        String s3FileName = createFileName(multipartFile.getOriginalFilename());
 
         ObjectMetadata objMeta = new ObjectMetadata();
         try {
@@ -51,5 +51,9 @@ public class S3StoreService implements StoreService {
             throw new KeeweException(KeeweRtnConsts.ERR424);
         }
         return urlObject.getPath();
+    }
+
+    private String createFileName(String originalFileName) {
+        return UUID.randomUUID() + "-" + originalFileName;
     }
 }
