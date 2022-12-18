@@ -66,6 +66,19 @@ CREATE TABLE IF NOT EXISTS `title`
 
     PRIMARY KEY (title_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS `title_achievement`
+(
+    user_id         BIGINT          NOT NULL,
+    title_id        BIGINT          NOT NULL,
+    created_at      DATETIME(6)     NOT NULL,
+    updated_at      DATETIME(6)     NOT NULL,
+
+    PRIMARY KEY (user_id, title_id),
+    FOREIGN KEY (user_id) REFERENCES `user`(user_id),
+    FOREIGN KEY (title_id) REFERENCES `title`(title_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 /**
   챌린지 관련 테이블 정의
  */
