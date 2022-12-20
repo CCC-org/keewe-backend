@@ -25,16 +25,16 @@ VALUES (2005, 'INSIGHT', '혼자서도 잘 해요', '챌린지가 아닌 인사�
 
 # 팔로워 카테고리
 INSERT IGNORE INTO title (title_id, category, name, introduction)
-VALUES (3000, 'FOLLOWER', '두근두근 첫만남', '첫 팔로워');
+VALUES (3000, 'FOLLOW', '두근두근 첫만남', '첫 팔로워');
 
 INSERT IGNORE INTO title (title_id, category, name, introduction)
-VALUES (3001, 'FOLLOWER', '자타공인 인기인', '팔로워 10명');
+VALUES (3001, 'FOLLOW', '자타공인 인기인', '팔로워 10명');
 
 INSERT IGNORE INTO title (title_id, category, name, introduction)
-VALUES (3002, 'FOLLOWER', '피리부는 사나이', '팔로워 100명');
+VALUES (3002, 'FOLLOW', '피리부는 사나이', '팔로워 100명');
 
 INSERT IGNORE INTO title (title_id, category, name, introduction)
-VALUES (3003, 'FOLLOWER', '정이 많은', '팔로잉 40명');
+VALUES (3003, 'FOLLOW', '정이 많은', '팔로잉 40명');
 
 
 # 반응 카테고리

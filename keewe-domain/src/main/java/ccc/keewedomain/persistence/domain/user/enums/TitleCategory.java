@@ -3,7 +3,7 @@ package ccc.keewedomain.persistence.domain.user.enums;
 public enum TitleCategory {
     SIGNUP,
     INSIGHT,
-    FOLLOWER,
+    FOLLOW,
     REACTION,
     CHALLENGE,
     SHARE,
