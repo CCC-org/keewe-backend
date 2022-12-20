@@ -60,9 +60,6 @@ CREATE TABLE IF NOT EXISTS `title`
     category        VARCHAR(255)    NOT NULL,
     name            VARCHAR(255)    NOT NULL,
     introduction    VARCHAR(255)    NOT NULL,
-    image_url       VARCHAR(255)    NOT NULL,
-    created_at      DATETIME(6)     NOT NULL,
-    updated_at      DATETIME(6)     NOT NULL,
 
     PRIMARY KEY (title_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

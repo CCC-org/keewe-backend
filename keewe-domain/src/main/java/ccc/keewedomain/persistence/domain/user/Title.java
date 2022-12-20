@@ -1,6 +1,5 @@
 package ccc.keewedomain.persistence.domain.user;
 
-import ccc.keewedomain.persistence.domain.common.BaseTimeEntity;
 import ccc.keewedomain.persistence.domain.user.enums.TitleCategory;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -12,7 +11,7 @@ import javax.persistence.*;
 @Table(name = "title")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class Title extends BaseTimeEntity {
+public class Title {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,7 +27,4 @@ public class Title extends BaseTimeEntity {
 
     @Column(name = "introduction", nullable = false)
     private String introduction;
-
-    @Column(name = "image_url")
-    private String imageURL;
 }
