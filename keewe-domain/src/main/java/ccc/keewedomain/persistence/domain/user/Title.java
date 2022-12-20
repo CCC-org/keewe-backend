@@ -29,6 +29,6 @@ public class Title extends BaseTimeEntity {
     @Column(name = "introduction", nullable = false)
     private String introduction;
 
-    @Column(name = "image")
-    private String image;
+    @Column(name = "image_url")
+    private String imageURL;
 }
