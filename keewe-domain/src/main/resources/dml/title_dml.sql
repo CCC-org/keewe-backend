@@ -85,4 +85,4 @@ VALUES (8001, 'FRIEND_INVITATION', '마당발', '친구 10명 초대');
 
 # 키위 타이틀 카테고리
 INSERT IGNORE INTO title (title_id, category, name, introduction)
-VALUES (8000, 'KEEWE_TITLE', 'Shall We Keewe?', '모든 타이틀 달성');
+VALUES (9000, 'KEEWE_TITLE', 'Shall We Keewe?', '모든 타이틀 달성');
