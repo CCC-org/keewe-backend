@@ -10,23 +10,38 @@ import reactor.core.publisher.Sinks;
 
 import java.time.LocalDateTime;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class TitleEventService {
-
-    private final Map<Long, Sinks.Many<TitleEvent>> userConnectionMap =
-            new ConcurrentHashMap<>();
-
+    private final Map<Long, Sinks.Many<TitleEvent>> userConnectionMap;
 
     public Flux<TitleEvent> createEventConn(Long userId) {
-        Sinks.Many<TitleEvent> many = Sinks.many().unicast()
-                                                  .onBackpressureBuffer();
+        Sinks.Many<TitleEvent> eventSinks = userConnectionMap.putIfAbsent(userId, Sinks.many()
+                .unicast()
+                .onBackpressureBuffer());
 
-        userConnectionMap.put(userId, many);
-        many.tryEmitNext(TitleEvent.of("HAND-SHAKE", LocalDateTime.now()));
-        return many.asFlux();
+        // missed event late push
+        eventSinks.tryEmitNext(TitleEvent.of("HAND-SHAKE", LocalDateTime.now()));
+        return eventSinks.asFlux()
+                .doOnCancel(() -> userConnectionMap.remove(userId));
+    }
+
+
+    public void publishTitleEvent(Long userId) {
+        Sinks.Many<TitleEvent> eventSinks = userConnectionMap.get(userId);
+
+        if(eventSinks == null) {
+            log.error("[TES::pushTitleEvent] Connection Loss. userId={}", userId);
+        } else if(eventSinks.currentSubscriberCount() <= 0) {
+            // save event for late push
+        } else {
+            TitleEvent sample = TitleEvent.of("sample", LocalDateTime.now());
+            eventSinks.tryEmitNext(sample);
+        }
+
+
+
     }
 }

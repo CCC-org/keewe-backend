@@ -1,1 +1,12 @@
 
+
+spring:
+  config:
+    activate:
+      on-profile: local
+
+env:
+  node:
+    name: ${ENV_NODE_NAME:NA}
+
+
