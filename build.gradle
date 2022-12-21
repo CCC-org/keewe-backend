@@ -67,6 +67,7 @@ project(':keewe-batch') {
 
 project(':keewe-push') {
 	dependencies {
+		implementation 'org.springframework.boot:spring-boot-starter-webflux'
 		implementation 'org.springframework.boot:spring-boot-starter-amqp'
 	}
 }
