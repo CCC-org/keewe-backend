@@ -1,6 +1,7 @@
 package ccc.keewepush.service;
 
 
+import ccc.keewecore.consts.KeeweConsts;
 import ccc.keewepush.dto.TitleEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,31 +18,49 @@ import java.util.Map;
 public class TitleEventService {
     private final Map<Long, Sinks.Many<TitleEvent>> userConnectionMap;
 
-    public Flux<TitleEvent> createEventConn(Long userId) {
-        Sinks.Many<TitleEvent> eventSinks = userConnectionMap.putIfAbsent(userId, Sinks.many()
-                .unicast()
-                .onBackpressureBuffer());
+    public Flux<TitleEvent> createEventAsFlux(Long userId) {
+        makeAndPutConnectionIfAbsent(userId);
 
-        // missed event late push
-        eventSinks.tryEmitNext(TitleEvent.of("HAND-SHAKE", LocalDateTime.now()));
+        Sinks.Many<TitleEvent> eventSinks = userConnectionMap.get(userId);
+        log.info("[TES::createEventAsFlux] Consumers userId={}, Subs count={}", userId, eventSinks.currentSubscriberCount());
+
+        //TODO missed event late push
+        eventSinks.tryEmitNext(TitleEvent.of(KeeweConsts.EVENT_CONNECTION_HANDSHAKE, LocalDateTime.now()));
+
         return eventSinks.asFlux()
-                .doOnCancel(() -> userConnectionMap.remove(userId));
+                        .doOnError(ex -> failover(ex, userId))
+                        .doFinally(event -> {
+                            log.info("[TES::createEventAsFlux] Connection closed. Sink drop.");
+                            userConnectionMap.remove(userId);
+                        });
     }
-
 
     public void publishTitleEvent(Long userId) {
         Sinks.Many<TitleEvent> eventSinks = userConnectionMap.get(userId);
 
         if(eventSinks == null) {
-            log.error("[TES::pushTitleEvent] Connection Loss. userId={}", userId);
-        } else if(eventSinks.currentSubscriberCount() <= 0) {
-            // save event for late push
-        } else {
-            TitleEvent sample = TitleEvent.of("sample", LocalDateTime.now());
-            eventSinks.tryEmitNext(sample);
+            log.warn("[TES::publishTitleEvent] Connection not found. userId={}", userId);
+            return;
         }
 
-
-
+        TitleEvent sample = TitleEvent.of("sample", LocalDateTime.now());
+        eventSinks.tryEmitNext(sample);
     }
+
+    private void makeAndPutConnectionIfAbsent(Long userId) {
+        userConnectionMap.putIfAbsent(userId, Sinks.many()
+                .unicast()
+                .onBackpressureBuffer());
+    }
+
+
+    private void failover(Throwable t, Long userId) {
+        Sinks.Many<TitleEvent> eventSinks = userConnectionMap.remove(userId);
+
+        if (eventSinks != null) {
+            eventSinks.tryEmitError(t);
+        }
+    }
+
+
 }

@@ -18,8 +18,8 @@ public class TitleEventController {
 
     //FIXME userId 시큐리티
     @GetMapping("/{userId}")
-    public Flux<TitleEvent> createEventConn(@PathVariable Long userId) {
-        return titleEventService.createEventConn(userId);
+    public Flux<TitleEvent> createEventConnection(@PathVariable Long userId) {
+        return titleEventService.createEventAsFlux(userId);
     }
 
 }

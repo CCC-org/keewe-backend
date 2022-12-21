@@ -1,4 +1,9 @@
+spring:
+  profiles:
+    include: domain, core
 
+
+---
 
 spring:
   config:
@@ -10,3 +15,16 @@ env:
     name: ${ENV_NODE_NAME:NA}
 
 
+---
+
+
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+env:
+  node:
+    name: ${ENV_NODE_NAME:NA}
+
+---
