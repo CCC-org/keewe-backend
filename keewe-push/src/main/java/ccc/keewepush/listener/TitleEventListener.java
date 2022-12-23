@@ -1,6 +1,7 @@
 package ccc.keewepush.listener;
 
 
+import ccc.keewepush.dto.TitleEvent;
 import ccc.keewepush.service.TitleEventService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -18,13 +19,18 @@ public class TitleEventListener {
 
     @RabbitListener(queues = "${env.node.name}")
     public void onMessage(Message message) {
-
         try {
             byte[] body = message.getBody();
-            titleEventService.publishTitleEvent(1L);
+            TitleEvent titleEvent = objectMapper.readValue(body, TitleEvent.class);
+            titleEventService.publishTitleEvent(titleEvent, getUser(message));
         } catch (Throwable t) {
-
+            log.error(t.getMessage(), t);
         }
+    }
 
+    private Long getUser(Message message) {
+        return (Long) message.getMessageProperties()
+                            .getHeaders()
+                            .get("userId");
     }
 }

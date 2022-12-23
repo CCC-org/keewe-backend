@@ -25,6 +25,7 @@ import ccc.keewedomain.persistence.repository.user.BookmarkRepository;
 import ccc.keewedomain.persistence.repository.utils.CursorPageable;
 import ccc.keewedomain.service.challenge.ChallengeDomainService;
 import ccc.keewedomain.service.user.UserDomainService;
+import ccc.keeweinfra.aop.annotations.TitleEventPublish;
 import ccc.keeweinfra.service.MQPublishService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -53,7 +54,7 @@ public class InsightDomainService {
     private final CInsightViewRepository cInsightViewRepository;
     private final CReactionCountRepository cReactionCountRepository;
 
-    //TODO 참가한 챌린지에 기록하기
+    @TitleEventPublish
     public Insight create(InsightCreateDto dto) {
         User writer = userDomainService.getUserByIdOrElseThrow(dto.getWriterId());
         Drawer drawer = drawerDomainService.getDrawerIfOwner(dto.getDrawerId(), writer);

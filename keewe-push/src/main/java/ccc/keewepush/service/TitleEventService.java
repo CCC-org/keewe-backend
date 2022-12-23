@@ -35,7 +35,7 @@ public class TitleEventService {
                         });
     }
 
-    public void publishTitleEvent(Long userId) {
+    public void publishTitleEvent(TitleEvent titleEvent, Long userId) {
         Sinks.Many<TitleEvent> eventSinks = userConnectionMap.get(userId);
 
         if(eventSinks == null) {
@@ -43,14 +43,13 @@ public class TitleEventService {
             return;
         }
 
-        TitleEvent sample = TitleEvent.of("sample", LocalDateTime.now());
-        eventSinks.tryEmitNext(sample);
+        eventSinks.tryEmitNext(titleEvent);
     }
 
     private void makeAndPutConnectionIfAbsent(Long userId) {
         userConnectionMap.putIfAbsent(userId, Sinks.many()
-                .unicast()
-                .onBackpressureBuffer());
+                        .unicast()
+                        .onBackpressureBuffer());
     }
 
 
