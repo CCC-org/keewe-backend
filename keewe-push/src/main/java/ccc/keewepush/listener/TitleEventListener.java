@@ -29,8 +29,6 @@ public class TitleEventListener {
     }
 
     private Long getUser(Message message) {
-        return (Long) message.getMessageProperties()
-                            .getHeaders()
-                            .get("userId");
+        return (Long) message.getMessageProperties().getHeaders().get("userId");
     }
 }

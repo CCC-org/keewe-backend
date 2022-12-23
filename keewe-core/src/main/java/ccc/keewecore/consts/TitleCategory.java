@@ -1,4 +1,4 @@
-package ccc.keewedomain.persistence.domain.user.enums;
+package ccc.keewecore.consts;
 
 public enum TitleCategory {
     SIGNUP,

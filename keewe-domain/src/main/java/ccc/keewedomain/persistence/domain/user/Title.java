@@ -1,6 +1,6 @@
 package ccc.keewedomain.persistence.domain.user;
 
-import ccc.keewedomain.persistence.domain.user.enums.TitleCategory;
+import ccc.keewecore.consts.TitleCategory;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
