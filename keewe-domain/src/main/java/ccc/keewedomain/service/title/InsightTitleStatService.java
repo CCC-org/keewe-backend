@@ -40,9 +40,9 @@ public class InsightTitleStatService extends AbstractTitleStatService<Long, Insi
     }
 
     @Override
-    protected Optional<InsightTitle> getTitleOpts(Long target) {
+    protected Optional<InsightTitle> getAcquiredTitleOps(Long target) {
         return Arrays.stream(InsightTitle.values())
-                .filter(it -> it.id > 0 && it.standard == target)
+                .filter(it -> it.standard == target)
                 .map(Optional::of)
                 .findFirst()
                 .orElseGet(() ->Optional.ofNullable(null));

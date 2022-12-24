@@ -1,6 +1,6 @@
 package ccc.keeweapi.service.insight;
 
-import ccc.keeweapi.aop.annotations.TitleEventPublish;
+import ccc.keeweapi.utils.annotations.TitleEventPublish;
 import ccc.keeweapi.component.InsightAssembler;
 import ccc.keeweapi.component.ProfileAssembler;
 import ccc.keeweapi.dto.insight.*;

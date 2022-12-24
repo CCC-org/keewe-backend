@@ -21,7 +21,7 @@ public class CInsightAggregationRepository {
     }
 
     public boolean saveIfAbsent(String userId) {
-        return redisTemplate.opsForValue().setIfAbsent(createKeyFromUserId(userId), 0L);
+        return redisTemplate.opsForValue().setIfAbsent(createKeyFromUserId(userId), String.valueOf(0L));
     }
 
     public String createKeyFromUserId(String userId) {

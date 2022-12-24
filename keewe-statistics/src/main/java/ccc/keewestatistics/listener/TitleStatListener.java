@@ -32,6 +32,7 @@ public class TitleStatListener {
 
         try {
             KeeweTitleHeader header = KeeweTitleHeader.toHeader(message);
+            log.info("[TSL::onMessage] Title event consuming. category={}, userId={}", header.getCategory(), header.getUserId());
             statServiceMap.get(header.getCategory()).aggregateStat(header);
             channel.basicAck(tag, false);
         } catch (Throwable t) {

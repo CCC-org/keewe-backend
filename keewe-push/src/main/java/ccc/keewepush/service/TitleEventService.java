@@ -3,8 +3,11 @@ package ccc.keewepush.service;
 
 import ccc.keewecore.consts.KeeweConsts;
 import ccc.keewecore.dto.TitleEvent;
+import ccc.keewecore.utils.KeeweTitleHeader;
+import ccc.keewecore.utils.ObjectMapperUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.core.Message;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Sinks;
@@ -35,14 +38,17 @@ public class TitleEventService {
                         });
     }
 
-    public void publishTitleEvent(TitleEvent titleEvent, Long userId) {
-        Sinks.Many<TitleEvent> eventSinks = userConnectionMap.get(userId);
+    public void publishTitleAcquireEvent(Message message) {
+        KeeweTitleHeader header = KeeweTitleHeader.toHeader(message);
+        log.info("[TES::publishTitleAcquireEvent] category={} userId={} body={}", header.getCategory(), header.getUserId(), new String(message.getBody()));
+        Sinks.Many<TitleEvent> eventSinks = userConnectionMap.get(Long.valueOf(header.getUserId()));
 
         if(eventSinks == null) {
-            log.warn("[TES::publishTitleEvent] Connection not found. userId={}", userId);
+            log.warn("[TES::publishTitleAcquireEvent] Connection not found. userId={}", header.getUserId());
             return;
         }
 
+        TitleEvent titleEvent = ObjectMapperUtils.readValue(message.getBody(), TitleEvent.class);
         eventSinks.tryEmitNext(titleEvent);
     }
 
