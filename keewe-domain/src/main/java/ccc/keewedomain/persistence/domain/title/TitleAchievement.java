@@ -1,6 +1,7 @@
-package ccc.keewedomain.persistence.domain.user;
+package ccc.keewedomain.persistence.domain.title;
 
 import ccc.keewedomain.persistence.domain.common.BaseTimeEntity;
+import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.persistence.domain.user.id.TitleAchievementId;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -26,4 +27,11 @@ public class TitleAchievement extends BaseTimeEntity {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "title_id")
     private Title title;
+
+    public static TitleAchievement of(User user, Title title) {
+        TitleAchievement titleAchievement = new TitleAchievement();
+        titleAchievement.user = user;
+        titleAchievement.title = title;
+        return titleAchievement;
+    }
 }

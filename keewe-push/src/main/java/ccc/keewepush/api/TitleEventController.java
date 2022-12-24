@@ -1,7 +1,7 @@
 package ccc.keewepush.api;
 
 
-import ccc.keewepush.dto.TitleEvent;
+import ccc.keewecore.dto.TitleEvent;
 import ccc.keewepush.service.TitleEventService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -1,4 +1,4 @@
-package ccc.keewedomain.persistence.domain.user;
+package ccc.keewedomain.persistence.domain.title;
 
 import ccc.keewecore.consts.TitleCategory;
 import lombok.AccessLevel;

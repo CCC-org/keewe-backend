@@ -2,7 +2,7 @@ package ccc.keewepush.service;
 
 
 import ccc.keewecore.consts.KeeweConsts;
-import ccc.keewepush.dto.TitleEvent;
+import ccc.keewecore.dto.TitleEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -25,7 +25,7 @@ public class TitleEventService {
         log.info("[TES::createEventAsFlux] Consumers userId={}, Subs count={}", userId, eventSinks.currentSubscriberCount());
 
         //TODO missed event late push
-        eventSinks.tryEmitNext(TitleEvent.of(KeeweConsts.EVENT_CONNECTION_HANDSHAKE, LocalDateTime.now()));
+        eventSinks.tryEmitNext(TitleEvent.of(null, KeeweConsts.EVENT_CONNECTION_HANDSHAKE, KeeweConsts.EVENT_CONNECTION_HANDSHAKE, LocalDateTime.now()));
 
         return eventSinks.asFlux()
                         .doOnError(ex -> failover(ex, userId))

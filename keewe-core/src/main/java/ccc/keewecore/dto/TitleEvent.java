@@ -1,6 +1,7 @@
-package ccc.keewepush.dto;
+package ccc.keewecore.dto;
 
 
+import ccc.keewecore.consts.TitleCategory;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,6 +12,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor(staticName = "of")
 public class TitleEvent {
-    private String title;
-    private LocalDateTime createTime;
+    private TitleCategory category;
+    private String name;
+    private String introduction;
+    private LocalDateTime createdTime;
 }

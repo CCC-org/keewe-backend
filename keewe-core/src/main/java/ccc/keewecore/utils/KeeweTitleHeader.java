@@ -14,10 +14,10 @@ public class KeeweTitleHeader {
     private String userId;
 
     public static KeeweTitleHeader toHeader(Message message) {
-        KeeweTitleHeader keeweTitleHeader = new KeeweTitleHeader();
-        keeweTitleHeader.userId = KeeweStringUtils.getOrDefault(message.getMessageProperties().getHeader("user-id"), "");
-        keeweTitleHeader.category = TitleCategory.valueOf(KeeweStringUtils.getOrDefault(message.getMessageProperties().getHeader("user-id"), ""));
-        return keeweTitleHeader;
+        KeeweTitleHeader header = new KeeweTitleHeader();
+        header.userId = KeeweStringUtils.getOrDefault(message.getMessageProperties().getHeader("user-id"), "");
+        header.category = TitleCategory.valueOf(KeeweStringUtils.getOrDefault(message.getMessageProperties().getHeader("category"), ""));
+        return header;
     }
 
 }

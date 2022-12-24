@@ -1,7 +1,7 @@
 package ccc.keewepush.listener;
 
 
-import ccc.keewepush.dto.TitleEvent;
+import ccc.keewecore.dto.TitleEvent;
 import ccc.keewepush.service.TitleEventService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;

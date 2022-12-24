@@ -2,9 +2,10 @@ package ccc.keewestatistics.listener;
 
 
 import ccc.keewecore.consts.KeeweConsts;
-import ccc.keewedomain.service.title.TitleStatService;
+import ccc.keewecore.consts.TitleCategory;
+import ccc.keewecore.utils.KeeweTitleHeader;
+import ccc.keewedomain.service.title.AbstractTitleStatService;
 import com.rabbitmq.client.Channel;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -13,18 +14,25 @@ import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Component
 @Slf4j
-@RequiredArgsConstructor
 public class TitleStatListener {
-    private final TitleStatService titleStatService;
+    private final Map<TitleCategory, AbstractTitleStatService> statServiceMap;
+
+    public TitleStatListener(List<AbstractTitleStatService> abstractTitleStatServices) {
+        statServiceMap = abstractTitleStatServices.stream().collect(Collectors.toMap(v -> v.getProcessableCategory(), v -> v));
+    }
 
     @RabbitListener(queues = KeeweConsts.TITLE_STAT_QUEUE, ackMode = "MANUAL")
     void onMessage(Message message, Channel channel, @Header(AmqpHeaders.DELIVERY_TAG) long tag) throws IOException {
 
         try {
-            titleStatService.aggregate(message);
+            KeeweTitleHeader header = KeeweTitleHeader.toHeader(message);
+            statServiceMap.get(header.getCategory()).aggregateStat(header);
             channel.basicAck(tag, false);
         } catch (Throwable t) {
             log.error(t.getMessage(), t);

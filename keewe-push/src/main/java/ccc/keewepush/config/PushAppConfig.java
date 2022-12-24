@@ -2,7 +2,7 @@ package ccc.keewepush.config;
 
 
 import ccc.keewecore.consts.KeeweConsts;
-import ccc.keewepush.dto.TitleEvent;
+import ccc.keewecore.dto.TitleEvent;
 import org.springframework.amqp.core.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
