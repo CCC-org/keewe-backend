@@ -48,11 +48,11 @@ public abstract class AbstractTitleStatService<T, S> {
                 });
     }
 
+    public abstract TitleCategory getProcessableCategory();
+
     protected abstract T aggregate(KeeweTitleHeader header);
 
     protected abstract Optional<S> getAcquiredTitleOps(T target);
 
     protected abstract Title saveAndGetTitle(S param);
-
-    public abstract TitleCategory getProcessableCategory();
 }
