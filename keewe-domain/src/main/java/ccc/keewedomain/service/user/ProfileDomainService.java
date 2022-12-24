@@ -4,11 +4,14 @@ import ccc.keewecore.consts.KeeweRtnConsts;
 import ccc.keewecore.exception.KeeweException;
 import ccc.keewedomain.dto.user.FollowCheckDto;
 import ccc.keewedomain.dto.user.FollowToggleDto;
+import ccc.keewedomain.dto.user.UploadProfilePhotoDto;
 import ccc.keewedomain.persistence.domain.user.Follow;
+import ccc.keewedomain.persistence.domain.user.ProfilePhoto;
 import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.dto.user.OnboardDto;
 import ccc.keewedomain.persistence.domain.user.id.FollowId;
 import ccc.keewedomain.persistence.repository.user.FollowRepository;
+import ccc.keeweinfra.service.StoreService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -19,6 +22,7 @@ import org.springframework.stereotype.Service;
 public class ProfileDomainService {
     private final UserDomainService userDomainService;
     private final FollowRepository followRepository;
+    private final StoreService storeService;
 
     public User onboard(OnboardDto dto) {
         User user = userDomainService.getUserByIdOrElseThrow(dto.getUserId());
@@ -52,6 +56,15 @@ public class ProfileDomainService {
 
     public boolean isFollowing(FollowCheckDto followCheckDto) {
         return followRepository.existsById(FollowId.of(followCheckDto.getTargetId(), followCheckDto.getUserId()));
+    }
+
+    public String uploadProfilePhoto(UploadProfilePhotoDto uploadProfilePhotoDto) {
+        User user = userDomainService.getUserByIdOrElseThrow(uploadProfilePhotoDto.getUserId());
+        String imageURL = storeService.upload(uploadProfilePhotoDto.getImageFile());
+
+        user.setProfilePhoto(ProfilePhoto.of(imageURL)); // TODO : image remove by store service
+
+        return imageURL;
     }
 
     private void validateSelfFollowing(FollowToggleDto followDto) {

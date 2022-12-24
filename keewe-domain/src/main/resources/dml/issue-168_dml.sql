@@ -1,0 +1,2 @@
+ALTER TABLE profile_photo
+    ADD COLUMN image VARCHAR(255) NOT NULL

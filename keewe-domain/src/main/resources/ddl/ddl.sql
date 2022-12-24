@@ -4,6 +4,7 @@
 CREATE TABLE IF NOT EXISTS `profile_photo`
 (
     profile_photo_id    BIGINT(20)      NOT NULL        AUTO_INCREMENT,
+    image               VARCHAR(255)    NOT NULL,
     deleted             BIT             NOT NULL,
     created_at          DATETIME(6)     NOT NULL,
     updated_at          DATETIME(6)     NOT NULL,
