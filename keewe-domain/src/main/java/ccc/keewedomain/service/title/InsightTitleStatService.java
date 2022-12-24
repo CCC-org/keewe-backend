@@ -39,23 +39,25 @@ public class InsightTitleStatService extends AbstractTitleStatService<Long, Insi
         return insightAggregationRepository.get(header.getUserId());
     }
 
-    @Override
-    protected Optional<InsightTitle> getAcquiredTitleOps(Long target) {
-        return Arrays.stream(InsightTitle.values())
-                .filter(it -> it.standard == target)
-                .map(Optional::of)
-                .findFirst()
-                .orElseGet(() ->Optional.ofNullable(null));
-    }
-
-    @Override
-    protected Title saveAndGetTitle(InsightTitle param) {
-        return titleRepository.findById(param.id).orElseThrow();
-    }
 
     @Override
     public TitleCategory getProcessableCategory() {
         return TitleCategory.INSIGHT;
     }
+
+
+    @Override
+    protected Optional<InsightTitle> getAcquiredTitleOps(Long target) {
+        return Arrays.stream(InsightTitle.values())
+                .filter(it -> it.getStandard().equals(target))
+                .limit(1)
+                .findFirst();
+    }
+
+    @Override
+    protected Title saveAndGetTitle(InsightTitle param) {
+        return titleRepository.findById(param.getId()).orElseThrow();
+    }
+
 
 }

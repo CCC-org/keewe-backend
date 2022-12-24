@@ -12,24 +12,20 @@ public class CInsightAggregationRepository {
 
     public void incrementInsightCount(String userId) {
         saveIfAbsent(userId);
-        redisTemplate.opsForValue().increment(createKeyFromUserId(userId));
+        redisTemplate.opsForValue().increment(createInsightAggregateKey(userId));
     }
 
     public Long get(String userId) {
-        String count = (String) redisTemplate.opsForValue().get(createKeyFromUserId(userId));
+        String count = (String) redisTemplate.opsForValue().get(createInsightAggregateKey(userId));
         return Long.valueOf(count);
     }
 
     public boolean saveIfAbsent(String userId) {
-        return redisTemplate.opsForValue().setIfAbsent(createKeyFromUserId(userId), String.valueOf(0L));
+        return redisTemplate.opsForValue().setIfAbsent(createInsightAggregateKey(userId), String.valueOf(0L));
     }
 
-    public String createKeyFromUserId(String userId) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(TitleCategory.INSIGHT);
-        sb.append("-");
-        sb.append(userId);
-        return new String(sb);
+    public String createInsightAggregateKey(String userId) {
+        return TitleCategory.INSIGHT + "-" + userId;
     }
 
 }
