@@ -90,7 +90,9 @@ project(':keewe-infra') {
 
 	dependencies {
 		implementation project(path: ':keewe-core', configuration: 'default')
-		implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'// todo :: aws config
+		implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+		implementation 'com.amazonaws:aws-java-sdk-s3:1.12.362'
+
 	}
 }
 
