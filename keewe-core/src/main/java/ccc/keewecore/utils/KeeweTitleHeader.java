@@ -5,10 +5,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.amqp.core.Message;
+import org.springframework.amqp.core.MessageProperties;
 
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
+@AllArgsConstructor(staticName = "of")
 public class KeeweTitleHeader {
     private TitleCategory category;
     private String userId;
@@ -18,6 +19,14 @@ public class KeeweTitleHeader {
         header.userId = KeeweStringUtils.getOrDefault(message.getMessageProperties().getHeader("user-id"), "");
         header.category = TitleCategory.valueOf(KeeweStringUtils.getOrDefault(message.getMessageProperties().getHeader("category"), ""));
         return header;
+    }
+
+    public Message toMessageWithHeader(Message message) {
+        MessageProperties messageProperties = message.getMessageProperties();
+        messageProperties.setHeader("user-id", userId);
+        messageProperties.setHeader("category", category);
+
+        return message;
     }
 
 }
