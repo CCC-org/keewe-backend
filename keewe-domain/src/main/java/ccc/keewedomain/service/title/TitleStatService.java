@@ -14,17 +14,17 @@ import java.util.Arrays;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class TitleStatisticsService {
+public class TitleStatService {
 
     private final CInsightAggregationRepository insightAggregationRepository;
-    private final ObjectProvider<TitleStatisticsService> lazyLoadedTitleService;
+    private final ObjectProvider<TitleStatService> lazyTitleStatService;
 
     public void aggregate(Message message) {
         KeeweTitleHeader header = KeeweTitleHeader.toHeader(message);
 
         switch (header.getCategory()) {
             case INSIGHT:
-                aggregateInsightUploadPerUser(header.getUserId());
+                aggregateInsightCount(header.getUserId());
                 break;
             default:
 
@@ -32,11 +32,9 @@ public class TitleStatisticsService {
         }
     }
 
-    private void aggregateInsightUploadPerUser(String userId) {
+    private void aggregateInsightCount(String userId) {
         insightAggregationRepository.incrementInsightCount(userId);
-
-        lazyLoadedTitleService.getIfAvailable()
-                .compareNumberEquals(insightAggregationRepository.get(userId), 5L, 10L, 50L, 100L);
+        lazyTitleStatService.getIfAvailable().compareNumberEquals(insightAggregationRepository.get(userId), 5L, 10L, 50L, 100L);
     }
 
 

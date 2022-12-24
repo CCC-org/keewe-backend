@@ -38,4 +38,9 @@ public class MQConfig {
         return BindingBuilder.bind(insightReactQueue).to(insightReactExchange).with(KeeweConsts.DEFAULT_ROUTING_KEY).noargs();
     }
 
+    @Bean
+    Queue titleStatQueue()  {
+        return QueueBuilder.durable(KeeweConsts.TITLE_STAT_QUEUE).build();
+    }
+
 }

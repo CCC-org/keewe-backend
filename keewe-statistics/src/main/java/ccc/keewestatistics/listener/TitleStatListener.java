@@ -2,8 +2,7 @@ package ccc.keewestatistics.listener;
 
 
 import ccc.keewecore.consts.KeeweConsts;
-import ccc.keewecore.consts.TitleCategory;
-import ccc.keewedomain.service.title.TitleStatisticsService;
+import ccc.keewedomain.service.title.TitleStatService;
 import com.rabbitmq.client.Channel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,14 +17,14 @@ import java.io.IOException;
 @Component
 @Slf4j
 @RequiredArgsConstructor
-public class TitleStatisticsListener {
-    private final TitleStatisticsService titleStatisticsService;
+public class TitleStatListener {
+    private final TitleStatService titleStatService;
 
-    @RabbitListener(queues = KeeweConsts.INSIGHT_VIEW_QUEUE, ackMode = "MANUAL")
+    @RabbitListener(queues = KeeweConsts.TITLE_STAT_QUEUE, ackMode = "MANUAL")
     void onMessage(Message message, Channel channel, @Header(AmqpHeaders.DELIVERY_TAG) long tag) throws IOException {
 
         try {
-            titleStatisticsService.aggregate(message);
+            titleStatService.aggregate(message);
             channel.basicAck(tag, false);
         } catch (Throwable t) {
             log.error(t.getMessage(), t);
