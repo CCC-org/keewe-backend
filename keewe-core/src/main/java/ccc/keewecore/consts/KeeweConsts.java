@@ -18,4 +18,6 @@ public class KeeweConsts {
     public static final String LONG_MAX_STRING = "9223372036854775807";
 
     public static final Long REPRESENTATIVE_COMMENT_REPLY_LIMIT = 2L;
+
+    public static final int MY_PAGE_TITLE_LIMIT = 3;
 }

@@ -18,7 +18,7 @@ public class TitleAchievedQueryRepository {
 
     private final JPAQueryFactory queryFactory;
 
-    public List<TitleAchievement> findByUserIdOrderByCreatedAtDesc(User target, int n) {
+    public List<TitleAchievement> findByUserIdOrderByCreatedAtDesc(User target, int limit) {
         return queryFactory
                 .select(titleAchievement)
                 .from(titleAchievement)
@@ -26,7 +26,7 @@ public class TitleAchievedQueryRepository {
                 .fetchJoin()
                 .where(titleAchievement.user.eq(target))
                 .orderBy(titleAchievement.createdAt.desc())
-                .limit(n)
+                .limit(limit)
                 .fetch();
     }
 }

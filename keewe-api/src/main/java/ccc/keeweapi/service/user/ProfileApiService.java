@@ -17,6 +17,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static ccc.keewecore.consts.KeeweConsts.MY_PAGE_TITLE_LIMIT;
+
 
 @Service
 @RequiredArgsConstructor
@@ -63,8 +65,7 @@ public class ProfileApiService {
 
     @Transactional(readOnly = true)
     public MyPageTitleResponse getMyPageTitles(Long userId) {
-        int displayNumber = 3;
-        List<TitleAchievement> titleAchievements = profileDomainService.getTitleAchievements(userId, displayNumber);
+        List<TitleAchievement> titleAchievements = profileDomainService.getTitleAchievements(userId, MY_PAGE_TITLE_LIMIT);
         Long total = profileDomainService.getAchievedTitleCount(userId);
 
         return profileAssembler.toMyPageTitleResponse(total, titleAchievements);
