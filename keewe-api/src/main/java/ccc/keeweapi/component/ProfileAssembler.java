@@ -1,19 +1,19 @@
 package ccc.keeweapi.component;
 
-import ccc.keeweapi.dto.user.FollowToggleResponse;
-import ccc.keeweapi.dto.user.OnboardRequest;
-import ccc.keeweapi.dto.user.OnboardResponse;
-import ccc.keeweapi.dto.user.ProfileMyPageResponse;
+import ccc.keeweapi.dto.user.*;
 import ccc.keeweapi.utils.SecurityUtil;
 import ccc.keewedomain.dto.user.FollowCheckDto;
 import ccc.keewedomain.dto.user.FollowToggleDto;
-import ccc.keewedomain.dto.user.UploadProfilePhotoDto;
-import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.dto.user.OnboardDto;
+import ccc.keewedomain.dto.user.UploadProfilePhotoDto;
 import ccc.keewedomain.persistence.domain.common.Interest;
+import ccc.keewedomain.persistence.domain.title.Title;
+import ccc.keewedomain.persistence.domain.title.TitleAchievement;
+import ccc.keewedomain.persistence.domain.user.User;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
@@ -60,6 +60,24 @@ public class ProfileAssembler {
                 followerCount,
                 followingCount,
                 challengeName
+        );
+    }
+
+    public MyPageTitleResponse toMyPageTitleResponse(Long total, List<TitleAchievement> achievements) {
+        List<AchievedTitleResponse> achievedTitleResponses = achievements.stream()
+                .map(this::toAchievedTitleResponse)
+                .collect(Collectors.toList());
+
+        return MyPageTitleResponse.of(total, achievedTitleResponses);
+    }
+
+    public AchievedTitleResponse toAchievedTitleResponse(TitleAchievement achievement) {
+        Title title = achievement.getTitle();
+        return AchievedTitleResponse.of(
+                title.getId(),
+                title.getName(),
+                title.getIntroduction(),
+                achievement.getCreatedAt()
         );
     }
 }
