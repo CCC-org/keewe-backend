@@ -24,6 +24,7 @@ import static org.springframework.http.HttpMethod.GET;
 public class SecurityConfig {
     private final String[] SWAGGER_URL = {"/", "/docs/openapi3.yaml", "/favicon.ico"};
     private final String SIGNUP_URL = "/api/v1/user/*";
+    private final String FORCE_SIGNUP_URL = "/api/v1/user/force-signup/*";
     private final String HEALTH_CHECK_URL = "/api/health-check";
 
     private final UserDetailsService userService;
@@ -36,6 +37,7 @@ public class SecurityConfig {
         return web -> web.ignoring()
                 .antMatchers(GET, SWAGGER_URL)
                 .antMatchers(GET, SIGNUP_URL)
+                .antMatchers(GET, FORCE_SIGNUP_URL)
                 .antMatchers(GET, HEALTH_CHECK_URL)
                 .antMatchers(GET, "/api/v1/oauth/**")
                 .antMatchers("/h2-console/**");

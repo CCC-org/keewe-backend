@@ -5,16 +5,19 @@ import ccc.keewecore.exception.KeeweException;
 import ccc.keewedomain.dto.user.FollowCheckDto;
 import ccc.keewedomain.dto.user.FollowToggleDto;
 import ccc.keewedomain.dto.user.UploadProfilePhotoDto;
-import ccc.keewedomain.persistence.domain.user.Follow;
-import ccc.keewedomain.persistence.domain.user.ProfilePhoto;
-import ccc.keewedomain.persistence.domain.user.User;
+import ccc.keewedomain.persistence.domain.user.*;
 import ccc.keewedomain.dto.user.OnboardDto;
 import ccc.keewedomain.persistence.domain.user.id.FollowId;
 import ccc.keewedomain.persistence.repository.user.FollowRepository;
+import ccc.keewedomain.persistence.repository.user.TitleAchievedQueryRepository;
+import ccc.keewedomain.persistence.repository.user.TitleAchievementRepository;
 import ccc.keeweinfra.service.StoreService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -23,6 +26,8 @@ public class ProfileDomainService {
     private final UserDomainService userDomainService;
     private final FollowRepository followRepository;
     private final StoreService storeService;
+    private final TitleAchievementRepository titleAchievementRepository;
+    private final TitleAchievedQueryRepository titleAchievedQueryRepository;
 
     public User onboard(OnboardDto dto) {
         User user = userDomainService.getUserByIdOrElseThrow(dto.getUserId());
@@ -79,5 +84,17 @@ public class ProfileDomainService {
 
     public Long getFollowingCount(User user) {
         return followRepository.countByFollower(user);
+    }
+
+    @Transactional(readOnly = true)
+    public List<TitleAchievement> getTitleAchievements(Long userId, int n) {
+        User user = userDomainService.getUserByIdOrElseThrow(userId);
+        return titleAchievedQueryRepository.findByUserIdOrderByCreatedAtDesc(user, n);
+    }
+
+    @Transactional(readOnly = true)
+    public Long getAchievedTitleCount(Long userId) {
+        User user = userDomainService.getUserByIdOrElseThrow(userId);
+        return titleAchievementRepository.countByUser(user);
     }
 }
