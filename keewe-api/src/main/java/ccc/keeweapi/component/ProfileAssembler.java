@@ -4,12 +4,12 @@ import ccc.keeweapi.dto.user.*;
 import ccc.keeweapi.utils.SecurityUtil;
 import ccc.keewedomain.dto.user.FollowCheckDto;
 import ccc.keewedomain.dto.user.FollowToggleDto;
-import ccc.keewedomain.dto.user.UploadProfilePhotoDto;
-import ccc.keewedomain.persistence.domain.user.Title;
-import ccc.keewedomain.persistence.domain.user.TitleAchievement;
-import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.dto.user.OnboardDto;
+import ccc.keewedomain.dto.user.UploadProfilePhotoDto;
 import ccc.keewedomain.persistence.domain.common.Interest;
+import ccc.keewedomain.persistence.domain.title.Title;
+import ccc.keewedomain.persistence.domain.title.TitleAchievement;
+import ccc.keewedomain.persistence.domain.user.User;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 

@@ -1,7 +1,6 @@
 package ccc.keewedomain.persistence.repository.user;
 
-import ccc.keewedomain.persistence.domain.user.Title;
-import ccc.keewedomain.persistence.domain.user.TitleAchievement;
+import ccc.keewedomain.persistence.domain.title.TitleAchievement;
 import ccc.keewedomain.persistence.domain.user.User;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -9,8 +8,8 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-import static ccc.keewedomain.persistence.domain.user.QTitle.title;
-import static ccc.keewedomain.persistence.domain.user.QTitleAchievement.titleAchievement;
+import static ccc.keewedomain.persistence.domain.title.QTitle.title;
+import static ccc.keewedomain.persistence.domain.title.QTitleAchievement.titleAchievement;
 
 @Repository
 @RequiredArgsConstructor

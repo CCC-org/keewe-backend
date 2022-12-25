@@ -4,7 +4,7 @@ import ccc.keeweapi.component.ProfileAssembler;
 import ccc.keeweapi.dto.user.*;
 import ccc.keeweapi.utils.SecurityUtil;
 import ccc.keewedomain.dto.user.FollowCheckDto;
-import ccc.keewedomain.persistence.domain.user.TitleAchievement;
+import ccc.keewedomain.persistence.domain.title.TitleAchievement;
 import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.service.challenge.ChallengeDomainService;
 import ccc.keewedomain.service.user.ProfileDomainService;

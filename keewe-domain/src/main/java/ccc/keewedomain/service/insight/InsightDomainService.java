@@ -53,7 +53,6 @@ public class InsightDomainService {
     private final CInsightViewRepository cInsightViewRepository;
     private final CReactionCountRepository cReactionCountRepository;
 
-    //TODO 참가한 챌린지에 기록하기
     public Insight create(InsightCreateDto dto) {
         User writer = userDomainService.getUserByIdOrElseThrow(dto.getWriterId());
         Drawer drawer = drawerDomainService.getDrawerIfOwner(dto.getDrawerId(), writer);

@@ -5,6 +5,7 @@ import ccc.keewecore.exception.KeeweException;
 import ccc.keewedomain.dto.user.FollowCheckDto;
 import ccc.keewedomain.dto.user.FollowToggleDto;
 import ccc.keewedomain.dto.user.UploadProfilePhotoDto;
+import ccc.keewedomain.persistence.domain.title.TitleAchievement;
 import ccc.keewedomain.persistence.domain.user.*;
 import ccc.keewedomain.dto.user.OnboardDto;
 import ccc.keewedomain.persistence.domain.user.id.FollowId;
