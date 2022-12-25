@@ -1,1 +1,32 @@
+spring:
+  profiles:
+    include: domain, core
 
+server:
+  port: 5050
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: local
+
+env:
+  node:
+    name: ${ENV_NODE_NAME:NA}
+
+
+---
+
+
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+env:
+  node:
+    name: ${ENV_NODE_NAME:NA}
+
+---

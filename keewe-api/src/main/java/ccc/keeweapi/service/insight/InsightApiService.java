@@ -1,14 +1,15 @@
 package ccc.keeweapi.service.insight;
 
+import ccc.keeweapi.utils.annotations.TitleEventPublish;
 import ccc.keeweapi.component.InsightAssembler;
 import ccc.keeweapi.component.ProfileAssembler;
 import ccc.keeweapi.dto.insight.*;
 import ccc.keeweapi.utils.SecurityUtil;
+import ccc.keewecore.consts.TitleCategory;
 import ccc.keewedomain.dto.insight.InsightGetDto;
 import ccc.keewedomain.persistence.domain.challenge.ChallengeParticipation;
 import ccc.keewedomain.persistence.domain.insight.Insight;
 import ccc.keewedomain.persistence.repository.utils.CursorPageable;
-import ccc.keewedomain.service.challenge.ChallengeDomainService;
 import ccc.keewedomain.service.insight.InsightDomainService;
 import ccc.keewedomain.service.user.ProfileDomainService;
 import lombok.RequiredArgsConstructor;
@@ -16,8 +17,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -25,12 +26,12 @@ public class InsightApiService {
 
     private final InsightDomainService insightDomainService;
     private final ProfileDomainService profileDomainService;
-    private final ChallengeDomainService challengeDomainService;
     private final InsightAssembler insightAssembler;
     private final ProfileAssembler profileAssembler;
 
 
     @Transactional
+    @TitleEventPublish(titleCategory = TitleCategory.INSIGHT)
     public InsightCreateResponse create(InsightCreateRequest request) {
         Insight insight = insightDomainService.create(insightAssembler.toInsightCreateDto(request));
         return insightAssembler.toInsightCreateResponse(insight);

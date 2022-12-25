@@ -18,4 +18,7 @@ public class KeeweConsts {
     public static final String LONG_MAX_STRING = "9223372036854775807";
 
     public static final Long REPRESENTATIVE_COMMENT_REPLY_LIMIT = 2L;
+    public static final String EVENT_CONNECTION_HANDSHAKE = "SUCCESS";
+    public static final String TITLE_ACQUIREMENT_EXCHANGE = "TITLE-ACQUIREMENT-EXCHANGE";
+    public static final String TITLE_STAT_QUEUE = "TITLE-STAT-QUEUE";
 }
