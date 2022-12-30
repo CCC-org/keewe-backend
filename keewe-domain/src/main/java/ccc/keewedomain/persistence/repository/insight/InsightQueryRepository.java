@@ -59,7 +59,6 @@ public class InsightQueryRepository {
                 .from(insight)
                 .where(followFilter
                         .and(insight.id.lt(cPage.getCursor()))
-                        .and(insight.writer.ne(user))
                 )
                 .innerJoin(insight.writer, QUser.user)
                 .fetchJoin()
