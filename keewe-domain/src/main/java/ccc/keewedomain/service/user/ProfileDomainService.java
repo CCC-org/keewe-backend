@@ -9,16 +9,19 @@ import ccc.keewedomain.persistence.domain.title.TitleAchievement;
 import ccc.keewedomain.persistence.domain.user.*;
 import ccc.keewedomain.dto.user.OnboardDto;
 import ccc.keewedomain.persistence.domain.user.id.FollowId;
-import ccc.keewedomain.persistence.repository.user.FollowRepository;
-import ccc.keewedomain.persistence.repository.user.TitleAchievedQueryRepository;
-import ccc.keewedomain.persistence.repository.user.TitleAchievementRepository;
+import ccc.keewedomain.persistence.repository.user.*;
+import ccc.keewedomain.persistence.repository.utils.CursorPageable;
 import ccc.keeweinfra.service.StoreService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +32,9 @@ public class ProfileDomainService {
     private final StoreService storeService;
     private final TitleAchievementRepository titleAchievementRepository;
     private final TitleAchievedQueryRepository titleAchievedQueryRepository;
+    private final FollowQueryRepository followQueryRepository;
+
+    private final UserQueryRepository userQueryRepository;
 
     public User onboard(OnboardDto dto) {
         User user = userDomainService.getUserByIdOrElseThrow(dto.getUserId());
@@ -97,5 +103,16 @@ public class ProfileDomainService {
     public Long getAchievedTitleCount(Long userId) {
         User user = userDomainService.getUserByIdOrElseThrow(userId);
         return titleAchievementRepository.countByUser(user);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Follow> getFollowers(Long userId, CursorPageable<LocalDateTime> cPage) {
+        User user = userDomainService.getUserByIdOrElseThrow(userId);
+        return userQueryRepository.findFollowersByUserCreatedAtDesc(user, cPage);
+    }
+
+    @Transactional(readOnly = true)
+    public Set<Long> isFollowing(User user, List<User> targets) {
+        return followQueryRepository.existsByIds(user, targets);
     }
 }

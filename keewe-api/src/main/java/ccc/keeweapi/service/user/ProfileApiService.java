@@ -5,7 +5,9 @@ import ccc.keeweapi.dto.user.*;
 import ccc.keeweapi.utils.SecurityUtil;
 import ccc.keewedomain.dto.user.FollowCheckDto;
 import ccc.keewedomain.persistence.domain.title.TitleAchievement;
+import ccc.keewedomain.persistence.domain.user.Follow;
 import ccc.keewedomain.persistence.domain.user.User;
+import ccc.keewedomain.persistence.repository.utils.CursorPageable;
 import ccc.keewedomain.service.challenge.ChallengeDomainService;
 import ccc.keewedomain.service.user.ProfileDomainService;
 import ccc.keewedomain.service.user.UserDomainService;
@@ -14,7 +16,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static ccc.keewecore.consts.KeeweConsts.MY_PAGE_TITLE_LIMIT;
@@ -76,5 +81,25 @@ public class ProfileApiService {
         return profileDomainService.getTitleAchievements(userId, Integer.MAX_VALUE).stream()
                 .map(profileAssembler::toAchievedTitleResponse)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public FollowerListResponse getFollowers(Long userId, CursorPageable<LocalDateTime> cPage) {
+        List<Follow> follows = profileDomainService.getFollowers(userId, cPage);
+        List<User> followers = follows.stream()
+                .map(Follow::getFollower)
+                .collect(Collectors.toList());
+
+        Set<Long> followingIdSet = profileDomainService.isFollowing(SecurityUtil.getUser(), followers);
+
+        List<FollowerResponse> followerResponses = followers.stream()
+                .map(follower -> profileAssembler.toFollowerResponse(follower, followingIdSet.contains(follower.getId())))
+                .collect(Collectors.toList());
+
+        LocalDateTime cursor = null;
+        if(!follows.isEmpty()) {
+            cursor = follows.get(follows.size() - 1).getCreatedAt();
+        }
+        return FollowerListResponse.of(Optional.ofNullable(cursor), followerResponses);
     }
 }

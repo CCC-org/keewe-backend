@@ -3,11 +3,14 @@ package ccc.keeweapi.controller.api.user;
 import ccc.keeweapi.dto.ApiResponse;
 import ccc.keeweapi.dto.user.*;
 import ccc.keeweapi.service.user.ProfileApiService;
+import ccc.keewedomain.persistence.repository.utils.CursorPageable;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -45,5 +48,14 @@ public class ProfileController {
     @GetMapping("/all-achieved-title/{userId}")
     public ApiResponse<List<AchievedTitleResponse>> getAllAchievedTitles(@PathVariable Long userId) {
         return ApiResponse.ok(profileApiService.getAllAchievedTitles(userId));
+    }
+
+    @GetMapping("/follower/{userId}")
+    public ApiResponse<FollowerListResponse> getFollowers(
+            @PathVariable Long userId,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime cursor,
+            @RequestParam Long limit) {
+        CursorPageable<LocalDateTime> cPage = CursorPageable.of(cursor, limit);
+        return ApiResponse.ok(profileApiService.getFollowers(userId, cPage));
     }
 }

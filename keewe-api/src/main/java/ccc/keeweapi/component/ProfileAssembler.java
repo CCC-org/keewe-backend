@@ -80,4 +80,14 @@ public class ProfileAssembler {
                 achievement.getCreatedAt()
         );
     }
+
+    //TODO 대표 타이틀 수정
+    public FollowerResponse toFollowerResponse(User follower, boolean isFollow) {
+        return FollowerResponse.of(
+                follower.getId(),
+                follower.getNickname(),
+                follower.getProfilePhotoURL(),
+                "아 타이틀..",
+                isFollow);
+    }
 }

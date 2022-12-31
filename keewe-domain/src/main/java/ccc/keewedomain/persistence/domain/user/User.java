@@ -109,5 +109,12 @@ public class User extends BaseTimeEntity {
     public void setProfilePhoto(ProfilePhoto profilePhoto) {
         this.profilePhoto = profilePhoto;
     }
+
+    public String getProfilePhotoURL() {
+        if (this.profilePhoto != null) {
+            return profilePhoto.getImage();
+        }
+        return null;
+    }
 }
 
