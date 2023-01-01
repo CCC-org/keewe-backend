@@ -272,7 +272,7 @@ public class ProfileControllerTest extends ApiDocumentationTest {
                         .requestHeaders(
                                 headerWithName("Authorization").description("유저의 JWT"))
                         .requestParameters(
-                                parameterWithName("cursor").description("페이징을 위한 커서 yyyy-MM-dd'T'hh:mm:ss.SSS").optional(),
+                                parameterWithName("cursor").description("페이징을 위한 커서 yyyy-MM-dd'T'hh:mm:ss.SSS"),
                                 parameterWithName("limit").description("한번에 조회할 개수"))
                         .responseFields(followUserListResponseFields())
                         .tag("MyPage")
@@ -311,7 +311,7 @@ public class ProfileControllerTest extends ApiDocumentationTest {
                         .requestHeaders(
                                 headerWithName("Authorization").description("유저의 JWT"))
                         .requestParameters(
-                                parameterWithName("cursor").description("페이징을 위한 커서 yyyy-MM-dd'T'hh:mm:ss.SSS").optional(),
+                                parameterWithName("cursor").description("페이징을 위한 커서 yyyy-MM-dd'T'hh:mm:ss.SSS"),
                                 parameterWithName("limit").description("한번에 조회할 개수"))
                         .responseFields(followUserListResponseFields())
                         .tag("MyPage")

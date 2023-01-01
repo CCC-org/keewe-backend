@@ -57,15 +57,11 @@ public class UserQueryRepository {
                 .fetch();
     }
 
-    private BooleanExpression followCreatedAtLt(LocalDateTime cursor) {
-        return cursor != null ? follow.createdAt.lt(cursor) : null;
-    }
-
     private JPQLQuery<Long> followeeIdsOrderByCreatedAtDesc(User target, CursorPageable<LocalDateTime> cPage) {
         return JPAExpressions
                 .select(follow.followee.id)
                 .from(follow)
-                .where(follow.follower.eq(target), followCreatedAtLt(cPage.getCursor()))
+                .where(follow.follower.eq(target), follow.createdAt.lt(cPage.getCursor()))
                 .orderBy(follow.createdAt.desc(), follow.followee.id.asc())
                 .limit(cPage.getLimit());
     }
@@ -74,7 +70,7 @@ public class UserQueryRepository {
         return JPAExpressions
                 .select(follow.follower.id)
                 .from(follow)
-                .where(follow.followee.eq(target), followCreatedAtLt(cPage.getCursor()))
+                .where(follow.followee.eq(target), follow.createdAt.lt(cPage.getCursor()))
                 .orderBy(follow.createdAt.desc(), follow.follower.id.asc())
                 .limit(cPage.getLimit());
     }

@@ -62,7 +62,7 @@ public class ProfileController {
     @GetMapping("/followee/{userId}")
     public ApiResponse<FollowUserListResponse> getFollowees(
             @PathVariable Long userId,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime cursor,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime cursor,
             @RequestParam Long limit) {
         CursorPageable<LocalDateTime> cPage = CursorPageable.of(cursor, limit);
         return ApiResponse.ok(profileApiService.getFollowees(userId, cPage));
