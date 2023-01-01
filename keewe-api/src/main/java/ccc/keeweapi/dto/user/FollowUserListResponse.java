@@ -11,12 +11,12 @@ import java.util.Optional;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class FollowUserListResponse {
-    private String cursor;
+    private String minCreatedAt;
     private List<FollowUserResponse> users;
 
     public static FollowUserListResponse of(Optional<LocalDateTime> cursor, List<FollowUserResponse> users) {
         FollowUserListResponse response = new FollowUserListResponse();
-        response.cursor = cursor.map(LocalDateTime::toString).orElse(null);
+        response.minCreatedAt = cursor.map(LocalDateTime::toString).orElse(null);
         response.users = users;
 
         return response;

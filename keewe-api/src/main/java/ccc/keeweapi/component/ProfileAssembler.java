@@ -100,10 +100,7 @@ public class ProfileAssembler {
                 .map(follower -> this.toFollowerResponse(follower, followingIdSet.contains(follower.getId())))
                 .collect(Collectors.toList());
 
-        LocalDateTime cursor = null;
-        if (!follows.isEmpty()) {
-            cursor = follows.get(follows.size() - 1).getCreatedAt();
-        }
+        LocalDateTime cursor = !follows.isEmpty() ? follows.get(follows.size() - 1).getCreatedAt() : null;
         return FollowUserListResponse.of(Optional.ofNullable(cursor), followUserResponse);
     }
 }
