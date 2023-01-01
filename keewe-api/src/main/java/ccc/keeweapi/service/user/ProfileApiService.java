@@ -84,7 +84,7 @@ public class ProfileApiService {
     }
 
     @Transactional(readOnly = true)
-    public FollowerListResponse getFollowers(Long userId, CursorPageable<LocalDateTime> cPage) {
+    public FollowUserListResponse getFollowers(Long userId, CursorPageable<LocalDateTime> cPage) {
         List<Follow> follows = profileDomainService.getFollowers(userId, cPage);
         List<User> followers = follows.stream()
                 .map(Follow::getFollower)
@@ -92,14 +92,18 @@ public class ProfileApiService {
 
         Set<Long> followingIdSet = profileDomainService.isFollowing(SecurityUtil.getUser(), followers);
 
-        List<FollowerResponse> followerResponses = followers.stream()
-                .map(follower -> profileAssembler.toFollowerResponse(follower, followingIdSet.contains(follower.getId())))
+        return profileAssembler.toFollowUserListResponse(follows, followers, followingIdSet);
+    }
+
+    @Transactional(readOnly = true)
+    public FollowUserListResponse getFollowees(Long userId, CursorPageable<LocalDateTime> cPage) {
+        List<Follow> follows = profileDomainService.getFollowees(userId, cPage);
+        List<User> followees = follows.stream()
+                .map(Follow::getFollowee)
                 .collect(Collectors.toList());
 
-        LocalDateTime cursor = null;
-        if(!follows.isEmpty()) {
-            cursor = follows.get(follows.size() - 1).getCreatedAt();
-        }
-        return FollowerListResponse.of(Optional.ofNullable(cursor), followerResponses);
+        Set<Long> followingIdSet = profileDomainService.isFollowing(SecurityUtil.getUser(), followees);
+
+        return profileAssembler.toFollowUserListResponse(follows, followees, followingIdSet);
     }
 }

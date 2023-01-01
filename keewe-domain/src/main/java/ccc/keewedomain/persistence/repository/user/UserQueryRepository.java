@@ -40,10 +40,22 @@ public class UserQueryRepository {
                 .from(follow)
                 .innerJoin(follow.follower, user)
                 .fetchJoin()
-                .where(user.eq(target)
-                        .and(followCreatedAtLt(cPage.getCursor()))
-                )
-                .orderBy(follow.createdAt.desc(), follow.follower.id.asc())
+                .where(follow.followee.eq(target)
+                        .and(followCreatedAtLt(cPage.getCursor())))
+                .orderBy(follow.createdAt.desc(), follow.followee.id.asc())
+                .limit(cPage.getLimit())
+                .fetch();
+    }
+
+    public List<Follow> findFolloweesByUserCreatedAtDesc(User target, CursorPageable<LocalDateTime> cPage) {
+        return queryFactory
+                .select(follow)
+                .from(follow)
+                .innerJoin(follow.followee, user)
+                .fetchJoin()
+                .where(follow.follower.eq(target)
+                        .and(followCreatedAtLt(cPage.getCursor())))
+                .orderBy(follow.createdAt.desc(), follow.followee.id.asc())
                 .limit(cPage.getLimit())
                 .fetch();
     }

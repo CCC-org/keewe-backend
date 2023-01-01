@@ -51,11 +51,20 @@ public class ProfileController {
     }
 
     @GetMapping("/follower/{userId}")
-    public ApiResponse<FollowerListResponse> getFollowers(
+    public ApiResponse<FollowUserListResponse> getFollowers(
             @PathVariable Long userId,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime cursor,
             @RequestParam Long limit) {
         CursorPageable<LocalDateTime> cPage = CursorPageable.of(cursor, limit);
         return ApiResponse.ok(profileApiService.getFollowers(userId, cPage));
+    }
+
+    @GetMapping("/followee/{userId}")
+    public ApiResponse<FollowUserListResponse> getFollowees(
+            @PathVariable Long userId,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime cursor,
+            @RequestParam Long limit) {
+        CursorPageable<LocalDateTime> cPage = CursorPageable.of(cursor, limit);
+        return ApiResponse.ok(profileApiService.getFollowees(userId, cPage));
     }
 }

@@ -10,12 +10,12 @@ import java.util.Optional;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class FollowerListResponse {
+public class FollowUserListResponse {
     private String cursor;
-    private List<FollowerResponse> followers;
+    private List<FollowUserResponse> followers;
 
-    public static FollowerListResponse of(Optional<LocalDateTime> cursor, List<FollowerResponse> followers) {
-        FollowerListResponse response = new FollowerListResponse();
+    public static FollowUserListResponse of(Optional<LocalDateTime> cursor, List<FollowUserResponse> followers) {
+        FollowUserListResponse response = new FollowUserListResponse();
         response.cursor = cursor.map(LocalDateTime::toString).orElse(null);
         response.followers = followers;
 

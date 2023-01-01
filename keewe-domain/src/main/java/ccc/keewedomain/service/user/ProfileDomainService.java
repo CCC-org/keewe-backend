@@ -112,6 +112,12 @@ public class ProfileDomainService {
     }
 
     @Transactional(readOnly = true)
+    public List<Follow> getFollowees(Long userId, CursorPageable<LocalDateTime> cPage) {
+        User user = userDomainService.getUserByIdOrElseThrow(userId);
+        return userQueryRepository.findFolloweesByUserCreatedAtDesc(user, cPage);
+    }
+
+    @Transactional(readOnly = true)
     public Set<Long> isFollowing(User user, List<User> targets) {
         return followQueryRepository.existsByIds(user, targets);
     }

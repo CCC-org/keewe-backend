@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor(staticName = "of")
-public class FollowerResponse {
+public class FollowUserResponse {
     private Long id;
     private String name;
     private String imageURL;
