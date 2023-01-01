@@ -114,7 +114,7 @@ public class User extends BaseTimeEntity {
         if (this.profilePhoto != null) {
             return profilePhoto.getImage();
         }
-        return null;
+        return "";
     }
 }
 
