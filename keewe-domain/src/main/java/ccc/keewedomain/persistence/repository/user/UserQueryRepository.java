@@ -4,13 +4,14 @@ import ccc.keewedomain.persistence.domain.user.Follow;
 import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.persistence.repository.utils.CursorPageable;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.JPAExpressions;
+import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import static ccc.keewedomain.persistence.domain.common.QInterest.interest;
@@ -40,10 +41,8 @@ public class UserQueryRepository {
                 .from(follow)
                 .innerJoin(follow.follower, user)
                 .fetchJoin()
-                .where(follow.followee.eq(target)
-                        .and(followCreatedAtLt(cPage.getCursor())))
-                .orderBy(follow.createdAt.desc(), follow.followee.id.asc())
-                .limit(cPage.getLimit())
+                .where(follow.follower.id.in(followerIdsOrderByCreatedAtDesc(target, cPage)),
+                        follow.followee.eq(target))
                 .fetch();
     }
 
@@ -53,14 +52,30 @@ public class UserQueryRepository {
                 .from(follow)
                 .innerJoin(follow.followee, user)
                 .fetchJoin()
-                .where(follow.follower.eq(target)
-                        .and(followCreatedAtLt(cPage.getCursor())))
-                .orderBy(follow.createdAt.desc(), follow.followee.id.asc())
-                .limit(cPage.getLimit())
+                .where(follow.followee.id.in(followeeIdsOrderByCreatedAtDesc(target, cPage)),
+                        follow.follower.eq(target))
                 .fetch();
     }
 
     private BooleanExpression followCreatedAtLt(LocalDateTime cursor) {
         return cursor != null ? follow.createdAt.lt(cursor) : null;
+    }
+
+    private JPQLQuery<Long> followeeIdsOrderByCreatedAtDesc(User target, CursorPageable<LocalDateTime> cPage) {
+        return JPAExpressions
+                .select(follow.followee.id)
+                .from(follow)
+                .where(follow.follower.eq(target), followCreatedAtLt(cPage.getCursor()))
+                .orderBy(follow.createdAt.desc(), follow.followee.id.asc())
+                .limit(cPage.getLimit());
+    }
+
+    private JPQLQuery<Long> followerIdsOrderByCreatedAtDesc(User target, CursorPageable<LocalDateTime> cPage) {
+        return JPAExpressions
+                .select(follow.follower.id)
+                .from(follow)
+                .where(follow.followee.eq(target), followCreatedAtLt(cPage.getCursor()))
+                .orderBy(follow.createdAt.desc(), follow.follower.id.asc())
+                .limit(cPage.getLimit());
     }
 }

@@ -4,10 +4,12 @@ import ccc.keewecore.consts.KeeweRtnConsts;
 import ccc.keewecore.exception.KeeweException;
 import ccc.keewedomain.dto.user.FollowCheckDto;
 import ccc.keewedomain.dto.user.FollowToggleDto;
+import ccc.keewedomain.dto.user.OnboardDto;
 import ccc.keewedomain.dto.user.UploadProfilePhotoDto;
 import ccc.keewedomain.persistence.domain.title.TitleAchievement;
-import ccc.keewedomain.persistence.domain.user.*;
-import ccc.keewedomain.dto.user.OnboardDto;
+import ccc.keewedomain.persistence.domain.user.Follow;
+import ccc.keewedomain.persistence.domain.user.ProfilePhoto;
+import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.persistence.domain.user.id.FollowId;
 import ccc.keewedomain.persistence.repository.user.*;
 import ccc.keewedomain.persistence.repository.utils.CursorPageable;
@@ -19,9 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
