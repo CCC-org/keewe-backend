@@ -97,7 +97,7 @@ public class ProfileAssembler {
 
     public FollowUserListResponse toFollowUserListResponse(List<Follow> follows, List<User> users, Set<Long> followingIdSet) {
         List<FollowUserResponse> followUserResponse = users.stream()
-                .map(follower -> this.toFollowerResponse(follower, followingIdSet.contains(follower.getId())))
+                .map(user -> this.toFollowerResponse(user, followingIdSet.contains(user.getId())))
                 .collect(Collectors.toList());
 
         LocalDateTime cursor = !follows.isEmpty() ? follows.get(follows.size() - 1).getCreatedAt() : null;

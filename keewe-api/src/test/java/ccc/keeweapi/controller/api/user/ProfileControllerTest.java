@@ -323,7 +323,7 @@ public class ProfileControllerTest extends ApiDocumentationTest {
         return List.of(
                 fieldWithPath("message").description("요청 결과 메세지"),
                 fieldWithPath("code").description("결과 코드"),
-                fieldWithPath("data.cursor").description("페이징 커서 yyyy-MM-dd'T'hh:mm:ss.SSS 포맷"),
+                fieldWithPath("data.minCreatedAt").description("페이징 커서 yyyy-MM-dd'T'hh:mm:ss.SSS 포맷"),
                 fieldWithPath("data.users[].id").description("유저의 ID"),
                 fieldWithPath("data.users[].nickname").description("유저 닉네임"),
                 fieldWithPath("data.users[].imageURL").description("프로필 이미지 URL"),

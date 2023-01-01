@@ -19,6 +19,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static ccc.keewecore.consts.KeeweConsts.MY_PAGE_TITLE_LIMIT;
@@ -85,24 +87,23 @@ public class ProfileApiService {
     @Transactional(readOnly = true)
     public FollowUserListResponse getFollowers(Long userId, CursorPageable<LocalDateTime> cPage) {
         List<Follow> follows = profileDomainService.getFollowers(userId, cPage);
-        List<User> followers = follows.stream()
-                .map(Follow::getFollower)
-                .collect(Collectors.toList());
 
-        Set<Long> followingIdSet = profileDomainService.getFollowingTargetIdSet(SecurityUtil.getUser(), followers);
-
-        return profileAssembler.toFollowUserListResponse(follows, followers, followingIdSet);
+        return getFollowUser(follows, Follow::getFollower);
     }
 
     @Transactional(readOnly = true)
     public FollowUserListResponse getFollowees(Long userId, CursorPageable<LocalDateTime> cPage) {
         List<Follow> follows = profileDomainService.getFollowees(userId, cPage);
-        List<User> followees = follows.stream()
-                .map(Follow::getFollowee)
+
+        return getFollowUser(follows, Follow::getFollowee);
+    }
+
+    private FollowUserListResponse getFollowUser(List<Follow> follows, Function<Follow, User> followUserFunction) {
+        List<User> users = follows.stream()
+                .map(followUserFunction)
                 .collect(Collectors.toList());
 
-        Set<Long> followingIdSet = profileDomainService.getFollowingTargetIdSet(SecurityUtil.getUser(), followees);
-
-        return profileAssembler.toFollowUserListResponse(follows, followees, followingIdSet);
+        Set<Long> followingIdSet = profileDomainService.getFollowingTargetIdSet(SecurityUtil.getUser(), users);
+        return profileAssembler.toFollowUserListResponse(follows, users, followingIdSet);
     }
 }
