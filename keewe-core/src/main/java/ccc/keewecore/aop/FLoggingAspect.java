@@ -28,7 +28,7 @@ public class FLoggingAspect {
 
     @Before("@annotation(ccc.keewecore.aop.annotations.FLogging)")
     public void beforeLogging(JoinPoint joinPoint) {
-        if (!log.isDebugEnabled()) return;
+        //if (!log.isDebugEnabled()) return;
         Instant startTm = Instant.now();
         String uuid = UUID.randomUUID().toString();
         mapThreadLocal.set(Map.of(KEY_START, startTm, KEY_UUID, uuid));
@@ -37,7 +37,7 @@ public class FLoggingAspect {
 
     @AfterReturning(pointcut = "@annotation(ccc.keewecore.aop.annotations.FLogging)", returning = "returnValue")
     public void afterLogging(JoinPoint joinPoint, Object returnValue) {
-        if (!log.isDebugEnabled()) return;
+        //if (!log.isDebugEnabled()) return;
         Instant endTm = Instant.now();
         Map<String, Object> map = mapThreadLocal.get();
         if (map != null) {
@@ -51,7 +51,7 @@ public class FLoggingAspect {
 
     @AfterThrowing(pointcut = "@annotation(ccc.keewecore.aop.annotations.FLogging)", throwing = "cause")
     public void exceptionLogging(JoinPoint joinPoint, Throwable cause) {
-        if (!log.isDebugEnabled()) return;
+        //if (!log.isDebugEnabled()) return;
         Instant endTm = Instant.now();
         Map<String, Object> map = mapThreadLocal.get();
         if (map != null) {

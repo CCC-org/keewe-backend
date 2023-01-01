@@ -3,6 +3,7 @@ package ccc.keeweapi.controller.api.insight;
 import ccc.keeweapi.dto.ApiResponse;
 import ccc.keeweapi.dto.insight.*;
 import ccc.keeweapi.service.insight.InsightApiService;
+import ccc.keewecore.aop.annotations.FLogging;
 import ccc.keewecore.consts.KeeweConsts;
 import ccc.keewedomain.persistence.repository.utils.CursorPageable;
 import lombok.RequiredArgsConstructor;
@@ -48,6 +49,7 @@ public class InsightController {
     }
 
     @PostMapping("/bookmark/{insightId}")
+    @FLogging
     public ApiResponse<BookmarkToggleResponse> toggleBookmark(@PathVariable Long insightId) {
         return ApiResponse.ok(insightApiService.toggleInsightBookmark(insightId));
     }
