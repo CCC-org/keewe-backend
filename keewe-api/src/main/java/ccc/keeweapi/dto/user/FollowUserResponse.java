@@ -7,7 +7,7 @@ import lombok.Getter;
 @AllArgsConstructor(staticName = "of")
 public class FollowUserResponse {
     private Long id;
-    private String name;
+    private String nickname;
     private String imageURL;
     private String title;
     private boolean isFollow;
