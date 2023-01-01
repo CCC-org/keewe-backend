@@ -63,10 +63,10 @@ public class ProfileDomainService {
                                 }
                         );
 
-        return isFollowing(FollowCheckDto.of(user.getId(), target.getId()));
+        return getFollowingTargetIdSet(FollowCheckDto.of(user.getId(), target.getId()));
     }
 
-    public boolean isFollowing(FollowCheckDto followCheckDto) {
+    public boolean getFollowingTargetIdSet(FollowCheckDto followCheckDto) {
         return followRepository.existsById(FollowId.of(followCheckDto.getTargetId(), followCheckDto.getUserId()));
     }
 
@@ -118,7 +118,7 @@ public class ProfileDomainService {
     }
 
     @Transactional(readOnly = true)
-    public Set<Long> isFollowing(User user, List<User> targets) {
-        return followQueryRepository.existsByIds(user, targets);
+    public Set<Long> getFollowingTargetIdSet(User user, List<User> targets) {
+        return Set.copyOf(followQueryRepository.findFollowingTargetIds(user, targets));
     }
 }

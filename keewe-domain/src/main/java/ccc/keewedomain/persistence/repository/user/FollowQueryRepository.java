@@ -16,12 +16,11 @@ public class FollowQueryRepository {
 
     private final JPAQueryFactory queryFactory;
 
-    public Set<Long> existsByIds(User user, List<User> targets) {
-        return Set.copyOf(queryFactory
+    public List<Long> findFollowingTargetIds(User user, List<User> targets) {
+        return queryFactory
                 .select(follow.followee.id)
                 .from(follow)
                 .where(follow.follower.eq(user).and(follow.followee.in((targets))))
-                .fetch()
-        );
+                .fetch();
     }
 }

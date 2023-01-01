@@ -51,7 +51,7 @@ public class InsightApiService {
     @Transactional(readOnly = true)
     public InsightAuthorAreaResponse getInsightAuthorAreaInfo(Long insightId) {
         Insight insight = insightDomainService.getByIdWithWriter(insightId);
-        boolean isFollowing = profileDomainService.isFollowing(profileAssembler.toFollowCheckDto(insight.getWriter().getId()));
+        boolean isFollowing = profileDomainService.getFollowingTargetIdSet(profileAssembler.toFollowCheckDto(insight.getWriter().getId()));
         return insightAssembler.toInsightAuthorAreaResponse(insight, isFollowing);
     }
 

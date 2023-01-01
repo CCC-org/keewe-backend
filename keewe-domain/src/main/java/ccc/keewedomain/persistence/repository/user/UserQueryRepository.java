@@ -3,7 +3,6 @@ package ccc.keewedomain.persistence.repository.user;
 import ccc.keewedomain.persistence.domain.user.Follow;
 import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.persistence.repository.utils.CursorPageable;
-import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -41,7 +40,7 @@ public class UserQueryRepository {
                 .from(follow)
                 .innerJoin(follow.follower, user)
                 .fetchJoin()
-                .where(follow.follower.id.in(followerIdsOrderByCreatedAtDesc(target, cPage)),
+                .where(follow.follower.id.in(findFollowerIdsOrderByCreatedAtDesc(target, cPage)),
                         follow.followee.eq(target))
                 .fetch();
     }
@@ -52,12 +51,12 @@ public class UserQueryRepository {
                 .from(follow)
                 .innerJoin(follow.followee, user)
                 .fetchJoin()
-                .where(follow.followee.id.in(followeeIdsOrderByCreatedAtDesc(target, cPage)),
+                .where(follow.followee.id.in(findFolloweeIdsOrderByCreatedAtDesc(target, cPage)),
                         follow.follower.eq(target))
                 .fetch();
     }
 
-    private JPQLQuery<Long> followeeIdsOrderByCreatedAtDesc(User target, CursorPageable<LocalDateTime> cPage) {
+    private JPQLQuery<Long> findFolloweeIdsOrderByCreatedAtDesc(User target, CursorPageable<LocalDateTime> cPage) {
         return JPAExpressions
                 .select(follow.followee.id)
                 .from(follow)
@@ -66,7 +65,7 @@ public class UserQueryRepository {
                 .limit(cPage.getLimit());
     }
 
-    private JPQLQuery<Long> followerIdsOrderByCreatedAtDesc(User target, CursorPageable<LocalDateTime> cPage) {
+    private JPQLQuery<Long> findFollowerIdsOrderByCreatedAtDesc(User target, CursorPageable<LocalDateTime> cPage) {
         return JPAExpressions
                 .select(follow.follower.id)
                 .from(follow)

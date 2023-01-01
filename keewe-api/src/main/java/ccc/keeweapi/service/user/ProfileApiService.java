@@ -56,7 +56,7 @@ public class ProfileApiService {
         User targetUser = userDomainService.getUserByIdWithInterests(targetId);
         Long userId = SecurityUtil.getUserId();
 
-        boolean isFollowing = profileDomainService.isFollowing(FollowCheckDto.of(targetId, userId));
+        boolean isFollowing = profileDomainService.getFollowingTargetIdSet(FollowCheckDto.of(targetId, userId));
         Long followerCount = profileDomainService.getFollowerCount(targetUser);
         Long followingCount = profileDomainService.getFollowingCount(targetUser);
 
@@ -89,7 +89,7 @@ public class ProfileApiService {
                 .map(Follow::getFollower)
                 .collect(Collectors.toList());
 
-        Set<Long> followingIdSet = profileDomainService.isFollowing(SecurityUtil.getUser(), followers);
+        Set<Long> followingIdSet = profileDomainService.getFollowingTargetIdSet(SecurityUtil.getUser(), followers);
 
         return profileAssembler.toFollowUserListResponse(follows, followers, followingIdSet);
     }
@@ -101,7 +101,7 @@ public class ProfileApiService {
                 .map(Follow::getFollowee)
                 .collect(Collectors.toList());
 
-        Set<Long> followingIdSet = profileDomainService.isFollowing(SecurityUtil.getUser(), followees);
+        Set<Long> followingIdSet = profileDomainService.getFollowingTargetIdSet(SecurityUtil.getUser(), followees);
 
         return profileAssembler.toFollowUserListResponse(follows, followees, followingIdSet);
     }
