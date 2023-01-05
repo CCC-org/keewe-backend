@@ -24,12 +24,14 @@ CREATE TABLE IF NOT EXISTS `user`
     profile_photo_id    BIGINT(20),
     privacy             VARCHAR(20)     NOT NULL,
     status              VARCHAR(255),
+    rep_title_id        BIGINT,
     deleted             BIT             NOT NULL,
     created_at          DATETIME(6)     NOT NULL,
     updated_at          DATETIME(6)     NOT NULL,
 
     PRIMARY KEY(user_id),
     FOREIGN KEY (profile_photo_id) REFERENCES  `profile_photo`(profile_photo_id),
+    FOREIGN KEY (rep_title_id) REFERENCES `title`(title_id),
     CONSTRAINT `vendor_constraint` UNIQUE (`vendor_id`, `vendor_type`),
     INDEX  `vendor_index` (`vendor_id`, `vendor_type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -43,7 +45,8 @@ CREATE TABLE IF NOT EXISTS `follow`
 
     PRIMARY KEY (follower_id, followee_id),
     FOREIGN KEY (followee_id) REFERENCES `user`(user_id),
-    FOREIGN KEY (follower_id) REFERENCES `user`(user_id)
+    FOREIGN KEY (follower_id) REFERENCES `user`(user_id),
+    INDEX `created_at_index` (created_at)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS `favorite_interests`

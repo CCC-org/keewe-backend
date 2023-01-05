@@ -4,6 +4,7 @@ import ccc.keewecore.consts.KeeweRtnConsts;
 import ccc.keewecore.exception.KeeweException;
 import ccc.keewedomain.persistence.domain.common.BaseTimeEntity;
 import ccc.keewedomain.persistence.domain.common.Interest;
+import ccc.keewedomain.persistence.domain.title.Title;
 import ccc.keewedomain.persistence.domain.user.enums.Privacy;
 import ccc.keewedomain.persistence.domain.user.enums.UserStatus;
 import ccc.keewedomain.persistence.domain.user.enums.VendorType;
@@ -74,6 +75,10 @@ public class User extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "followee", fetch = LAZY)
     private List<Follow> followees = new ArrayList<>(); // 나를 팔로우하는 사람들
+
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "rep_title_id")
+    private Title repTitle;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
