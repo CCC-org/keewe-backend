@@ -9,11 +9,15 @@ import ccc.keewedomain.dto.user.UploadProfilePhotoDto;
 import ccc.keewedomain.persistence.domain.common.Interest;
 import ccc.keewedomain.persistence.domain.title.Title;
 import ccc.keewedomain.persistence.domain.title.TitleAchievement;
+import ccc.keewedomain.persistence.domain.user.Follow;
 import ccc.keewedomain.persistence.domain.user.User;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
@@ -79,5 +83,24 @@ public class ProfileAssembler {
                 title.getIntroduction(),
                 achievement.getCreatedAt()
         );
+    }
+
+    //TODO 대표 타이틀 수정
+    public FollowUserResponse toFollowerResponse(User follower, boolean isFollow) {
+        return FollowUserResponse.of(
+                follower.getId(),
+                follower.getNickname(),
+                follower.getProfilePhotoURL(),
+                "아 타이틀..",
+                isFollow);
+    }
+
+    public FollowUserListResponse toFollowUserListResponse(List<Follow> follows, List<User> users, Set<Long> followingIdSet) {
+        List<FollowUserResponse> followUserResponse = users.stream()
+                .map(user -> this.toFollowerResponse(user, followingIdSet.contains(user.getId())))
+                .collect(Collectors.toList());
+
+        LocalDateTime cursor = !follows.isEmpty() ? follows.get(follows.size() - 1).getCreatedAt() : null;
+        return FollowUserListResponse.of(Optional.ofNullable(cursor), followUserResponse);
     }
 }

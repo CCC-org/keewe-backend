@@ -2,6 +2,7 @@ package ccc.keewedomain.persistence.domain.user;
 
 import ccc.keewedomain.persistence.domain.common.BaseTimeEntity;
 import ccc.keewedomain.persistence.domain.user.id.FollowId;
+import lombok.Getter;
 
 import javax.persistence.*;
 
@@ -10,6 +11,7 @@ import static javax.persistence.FetchType.LAZY;
 @Table(name = "follow")
 @Entity
 @IdClass(FollowId.class)
+@Getter
 public class Follow extends BaseTimeEntity {
 
     @Id

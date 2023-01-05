@@ -5,7 +5,9 @@ import ccc.keeweapi.dto.user.*;
 import ccc.keeweapi.utils.SecurityUtil;
 import ccc.keewedomain.dto.user.FollowCheckDto;
 import ccc.keewedomain.persistence.domain.title.TitleAchievement;
+import ccc.keewedomain.persistence.domain.user.Follow;
 import ccc.keewedomain.persistence.domain.user.User;
+import ccc.keewedomain.persistence.repository.utils.CursorPageable;
 import ccc.keewedomain.service.challenge.ChallengeDomainService;
 import ccc.keewedomain.service.user.ProfileDomainService;
 import ccc.keewedomain.service.user.UserDomainService;
@@ -14,7 +16,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static ccc.keewecore.consts.KeeweConsts.MY_PAGE_TITLE_LIMIT;
@@ -52,7 +58,7 @@ public class ProfileApiService {
         User targetUser = userDomainService.getUserByIdWithInterests(targetId);
         Long userId = SecurityUtil.getUserId();
 
-        boolean isFollowing = profileDomainService.isFollowing(FollowCheckDto.of(targetId, userId));
+        boolean isFollowing = profileDomainService.getFollowingTargetIdSet(FollowCheckDto.of(targetId, userId));
         Long followerCount = profileDomainService.getFollowerCount(targetUser);
         Long followingCount = profileDomainService.getFollowingCount(targetUser);
 
@@ -76,5 +82,28 @@ public class ProfileApiService {
         return profileDomainService.getTitleAchievements(userId, Integer.MAX_VALUE).stream()
                 .map(profileAssembler::toAchievedTitleResponse)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public FollowUserListResponse getFollowers(Long userId, CursorPageable<LocalDateTime> cPage) {
+        List<Follow> follows = profileDomainService.getFollowers(userId, cPage);
+
+        return getFollowUser(follows, Follow::getFollower);
+    }
+
+    @Transactional(readOnly = true)
+    public FollowUserListResponse getFollowees(Long userId, CursorPageable<LocalDateTime> cPage) {
+        List<Follow> follows = profileDomainService.getFollowees(userId, cPage);
+
+        return getFollowUser(follows, Follow::getFollowee);
+    }
+
+    private FollowUserListResponse getFollowUser(List<Follow> follows, Function<Follow, User> followUserFunction) {
+        List<User> users = follows.stream()
+                .map(followUserFunction)
+                .collect(Collectors.toList());
+
+        Set<Long> followingIdSet = profileDomainService.getFollowingTargetIdSet(SecurityUtil.getUser(), users);
+        return profileAssembler.toFollowUserListResponse(follows, users, followingIdSet);
     }
 }
