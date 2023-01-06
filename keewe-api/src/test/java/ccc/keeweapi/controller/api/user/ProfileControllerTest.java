@@ -140,8 +140,8 @@ public class ProfileControllerTest extends ApiDocumentationTest {
 
         resultActions.andDo(restDocs.document(resource(
                 ResourceSnippetParameters.builder()
-                        .description("팔로잉 API 입니다.")
-                        .summary("유저 팔로잉 API")
+                        .description("마이페이지 프로필 조회 API 입니다.")
+                        .summary("마이페이지 프로필 조회 API")
                         .pathParameters(
                             parameterWithName("targetId").description("대상 유저의 ID")
                         )
