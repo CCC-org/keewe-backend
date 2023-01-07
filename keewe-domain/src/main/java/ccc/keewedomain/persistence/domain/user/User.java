@@ -121,5 +121,9 @@ public class User extends BaseTimeEntity {
         }
         return "";
     }
+
+    public String getRepTitleName() {
+        return repTitle == null ? "" : repTitle.getName();
+    }
 }
 

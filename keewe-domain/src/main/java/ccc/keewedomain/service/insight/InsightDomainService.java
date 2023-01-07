@@ -92,8 +92,8 @@ public class InsightDomainService {
                     InsightWriterDto.of(
                             i.getWriter().getId(),
                             i.getWriter().getNickname(),
-                            "Dummy Title.",
-                            "Dummy Profile Photo Link."
+                            i.getWriter().getRepTitleName(),
+                            i.getWriter().getProfilePhotoURL()
                     )
             )
         ).collect(Collectors.toList());

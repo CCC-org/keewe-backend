@@ -198,7 +198,8 @@ CREATE TABLE IF NOT EXISTS `comment`
 
     PRIMARY KEY (comment_id),
     FOREIGN KEY (insight_id) REFERENCES `insight`(insight_id),
-    FOREIGN KEY (writer_id) REFERENCES `user`(user_id)
+    FOREIGN KEY (writer_id) REFERENCES `user`(user_id),
+    FOREIGN KEY (parent_comment_id) REFERENCES `comment`(comment_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS `comment_like`

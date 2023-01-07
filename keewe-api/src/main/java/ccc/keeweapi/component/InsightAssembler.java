@@ -105,9 +105,9 @@ public class InsightAssembler {
         return InsightAuthorAreaResponse.of(
                 insight.getId(),
                 writer.getNickname(),
-                "title",
+                writer.getRepTitleName(),
                 writer.getInterests(),
-                "www.api-keewe.com/images",
+                writer.getProfilePhotoURL(),
                 isAuthor(insight),
                 isFollowing,
                 insight.getCreatedAt().toString()
