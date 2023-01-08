@@ -50,8 +50,11 @@ public class CommentAssembler {
     }
 
     public CommentWriterResponse toCommentWriterResponse(User writer) {
-        //TODO 타이틀, 사진 정해지면 변경
-        return CommentWriterResponse.of(writer.getId(), writer.getNickname(), "title", "www.api-keewe.com/images");
+        return CommentWriterResponse.of(
+                writer.getId(),
+                writer.getNickname(),
+                writer.getRepTitleName(),
+                writer.getProfilePhotoURL());
     }
 
     public ReplyResponse toReplyResponse(Comment reply) {

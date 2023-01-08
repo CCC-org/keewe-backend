@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static ccc.keewedomain.persistence.domain.common.QInterest.interest;
+import static ccc.keewedomain.persistence.domain.title.QTitle.title;
 import static ccc.keewedomain.persistence.domain.user.QFollow.follow;
 import static ccc.keewedomain.persistence.domain.user.QUser.user;
 
@@ -40,6 +41,8 @@ public class UserQueryRepository {
                 .from(follow)
                 .innerJoin(follow.follower, user)
                 .fetchJoin()
+                .leftJoin(user.repTitle, title)
+                .fetchJoin()
                 .where(follow.follower.id.in(findFollowerIdsOrderByCreatedAtDesc(target, cPage)),
                         follow.followee.eq(target))
                 .fetch();
@@ -50,6 +53,8 @@ public class UserQueryRepository {
                 .select(follow)
                 .from(follow)
                 .innerJoin(follow.followee, user)
+                .fetchJoin()
+                .leftJoin(user.repTitle, title)
                 .fetchJoin()
                 .where(follow.followee.id.in(findFolloweeIdsOrderByCreatedAtDesc(target, cPage)),
                         follow.follower.eq(target))

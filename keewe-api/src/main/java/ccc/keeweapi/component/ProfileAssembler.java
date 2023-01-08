@@ -50,12 +50,12 @@ public class ProfileAssembler {
         );
     }
 
-    //TODO 프로필 사진, 타이틀, 자기소개 수정
+    //TODO 프로필 사진, 자기소개 수정
     public ProfileMyPageResponse toProfileMyPageResponse(User user, Boolean isFollowing, Long followerCount, Long followingCount, String challengeName) {
         return ProfileMyPageResponse.of(
                 user.getNickname(),
-                "image",
-                "title",
+                user.getProfilePhotoURL(),
+                user.getRepTitleName(),
                 "introduction",
                 user.getInterests().stream()
                         .map(Interest::getName)
@@ -85,13 +85,12 @@ public class ProfileAssembler {
         );
     }
 
-    //TODO 대표 타이틀 수정
     public FollowUserResponse toFollowerResponse(User follower, boolean isFollow) {
         return FollowUserResponse.of(
                 follower.getId(),
                 follower.getNickname(),
                 follower.getProfilePhotoURL(),
-                "아 타이틀..",
+                follower.getRepTitleName(),
                 isFollow);
     }
 
