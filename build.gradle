@@ -92,7 +92,7 @@ project(':keewe-infra') {
 		implementation project(path: ':keewe-core', configuration: 'default')
 		implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
 		implementation 'com.amazonaws:aws-java-sdk-s3:1.12.362'
-
+		implementation group: 'org.imgscalr', name: 'imgscalr-lib', version: '4.2'
 	}
 }
 
