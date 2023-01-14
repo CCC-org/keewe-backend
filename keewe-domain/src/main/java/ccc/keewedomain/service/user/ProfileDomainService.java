@@ -7,9 +7,11 @@ import ccc.keewedomain.dto.user.FollowToggleDto;
 import ccc.keewedomain.dto.user.OnboardDto;
 import ccc.keewedomain.dto.user.UploadProfilePhotoDto;
 import ccc.keewedomain.persistence.domain.title.TitleAchievement;
+import ccc.keewedomain.persistence.domain.user.Block;
 import ccc.keewedomain.persistence.domain.user.Follow;
 import ccc.keewedomain.persistence.domain.user.ProfilePhoto;
 import ccc.keewedomain.persistence.domain.user.User;
+import ccc.keewedomain.persistence.domain.user.id.BlockId;
 import ccc.keewedomain.persistence.domain.user.id.FollowId;
 import ccc.keewedomain.persistence.repository.user.*;
 import ccc.keewedomain.persistence.repository.utils.CursorPageable;
@@ -35,6 +37,7 @@ public class ProfileDomainService {
     private final FollowQueryRepository followQueryRepository;
 
     private final UserQueryRepository userQueryRepository;
+    private final BlockRepository blockRepository;
 
     public User onboard(OnboardDto dto) {
         User user = userDomainService.getUserByIdOrElseThrow(dto.getUserId());
@@ -120,5 +123,27 @@ public class ProfileDomainService {
     @Transactional(readOnly = true)
     public Set<Long> getFollowingTargetIdSet(User user, List<User> targets) {
         return Set.copyOf(followQueryRepository.findFollowingTargetIds(user, targets));
+    }
+
+    @Transactional
+    public Long blockUser(Long userId, Long blockUserId) {
+        validateBlockUser(userId, blockUserId);
+
+        User user = userDomainService.getUserByIdOrElseThrow(userId);
+        User blockedUser = userDomainService.getUserByIdOrElseThrow(blockUserId);
+
+        Block block = blockRepository.save(Block.of(user, blockedUser));
+        return block.getBlockedUser().getId();
+    }
+
+    private void validateBlockUser(Long userId, Long blockUserId) {
+        if(userId.equals(blockUserId)) {
+            throw new KeeweException(KeeweRtnConsts.ERR451);
+        }
+
+        BlockId blockId = BlockId.of(userId, blockUserId);
+        if(blockRepository.existsById(blockId)) {
+            throw new KeeweException(KeeweRtnConsts.ERR450);
+        }
     }
 }

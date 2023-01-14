@@ -102,4 +102,8 @@ public class ProfileAssembler {
         LocalDateTime cursor = !follows.isEmpty() ? follows.get(follows.size() - 1).getCreatedAt() : null;
         return FollowUserListResponse.of(Optional.ofNullable(cursor), followUserResponse);
     }
+
+    public BlockUserResponse toBlockUserResponse(Long blockedUserId) {
+        return BlockUserResponse.of(blockedUserId);
+    }
 }

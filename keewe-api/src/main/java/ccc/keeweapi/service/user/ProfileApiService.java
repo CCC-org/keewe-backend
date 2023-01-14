@@ -98,6 +98,12 @@ public class ProfileApiService {
         return getFollowUser(follows, Follow::getFollowee);
     }
 
+    @Transactional
+    public BlockUserResponse blockUser(Long blockedUserId) {
+        Long blockUserId = profileDomainService.blockUser(SecurityUtil.getUserId(), blockedUserId);
+        return profileAssembler.toBlockUserResponse(blockedUserId);
+    }
+
     private FollowUserListResponse getFollowUser(List<Follow> follows, Function<Follow, User> followUserFunction) {
         List<User> users = follows.stream()
                 .map(followUserFunction)

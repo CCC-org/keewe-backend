@@ -23,4 +23,12 @@ public class Block extends BaseTimeEntity {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "blocked_user_id")
     private User blockedUser;
+
+    public static Block of(User user, User blockedUser) {
+        Block block = new Block();
+        block.user = user;
+        block. blockedUser = blockedUser;
+
+        return block;
+    }
 }

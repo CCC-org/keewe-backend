@@ -67,4 +67,9 @@ public class ProfileController {
         CursorPageable<LocalDateTime> cPage = CursorPageable.of(cursor, limit);
         return ApiResponse.ok(profileApiService.getFollowees(userId, cPage));
     }
+
+    @PostMapping("/block/{blockedUserId}")
+    public ApiResponse blockUser(@PathVariable Long blockedUserId) {
+        return ApiResponse.ok(profileApiService.blockUser(blockedUserId));
+    }
 }
