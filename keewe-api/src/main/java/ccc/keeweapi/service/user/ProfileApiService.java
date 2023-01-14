@@ -112,4 +112,10 @@ public class ProfileApiService {
         Set<Long> followingIdSet = profileDomainService.getFollowingTargetIdSet(SecurityUtil.getUser(), users);
         return profileAssembler.toFollowUserListResponse(follows, users, followingIdSet);
     }
+
+    @Transactional
+    public UnblockUserResponse unblockUser(Long blockedUserId) {
+        Long unblockUserId = profileDomainService.unblockUser(SecurityUtil.getUserId(), blockedUserId);
+        return profileAssembler.toUnblockUserResponse(unblockUserId);
+    }
 }

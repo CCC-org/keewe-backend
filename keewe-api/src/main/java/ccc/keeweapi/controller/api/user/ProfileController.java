@@ -69,7 +69,12 @@ public class ProfileController {
     }
 
     @PostMapping("/block/{blockedUserId}")
-    public ApiResponse blockUser(@PathVariable Long blockedUserId) {
+    public ApiResponse<BlockUserResponse> blockUser(@PathVariable Long blockedUserId) {
         return ApiResponse.ok(profileApiService.blockUser(blockedUserId));
+    }
+
+    @DeleteMapping("/block/{blockedUserId}")
+    public ApiResponse<UnblockUserResponse> unblockUser(@PathVariable Long blockedUserId) {
+        return ApiResponse.ok(profileApiService.unblockUser(blockedUserId));
     }
 }

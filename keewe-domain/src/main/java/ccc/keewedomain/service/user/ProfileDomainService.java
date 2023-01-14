@@ -136,6 +136,17 @@ public class ProfileDomainService {
         return block.getBlockedUser().getId();
     }
 
+    @Transactional
+    public Long unblockUser(Long userId, Long blockedUserId) {
+        blockRepository.findById(BlockId.of(userId, blockedUserId))
+                .ifPresentOrElse(
+                        blockRepository::delete,
+                        () -> { throw new KeeweException(KeeweRtnConsts.ERR452); }
+                );
+
+        return blockedUserId;
+    }
+
     private void validateBlockUser(Long userId, Long blockUserId) {
         if(userId.equals(blockUserId)) {
             throw new KeeweException(KeeweRtnConsts.ERR451);

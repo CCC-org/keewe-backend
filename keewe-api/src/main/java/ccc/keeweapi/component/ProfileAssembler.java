@@ -106,4 +106,8 @@ public class ProfileAssembler {
     public BlockUserResponse toBlockUserResponse(Long blockedUserId) {
         return BlockUserResponse.of(blockedUserId);
     }
+
+    public UnblockUserResponse toUnblockUserResponse(Long unblockUserId) {
+        return UnblockUserResponse.of(unblockUserId);
+    }
 }
