@@ -1,4 +1,4 @@
-package ccc.keewedomain.persistence.domain.user.id;
+package ccc.keewedomain.persistence.domain.title.id;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

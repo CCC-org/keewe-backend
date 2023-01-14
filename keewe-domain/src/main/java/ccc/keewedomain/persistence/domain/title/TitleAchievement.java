@@ -2,7 +2,7 @@ package ccc.keewedomain.persistence.domain.title;
 
 import ccc.keewedomain.persistence.domain.common.BaseTimeEntity;
 import ccc.keewedomain.persistence.domain.user.User;
-import ccc.keewedomain.persistence.domain.user.id.TitleAchievementId;
+import ccc.keewedomain.persistence.domain.title.id.TitleAchievementId;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
