@@ -9,6 +9,7 @@ import ccc.keewedomain.dto.user.UploadProfilePhotoDto;
 import ccc.keewedomain.persistence.domain.common.Interest;
 import ccc.keewedomain.persistence.domain.title.Title;
 import ccc.keewedomain.persistence.domain.title.TitleAchievement;
+import ccc.keewedomain.persistence.domain.user.Block;
 import ccc.keewedomain.persistence.domain.user.Follow;
 import ccc.keewedomain.persistence.domain.user.User;
 import org.springframework.stereotype.Component;
@@ -109,5 +110,18 @@ public class ProfileAssembler {
 
     public UnblockUserResponse toUnblockUserResponse(Long unblockUserId) {
         return UnblockUserResponse.of(unblockUserId);
+    }
+
+    public MyBlockUserListResponse toMyBlockUserListResponse(List<Block> blocks) {
+        List<MyBlockUserResponse> myBlockUserResponses = blocks.stream()
+                .map(this::toMyBlockUserResponse)
+                .collect(Collectors.toList());
+
+        return MyBlockUserListResponse.of(myBlockUserResponses);
+    }
+
+    public MyBlockUserResponse toMyBlockUserResponse(Block block) {
+        User user = block.getBlockedUser();
+        return MyBlockUserResponse.of(user.getId(), user.getNickname(), user.getRepTitleName(), user.getProfilePhotoURL());
     }
 }

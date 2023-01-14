@@ -77,4 +77,9 @@ public class ProfileController {
     public ApiResponse<UnblockUserResponse> unblockUser(@PathVariable Long blockedUserId) {
         return ApiResponse.ok(profileApiService.unblockUser(blockedUserId));
     }
+
+    @GetMapping("/my-block-list")
+    public ApiResponse<MyBlockUserListResponse> getMyBlockList() {
+        return ApiResponse.ok(profileApiService.getMyBlockList());
+    }
 }

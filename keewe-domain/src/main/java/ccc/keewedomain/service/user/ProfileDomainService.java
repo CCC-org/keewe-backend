@@ -38,6 +38,7 @@ public class ProfileDomainService {
 
     private final UserQueryRepository userQueryRepository;
     private final BlockRepository blockRepository;
+    private final BlockQueryRepository blockQueryRepository;
 
     public User onboard(OnboardDto dto) {
         User user = userDomainService.getUserByIdOrElseThrow(dto.getUserId());
@@ -145,6 +146,11 @@ public class ProfileDomainService {
                 );
 
         return blockedUserId;
+    }
+
+    @Transactional(readOnly = true)
+    public List<Block> findBlocksByUserId(Long userId) {
+        return blockQueryRepository.findByUserId(userId);
     }
 
     private void validateBlockUser(Long userId, Long blockUserId) {
