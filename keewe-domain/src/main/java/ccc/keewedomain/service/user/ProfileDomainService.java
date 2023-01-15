@@ -133,8 +133,16 @@ public class ProfileDomainService {
         User user = userDomainService.getUserByIdOrElseThrow(userId);
         User blockedUser = userDomainService.getUserByIdOrElseThrow(blockUserId);
 
+        removeRelation(user, blockedUser);
+
+        log.info("[PDS::blockUser] user {}, blockedUser {}", user.getId(), blockedUser.getId());
         Block block = blockRepository.save(Block.of(user, blockedUser));
         return block.getBlockedUser().getId();
+    }
+
+    private void removeRelation(User user, User blockedUser) {
+        followRepository.deleteById(FollowId.of(user.getId(), blockedUser.getId()));
+        followRepository.deleteById(FollowId.of(blockedUser.getId(), user.getId()));
     }
 
     @Transactional
@@ -144,7 +152,7 @@ public class ProfileDomainService {
                         blockRepository::delete,
                         () -> { throw new KeeweException(KeeweRtnConsts.ERR452); }
                 );
-
+        log.info("[PDS::unblockUser] user {}, blockedUser {}", userId, blockedUserId);
         return blockedUserId;
     }
 
