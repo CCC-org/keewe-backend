@@ -9,8 +9,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class UserAssembler {
 
-    public UserSignUpResponse toUserSignUpResponse(User user, String accessToken) {
-        return UserSignUpResponse.of(user.getId(), accessToken);
+    public UserSignUpResponse toUserSignUpResponse(User user, boolean isAlreadySignedUp, String accessToken) {
+        return UserSignUpResponse.of(user.getId(), isAlreadySignedUp, accessToken);
     }
 
     public UserSignUpDto toUserSignUpDto(String vendorId, VendorType vendorType, String email) {

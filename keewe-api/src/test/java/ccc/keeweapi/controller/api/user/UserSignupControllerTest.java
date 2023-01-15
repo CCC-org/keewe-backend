@@ -39,6 +39,7 @@ public class UserSignupControllerTest extends ApiDocumentationTest {
         // given
         UserSignUpResponse userSignUpDto = UserSignUpResponse.of(
                 1L,
+                true,
                 "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJoYXZlYWx3YXlzYmVlbkBrYWthby5jb20iLCJyb2xlcyI6W10sImlhdCI6MTY1NzQzNjU2MywiZXhwIjoxNjU3Nzk2NTYzfQ.AJX7rGRXjmi4TopUBsX6zWVgMYgjN_uRYtF_Yb_80KE"
         );
 
@@ -58,6 +59,7 @@ public class UserSignupControllerTest extends ApiDocumentationTest {
                                         fieldWithPath("message").description("요청 결과 메세지"),
                                         fieldWithPath("code").description("결과 코드"),
                                         fieldWithPath("data.userId").description("생성된 유저 ID"),
+                                        fieldWithPath("data.alreadySignedUp").description("기존 회원가입 여부"),
                                         fieldWithPath("data.accessToken").description("발급된 유저의 JWT"))
                                 .tag("SignUp")
                                 .build()
@@ -71,6 +73,7 @@ public class UserSignupControllerTest extends ApiDocumentationTest {
         String state = "123456789";
         UserSignUpResponse userSignUpDto = UserSignUpResponse.of(
                 1L,
+                true,
                 "[발급된 JWT]"
         );
 
@@ -97,6 +100,7 @@ public class UserSignupControllerTest extends ApiDocumentationTest {
                                         fieldWithPath("message").description("요청 결과 메세지"),
                                         fieldWithPath("code").description("결과 코드"),
                                         fieldWithPath("data.userId").description("생성된 유저 ID"),
+                                        fieldWithPath("data.alreadySignedUp").description("기존 회원가입 여부"),
                                         fieldWithPath("data.accessToken").description("발급된 유저의 JWT"))
                                 .tag("SignUp")
                                 .build()
@@ -108,6 +112,7 @@ public class UserSignupControllerTest extends ApiDocumentationTest {
     void google_signup() throws Exception {
         UserSignUpResponse userSignUpDto = UserSignUpResponse.of(
                 1L,
+                true,
                 "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJoYXZlYWx3YXlzYmVlbkBrYWthby5jb20iLCJyb2xlcyI6W10sImlhdCI6MTY1NzQzNjU2MywiZXhwIjoxNjU3Nzk2NTYzfQ.AJX7rGRXjmi4TopUBsX6zWVgMYgjN_uRYtF_Yb_80KE"
         );
 
@@ -127,6 +132,7 @@ public class UserSignupControllerTest extends ApiDocumentationTest {
                                         fieldWithPath("message").description("요청 결과 메세지"),
                                         fieldWithPath("code").description("결과 코드"),
                                         fieldWithPath("data.userId").description("생성된 유저 ID"),
+                                        fieldWithPath("data.alreadySignedUp").description("기존 회원가입 여부"),
                                         fieldWithPath("data.accessToken").description("발급된 유저의 JWT"))
                                 .tag("SignUp")
                                 .build()

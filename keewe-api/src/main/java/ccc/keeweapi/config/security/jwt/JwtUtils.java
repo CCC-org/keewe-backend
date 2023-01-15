@@ -25,7 +25,8 @@ public class JwtUtils {
     @Value("${jwt.secret}")
     private String secretKey;
 
-    private final long tokenValidTime = 600 * 600 * 1000L;
+    // note. 약 41일
+    private final long tokenValidTime = 600 * 600 * 10000L;
 
     private final UserDetailsService userDetailsService;
 
