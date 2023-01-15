@@ -34,7 +34,7 @@ public class UserApiService {
         Optional<User> userOps = userDomainService.getUserByVendorIdAndVendorType(account.getId(), vendorType);
 
         if(userOps.isPresent()) {
-            return userAssembler.toUserSignUpResponse(userOps.get(), getToken(userOps.get().getId()));
+            return userAssembler.toUserSignUpResponse(userOps.get(), true, getToken(userOps.get().getId()));
         }
 
         User user = signUpWithOauth(
@@ -43,7 +43,7 @@ public class UserApiService {
                 , KeeweStringUtils.getOrDefault(account.getEmail(), "")
         );
 
-        return userAssembler.toUserSignUpResponse(user, getToken(user.getId()));
+        return userAssembler.toUserSignUpResponse(user, false, getToken(user.getId()));
     }
 
     public String getToken(Long userId) {
