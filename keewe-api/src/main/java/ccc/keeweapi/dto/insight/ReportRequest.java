@@ -1,14 +1,14 @@
 package ccc.keeweapi.dto.insight;
 
-import ccc.keewedomain.persistence.domain.insight.enums.ReactionType;
+import ccc.keewedomain.persistence.domain.insight.enums.ReportType;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
-public class ReactRequest {
+public class ReportRequest {
     private Long insightId;
-    private ReactionType reactionType;
-    private Long value;
+    private ReportType reportType;
+    private String reason;
 }

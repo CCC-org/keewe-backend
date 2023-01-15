@@ -24,4 +24,8 @@ public class KeeweConsts {
     public static final String EVENT_CONNECTION_HANDSHAKE = "SUCCESS";
     public static final String TITLE_ACQUIREMENT_EXCHANGE = "TITLE-ACQUIREMENT-EXCHANGE";
     public static final String TITLE_STAT_QUEUE = "TITLE-STAT-QUEUE";
+
+    public static final String INSIGHT_REPORT_NOTI_HEADER = "[\uD83D\uDEA8 신고가 접수됐어요. \uD83D\uDEA8]\n\n";
+    public static final String SLACK_REPORT_BOT_NAME = "키위봇";
+    public static final String SLACK_REPORT_BOT_IMG = ":robot_face:";
 }

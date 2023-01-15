@@ -1,4 +1,4 @@
-package ccc.keeweinfra.apis;
+package ccc.keeweinfra.apis.oauth;
 
 import ccc.keeweinfra.dto.KakaoTokenResponse;
 import org.springframework.cloud.openfeign.FeignClient;

@@ -1,4 +1,4 @@
-package ccc.keeweinfra.service;
+package ccc.keeweinfra.service.messagequeue;
 
 import ccc.keewecore.consts.KeeweConsts;
 import lombok.RequiredArgsConstructor;

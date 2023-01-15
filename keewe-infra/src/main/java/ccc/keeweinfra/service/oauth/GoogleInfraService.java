@@ -1,8 +1,8 @@
-package ccc.keeweinfra.service;
+package ccc.keeweinfra.service.oauth;
 
 import ccc.keewecore.consts.KeeweConsts;
-import ccc.keeweinfra.apis.GoogleApi;
-import ccc.keeweinfra.apis.GoogleAuthApi;
+import ccc.keeweinfra.apis.oauth.GoogleApi;
+import ccc.keeweinfra.apis.oauth.GoogleAuthApi;
 import ccc.keeweinfra.dto.GoogleProfileResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

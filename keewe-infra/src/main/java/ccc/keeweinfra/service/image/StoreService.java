@@ -1,4 +1,4 @@
-package ccc.keeweinfra.service;
+package ccc.keeweinfra.service.image;
 
 import org.springframework.web.multipart.MultipartFile;
 

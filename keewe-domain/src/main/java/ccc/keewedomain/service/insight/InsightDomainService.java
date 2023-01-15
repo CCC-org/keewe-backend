@@ -25,7 +25,7 @@ import ccc.keewedomain.persistence.repository.user.BookmarkRepository;
 import ccc.keewedomain.persistence.repository.utils.CursorPageable;
 import ccc.keewedomain.service.challenge.ChallengeDomainService;
 import ccc.keewedomain.service.user.UserDomainService;
-import ccc.keeweinfra.service.MQPublishService;
+import ccc.keeweinfra.service.messagequeue.MQPublishService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

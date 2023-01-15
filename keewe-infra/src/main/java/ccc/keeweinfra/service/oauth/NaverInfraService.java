@@ -1,8 +1,8 @@
-package ccc.keeweinfra.service;
+package ccc.keeweinfra.service.oauth;
 
 import ccc.keewecore.consts.KeeweConsts;
-import ccc.keeweinfra.apis.NaverApi;
-import ccc.keeweinfra.apis.NaverAuthApi;
+import ccc.keeweinfra.apis.oauth.NaverApi;
+import ccc.keeweinfra.apis.oauth.NaverAuthApi;
 import ccc.keeweinfra.dto.NaverProfileResponse;
 import ccc.keeweinfra.dto.NaverTokenResponse;
 import lombok.RequiredArgsConstructor;

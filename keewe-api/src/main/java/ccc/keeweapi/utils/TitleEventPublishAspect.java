@@ -4,7 +4,7 @@ package ccc.keeweapi.utils;
 import ccc.keeweapi.utils.annotations.TitleEventPublish;
 import ccc.keewecore.consts.KeeweConsts;
 import ccc.keewecore.utils.KeeweTitleHeader;
-import ccc.keeweinfra.service.MQPublishService;
+import ccc.keeweinfra.service.messagequeue.MQPublishService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
