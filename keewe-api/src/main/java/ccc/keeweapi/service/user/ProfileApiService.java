@@ -5,6 +5,7 @@ import ccc.keeweapi.dto.user.*;
 import ccc.keeweapi.utils.SecurityUtil;
 import ccc.keewedomain.dto.user.FollowCheckDto;
 import ccc.keewedomain.persistence.domain.title.TitleAchievement;
+import ccc.keewedomain.persistence.domain.user.Block;
 import ccc.keewedomain.persistence.domain.user.Follow;
 import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.persistence.repository.utils.CursorPageable;
@@ -20,7 +21,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static ccc.keewecore.consts.KeeweConsts.MY_PAGE_TITLE_LIMIT;
@@ -98,6 +98,12 @@ public class ProfileApiService {
         return getFollowUser(follows, Follow::getFollowee);
     }
 
+    @Transactional
+    public BlockUserResponse blockUser(Long blockedUserId) {
+        Long blockUserId = profileDomainService.blockUser(SecurityUtil.getUserId(), blockedUserId);
+        return profileAssembler.toBlockUserResponse(blockedUserId);
+    }
+
     private FollowUserListResponse getFollowUser(List<Follow> follows, Function<Follow, User> followUserFunction) {
         List<User> users = follows.stream()
                 .map(followUserFunction)
@@ -105,5 +111,17 @@ public class ProfileApiService {
 
         Set<Long> followingIdSet = profileDomainService.getFollowingTargetIdSet(SecurityUtil.getUser(), users);
         return profileAssembler.toFollowUserListResponse(follows, users, followingIdSet);
+    }
+
+    @Transactional
+    public UnblockUserResponse unblockUser(Long blockedUserId) {
+        Long unblockUserId = profileDomainService.unblockUser(SecurityUtil.getUserId(), blockedUserId);
+        return profileAssembler.toUnblockUserResponse(unblockUserId);
+    }
+
+    @Transactional(readOnly = true)
+    public MyBlockUserListResponse getMyBlockList() {
+        List<Block> blocks = profileDomainService.findBlocksByUserId(SecurityUtil.getUserId());
+        return profileAssembler.toMyBlockUserListResponse(blocks);
     }
 }

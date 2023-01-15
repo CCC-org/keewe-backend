@@ -39,6 +39,10 @@ public enum KeeweRtnConsts {
     ERR445(KeeweRtnGrp.Validation, 445, "인사이트를 찾을 수 없어요."),
     ERR446(KeeweRtnGrp.Validation, 446, "자기 자신을 팔로잉 할 수 없어요."),
 
+    ERR450(KeeweRtnGrp.Validation, 450, "이미 차단한 유저에요."),
+    ERR451(KeeweRtnGrp.Validation, 451, "자신을 차단할 수 없어요."),
+    ERR452(KeeweRtnGrp.Validation, 452, "차단 내역을 찾을 수 없어요."),
+
     ERR471(KeeweRtnGrp.Validation, 471, "관련된 반응 통계를 찾을 수 없어요."),
 
     ERR501(KeeweRtnGrp.System, 501, "카카오 회원가입 중 내부 오류가 발생했어요."),

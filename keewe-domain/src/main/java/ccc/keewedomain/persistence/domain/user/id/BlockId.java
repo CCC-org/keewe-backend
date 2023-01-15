@@ -10,7 +10,7 @@ import java.io.Serializable;
 @EqualsAndHashCode
 @AllArgsConstructor(staticName = "of")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class TitleAchievementId implements Serializable {
+public class BlockId implements Serializable {
     private Long user;
-    private Long title;
+    private Long blockedUser;
 }
