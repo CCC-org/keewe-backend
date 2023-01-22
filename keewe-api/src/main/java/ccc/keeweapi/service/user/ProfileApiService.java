@@ -78,10 +78,10 @@ public class ProfileApiService {
     }
 
     @Transactional(readOnly = true)
-    public List<AchievedTitleResponse> getAllAchievedTitles(Long userId) {
-        return profileDomainService.getTitleAchievements(userId, Integer.MAX_VALUE).stream()
-                .map(profileAssembler::toAchievedTitleResponse)
-                .collect(Collectors.toList());
+    public AllAchievedTitleResponse getAllAchievedTitles(Long userId) {
+        List<TitleAchievement> titleAchievements = profileDomainService.getTitleAchievements(userId, Integer.MAX_VALUE);
+
+        return profileAssembler.toAllAchievedTitleResponse(SecurityUtil.getUser(), titleAchievements);
     }
 
     @Transactional(readOnly = true)
