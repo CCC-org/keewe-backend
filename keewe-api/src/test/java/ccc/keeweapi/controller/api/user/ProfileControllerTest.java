@@ -214,8 +214,10 @@ public class ProfileControllerTest extends ApiDocumentationTest {
                 AchievedTitleResponse.of(2001L, "초보 기록가", "인사이트 5개", now.minusDays(3).minusMinutes(40))
         );
 
+        AllAchievedTitleResponse response = AllAchievedTitleResponse.of(1000L, achievedTitleResponses);
+
         when(profileApiService.getAllAchievedTitles(anyLong()))
-                .thenReturn(achievedTitleResponses);
+                .thenReturn(response);
 
         ResultActions resultActions = mockMvc.perform(get("/api/v1/user/profile/all-achieved-title/{userId}", userId)
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
@@ -231,10 +233,11 @@ public class ProfileControllerTest extends ApiDocumentationTest {
                         .responseFields(
                                 fieldWithPath("message").description("요청 결과 메세지"),
                                 fieldWithPath("code").description("결과 코드"),
-                                fieldWithPath("data[].titleId").description("타이틀의 ID"),
-                                fieldWithPath("data[].name").description("타이틀의 이름"),
-                                fieldWithPath("data[].introduction").description("타이틀 소개"),
-                                fieldWithPath("data[].achievedDate").description("타이틀 획득 시각"))
+                                fieldWithPath("data.repTitleId").description("대표 타이틀의 ID"),
+                                fieldWithPath("data.achievedTitles[].titleId").description("타이틀의 ID"),
+                                fieldWithPath("data.achievedTitles[].name").description("타이틀의 이름"),
+                                fieldWithPath("data.achievedTitles[].introduction").description("타이틀 소개"),
+                                fieldWithPath("data.achievedTitles[].achievedDate").description("타이틀 획득 시각"))
                         .tag("MyPage")
                         .build()
         )));

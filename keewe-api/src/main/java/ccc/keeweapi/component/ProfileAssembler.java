@@ -86,6 +86,14 @@ public class ProfileAssembler {
         );
     }
 
+    public AllAchievedTitleResponse toAllAchievedTitleResponse(User user, List<TitleAchievement> achievements) {
+        List<AchievedTitleResponse> achievedTitleResponses = achievements.stream()
+                .map(this::toAchievedTitleResponse)
+                .collect(Collectors.toList());
+
+        return AllAchievedTitleResponse.of(user.getRepTitleId(), achievedTitleResponses);
+    }
+
     public FollowUserResponse toFollowerResponse(User follower, boolean isFollow) {
         return FollowUserResponse.of(
                 follower.getId(),
