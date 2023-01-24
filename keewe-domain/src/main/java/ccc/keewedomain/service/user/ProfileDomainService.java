@@ -71,7 +71,7 @@ public class ProfileDomainService {
     }
 
     public boolean getFollowingTargetIdSet(FollowCheckDto followCheckDto) {
-        return followRepository.existsById(FollowId.of(followCheckDto.getTargetId(), followCheckDto.getUserId()));
+        return followRepository.existsById(FollowId.of(followCheckDto.getUserId(), followCheckDto.getTargetId()));
     }
 
     public String uploadProfilePhoto(UploadProfilePhotoDto uploadProfilePhotoDto) {

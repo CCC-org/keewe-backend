@@ -41,7 +41,7 @@ public class ProfileAssembler {
     }
 
     public FollowCheckDto toFollowCheckDto(Long targetId) {
-        return FollowCheckDto.of(targetId, SecurityUtil.getUserId());
+        return FollowCheckDto.of(SecurityUtil.getUserId(), targetId);
     }
 
     public UploadProfilePhotoDto toUploadProfilePhotoDto(MultipartFile imageFile) {

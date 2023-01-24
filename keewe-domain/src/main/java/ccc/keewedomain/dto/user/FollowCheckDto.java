@@ -6,6 +6,6 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor(staticName = "of")
 public class FollowCheckDto {
-    private Long targetId;
     private Long userId;
+    private Long targetId;
 }

@@ -58,7 +58,7 @@ public class ProfileApiService {
         User targetUser = userDomainService.getUserByIdWithInterests(targetId);
         Long userId = SecurityUtil.getUserId();
 
-        boolean isFollowing = profileDomainService.getFollowingTargetIdSet(FollowCheckDto.of(targetId, userId));
+        boolean isFollowing = profileDomainService.getFollowingTargetIdSet(FollowCheckDto.of(userId, targetId));
         Long followerCount = profileDomainService.getFollowerCount(targetUser);
         Long followingCount = profileDomainService.getFollowingCount(targetUser);
 
