@@ -58,7 +58,7 @@ public class ProfileApiService {
         User targetUser = userDomainService.getUserByIdWithInterests(targetId);
         Long userId = SecurityUtil.getUserId();
 
-        boolean isFollowing = profileDomainService.getFollowingTargetIdSet(FollowCheckDto.of(targetId, userId));
+        boolean isFollowing = profileDomainService.getFollowingTargetIdSet(FollowCheckDto.of(userId, targetId));
         Long followerCount = profileDomainService.getFollowerCount(targetUser);
         Long followingCount = profileDomainService.getFollowingCount(targetUser);
 
@@ -78,10 +78,10 @@ public class ProfileApiService {
     }
 
     @Transactional(readOnly = true)
-    public List<AchievedTitleResponse> getAllAchievedTitles(Long userId) {
-        return profileDomainService.getTitleAchievements(userId, Integer.MAX_VALUE).stream()
-                .map(profileAssembler::toAchievedTitleResponse)
-                .collect(Collectors.toList());
+    public AllAchievedTitleResponse getAllAchievedTitles(Long userId) {
+        List<TitleAchievement> titleAchievements = profileDomainService.getTitleAchievements(userId, Integer.MAX_VALUE);
+
+        return profileAssembler.toAllAchievedTitleResponse(SecurityUtil.getUser(), titleAchievements);
     }
 
     @Transactional(readOnly = true)

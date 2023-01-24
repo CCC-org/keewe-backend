@@ -103,7 +103,7 @@ public class InsightAssembler {
     public InsightAuthorAreaResponse toInsightAuthorAreaResponse(Insight insight, boolean isFollowing) {
         User writer = insight.getWriter();
         return InsightAuthorAreaResponse.of(
-                insight.getId(),
+                writer.getId(),
                 writer.getNickname(),
                 writer.getRepTitleName(),
                 writer.getInterests(),

@@ -46,7 +46,7 @@ public class ProfileController {
     }
 
     @GetMapping("/all-achieved-title/{userId}")
-    public ApiResponse<List<AchievedTitleResponse>> getAllAchievedTitles(@PathVariable Long userId) {
+    public ApiResponse<AllAchievedTitleResponse> getAllAchievedTitles(@PathVariable Long userId) {
         return ApiResponse.ok(profileApiService.getAllAchievedTitles(userId));
     }
 

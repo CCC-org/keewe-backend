@@ -41,7 +41,7 @@ public class ProfileAssembler {
     }
 
     public FollowCheckDto toFollowCheckDto(Long targetId) {
-        return FollowCheckDto.of(targetId, SecurityUtil.getUserId());
+        return FollowCheckDto.of(SecurityUtil.getUserId(), targetId);
     }
 
     public UploadProfilePhotoDto toUploadProfilePhotoDto(MultipartFile imageFile) {
@@ -84,6 +84,14 @@ public class ProfileAssembler {
                 title.getIntroduction(),
                 achievement.getCreatedAt()
         );
+    }
+
+    public AllAchievedTitleResponse toAllAchievedTitleResponse(User user, List<TitleAchievement> achievements) {
+        List<AchievedTitleResponse> achievedTitleResponses = achievements.stream()
+                .map(this::toAchievedTitleResponse)
+                .collect(Collectors.toList());
+
+        return AllAchievedTitleResponse.of(user.getRepTitleId(), achievedTitleResponses);
     }
 
     public FollowUserResponse toFollowerResponse(User follower, boolean isFollow) {
