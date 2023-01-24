@@ -27,8 +27,7 @@ import static com.epages.restdocs.apispec.ResourceDocumentation.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -215,8 +214,10 @@ public class ProfileControllerTest extends ApiDocumentationTest {
                 AchievedTitleResponse.of(2001L, "초보 기록가", "인사이트 5개", now.minusDays(3).minusMinutes(40))
         );
 
+        AllAchievedTitleResponse response = AllAchievedTitleResponse.of(1000L, achievedTitleResponses);
+
         when(profileApiService.getAllAchievedTitles(anyLong()))
-                .thenReturn(achievedTitleResponses);
+                .thenReturn(response);
 
         ResultActions resultActions = mockMvc.perform(get("/api/v1/user/profile/all-achieved-title/{userId}", userId)
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
@@ -232,10 +233,11 @@ public class ProfileControllerTest extends ApiDocumentationTest {
                         .responseFields(
                                 fieldWithPath("message").description("요청 결과 메세지"),
                                 fieldWithPath("code").description("결과 코드"),
-                                fieldWithPath("data[].titleId").description("타이틀의 ID"),
-                                fieldWithPath("data[].name").description("타이틀의 이름"),
-                                fieldWithPath("data[].introduction").description("타이틀 소개"),
-                                fieldWithPath("data[].achievedDate").description("타이틀 획득 시각"))
+                                fieldWithPath("data.repTitleId").description("대표 타이틀의 ID"),
+                                fieldWithPath("data.achievedTitles[].titleId").description("타이틀의 ID"),
+                                fieldWithPath("data.achievedTitles[].name").description("타이틀의 이름"),
+                                fieldWithPath("data.achievedTitles[].introduction").description("타이틀 소개"),
+                                fieldWithPath("data.achievedTitles[].achievedDate").description("타이틀 획득 시각"))
                         .tag("MyPage")
                         .build()
         )));
@@ -330,5 +332,99 @@ public class ProfileControllerTest extends ApiDocumentationTest {
                 fieldWithPath("data.users[].title").description("대표 타이틀 제목"),
                 fieldWithPath("data.users[].follow").description("팔로우 여부")
         );
+    }
+
+    @Test
+    @DisplayName("사용자 차단")
+    void block() throws Exception {
+        long targetId = 2L;
+        BlockUserResponse response = BlockUserResponse.of(targetId);
+
+        when(profileApiService.blockUser(anyLong()))
+                .thenReturn(response);
+
+        ResultActions resultActions = mockMvc.perform(post("/api/v1/user/profile/block/{targetId}", targetId)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        resultActions.andDo(restDocs.document(resource(
+                ResourceSnippetParameters.builder()
+                        .description("사용자 차단 API 입니다")
+                        .summary("사용자 차단 API")
+                        .requestHeaders(
+                                headerWithName("Authorization").description("유저의 JWT"))
+                        .responseFields(
+                                fieldWithPath("message").description("요청 결과 메세지"),
+                                fieldWithPath("code").description("결과 코드"),
+                                fieldWithPath("data.blockedUserId").description("차단된 유저의 ID"))
+                        .tag("Profile")
+                        .build()
+        )));
+    }
+
+    @Test
+    @DisplayName("사용자 차단 해제")
+    void unblock() throws Exception {
+        long targetId = 2L;
+        UnblockUserResponse response = UnblockUserResponse.of(targetId);
+
+        when(profileApiService.unblockUser(anyLong()))
+                .thenReturn(response);
+
+        ResultActions resultActions = mockMvc.perform(delete("/api/v1/user/profile/block/{targetId}", targetId)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        resultActions.andDo(restDocs.document(resource(
+                ResourceSnippetParameters.builder()
+                        .description("사용자 차단 해제 API 입니다")
+                        .summary("사용자 차단 해제 API")
+                        .requestHeaders(
+                                headerWithName("Authorization").description("유저의 JWT"))
+                        .responseFields(
+                                fieldWithPath("message").description("요청 결과 메세지"),
+                                fieldWithPath("code").description("결과 코드"),
+                                fieldWithPath("data.unblockedUserId").description("차단 해제된 유저의 ID"))
+                        .tag("Profile")
+                        .build()
+        )));
+    }
+
+    @Test
+    @DisplayName("나의 차단 리스트 조회")
+    void get_my_block_list() throws Exception {
+        MyBlockUserListResponse response = MyBlockUserListResponse.of(List.of(
+                MyBlockUserResponse.of(1L, "hello","시작이 반", "www.api-keewe.com/images/128398681"),
+                MyBlockUserResponse.of(2L, "world","위대한 첫 도약", "www.api-keewe.com/images/128398681")
+        ));
+
+        when(profileApiService.getMyBlockList())
+                .thenReturn(response);
+
+        ResultActions resultActions = mockMvc.perform(get("/api/v1/user/profile/my-block-list")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        resultActions.andDo(restDocs.document(resource(
+                ResourceSnippetParameters.builder()
+                        .description("나의 차단 목록 조회 API 입니다")
+                        .summary("나의 차단 목록 조회 API")
+                        .requestHeaders(
+                                headerWithName("Authorization").description("유저의 JWT"))
+                        .responseFields(
+                                fieldWithPath("message").description("요청 결과 메세지"),
+                                fieldWithPath("code").description("결과 코드"),
+                                fieldWithPath("data.blockedUsers[]").description("차단한 유저 목록"),
+                                fieldWithPath("data.blockedUsers[].id").description("유저의 ID"),
+                                fieldWithPath("data.blockedUsers[].nickname").description("유저의 닉네임"),
+                                fieldWithPath("data.blockedUsers[].title").description("대표 타이틀"),
+                                fieldWithPath("data.blockedUsers[].imageURL").description("프로필 이미지 URL")
+                        )
+                        .tag("Profile")
+                        .build()
+        )));
     }
 }

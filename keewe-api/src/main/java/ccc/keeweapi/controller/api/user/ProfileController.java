@@ -46,14 +46,14 @@ public class ProfileController {
     }
 
     @GetMapping("/all-achieved-title/{userId}")
-    public ApiResponse<List<AchievedTitleResponse>> getAllAchievedTitles(@PathVariable Long userId) {
+    public ApiResponse<AllAchievedTitleResponse> getAllAchievedTitles(@PathVariable Long userId) {
         return ApiResponse.ok(profileApiService.getAllAchievedTitles(userId));
     }
 
     @GetMapping("/follower/{userId}")
     public ApiResponse<FollowUserListResponse> getFollowers(
             @PathVariable Long userId,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime cursor,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime cursor,
             @RequestParam Long limit) {
         CursorPageable<LocalDateTime> cPage = CursorPageable.of(cursor, limit);
         return ApiResponse.ok(profileApiService.getFollowers(userId, cPage));
@@ -66,5 +66,20 @@ public class ProfileController {
             @RequestParam Long limit) {
         CursorPageable<LocalDateTime> cPage = CursorPageable.of(cursor, limit);
         return ApiResponse.ok(profileApiService.getFollowees(userId, cPage));
+    }
+
+    @PostMapping("/block/{blockedUserId}")
+    public ApiResponse<BlockUserResponse> blockUser(@PathVariable Long blockedUserId) {
+        return ApiResponse.ok(profileApiService.blockUser(blockedUserId));
+    }
+
+    @DeleteMapping("/block/{blockedUserId}")
+    public ApiResponse<UnblockUserResponse> unblockUser(@PathVariable Long blockedUserId) {
+        return ApiResponse.ok(profileApiService.unblockUser(blockedUserId));
+    }
+
+    @GetMapping("/my-block-list")
+    public ApiResponse<MyBlockUserListResponse> getMyBlockList() {
+        return ApiResponse.ok(profileApiService.getMyBlockList());
     }
 }

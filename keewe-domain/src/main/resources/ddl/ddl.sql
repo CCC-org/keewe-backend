@@ -24,12 +24,14 @@ CREATE TABLE IF NOT EXISTS `user`
     profile_photo_id    BIGINT(20),
     privacy             VARCHAR(20)     NOT NULL,
     status              VARCHAR(255),
+    rep_title_id        BIGINT,
     deleted             BIT             NOT NULL,
     created_at          DATETIME(6)     NOT NULL,
     updated_at          DATETIME(6)     NOT NULL,
 
     PRIMARY KEY(user_id),
     FOREIGN KEY (profile_photo_id) REFERENCES  `profile_photo`(profile_photo_id),
+    FOREIGN KEY (rep_title_id) REFERENCES `title`(title_id),
     CONSTRAINT `vendor_constraint` UNIQUE (`vendor_id`, `vendor_type`),
     INDEX  `vendor_index` (`vendor_id`, `vendor_type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -43,7 +45,20 @@ CREATE TABLE IF NOT EXISTS `follow`
 
     PRIMARY KEY (follower_id, followee_id),
     FOREIGN KEY (followee_id) REFERENCES `user`(user_id),
-    FOREIGN KEY (follower_id) REFERENCES `user`(user_id)
+    FOREIGN KEY (follower_id) REFERENCES `user`(user_id),
+    INDEX `created_at_index` (created_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS `block`
+(
+    user_id         BIGINT(20)      NOT NULL,
+    blocked_user_id BIGINT(20)      NOT NULL,
+    created_at      DATETIME(6)     NOT NULL,
+    updated_at      DATETIME(6)     NOT NULL,
+
+    PRIMARY KEY (user_id, blocked_user_id),
+    FOREIGN KEY (user_id) REFERENCES `user`(user_id),
+    FOREIGN KEY (blocked_user_id) REFERENCES `user`(user_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS `favorite_interests`
@@ -195,7 +210,8 @@ CREATE TABLE IF NOT EXISTS `comment`
 
     PRIMARY KEY (comment_id),
     FOREIGN KEY (insight_id) REFERENCES `insight`(insight_id),
-    FOREIGN KEY (writer_id) REFERENCES `user`(user_id)
+    FOREIGN KEY (writer_id) REFERENCES `user`(user_id),
+    FOREIGN KEY (parent_comment_id) REFERENCES `comment`(comment_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS `comment_like`

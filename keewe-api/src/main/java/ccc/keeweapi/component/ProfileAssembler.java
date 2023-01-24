@@ -9,6 +9,7 @@ import ccc.keewedomain.dto.user.UploadProfilePhotoDto;
 import ccc.keewedomain.persistence.domain.common.Interest;
 import ccc.keewedomain.persistence.domain.title.Title;
 import ccc.keewedomain.persistence.domain.title.TitleAchievement;
+import ccc.keewedomain.persistence.domain.user.Block;
 import ccc.keewedomain.persistence.domain.user.Follow;
 import ccc.keewedomain.persistence.domain.user.User;
 import org.springframework.stereotype.Component;
@@ -40,7 +41,7 @@ public class ProfileAssembler {
     }
 
     public FollowCheckDto toFollowCheckDto(Long targetId) {
-        return FollowCheckDto.of(targetId, SecurityUtil.getUserId());
+        return FollowCheckDto.of(SecurityUtil.getUserId(), targetId);
     }
 
     public UploadProfilePhotoDto toUploadProfilePhotoDto(MultipartFile imageFile) {
@@ -50,12 +51,12 @@ public class ProfileAssembler {
         );
     }
 
-    //TODO 프로필 사진, 타이틀, 자기소개 수정
+    //TODO 프로필 사진, 자기소개 수정
     public ProfileMyPageResponse toProfileMyPageResponse(User user, Boolean isFollowing, Long followerCount, Long followingCount, String challengeName) {
         return ProfileMyPageResponse.of(
                 user.getNickname(),
-                "image",
-                "title",
+                user.getProfilePhotoURL(),
+                user.getRepTitleName(),
                 "introduction",
                 user.getInterests().stream()
                         .map(Interest::getName)
@@ -85,13 +86,20 @@ public class ProfileAssembler {
         );
     }
 
-    //TODO 대표 타이틀 수정
+    public AllAchievedTitleResponse toAllAchievedTitleResponse(User user, List<TitleAchievement> achievements) {
+        List<AchievedTitleResponse> achievedTitleResponses = achievements.stream()
+                .map(this::toAchievedTitleResponse)
+                .collect(Collectors.toList());
+
+        return AllAchievedTitleResponse.of(user.getRepTitleId(), achievedTitleResponses);
+    }
+
     public FollowUserResponse toFollowerResponse(User follower, boolean isFollow) {
         return FollowUserResponse.of(
                 follower.getId(),
                 follower.getNickname(),
                 follower.getProfilePhotoURL(),
-                "아 타이틀..",
+                follower.getRepTitleName(),
                 isFollow);
     }
 
@@ -102,5 +110,26 @@ public class ProfileAssembler {
 
         LocalDateTime cursor = !follows.isEmpty() ? follows.get(follows.size() - 1).getCreatedAt() : null;
         return FollowUserListResponse.of(Optional.ofNullable(cursor), followUserResponse);
+    }
+
+    public BlockUserResponse toBlockUserResponse(Long blockedUserId) {
+        return BlockUserResponse.of(blockedUserId);
+    }
+
+    public UnblockUserResponse toUnblockUserResponse(Long unblockUserId) {
+        return UnblockUserResponse.of(unblockUserId);
+    }
+
+    public MyBlockUserListResponse toMyBlockUserListResponse(List<Block> blocks) {
+        List<MyBlockUserResponse> myBlockUserResponses = blocks.stream()
+                .map(this::toMyBlockUserResponse)
+                .collect(Collectors.toList());
+
+        return MyBlockUserListResponse.of(myBlockUserResponses);
+    }
+
+    public MyBlockUserResponse toMyBlockUserResponse(Block block) {
+        User user = block.getBlockedUser();
+        return MyBlockUserResponse.of(user.getId(), user.getNickname(), user.getRepTitleName(), user.getProfilePhotoURL());
     }
 }

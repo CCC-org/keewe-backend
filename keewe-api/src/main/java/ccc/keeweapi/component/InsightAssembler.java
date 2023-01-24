@@ -103,11 +103,11 @@ public class InsightAssembler {
     public InsightAuthorAreaResponse toInsightAuthorAreaResponse(Insight insight, boolean isFollowing) {
         User writer = insight.getWriter();
         return InsightAuthorAreaResponse.of(
-                insight.getId(),
+                writer.getId(),
                 writer.getNickname(),
-                "title",
+                writer.getRepTitleName(),
                 writer.getInterests(),
-                "www.api-keewe.com/images",
+                writer.getProfilePhotoURL(),
                 isAuthor(insight),
                 isFollowing,
                 insight.getCreatedAt().toString()

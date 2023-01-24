@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 import static ccc.keewedomain.persistence.domain.insight.QComment.comment;
+import static ccc.keewedomain.persistence.domain.title.QTitle.title;
 import static ccc.keewedomain.persistence.domain.user.QUser.user;
 
 @Repository
@@ -29,6 +30,8 @@ public class CommentQueryRepository {
                 .from(comment)
                 .innerJoin(comment.writer, user)
                 .fetchJoin()
+                .leftJoin(user.repTitle, title)
+                .fetchJoin()
                 .where(comment.id.in(findIdByInsightIdAndCursorDesc(insightId, cPage)))
                 .orderBy(comment.id.desc())
                 .fetch();
@@ -40,7 +43,9 @@ public class CommentQueryRepository {
         return queryFactory
                 .select(comment)
                 .from(comment)
-                .leftJoin(comment.writer, user)
+                .innerJoin(comment.writer, user)
+                .fetchJoin()
+                .leftJoin(user.repTitle, title)
                 .fetchJoin()
                 .where(comment.id.in(parentIdsReplyDesc(insightId)))
                 .limit(limit)
@@ -73,6 +78,8 @@ public class CommentQueryRepository {
                 .from(comment)
                 .innerJoin(comment.writer, user)
                 .fetchJoin()
+                .leftJoin(user.repTitle, title)
+                .fetchJoin()
                 .where(comment.id.in(findFirstReplyIds(parents)))
                 .transform(GroupBy.groupBy(comment.parent.id).as(comment));
     }
@@ -83,6 +90,8 @@ public class CommentQueryRepository {
                 .select(comment)
                 .from(comment)
                 .innerJoin(comment.writer, user)
+                .fetchJoin()
+                .leftJoin(user.repTitle, title)
                 .fetchJoin()
                 .where(comment.id.in(findIdByParentIdAndCursorDesc(parentId, cPage)))
                 .orderBy(comment.id.desc())
