@@ -24,4 +24,7 @@ public class KeeweConsts {
     public static final String EVENT_CONNECTION_HANDSHAKE = "SUCCESS";
     public static final String TITLE_ACQUIREMENT_EXCHANGE = "TITLE-ACQUIREMENT-EXCHANGE";
     public static final String TITLE_STAT_QUEUE = "TITLE-STAT-QUEUE";
+
+    public static final Integer PROFILE_PHOTO_WIDTH = 450;
+    public static final Integer PROFILE_PHOTO_HEIGHT = 450;
 }

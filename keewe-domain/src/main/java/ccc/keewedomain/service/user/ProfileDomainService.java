@@ -1,5 +1,6 @@
 package ccc.keewedomain.service.user;
 
+import ccc.keewecore.consts.KeeweConsts;
 import ccc.keewecore.consts.KeeweRtnConsts;
 import ccc.keewecore.exception.KeeweException;
 import ccc.keewedomain.dto.user.FollowCheckDto;
@@ -76,7 +77,11 @@ public class ProfileDomainService {
 
     public String uploadProfilePhoto(UploadProfilePhotoDto uploadProfilePhotoDto) {
         User user = userDomainService.getUserByIdOrElseThrow(uploadProfilePhotoDto.getUserId());
-        String imageURL = storeService.upload(uploadProfilePhotoDto.getImageFile());
+        String imageURL = storeService.upload(
+                uploadProfilePhotoDto.getImageFile(),
+                KeeweConsts.PROFILE_PHOTO_WIDTH,
+                KeeweConsts.PROFILE_PHOTO_HEIGHT
+        );
 
         user.setProfilePhoto(ProfilePhoto.of(imageURL)); // TODO : image remove by store service
 

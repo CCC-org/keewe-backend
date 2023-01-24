@@ -5,11 +5,17 @@ import ccc.keewecore.exception.KeeweException;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import lombok.RequiredArgsConstructor;
+import org.imgscalr.Scalr;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.UUID;
@@ -25,17 +31,27 @@ public class S3StoreService implements StoreService {
 
     @Override
     public String upload(MultipartFile multipartFile) {
-        String s3FileName = createFileName(multipartFile.getOriginalFilename());
-
-        ObjectMetadata objMeta = new ObjectMetadata();
         try {
-            objMeta.setContentLength(multipartFile.getInputStream().available());
-            amazonS3.putObject(bucket, s3FileName, multipartFile.getInputStream(), objMeta);
+            return this.upload(multipartFile.getInputStream(), multipartFile.getOriginalFilename());
         } catch (IOException e) {
             throw new KeeweException(KeeweRtnConsts.ERR600);
         }
+    }
 
-        return amazonS3.getUrl(bucket, s3FileName).toString();
+    @Override
+    public String upload(MultipartFile multipartFile, Integer width, Integer height) {
+        try {
+            BufferedImage bufferedImage = ImageIO.read(multipartFile.getInputStream());
+            bufferedImage = resizeImage(bufferedImage, width, height);
+
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            ImageIO.write(bufferedImage, "jpeg", out);
+            InputStream imageInputStream = new ByteArrayInputStream(out.toByteArray());
+
+            return this.upload(imageInputStream, multipartFile.getOriginalFilename());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -53,7 +69,29 @@ public class S3StoreService implements StoreService {
         return urlObject.getPath();
     }
 
+    private String upload(InputStream inputStream, String fileName) {
+
+        String s3FileName = createFileName(fileName);
+        try {
+            ObjectMetadata objMeta = new ObjectMetadata();
+            objMeta.setContentLength(inputStream.available());
+            amazonS3.putObject(bucket, s3FileName, inputStream, objMeta);
+        } catch (IOException e) {
+            throw new KeeweException(KeeweRtnConsts.ERR600);
+        }
+
+        return amazonS3.getUrl(bucket, s3FileName).toString();
+    }
+
     private String createFileName(String originalFileName) {
         return UUID.randomUUID() + "-" + originalFileName;
+    }
+
+    private BufferedImage resizeImage(BufferedImage originalImage, Integer targetWidth, Integer targetHeight) {
+        Integer imageLength = Math.min(originalImage.getHeight(), originalImage.getWidth());
+        BufferedImage scaledImage =
+                Scalr.crop(originalImage, (originalImage.getWidth() - imageLength) / 2,
+                        (originalImage.getHeight() - imageLength) / 2, imageLength, imageLength);
+        return Scalr.resize(scaledImage, Scalr.Method.AUTOMATIC, Scalr.Mode.FIT_EXACT, targetWidth, targetHeight, Scalr.OP_ANTIALIAS);
     }
 }
