@@ -1,8 +1,8 @@
-package ccc.keeweapi.controller.api.insight;
+package ccc.keeweapi.controller.api.report;
 
 import ccc.keeweapi.dto.ApiResponse;
 import ccc.keeweapi.dto.insight.ReportRequest;
-import ccc.keeweapi.service.insight.ReportApiService;
+import ccc.keeweapi.service.report.ReportApiService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,10 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class ReportController {
     private final ReportApiService reportApiService;
 
-    @PostMapping
+    @PostMapping("/insight")
     public ApiResponse<Void> reportInsight(@RequestBody ReportRequest request) {
         reportApiService.reportInsight(request);
         return ApiResponse.ok();
     }
-
 }

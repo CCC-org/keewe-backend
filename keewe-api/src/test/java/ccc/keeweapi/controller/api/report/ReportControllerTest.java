@@ -1,19 +1,9 @@
-package ccc.keeweapi.controller.api.insight;
-
-import static com.epages.restdocs.apispec.ResourceDocumentation.headerWithName;
-import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.restdocs.snippet.Attributes.key;
+package ccc.keeweapi.controller.api.report;
 
 import ccc.keeweapi.document.utils.ApiDocumentationTest;
-import ccc.keeweapi.service.insight.ReportApiService;
+import ccc.keeweapi.service.report.ReportApiService;
 import ccc.keewedomain.persistence.domain.insight.enums.ReportType;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
-import java.util.List;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -24,9 +14,17 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.test.web.servlet.ResultActions;
+import java.util.List;
+import static com.epages.restdocs.apispec.ResourceDocumentation.headerWithName;
+import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.snippet.Attributes.key;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class ReportControllerTest extends ApiDocumentationTest {
-
     @InjectMocks
     ReportController reportController;
 
@@ -44,13 +42,12 @@ public class ReportControllerTest extends ApiDocumentationTest {
         // given
         doNothing().when(reportApiService).reportInsight(any());
 
-
         JSONObject reportRequest = new JSONObject()
                 .put("insightId", 1L)
                 .put("reportType", "SPAM")
                 .put("reason", "그냥 보기싫은 글");
         // when
-        ResultActions resultActions = mockMvc.perform(post("/api/v1/report")
+        ResultActions resultActions = mockMvc.perform(post("/api/v1/report/insight")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
                         .content(reportRequest.toString())
                         .contentType(MediaType.APPLICATION_JSON))
@@ -76,6 +73,5 @@ public class ReportControllerTest extends ApiDocumentationTest {
                         .tag("Report")
                         .build()
         )));
-
     }
 }

@@ -1,11 +1,12 @@
-package ccc.keewedomain.service.insight;
+package ccc.keewedomain.service.report;
 
 import ccc.keewecore.consts.KeeweConsts;
 import ccc.keewedomain.dto.insight.ReportCreateDto;
 import ccc.keewedomain.persistence.domain.insight.Insight;
 import ccc.keewedomain.persistence.domain.insight.Report;
 import ccc.keewedomain.persistence.domain.user.User;
-import ccc.keewedomain.persistence.repository.insight.ReportRepository;
+import ccc.keewedomain.persistence.repository.report.ReportRepository;
+import ccc.keewedomain.service.insight.InsightDomainService;
 import ccc.keewedomain.service.user.UserDomainService;
 import ccc.keeweinfra.service.notification.SlackNotiService;
 import ccc.keeweinfra.vo.Attachments;
