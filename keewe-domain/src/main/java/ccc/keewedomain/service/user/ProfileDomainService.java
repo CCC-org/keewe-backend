@@ -80,7 +80,8 @@ public class ProfileDomainService {
         String imageURL = storeService.upload(
                 uploadProfilePhotoDto.getImageFile(),
                 KeeweConsts.PROFILE_PHOTO_WIDTH,
-                KeeweConsts.PROFILE_PHOTO_HEIGHT);
+                KeeweConsts.PROFILE_PHOTO_HEIGHT
+        );
 
         user.setProfilePhoto(ProfilePhoto.of(imageURL)); // TODO : image remove by store service
 
