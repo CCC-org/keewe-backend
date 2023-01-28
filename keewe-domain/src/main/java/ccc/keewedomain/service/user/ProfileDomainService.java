@@ -3,11 +3,10 @@ package ccc.keewedomain.service.user;
 import ccc.keewecore.consts.KeeweConsts;
 import ccc.keewecore.consts.KeeweRtnConsts;
 import ccc.keewecore.exception.KeeweException;
-import ccc.keewedomain.dto.user.FollowCheckDto;
-import ccc.keewedomain.dto.user.FollowToggleDto;
-import ccc.keewedomain.dto.user.OnboardDto;
-import ccc.keewedomain.dto.user.UploadProfilePhotoDto;
+import ccc.keewedomain.dto.user.*;
+import ccc.keewedomain.persistence.domain.title.Title;
 import ccc.keewedomain.persistence.domain.title.TitleAchievement;
+import ccc.keewedomain.persistence.domain.title.id.TitleAchievementId;
 import ccc.keewedomain.persistence.domain.user.Block;
 import ccc.keewedomain.persistence.domain.user.Follow;
 import ccc.keewedomain.persistence.domain.user.ProfilePhoto;
@@ -166,6 +165,23 @@ public class ProfileDomainService {
         return blockQueryRepository.findByUserId(userId);
     }
 
+    @Transactional
+    public User updateProfile(Long userId, ProfileUpdateDto dto) {
+        User user = userDomainService.getUserByIdOrElseThrow(userId);
+        Title title = getTitleAchievementById(userId, dto.getRepTitleId()).getTitle();
+
+        if(dto.getProfileImage() != null) {
+            deleteProfilePhoto(user);
+            uploadProfilePhoto(UploadProfilePhotoDto.of(userId, dto.getProfileImage()));
+        } else if(dto.getDeletePhoto()) {
+            deleteProfilePhoto(user);
+        }
+
+        user.updateProfile(dto.getNickname(), dto.getInterests(), title, dto.getIntroduction());
+
+        return user;
+    }
+
     private void validateBlockUser(Long userId, Long blockUserId) {
         if(userId.equals(blockUserId)) {
             throw new KeeweException(KeeweRtnConsts.ERR451);
@@ -175,5 +191,15 @@ public class ProfileDomainService {
         if(blockRepository.existsById(blockId)) {
             throw new KeeweException(KeeweRtnConsts.ERR450);
         }
+    }
+
+    private TitleAchievement getTitleAchievementById(Long userId, Long titleId) {
+        return titleAchievementRepository.findById(TitleAchievementId.of(userId, titleId))
+                .orElseThrow(() -> new KeeweException(KeeweRtnConsts.ERR480));
+    }
+
+    private void deleteProfilePhoto(User user) {
+        user.deleteProfilePhoto();
+        storeService.delete(user.getProfilePhotoURL());
     }
 }

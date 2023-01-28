@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -66,7 +67,8 @@ public class S3StoreService implements StoreService {
         } catch (MalformedURLException e) {
             throw new KeeweException(KeeweRtnConsts.ERR424);
         }
-        return urlObject.getPath();
+
+        return URLDecoder.decode(urlObject.getPath().substring(1));
     }
 
     private String upload(InputStream inputStream, String fileName) {
