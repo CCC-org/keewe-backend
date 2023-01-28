@@ -126,7 +126,8 @@ public class ProfileApiService {
     }
 
     @Transactional
-    public void updateProfile(ProfileUpdateRequest request) {
-        profileDomainService.updateProfile(SecurityUtil.getUserId(), profileAssembler.toProfileUpdateDto(request));
+    public ProfileUpdateResponse updateProfile(ProfileUpdateRequest request) {
+        User user = profileDomainService.updateProfile(SecurityUtil.getUserId(), profileAssembler.toProfileUpdateDto(request));
+        return profileAssembler.toProfileUpdateResponse(user);
     }
 }

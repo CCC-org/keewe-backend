@@ -200,6 +200,8 @@ public class ProfileDomainService {
 
     private void deleteProfilePhoto(User user) {
         user.deleteProfilePhoto();
-        storeService.delete(user.getProfilePhotoURL());
+        if(user.getProfilePhoto() != null ) {
+            storeService.delete(user.getProfilePhotoURL());
+        }
     }
 }

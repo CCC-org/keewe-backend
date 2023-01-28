@@ -87,8 +87,7 @@ public class ProfileController {
     }
 
     @PatchMapping
-    public ApiResponse<Void> updateProfile(@Valid @ModelAttribute ProfileUpdateRequest request) {
-        profileApiService.updateProfile(request);
-        return ApiResponse.ok();
+    public ApiResponse<ProfileUpdateResponse> updateProfile(@Valid @ModelAttribute ProfileUpdateRequest request) {
+        return ApiResponse.ok(profileApiService.updateProfile(request));
     }
 }

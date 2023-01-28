@@ -21,6 +21,7 @@ public class ProfileUpdateRequest {
 
     private Long repTitleId;
 
+    @GraphemeLength(max = 150)
     private String introduction;
 
     private Boolean deletePhoto;

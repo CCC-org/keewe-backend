@@ -140,4 +140,8 @@ public class ProfileAssembler {
                 request.getDeletePhoto()
         );
     }
+
+    public ProfileUpdateResponse toProfileUpdateResponse(User user) {
+        return ProfileUpdateResponse.of(user.getProfilePhotoURL());
+    }
 }

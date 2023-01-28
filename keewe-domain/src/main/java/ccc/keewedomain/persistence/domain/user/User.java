@@ -85,6 +85,9 @@ public class User extends BaseTimeEntity {
     @Column(name = "status")
     private UserStatus status = UserStatus.ONBOARD;
 
+    @Column(name = "introduction")
+    private String introduction = "";
+
     @Column(name = "deleted", nullable = false)
     private boolean deleted = false;
 
@@ -120,7 +123,7 @@ public class User extends BaseTimeEntity {
         this.nickname = nickname;
         this.interests = interests.stream().map(Interest::of).collect(Collectors.toList());
         this.repTitle = repTitle;
-        //TODO introduction 추가
+        this.introduction = introduction;
     }
 
     public void deleteProfilePhoto() {

@@ -1,0 +1,2 @@
+ALTER TABLE `user`
+    ADD COLUMN introduction VARCHAR(150) NOT NULL;
