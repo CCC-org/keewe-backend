@@ -174,7 +174,7 @@ public class ProfileDomainService {
                 : getTitleAchievementById(userId, dto.getRepTitleId()).getTitle();
 
         if(dto.isUpdatePhoto()) {
-            updateProfilePhoto(dto.getProfileImage(), user);
+            updateProfilePhoto(user, dto.getProfileImage());
         }
 
         user.updateProfile(dto.getNickname(), dto.getInterests(), title, dto.getIntroduction());
@@ -182,7 +182,7 @@ public class ProfileDomainService {
         return user;
     }
 
-    private void updateProfilePhoto(MultipartFile profilePhoto, User user) {
+    private void updateProfilePhoto(User user, MultipartFile profilePhoto) {
         deleteProfilePhoto(user);
         if(profilePhoto != null) {
             uploadProfilePhoto(UploadProfilePhotoDto.of(user.getId(), profilePhoto));
