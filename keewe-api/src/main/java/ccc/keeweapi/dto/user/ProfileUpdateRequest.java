@@ -23,7 +23,7 @@ public class ProfileUpdateRequest {
     @GraphemeLength(max = 150)
     private String introduction;
 
-    private boolean deletePhoto;
+    private boolean updatePhoto;
 
     @NotNull
     @Size(min = 1, max = 5)
@@ -34,12 +34,12 @@ public class ProfileUpdateRequest {
                                 Long repTitleId,
                                 String introduction,
                                 Set<String> interests,
-                                Boolean deletePhoto) {
+                                Boolean updatePhoto) {
         this.profileImage = profileImage;
         this.nickname = KeeweStringUtils.compressWhiteSpaces(nickname);
         this.repTitleId = repTitleId;
         this.introduction = introduction;
         this.interests = interests;
-        this.deletePhoto = deletePhoto != null;
+        this.updatePhoto = updatePhoto != null;
     }
 }

@@ -14,5 +14,5 @@ public class ProfileUpdateDto {
     private Set<String> interests;
     private Long repTitleId;
     private String introduction;
-    private boolean deletePhoto;
+    private boolean updatePhoto;
 }

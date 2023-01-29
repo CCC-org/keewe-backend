@@ -20,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -172,16 +173,20 @@ public class ProfileDomainService {
                 ? null
                 : getTitleAchievementById(userId, dto.getRepTitleId()).getTitle();
 
-        if(dto.getProfileImage() != null) {
-            deleteProfilePhoto(user);
-            uploadProfilePhoto(UploadProfilePhotoDto.of(userId, dto.getProfileImage()));
-        } else if(dto.isDeletePhoto()) {
-            deleteProfilePhoto(user);
+        if(dto.isUpdatePhoto()) {
+            updateProfilePhoto(dto.getProfileImage(), user);
         }
 
         user.updateProfile(dto.getNickname(), dto.getInterests(), title, dto.getIntroduction());
 
         return user;
+    }
+
+    private void updateProfilePhoto(MultipartFile profilePhoto, User user) {
+        deleteProfilePhoto(user);
+        if(profilePhoto != null) {
+            uploadProfilePhoto(UploadProfilePhotoDto.of(user.getId(), profilePhoto));
+        }
     }
 
     private void validateBlockUser(Long userId, Long blockUserId) {
