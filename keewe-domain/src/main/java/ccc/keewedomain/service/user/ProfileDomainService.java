@@ -168,12 +168,14 @@ public class ProfileDomainService {
     @Transactional
     public User updateProfile(Long userId, ProfileUpdateDto dto) {
         User user = userDomainService.getUserByIdOrElseThrow(userId);
-        Title title = getTitleAchievementById(userId, dto.getRepTitleId()).getTitle();
+        Title title = dto.getRepTitleId() == null
+                ? null
+                : getTitleAchievementById(userId, dto.getRepTitleId()).getTitle();
 
         if(dto.getProfileImage() != null) {
             deleteProfilePhoto(user);
             uploadProfilePhoto(UploadProfilePhotoDto.of(userId, dto.getProfileImage()));
-        } else if(dto.getDeletePhoto()) {
+        } else if(dto.isDeletePhoto()) {
             deleteProfilePhoto(user);
         }
 
@@ -199,9 +201,9 @@ public class ProfileDomainService {
     }
 
     private void deleteProfilePhoto(User user) {
-        user.deleteProfilePhoto();
         if(user.getProfilePhoto() != null ) {
             storeService.delete(user.getProfilePhotoURL());
+            user.deleteProfilePhoto();
         }
     }
 }

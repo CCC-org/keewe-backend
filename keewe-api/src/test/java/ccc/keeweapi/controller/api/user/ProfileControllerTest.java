@@ -449,7 +449,6 @@ public class ProfileControllerTest extends ApiDocumentationTest {
         MockMultipartFile profileImage = new MockMultipartFile("profileImage", "image.jpg".getBytes());
 
         ResultActions resultActions = mockMvc.perform(builder
-
                         .file(profileImage)
                         .param("nickname", "새 닉네임")
                         .param("interests", "백엔드")

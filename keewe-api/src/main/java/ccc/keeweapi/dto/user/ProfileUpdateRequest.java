@@ -11,7 +11,6 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.util.Set;
 
-//@Data
 @Getter
 public class ProfileUpdateRequest {
     private MultipartFile profileImage;
@@ -24,7 +23,7 @@ public class ProfileUpdateRequest {
     @GraphemeLength(max = 150)
     private String introduction;
 
-    private Boolean deletePhoto;
+    private boolean deletePhoto;
 
     @NotNull
     @Size(min = 1, max = 5)

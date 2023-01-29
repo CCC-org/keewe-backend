@@ -137,7 +137,7 @@ public class ProfileAssembler {
                 request.getInterests(),
                 request.getRepTitleId(),
                 request.getIntroduction(),
-                request.getDeletePhoto()
+                request.isDeletePhoto()
         );
     }
 
