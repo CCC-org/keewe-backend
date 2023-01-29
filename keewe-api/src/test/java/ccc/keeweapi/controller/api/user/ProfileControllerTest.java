@@ -455,7 +455,7 @@ public class ProfileControllerTest extends ApiDocumentationTest {
                         .param("interests", "프론트엔드")
                         .param("repTitleId", "1000")
                         .param("introduction", "자기소개")
-                        .param("deletePhoto", "false")
+                        .param("updatePhoto", "false")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
                         .contentType(MediaType.MULTIPART_FORM_DATA_VALUE))
                 .andExpect(status().isOk());
@@ -469,7 +469,7 @@ public class ProfileControllerTest extends ApiDocumentationTest {
                                 parameterWithName("interests").description("변경할 관심사 리스트"),
                                 parameterWithName("repTitleId").type(SimpleType.NUMBER).description("변경할 대표 타이틀 ID"),
                                 parameterWithName("introduction").description("변경할 자기 소개"),
-                                parameterWithName("deletePhoto").type(SimpleType.BOOLEAN).description("프로필 사진 삭제 여부(true/false)")
+                                parameterWithName("updatePhoto").type(SimpleType.BOOLEAN).description("프로필 사진 업데이트 여부(true/false)")
                         )
                         .requestHeaders(
                                 headerWithName("Authorization").description("유저의 JWT"))
