@@ -31,4 +31,8 @@ public class ProfilePhoto extends BaseTimeEntity {
         entity.deleted = false;
         return entity;
     }
+
+    public void delete() {
+        this.deleted = true;
+    }
 }

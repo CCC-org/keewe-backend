@@ -2,10 +2,7 @@ package ccc.keeweapi.component;
 
 import ccc.keeweapi.dto.user.*;
 import ccc.keeweapi.utils.SecurityUtil;
-import ccc.keewedomain.dto.user.FollowCheckDto;
-import ccc.keewedomain.dto.user.FollowToggleDto;
-import ccc.keewedomain.dto.user.OnboardDto;
-import ccc.keewedomain.dto.user.UploadProfilePhotoDto;
+import ccc.keewedomain.dto.user.*;
 import ccc.keewedomain.persistence.domain.common.Interest;
 import ccc.keewedomain.persistence.domain.title.Title;
 import ccc.keewedomain.persistence.domain.title.TitleAchievement;
@@ -131,5 +128,20 @@ public class ProfileAssembler {
     public MyBlockUserResponse toMyBlockUserResponse(Block block) {
         User user = block.getBlockedUser();
         return MyBlockUserResponse.of(user.getId(), user.getNickname(), user.getRepTitleName(), user.getProfilePhotoURL());
+    }
+
+    public ProfileUpdateDto toProfileUpdateDto(ProfileUpdateRequest request) {
+        return ProfileUpdateDto.of(
+                request.getProfileImage(),
+                request.getNickname(),
+                request.getInterests(),
+                request.getRepTitleId(),
+                request.getIntroduction(),
+                request.isUpdatePhoto()
+        );
+    }
+
+    public ProfileUpdateResponse toProfileUpdateResponse(User user) {
+        return ProfileUpdateResponse.of(user.getProfilePhotoURL());
     }
 }

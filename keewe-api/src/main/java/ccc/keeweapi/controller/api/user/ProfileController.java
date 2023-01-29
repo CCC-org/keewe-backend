@@ -10,8 +10,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/v1/user/profile")
@@ -81,5 +84,10 @@ public class ProfileController {
     @GetMapping("/my-block-list")
     public ApiResponse<MyBlockUserListResponse> getMyBlockList() {
         return ApiResponse.ok(profileApiService.getMyBlockList());
+    }
+
+    @PatchMapping
+    public ApiResponse<ProfileUpdateResponse> updateProfile(@Valid @ModelAttribute ProfileUpdateRequest request) {
+        return ApiResponse.ok(profileApiService.updateProfile(request));
     }
 }

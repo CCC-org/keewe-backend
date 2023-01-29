@@ -25,6 +25,7 @@ CREATE TABLE IF NOT EXISTS `user`
     privacy             VARCHAR(20)     NOT NULL,
     status              VARCHAR(255),
     rep_title_id        BIGINT,
+    introduction        VARCHAR(150)    NOT NULL,
     deleted             BIT             NOT NULL,
     created_at          DATETIME(6)     NOT NULL,
     updated_at          DATETIME(6)     NOT NULL,

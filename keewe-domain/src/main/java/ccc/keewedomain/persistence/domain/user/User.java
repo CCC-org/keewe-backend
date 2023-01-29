@@ -2,6 +2,7 @@ package ccc.keewedomain.persistence.domain.user;
 
 import ccc.keewecore.consts.KeeweRtnConsts;
 import ccc.keewecore.exception.KeeweException;
+import ccc.keewedomain.dto.user.ProfileUpdateDto;
 import ccc.keewedomain.persistence.domain.common.BaseTimeEntity;
 import ccc.keewedomain.persistence.domain.common.Interest;
 import ccc.keewedomain.persistence.domain.title.Title;
@@ -51,7 +52,7 @@ public class User extends BaseTimeEntity {
     @Column(name = "nickname")
     private String nickname;
 
-    @OneToOne(fetch = LAZY, cascade = CascadeType.PERSIST, orphanRemoval = true)
+    @OneToOne(fetch = LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "profile_photo_id")
     private ProfilePhoto profilePhoto;
 
@@ -84,6 +85,9 @@ public class User extends BaseTimeEntity {
     @Column(name = "status")
     private UserStatus status = UserStatus.ONBOARD;
 
+    @Column(name = "introduction")
+    private String introduction = "";
+
     @Column(name = "deleted", nullable = false)
     private boolean deleted = false;
 
@@ -113,6 +117,20 @@ public class User extends BaseTimeEntity {
 
     public void setProfilePhoto(ProfilePhoto profilePhoto) {
         this.profilePhoto = profilePhoto;
+    }
+
+    public void updateProfile(String nickname, Set<String> interests, Title repTitle, String introduction) {
+        this.nickname = nickname;
+        this.interests = interests.stream().map(Interest::of).collect(Collectors.toList());
+        this.repTitle = repTitle;
+        this.introduction = introduction;
+    }
+
+    public void deleteProfilePhoto() {
+        if(profilePhoto != null) {
+            this.profilePhoto.delete();
+            this.profilePhoto = null;
+        }
     }
 
     public String getProfilePhotoURL() {

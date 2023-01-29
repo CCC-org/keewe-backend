@@ -5,6 +5,7 @@ import ccc.keeweapi.dto.user.*;
 import ccc.keeweapi.service.user.ProfileApiService;
 import ccc.keewedomain.persistence.domain.common.Interest;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
+import com.epages.restdocs.apispec.SimpleType;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,10 +14,13 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.payload.FieldDescriptor;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -423,6 +427,56 @@ public class ProfileControllerTest extends ApiDocumentationTest {
                                 fieldWithPath("data.blockedUsers[].title").description("대표 타이틀"),
                                 fieldWithPath("data.blockedUsers[].imageURL").description("프로필 이미지 URL")
                         )
+                        .tag("Profile")
+                        .build()
+        )));
+    }
+
+    @Test
+    @DisplayName("프로필 변경 API")
+    void update_profile() throws Exception {
+        ProfileUpdateResponse response = ProfileUpdateResponse.of("https://keewe-image-bucket-for-local.s3.ap-northeast-2.amazonaws.com/4196ce1a-7cef-4426-9c43-b0d5c2f9a6dd-img.jpeg");
+
+        when(profileApiService.updateProfile(any()))
+                .thenReturn(response);
+
+        MockMultipartHttpServletRequestBuilder builder = multipart("/api/v1/user/profile");
+        builder.with(request -> {
+            request.setMethod(HttpMethod.PATCH.name());
+            return request;
+        });
+
+        MockMultipartFile profileImage = new MockMultipartFile("profileImage", "image.jpg".getBytes());
+
+        ResultActions resultActions = mockMvc.perform(builder
+                        .file(profileImage)
+                        .param("nickname", "새 닉네임")
+                        .param("interests", "백엔드")
+                        .param("interests", "프론트엔드")
+                        .param("repTitleId", "1000")
+                        .param("introduction", "자기소개")
+                        .param("updatePhoto", "false")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
+                        .contentType(MediaType.MULTIPART_FORM_DATA_VALUE))
+                .andExpect(status().isOk());
+
+        resultActions.andDo(restDocs.document(resource(
+                ResourceSnippetParameters.builder()
+                        .description("프로필 변경 API 입니다")
+                        .summary("프로필 변경 API")
+                        .requestParameters(
+                                parameterWithName("nickname").description("변경할 닉네임"),
+                                parameterWithName("interests").description("변경할 관심사 리스트"),
+                                parameterWithName("repTitleId").type(SimpleType.NUMBER).description("변경할 대표 타이틀 ID"),
+                                parameterWithName("introduction").description("변경할 자기 소개"),
+                                parameterWithName("updatePhoto").type(SimpleType.BOOLEAN).description("프로필 사진 업데이트 여부(true/false)")
+                        )
+                        .requestHeaders(
+                                headerWithName("Authorization").description("유저의 JWT"))
+                        .responseFields(
+                                fieldWithPath("message").description("요청 결과 메세지"),
+                                fieldWithPath("code").description("결과 코드"),
+                                fieldWithPath("data.imageURL").description("변경된 프로필 이미지 URL"))
                         .tag("Profile")
                         .build()
         )));

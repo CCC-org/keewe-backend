@@ -45,6 +45,8 @@ public enum KeeweRtnConsts {
 
     ERR471(KeeweRtnGrp.Validation, 471, "관련된 반응 통계를 찾을 수 없어요."),
 
+    ERR480(KeeweRtnGrp.Validation, 480, "타이틀을 획득하지 않았어요."),
+
     ERR501(KeeweRtnGrp.System, 501, "카카오 회원가입 중 내부 오류가 발생했어요."),
     ERR502(KeeweRtnGrp.System, 502, "네이버 회원가입 중 내부 오류가 발생했어요."),
     ERR503(KeeweRtnGrp.System, 503, "네이버 회원가입 중 state가 일치하지 않아요"),

@@ -124,4 +124,10 @@ public class ProfileApiService {
         List<Block> blocks = profileDomainService.findBlocksByUserId(SecurityUtil.getUserId());
         return profileAssembler.toMyBlockUserListResponse(blocks);
     }
+
+    @Transactional
+    public ProfileUpdateResponse updateProfile(ProfileUpdateRequest request) {
+        User user = profileDomainService.updateProfile(SecurityUtil.getUserId(), profileAssembler.toProfileUpdateDto(request));
+        return profileAssembler.toProfileUpdateResponse(user);
+    }
 }

@@ -3,11 +3,10 @@ package ccc.keewedomain.service.user;
 import ccc.keewecore.consts.KeeweConsts;
 import ccc.keewecore.consts.KeeweRtnConsts;
 import ccc.keewecore.exception.KeeweException;
-import ccc.keewedomain.dto.user.FollowCheckDto;
-import ccc.keewedomain.dto.user.FollowToggleDto;
-import ccc.keewedomain.dto.user.OnboardDto;
-import ccc.keewedomain.dto.user.UploadProfilePhotoDto;
+import ccc.keewedomain.dto.user.*;
+import ccc.keewedomain.persistence.domain.title.Title;
 import ccc.keewedomain.persistence.domain.title.TitleAchievement;
+import ccc.keewedomain.persistence.domain.title.id.TitleAchievementId;
 import ccc.keewedomain.persistence.domain.user.Block;
 import ccc.keewedomain.persistence.domain.user.Follow;
 import ccc.keewedomain.persistence.domain.user.ProfilePhoto;
@@ -21,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -166,6 +166,29 @@ public class ProfileDomainService {
         return blockQueryRepository.findByUserId(userId);
     }
 
+    @Transactional
+    public User updateProfile(Long userId, ProfileUpdateDto dto) {
+        User user = userDomainService.getUserByIdOrElseThrow(userId);
+        Title title = dto.getRepTitleId() == null
+                ? null
+                : getTitleAchievementById(userId, dto.getRepTitleId()).getTitle();
+
+        if(dto.isUpdatePhoto()) {
+            updateProfilePhoto(user, dto.getProfileImage());
+        }
+
+        user.updateProfile(dto.getNickname(), dto.getInterests(), title, dto.getIntroduction());
+
+        return user;
+    }
+
+    private void updateProfilePhoto(User user, MultipartFile profilePhoto) {
+        deleteProfilePhoto(user);
+        if(profilePhoto != null) {
+            uploadProfilePhoto(UploadProfilePhotoDto.of(user.getId(), profilePhoto));
+        }
+    }
+
     private void validateBlockUser(Long userId, Long blockUserId) {
         if(userId.equals(blockUserId)) {
             throw new KeeweException(KeeweRtnConsts.ERR451);
@@ -174,6 +197,18 @@ public class ProfileDomainService {
         BlockId blockId = BlockId.of(userId, blockUserId);
         if(blockRepository.existsById(blockId)) {
             throw new KeeweException(KeeweRtnConsts.ERR450);
+        }
+    }
+
+    private TitleAchievement getTitleAchievementById(Long userId, Long titleId) {
+        return titleAchievementRepository.findById(TitleAchievementId.of(userId, titleId))
+                .orElseThrow(() -> new KeeweException(KeeweRtnConsts.ERR480));
+    }
+
+    private void deleteProfilePhoto(User user) {
+        if(user.getProfilePhoto() != null ) {
+            storeService.delete(user.getProfilePhotoURL());
+            user.deleteProfilePhoto();
         }
     }
 }
