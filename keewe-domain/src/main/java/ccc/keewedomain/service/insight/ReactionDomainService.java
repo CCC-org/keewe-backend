@@ -17,7 +17,7 @@ import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.persistence.repository.insight.ReactionAggregationRepository;
 import ccc.keewedomain.persistence.repository.insight.ReactionRepository;
 import ccc.keewedomain.service.user.UserDomainService;
-import ccc.keeweinfra.service.MQPublishService;
+import ccc.keeweinfra.service.messagequeue.MQPublishService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

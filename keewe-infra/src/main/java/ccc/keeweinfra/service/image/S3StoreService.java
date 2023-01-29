@@ -1,4 +1,4 @@
-package ccc.keeweinfra.service;
+package ccc.keeweinfra.service.image;
 
 import ccc.keewecore.consts.KeeweRtnConsts;
 import ccc.keewecore.exception.KeeweException;
