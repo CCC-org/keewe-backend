@@ -244,7 +244,7 @@ CREATE TABLE IF NOT EXISTS `report`
     reporter_id         BIGINT         NOT NULL,
     insight_id          BIGINT         NOT NULL,
     report_type         VARCHAR(30)     NOT NULL,
-    reason              TEXT,
+    reason              VARCHAR(2000),
     created_at          DATETIME(6)     NOT NULL,
     updated_at          DATETIME(6)     NOT NULL,
 

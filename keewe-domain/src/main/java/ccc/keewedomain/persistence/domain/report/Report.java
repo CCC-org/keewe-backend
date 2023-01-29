@@ -1,8 +1,9 @@
-package ccc.keewedomain.persistence.domain.insight;
+package ccc.keewedomain.persistence.domain.report;
 
 import static javax.persistence.FetchType.LAZY;
 
 import ccc.keewedomain.persistence.domain.common.BaseTimeEntity;
+import ccc.keewedomain.persistence.domain.insight.Insight;
 import ccc.keewedomain.persistence.domain.insight.enums.ReportType;
 import ccc.keewedomain.persistence.domain.user.User;
 import javax.persistence.Column;

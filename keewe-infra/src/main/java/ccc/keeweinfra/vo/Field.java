@@ -8,11 +8,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class Fields {
+public class Field {
     private String title;
     private String value;
 
-    public static Fields of(String title, String value) {
-        return new Fields(title, value);
+    public static Field of(String title, String value) {
+        return new Field(title, value);
     }
 }

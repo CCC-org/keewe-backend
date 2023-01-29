@@ -8,11 +8,11 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Attachments {
+public class Attachment {
     private String color;
-    private List<Fields> fields;
+    private List<Field> fields;
 
-    public static Attachments of(String color, List<Fields> fields) {
-        return new Attachments(color, fields);
+    public static Attachment of(String color, List<Field> fields) {
+        return new Attachment(color, fields);
     }
 }

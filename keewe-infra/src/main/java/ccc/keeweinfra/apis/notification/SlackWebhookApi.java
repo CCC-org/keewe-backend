@@ -7,10 +7,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-@FeignClient(name = "slackapi", url = "https://hooks.slack.com/services")
+@FeignClient(name = "slackapi", url = "${slack.url}")
 public interface SlackWebhookApi {
 
-    @PostMapping("/{workspaceId}/{channelId}/{slackKey}")
+    @PostMapping("/services/{workspaceId}/{channelId}/{slackKey}")
     void sendMessage(
             @PathVariable(name = "workspaceId") String workspaceId,
             @PathVariable(name = "channelId") String channelId,

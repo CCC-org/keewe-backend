@@ -3,14 +3,14 @@ package ccc.keewedomain.service.report;
 import ccc.keewecore.consts.KeeweConsts;
 import ccc.keewedomain.dto.insight.ReportCreateDto;
 import ccc.keewedomain.persistence.domain.insight.Insight;
-import ccc.keewedomain.persistence.domain.insight.Report;
+import ccc.keewedomain.persistence.domain.report.Report;
 import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.persistence.repository.report.ReportRepository;
 import ccc.keewedomain.service.insight.InsightDomainService;
 import ccc.keewedomain.service.user.UserDomainService;
 import ccc.keeweinfra.service.notification.SlackNotiService;
-import ccc.keeweinfra.vo.Attachments;
-import ccc.keeweinfra.vo.Fields;
+import ccc.keeweinfra.vo.Attachment;
+import ccc.keeweinfra.vo.Field;
 import java.util.List;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -48,16 +48,16 @@ public class ReportDomainService {
     }
 
 
-    private List<Attachments> createNotificationAttachments(Insight insight, Report report) {
-        Fields writerInfo = Fields.of("작성자", insight.getWriter().getNickname());
-        Fields insightInfo = Fields.of("인사이트ID", insight.getId().toString());
-        Fields reportTypeInfo = Fields.of("카테고리", report.getReportType().toString());
+    private List<Attachment> createNotificationAttachments(Insight insight, Report report) {
+        Field writerInfo = Field.of("작성자", insight.getWriter().getNickname());
+        Field insightInfo = Field.of("인사이트ID", insight.getId().toString());
+        Field reportTypeInfo = Field.of("카테고리", report.getReportType().toString());
 
         String insightContents = insight.getContents();
         String cuttedContents = insightContents.length() > 30 ? insightContents.substring(0, 30) : insightContents;
-        Fields insightContentsInfo = Fields.of("인사이트본문", cuttedContents);
+        Field insightContentsInfo = Field.of("인사이트본문", cuttedContents);
 
-        List<Fields> fields = List.of(writerInfo, insightInfo, reportTypeInfo, insightContentsInfo);
-        return List.of(Attachments.of("#D00000", fields));
+        List<Field> fields = List.of(writerInfo, insightInfo, reportTypeInfo, insightContentsInfo);
+        return List.of(Attachment.of("#D00000", fields));
     }
 }
