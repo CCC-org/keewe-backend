@@ -1,4 +1,4 @@
-package ccc.keeweinfra.apis;
+package ccc.keeweinfra.apis.oauth;
 
 import ccc.keewecore.consts.KeeweConsts;
 import ccc.keeweinfra.dto.GoogleProfileResponse;

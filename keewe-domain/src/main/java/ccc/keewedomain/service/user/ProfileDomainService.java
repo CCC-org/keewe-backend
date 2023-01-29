@@ -16,7 +16,7 @@ import ccc.keewedomain.persistence.domain.user.id.BlockId;
 import ccc.keewedomain.persistence.domain.user.id.FollowId;
 import ccc.keewedomain.persistence.repository.user.*;
 import ccc.keewedomain.persistence.repository.utils.CursorPageable;
-import ccc.keeweinfra.service.StoreService;
+import ccc.keeweinfra.service.image.StoreService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

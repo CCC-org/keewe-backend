@@ -1,8 +1,8 @@
-package ccc.keeweinfra.service;
+package ccc.keeweinfra.service.oauth;
 
 import ccc.keewecore.consts.KeeweConsts;
-import ccc.keeweinfra.apis.KakaoApi;
-import ccc.keeweinfra.apis.KakaoAuthApi;
+import ccc.keeweinfra.apis.oauth.KakaoApi;
+import ccc.keeweinfra.apis.oauth.KakaoAuthApi;
 import ccc.keeweinfra.dto.KakaoProfileResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

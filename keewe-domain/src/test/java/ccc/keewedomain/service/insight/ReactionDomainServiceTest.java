@@ -16,7 +16,7 @@ import ccc.keewedomain.persistence.repository.insight.ReactionAggregationReposit
 import ccc.keewedomain.persistence.repository.user.UserRepository;
 import ccc.keewedomain.utils.DatabaseCleaner;
 import ccc.keeweinfra.KeeweInfraApplication;
-import ccc.keeweinfra.service.MQPublishService;
+import ccc.keeweinfra.service.messagequeue.MQPublishService;
 import org.junit.jupiter.api.*;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;

@@ -10,7 +10,7 @@ import ccc.keewedomain.persistence.domain.title.TitleAchievement;
 import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.persistence.repository.user.TitleAchievementRepository;
 import ccc.keewedomain.service.user.UserDomainService;
-import ccc.keeweinfra.service.MQPublishService;
+import ccc.keeweinfra.service.messagequeue.MQPublishService;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageBuilder;
 import org.springframework.transaction.annotation.Transactional;
