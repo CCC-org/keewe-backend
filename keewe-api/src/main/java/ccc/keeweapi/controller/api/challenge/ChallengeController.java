@@ -38,4 +38,9 @@ public class ChallengeController {
     public ApiResponse<WeekProgressResponse> getMyThisWeekProgress() {
         return ApiResponse.ok(challengeApiService.getWeekProgress());
     }
+
+    @GetMapping("/home/my-challenge")
+    public ApiResponse<MyChallengeResponse> getMyChallenge() {
+        return ApiResponse.ok(challengeApiService.getMyChallenge());
+    }
 }

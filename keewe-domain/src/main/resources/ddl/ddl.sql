@@ -251,5 +251,5 @@ CREATE TABLE IF NOT EXISTS `report`
 
     PRIMARY KEY(report_id),
     FOREIGN KEY (reporter_id) REFERENCES  `user`(user_id),
-    FOREIGN KEY (insight_id) REFERENCES `insight`(insight_id),
+    FOREIGN KEY (insight_id) REFERENCES `insight`(insight_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

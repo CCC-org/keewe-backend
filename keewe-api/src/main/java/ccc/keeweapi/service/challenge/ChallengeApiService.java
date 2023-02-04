@@ -72,6 +72,16 @@ public class ChallengeApiService {
                 .orElse(null);
     }
 
+    @Transactional(readOnly = true)
+    public MyChallengeResponse getMyChallenge() {
+        return challengeDomainService.findCurrentChallengeParticipation(SecurityUtil.getUser())
+                .map(participation -> {
+                    Long participatingUser = challengeDomainService.countParticipatingUser(participation.getChallenge());
+                    return challengeAssembler.toMyChallengeResponse(participation, participatingUser);
+                })
+                .orElse(null);
+    }
+
     private List<String> datesOfWeek(LocalDate startDate) {
         List<String> dates = new ArrayList<>(7);
         for (int i = 0; i < 7; i++) {

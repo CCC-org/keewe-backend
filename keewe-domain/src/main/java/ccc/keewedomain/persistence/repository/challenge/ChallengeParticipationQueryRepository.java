@@ -1,5 +1,6 @@
 package ccc.keewedomain.persistence.repository.challenge;
 
+import ccc.keewedomain.persistence.domain.challenge.Challenge;
 import ccc.keewedomain.persistence.domain.challenge.ChallengeParticipation;
 import ccc.keewedomain.persistence.domain.challenge.enums.ChallengeParticipationStatus;
 import com.querydsl.core.group.GroupBy;
@@ -58,5 +59,14 @@ public class ChallengeParticipationQueryRepository {
                         .and(insight.createdAt.goe(startDateTime).and(insight.createdAt.lt(endDateTime))))
                 .groupBy(insightCreatedDate)
                 .transform(GroupBy.groupBy(insightCreatedDate).as(insight.count()));
+    }
+
+    public Long countByChallengeAndStatus(Challenge challenge, ChallengeParticipationStatus status) {
+        return queryFactory
+                .select(challengeParticipation.count())
+                .from(challengeParticipation)
+                .where(challengeParticipation.challenge.eq(challenge))
+                .where(challengeParticipation.status.eq(status))
+                .fetchFirst();
     }
 }
