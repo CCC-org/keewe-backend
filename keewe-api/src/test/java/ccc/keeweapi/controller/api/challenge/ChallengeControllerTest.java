@@ -256,4 +256,43 @@ public class ChallengeControllerTest extends ApiDocumentationTest {
                         .build()
         )));
     }
+
+    @Test
+    @DisplayName("홈 나의 챌린지 조회 API")
+    void home_my_challenge() throws Exception {
+        long challengeId = 1L;
+        String name = "챌린지 이름";
+        Long participatingUser = 9999L;
+        String interest = "프론트";
+        String startDate = "2023-02-04";
+        MyChallengeResponse response = MyChallengeResponse.of(challengeId, name, participatingUser, interest, startDate);
+
+        when(challengeApiService.getMyChallenge()).thenReturn(response);
+
+        ResultActions resultActions = mockMvc.perform(get("/api/v1/challenge/home/my-challenge")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        resultActions.andDo(restDocs.document(resource(
+                ResourceSnippetParameters.builder()
+                        .description("홈 나의 챌린지 조회 API 입니다.")
+                        .summary("홈 나의 챌린지 조회 API")
+                        .requestHeaders(
+                                headerWithName("Authorization").description("유저의 JWT")
+                        )
+                        .responseFields(
+                                fieldWithPath("message").description("요청 결과 메세지"),
+                                fieldWithPath("code").description("결과 코드"),
+                                fieldWithPath("data").description("참가중이지 않은 경우 null"),
+                                fieldWithPath("data.challengeId").description("참가중인 챌린지의 ID"),
+                                fieldWithPath("data.name").description("참가중인 챌린지의 이름"),
+                                fieldWithPath("data.participatingUser").description("도전(참가)중인 유저의 수"),
+                                fieldWithPath("data.interest").description("관심사"),
+                                fieldWithPath("data.startDate").description("챌린지에 참가한 날짜")
+                        )
+                        .tag("Challenge")
+                        .build()
+        )));
+    }
 }
