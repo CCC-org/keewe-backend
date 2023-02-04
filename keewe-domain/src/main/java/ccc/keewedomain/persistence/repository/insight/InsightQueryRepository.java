@@ -125,4 +125,15 @@ public class InsightQueryRepository {
     private BooleanExpression drawerIdEq(Long drawerId) {
         return drawerId != null ? insight.drawer.id.eq(drawerId) : null;
     }
+
+    public boolean existByWriterAndCreatedAtBetweenAndValidTrue(User writer, LocalDateTime startDate, LocalDateTime endDate) {
+        return queryFactory
+                .selectOne()
+                .from(insight)
+                .where(insight.writer.eq(writer))
+                .where(insight.createdAt.between(startDate, endDate))
+                .where(insight.valid.isTrue())
+                .where(insight.deleted.isFalse())
+                .fetchFirst() != null;
+    }
 }

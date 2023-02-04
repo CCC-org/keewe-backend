@@ -30,6 +30,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
@@ -232,9 +234,20 @@ public class InsightDomainService {
     }
 
     private boolean isRecordable(ChallengeParticipation participation) {
+
+        if (isTodayRecorded(participation.getChallenger())) {
+            return false;
+        }
         Long count = getRecordedInsightNumber(participation);
         long weeks = participation.getCurrentWeek();
         log.info("[IDS::isRecordable] count={} weeks={}", count, weeks);
         return count < weeks * participation.getInsightPerWeek();
+    }
+
+    private boolean isTodayRecorded(User user) {
+        LocalDate now = LocalDate.now();
+        LocalDateTime startDate = now.atStartOfDay();
+        LocalDateTime endDate = startDate.plusDays(1);
+        return insightQueryRepository.existByWriterAndCreatedAtBetweenAndValidTrue(user, startDate, endDate);
     }
 }
