@@ -9,8 +9,10 @@ import ccc.keewedomain.persistence.domain.challenge.ChallengeParticipation;
 import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.persistence.repository.challenge.ChallengeParticipationQueryRepository;
 import ccc.keewedomain.persistence.repository.challenge.ChallengeParticipationRepository;
+import ccc.keewedomain.persistence.repository.challenge.ChallengeQueryRepository;
 import ccc.keewedomain.persistence.repository.challenge.ChallengeRepository;
 import ccc.keewedomain.service.user.UserDomainService;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -26,9 +28,9 @@ import static ccc.keewedomain.persistence.domain.challenge.enums.ChallengePartic
 @RequiredArgsConstructor
 public class ChallengeDomainService {
     private final ChallengeRepository challengeRepository;
+    private final ChallengeQueryRepository challengeQueryRepository;
     private final ChallengeParticipationRepository challengeParticipationRepository;
     private final ChallengeParticipationQueryRepository challengeParticipationQueryRepository;
-
     private final UserDomainService userDomainService;
 
     public Challenge save(ChallengeCreateDto dto) {
@@ -60,10 +62,6 @@ public class ChallengeDomainService {
         return challengeParticipationQueryRepository.findByChallengerIdAndStatusWithChallenge(challengerId, CHALLENGING);
     }
 
-    private void exitCurrentChallengeIfExist(User challenger) {
-        findCurrentChallengeParticipation(challenger).ifPresent(ChallengeParticipation::cancel);
-    }
-
     public Optional<ChallengeParticipation> findCurrentChallengeParticipation(User challenger) {
         return challengeParticipationRepository.findByChallengerAndStatusAndDeletedFalse(challenger, CHALLENGING);
     }
@@ -74,7 +72,15 @@ public class ChallengeDomainService {
         return challengeParticipationQueryRepository.getRecordCountPerDate(participation, startDateTime, startDateTime.plusDays(7L));
     }
 
+    public List<Challenge> getSpecifiedNumberOfRecentChallenge(int size) {
+        return challengeQueryRepository.getSpecifiedNumberOfChallenge(size);
+    }
+
     public Long countParticipatingUser(Challenge challenge) {
         return challengeParticipationQueryRepository.countByChallengeAndStatus(challenge, CHALLENGING);
+    }
+
+    private void exitCurrentChallengeIfExist(User challenger) {
+        findCurrentChallengeParticipation(challenger).ifPresent(ChallengeParticipation::cancel);
     }
 }

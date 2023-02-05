@@ -1,17 +1,25 @@
 package ccc.keeweapi.component;
 
-import ccc.keeweapi.dto.challenge.*;
+import ccc.keeweapi.dto.challenge.ChallengeCreateRequest;
+import ccc.keeweapi.dto.challenge.ChallengeCreateResponse;
+import ccc.keeweapi.dto.challenge.ChallengeInfoResponse;
+import ccc.keeweapi.dto.challenge.ChallengeParticipateRequest;
+import ccc.keeweapi.dto.challenge.ChallengeParticipationResponse;
+import ccc.keeweapi.dto.challenge.DayProgressResponse;
+import ccc.keeweapi.dto.challenge.InsightProgressResponse;
+import ccc.keeweapi.dto.challenge.ParticipatingChallengeResponse;
+import ccc.keeweapi.dto.challenge.ParticipationCheckResponse;
+import ccc.keeweapi.dto.challenge.WeekProgressResponse;
 import ccc.keeweapi.utils.SecurityUtil;
-import ccc.keewedomain.persistence.domain.challenge.Challenge;
-import ccc.keewedomain.persistence.domain.challenge.ChallengeParticipation;
 import ccc.keewedomain.dto.challenge.ChallengeCreateDto;
 import ccc.keewedomain.dto.challenge.ChallengeParticipateDto;
-import org.springframework.stereotype.Component;
-
+import ccc.keewedomain.persistence.domain.challenge.Challenge;
+import ccc.keewedomain.persistence.domain.challenge.ChallengeParticipation;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import org.springframework.stereotype.Component;
 
 @Component
 public class ChallengeAssembler {
@@ -103,5 +111,9 @@ public class ChallengeAssembler {
                 challenge.getInterest().getName(),
                 participation.getCreatedAt().toLocalDate().toString()
         );
+    }
+
+    public ChallengeInfoResponse toChallengeInfoResponse(Challenge challenge, Long insightCount) {
+        return ChallengeInfoResponse.of(challenge.getId(), challenge.getInterest(), challenge.getName(), challenge.getIntroduction(), insightCount);
     }
 }

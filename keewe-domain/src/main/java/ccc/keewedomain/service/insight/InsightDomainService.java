@@ -9,6 +9,7 @@ import ccc.keewedomain.cache.repository.insight.CInsightViewRepository;
 import ccc.keewedomain.cache.repository.insight.CReactionCountRepository;
 import ccc.keewedomain.domain.insight.ReactionAggregation;
 import ccc.keewedomain.dto.insight.*;
+import ccc.keewedomain.persistence.domain.challenge.Challenge;
 import ccc.keewedomain.persistence.domain.challenge.ChallengeParticipation;
 import ccc.keewedomain.persistence.domain.common.Link;
 import ccc.keewedomain.persistence.domain.insight.Bookmark;
@@ -188,6 +189,10 @@ public class InsightDomainService {
                         bookmarkPresenceMap.getOrDefault(insight.getId(), false)
                 ))
                 .collect(Collectors.toList());
+    }
+
+    public Map<Long, Long> getInsightCountPerChallenge(List<Challenge> challenges) {
+        return insightQueryRepository.countPerChallenge(challenges);
     }
 
     /*****************************************************************
