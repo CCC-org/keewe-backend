@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor(staticName = "of")
-public class MyChallengeResponse {
+public class ParticipatingChallengeResponse {
     private Long challengeId;
     private String name;
     private Long participatingUserNumber;

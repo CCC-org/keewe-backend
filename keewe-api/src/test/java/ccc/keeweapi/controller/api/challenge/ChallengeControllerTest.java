@@ -265,11 +265,11 @@ public class ChallengeControllerTest extends ApiDocumentationTest {
         Long participatingUser = 9999L;
         String interest = "프론트";
         String startDate = "2023-02-04";
-        MyChallengeResponse response = MyChallengeResponse.of(challengeId, name, participatingUser, interest, startDate);
+        ParticipatingChallengeResponse response = ParticipatingChallengeResponse.of(challengeId, name, participatingUser, interest, startDate);
 
-        when(challengeApiService.getMyChallenge()).thenReturn(response);
+        when(challengeApiService.getParticipatingChallenege()).thenReturn(response);
 
-        ResultActions resultActions = mockMvc.perform(get("/api/v1/challenge/my-challenge")
+        ResultActions resultActions = mockMvc.perform(get("/api/v1/challenge/participating")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());

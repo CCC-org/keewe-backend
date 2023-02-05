@@ -5,7 +5,6 @@ import ccc.keeweapi.dto.challenge.*;
 import ccc.keeweapi.utils.SecurityUtil;
 import ccc.keewedomain.persistence.domain.challenge.Challenge;
 import ccc.keewedomain.persistence.domain.challenge.ChallengeParticipation;
-import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.service.challenge.ChallengeDomainService;
 import ccc.keewedomain.service.insight.InsightDomainService;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +15,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 
 @Service
@@ -73,7 +71,7 @@ public class ChallengeApiService {
     }
 
     @Transactional(readOnly = true)
-    public MyChallengeResponse getMyChallenge() {
+    public ParticipatingChallengeResponse getParticipatingChallenege() {
         return challengeDomainService.findCurrentChallengeParticipation(SecurityUtil.getUser())
                 .map(participation -> {
                     Long participatingUser = challengeDomainService.countParticipatingUser(participation.getChallenge());

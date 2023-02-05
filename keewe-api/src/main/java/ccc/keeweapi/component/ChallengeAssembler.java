@@ -94,9 +94,9 @@ public class ChallengeAssembler {
         );
     }
 
-    public MyChallengeResponse toMyChallengeResponse(ChallengeParticipation participation, Long participatingUser) {
+    public ParticipatingChallengeResponse toMyChallengeResponse(ChallengeParticipation participation, Long participatingUser) {
         Challenge challenge = participation.getChallenge();
-        return MyChallengeResponse.of(
+        return ParticipatingChallengeResponse.of(
                 challenge.getId(),
                 challenge.getName(),
                 participatingUser,
