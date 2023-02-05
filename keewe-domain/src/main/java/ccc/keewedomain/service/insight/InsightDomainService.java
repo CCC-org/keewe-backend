@@ -170,8 +170,7 @@ public class InsightDomainService {
     }
 
     @Transactional(readOnly = true)
-    public Long getThisWeekCount(ChallengeParticipation participation, LocalDateTime endDate) {
-        LocalDateTime startDate = endDate.minusWeeks(1);
+    public Long countInsightCreatedAtBetween(ChallengeParticipation participation, LocalDateTime startDate, LocalDateTime endDate) {
         return insightQueryRepository.countByParticipationBetween(participation, startDate, endDate);
     }
 

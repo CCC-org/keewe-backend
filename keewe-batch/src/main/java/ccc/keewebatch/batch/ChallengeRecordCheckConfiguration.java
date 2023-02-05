@@ -20,6 +20,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import javax.persistence.EntityManagerFactory;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -74,10 +75,9 @@ public class ChallengeRecordCheckConfiguration {
                 .name("sampleReader")
                 .entityManagerFactory(entityManagerFactory)
                 .queryString(
-                        "SELECT cp " +
-                        "FROM ChallengeParticipation cp " +
-                        "WHERE cp.status = 'CHALLENGING' and weekday(cp.createdAt) = :weekday and cp.createdAt < :endDate")
-                .parameterValues(params)
+                        "SELECT cp "
+                        + "FROM ChallengeParticipation cp "
+                        + "WHERE cp.status = 'CHALLENGING'")
                 .build();
     }
 
@@ -95,14 +95,31 @@ public class ChallengeRecordCheckConfiguration {
         LocalDateTime endDateTime = LocalDateTime.of(endDate, LocalTime.MIN);
 
         return cp -> {
-            Long thisWeekCount = insightDomainService.getThisWeekCount(cp, endDateTime);
-            if (cp.getInsightPerWeek() > thisWeekCount) {
+            int remainDays = getRemainDays(cp.getCreatedAt(), endDateTime);
+            int insightPerWeek = cp.getInsightPerWeek();
+            LocalDateTime startOfWeekDateTime = endDateTime.minusDays(7 - remainDays);
+            Long thisWeekCount = insightDomainService.countInsightCreatedAtBetween(cp, startOfWeekDateTime, endDateTime);
+            int remainInsightNumber = (int) (insightPerWeek - thisWeekCount);
+
+            if (remainDays < remainInsightNumber) {
                 cp.expire();
-            } else if (cp.getEndDate().equals(endDate)) {
+            } else if (isCompleted(endDate, cp.getEndDate(), remainInsightNumber)) {
                 cp.complete();
             }
 
             return cp;
         };
+    }
+
+    private boolean isCompleted(LocalDate endDateTime, LocalDate cpEndDate, int remainInsightNumber) {
+        return remainInsightNumber == 0 && isSameWeek(endDateTime, cpEndDate);
+    }
+
+    private boolean isSameWeek(LocalDate startDate, LocalDate endDate) {
+        return Duration.between(startDate, endDate).toDays() < 7;
+    }
+
+    private int getRemainDays(LocalDateTime startDateTime, LocalDateTime endDateTime) {
+        return (7 - Math.abs(startDateTime.getDayOfWeek().getValue() - endDateTime.getDayOfWeek().getValue())) % 7;
     }
 }
