@@ -93,4 +93,15 @@ public class ChallengeAssembler {
                 dayProgresses
         );
     }
+
+    public ParticipatingChallengeResponse toMyChallengeResponse(ChallengeParticipation participation, Long participatingUser) {
+        Challenge challenge = participation.getChallenge();
+        return ParticipatingChallengeResponse.of(
+                challenge.getId(),
+                challenge.getName(),
+                participatingUser,
+                challenge.getInterest().getName(),
+                participation.getCreatedAt().toLocalDate().toString()
+        );
+    }
 }

@@ -73,4 +73,8 @@ public class ChallengeDomainService {
         LocalDateTime startDateTime = LocalDateTime.of(startDate, LocalTime.MIN);
         return challengeParticipationQueryRepository.getRecordCountPerDate(participation, startDateTime, startDateTime.plusDays(7L));
     }
+
+    public Long countParticipatingUser(Challenge challenge) {
+        return challengeParticipationQueryRepository.countByChallengeAndStatus(challenge, CHALLENGING);
+    }
 }
