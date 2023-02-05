@@ -1,15 +1,18 @@
 package ccc.keewedomain.persistence.repository.insight;
 
+import ccc.keewedomain.persistence.domain.challenge.Challenge;
 import ccc.keewedomain.persistence.domain.challenge.ChallengeParticipation;
 import ccc.keewedomain.persistence.domain.insight.Insight;
 import ccc.keewedomain.persistence.domain.user.QUser;
 import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.persistence.repository.utils.CursorPageable;
+import com.querydsl.core.group.GroupBy;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -121,6 +124,15 @@ public class InsightQueryRepository {
                 .fetch();
     }
 
+    public Map<Long, Long> countPerChallenge(List<Challenge> challenges) {
+        return queryFactory
+                .from(insight)
+                .leftJoin(insight.challengeParticipation, challengeParticipation)
+                .leftJoin(challengeParticipation.challenge, challenge)
+                .where(challenge.in(challenges))
+                .groupBy(challenge.id)
+                .transform(GroupBy.groupBy(challenge.id).as(insight.count()));
+    }
 
     private BooleanExpression drawerIdEq(Long drawerId) {
         return drawerId != null ? insight.drawer.id.eq(drawerId) : null;

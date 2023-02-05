@@ -10,11 +10,11 @@ import ccc.keewedomain.service.insight.InsightDomainService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -78,6 +78,14 @@ public class ChallengeApiService {
                     return challengeAssembler.toMyChallengeResponse(participation, participatingUser);
                 })
                 .orElse(null);
+    }
+
+    public List<ChallengeInfoResponse> getSpecifiedNumberOfChallenge(int size) {
+        List<Challenge> specifiedNumberOfChallenge = challengeDomainService.getSpecifiedNumberOfRecentChallenge(size);
+        Map<Long, Long> insightCountPerChallengeMap = insightDomainService.getInsightCountPerChallenge(specifiedNumberOfChallenge);
+        return specifiedNumberOfChallenge.stream()
+                .map(challenge -> challengeAssembler.toChallengeInfoResponse(challenge, insightCountPerChallengeMap.getOrDefault(challenge.getId(), 0L)))
+                .collect(Collectors.toList());
     }
 
     private List<String> datesOfWeek(LocalDate startDate) {

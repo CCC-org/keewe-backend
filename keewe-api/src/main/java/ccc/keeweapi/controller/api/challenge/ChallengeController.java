@@ -1,12 +1,24 @@
 package ccc.keeweapi.controller.api.challenge;
 
 import ccc.keeweapi.dto.ApiResponse;
-import ccc.keeweapi.dto.challenge.*;
+import ccc.keeweapi.dto.challenge.ChallengeCreateRequest;
+import ccc.keeweapi.dto.challenge.ChallengeCreateResponse;
+import ccc.keeweapi.dto.challenge.ChallengeParticipateRequest;
+import ccc.keeweapi.dto.challenge.ChallengeParticipationResponse;
+import ccc.keeweapi.dto.challenge.InsightProgressResponse;
+import ccc.keeweapi.dto.challenge.ParticipationCheckResponse;
+import ccc.keeweapi.dto.challenge.WeekProgressResponse;
 import ccc.keeweapi.service.challenge.ChallengeApiService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
-
 import javax.validation.Valid;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/v1/challenge")
@@ -42,5 +54,10 @@ public class ChallengeController {
     @GetMapping("/participating")
     public ApiResponse<ParticipatingChallengeResponse> getParticipatingChallenge() {
         return ApiResponse.ok(challengeApiService.getParticipatingChallenege());
+    }
+
+    @GetMapping("/specified-size")
+    public ApiResponse<?> getSpecifiedNumberOfChallenge(@RequestParam("size") @Min(1) @Max(10) Integer size) {
+        return ApiResponse.ok(challengeApiService.getSpecifiedNumberOfChallenge(size));
     }
 }

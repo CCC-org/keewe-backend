@@ -4,6 +4,7 @@ import ccc.keeweapi.dto.ApiResponse;
 import ccc.keewecore.consts.KeeweRtnConsts;
 import ccc.keewecore.exception.KeeweException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -41,6 +42,13 @@ public class KeeweControllerAdvice {
                 .map(this::fieldErrorMessage)
                 .collect(Collectors.joining("\n"));
         return ApiResponse.failure(KeeweRtnConsts.ERR400, messages);
+    }
+
+    @ExceptionHandler(InvalidDataAccessApiUsageException.class)
+    @ResponseStatus(BAD_REQUEST)
+    public ApiResponse<?> handleContraintViolationException(InvalidDataAccessApiUsageException ex) {
+        log.info("ConstraintViolationException: {}", ex.getMessage(), ex);
+        return ApiResponse.failure(KeeweRtnConsts.ERR400, ex.getCause().getMessage());
     }
 
     @ExceptionHandler(Exception.class)
