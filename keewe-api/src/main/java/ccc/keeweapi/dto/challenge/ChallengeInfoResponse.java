@@ -1,12 +1,12 @@
 package ccc.keeweapi.dto.challenge;
 
-import static lombok.AccessLevel.PROTECTED;
+import static lombok.AccessLevel.PRIVATE;
 
 import ccc.keewedomain.persistence.domain.common.Interest;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@NoArgsConstructor(access = PROTECTED)
+@NoArgsConstructor(access = PRIVATE)
 @Getter
 public class ChallengeInfoResponse {
     private Long challengeId;
