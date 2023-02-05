@@ -3,12 +3,14 @@ package ccc.keeweapi.controller.api.challenge;
 import ccc.keeweapi.dto.ApiResponse;
 import ccc.keeweapi.dto.challenge.ChallengeCreateRequest;
 import ccc.keeweapi.dto.challenge.ChallengeCreateResponse;
+import ccc.keeweapi.dto.challenge.ChallengeInfoResponse;
 import ccc.keeweapi.dto.challenge.ChallengeParticipateRequest;
 import ccc.keeweapi.dto.challenge.ChallengeParticipationResponse;
 import ccc.keeweapi.dto.challenge.InsightProgressResponse;
 import ccc.keeweapi.dto.challenge.ParticipationCheckResponse;
 import ccc.keeweapi.dto.challenge.WeekProgressResponse;
 import ccc.keeweapi.service.challenge.ChallengeApiService;
+import java.util.List;
 import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -57,7 +59,7 @@ public class ChallengeController {
     }
 
     @GetMapping("/specified-size")
-    public ApiResponse<?> getSpecifiedNumberOfChallenge(@RequestParam("size") @Min(1) @Max(10) Integer size) {
+    public ApiResponse<List<ChallengeInfoResponse>> getSpecifiedNumberOfChallenge(@RequestParam("size") @Min(1) @Max(10) Integer size) {
         return ApiResponse.ok(challengeApiService.getSpecifiedNumberOfChallenge(size));
     }
 }

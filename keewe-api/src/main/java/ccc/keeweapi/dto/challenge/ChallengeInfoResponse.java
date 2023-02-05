@@ -9,18 +9,18 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = PROTECTED)
 @Getter
 public class ChallengeInfoResponse {
-    private Long id;
-    private Interest interest;
-    private String name;
-    private String introduction;
+    private Long challengeId;
+    private String challengeCategory;
+    private String challengeName;
+    private String challengeIntroduction;
     private Long insightCount;
 
     public static ChallengeInfoResponse of(Long id, Interest interest, String name, String introduction, Long insightCount) {
         ChallengeInfoResponse response = new ChallengeInfoResponse();
-        response.id = id;
-        response.interest = interest;
-        response.name = name;
-        response.introduction = introduction;
+        response.challengeId = id;
+        response.challengeCategory = interest.getName();
+        response.challengeName = name;
+        response.challengeIntroduction = introduction;
         response.insightCount = insightCount;
         return response;
     }

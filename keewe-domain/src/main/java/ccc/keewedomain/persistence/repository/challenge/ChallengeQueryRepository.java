@@ -16,6 +16,7 @@ public class ChallengeQueryRepository {
     public List<Challenge> getSpecifiedNumberOfChallenge(int size) {
         return queryFactory.select(challenge)
                 .from(challenge)
+                .where(challenge.deleted.isFalse())
                 .orderBy(challenge.id.desc())
                 .limit(size)
                 .fetch();

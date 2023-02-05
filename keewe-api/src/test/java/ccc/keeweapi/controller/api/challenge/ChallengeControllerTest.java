@@ -295,4 +295,42 @@ public class ChallengeControllerTest extends ApiDocumentationTest {
                         .build()
         )));
     }
+
+    @Test
+    @DisplayName("진행 중인 최근 챌린지 일부 조회")
+    void get_progress_recent_challenge() throws Exception {
+        List<ChallengeInfoResponse> response = List.of(
+                ChallengeInfoResponse.of(3L, Interest.of("카테고리"), "챌린지명", "챌린지설명", 5L)
+        );
+
+        when(challengeApiService.getSpecifiedNumberOfChallenge(anyInt()))
+                .thenReturn(response);
+
+        ResultActions resultActions = mockMvc.perform(get("/api/v1/challenge/specified-size")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
+                        .param("size", "5")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        resultActions.andDo(restDocs.document(resource(
+                ResourceSnippetParameters.builder()
+                        .description("진행중인 최근 챌린지 현황 중 지정한 개수 만큼 조회하는 API 입니다.")
+                        .summary("진행중인 최근 챌린지 현황 중 지정한 개수 만큼 조회하는 API")
+                        .requestHeaders(
+                                headerWithName("Authorization").description("유저의 JWT")
+                        )
+                        .responseFields(
+                                fieldWithPath("message").description("요청 결과 메세지"),
+                                fieldWithPath("code").description("결과 코드"),
+                                fieldWithPath("data").description("데이터, 오류 시 null"),
+                                fieldWithPath("data[].challengeId").description("챌린지의 ID"),
+                                fieldWithPath("data[].challengeName").description("챌린지의 이름"),
+                                fieldWithPath("data[].challengeCategory").description("챌린지 카테고리"),
+                                fieldWithPath("data[].challengeIntroduction").description("챌린지 설명"),
+                                fieldWithPath("data[].insightCount").description("챌린지에 기록한 인사이트 수")
+                        )
+                        .tag("Challenge")
+                        .build()
+        )));
+    }
 }
