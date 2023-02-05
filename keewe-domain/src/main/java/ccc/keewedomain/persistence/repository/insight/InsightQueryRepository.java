@@ -127,8 +127,8 @@ public class InsightQueryRepository {
     public Map<Long, Long> countPerChallenge(List<Challenge> challenges) {
         return queryFactory
                 .from(insight)
-                .leftJoin(insight.challengeParticipation, challengeParticipation)
-                .leftJoin(challengeParticipation.challenge, challenge)
+                .innerJoin(insight.challengeParticipation, challengeParticipation)
+                .innerJoin(challengeParticipation.challenge, challenge)
                 .where(challenge.in(challenges))
                 .groupBy(challenge.id)
                 .transform(GroupBy.groupBy(challenge.id).as(insight.count()));
