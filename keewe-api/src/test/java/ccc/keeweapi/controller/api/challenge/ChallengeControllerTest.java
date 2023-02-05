@@ -269,7 +269,7 @@ public class ChallengeControllerTest extends ApiDocumentationTest {
 
         when(challengeApiService.getMyChallenge()).thenReturn(response);
 
-        ResultActions resultActions = mockMvc.perform(get("/api/v1/challenge/home/my-challenge")
+        ResultActions resultActions = mockMvc.perform(get("/api/v1/challenge/my-challenge")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
@@ -287,7 +287,7 @@ public class ChallengeControllerTest extends ApiDocumentationTest {
                                 fieldWithPath("data").description("참가중이지 않은 경우 null"),
                                 fieldWithPath("data.challengeId").description("참가중인 챌린지의 ID"),
                                 fieldWithPath("data.name").description("참가중인 챌린지의 이름"),
-                                fieldWithPath("data.participatingUser").description("도전(참가)중인 유저의 수"),
+                                fieldWithPath("data.participatingUserNumber").description("도전(참가)중인 유저의 수"),
                                 fieldWithPath("data.interest").description("관심사"),
                                 fieldWithPath("data.startDate").description("챌린지에 참가한 날짜")
                         )

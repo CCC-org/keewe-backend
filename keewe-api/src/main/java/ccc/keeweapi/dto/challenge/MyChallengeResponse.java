@@ -8,7 +8,7 @@ import lombok.Getter;
 public class MyChallengeResponse {
     private Long challengeId;
     private String name;
-    private Long participatingUser;
+    private Long participatingUserNumber;
     private String interest;
     private String startDate;
 }
