@@ -3,6 +3,7 @@ package ccc.keewedomain.persistence.repository.challenge;
 import ccc.keewedomain.persistence.domain.challenge.Challenge;
 import ccc.keewedomain.persistence.domain.challenge.ChallengeParticipation;
 import ccc.keewedomain.persistence.domain.challenge.enums.ChallengeParticipationStatus;
+import ccc.keewedomain.persistence.domain.user.User;
 import com.querydsl.core.group.GroupBy;
 import com.querydsl.core.types.dsl.DateTemplate;
 import com.querydsl.core.types.dsl.Expressions;
@@ -11,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -68,5 +70,18 @@ public class ChallengeParticipationQueryRepository {
                 .where(challengeParticipation.challenge.eq(challenge))
                 .where(challengeParticipation.status.eq(status))
                 .fetchFirst();
+    }
+
+    public List<ChallengeParticipation> findFinishedParticipation(User challenger, Long size) {
+        return queryFactory
+                .select(challengeParticipation)
+                .from(challengeParticipation)
+                .innerJoin(challengeParticipation.challenge, challenge)
+                .fetchJoin()
+                .where(challengeParticipation.challenger.eq(challenger))
+                .where(challengeParticipation.status.ne(ChallengeParticipationStatus.CHALLENGING))
+                .orderBy(challengeParticipation.id.desc())
+                .limit(size)
+                .fetch();
     }
 }
