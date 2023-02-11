@@ -4,7 +4,6 @@ import ccc.keeweapi.dto.ApiResponse;
 import ccc.keewecore.consts.KeeweRtnConsts;
 import ccc.keewecore.exception.KeeweException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -12,6 +11,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.ConstraintViolationException;
 import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
@@ -44,11 +44,11 @@ public class KeeweControllerAdvice {
         return ApiResponse.failure(KeeweRtnConsts.ERR400, messages);
     }
 
-    @ExceptionHandler(InvalidDataAccessApiUsageException.class)
+    @ExceptionHandler(ConstraintViolationException.class)
     @ResponseStatus(BAD_REQUEST)
-    public ApiResponse<?> handleContraintViolationException(InvalidDataAccessApiUsageException ex) {
-        log.info("ConstraintViolationException: {}", ex.getMessage(), ex);
-        return ApiResponse.failure(KeeweRtnConsts.ERR400, ex.getCause().getMessage());
+    public ApiResponse<?> handleConstraintViolationException(ConstraintViolationException ex) {
+        log.info("ConstraintViolationException: {}", ex.getMessage());
+        return ApiResponse.failure(KeeweRtnConsts.ERR400, ex.getMessage());
     }
 
     @ExceptionHandler(Exception.class)
