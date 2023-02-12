@@ -368,7 +368,7 @@ public class ChallengeControllerTest extends ApiDocumentationTest {
                         .responseFields(
                                 fieldWithPath("message").description("요청 결과 메세지"),
                                 fieldWithPath("code").description("결과 코드"),
-                                fieldWithPath("data.historyNumber").description("전체 종료된 챌린지 개수(size와 관련 없음)"),
+                                fieldWithPath("data.historyNumber").description("전체 종료된 챌린지 개수, 최소값 1(size와 관련 없음)"),
                                 fieldWithPath("data.challengeHistories[].challengeId").description("챌린지의 ID"),
                                 fieldWithPath("data.challengeHistories[].challengeCategory").description("챌린지의 카테고리(관심사)"),
                                 fieldWithPath("data.challengeHistories[].challengeName").description("챌린지 이름"),

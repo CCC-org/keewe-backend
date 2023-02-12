@@ -5,6 +5,7 @@ import ccc.keeweapi.dto.challenge.*;
 import ccc.keeweapi.service.challenge.ChallengeApiService;
 import ccc.keewecore.consts.KeeweConsts;
 import lombok.RequiredArgsConstructor;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -15,6 +16,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/challenge")
 @RequiredArgsConstructor
+@Validated
 public class ChallengeController {
     private final ChallengeApiService challengeApiService;
 
