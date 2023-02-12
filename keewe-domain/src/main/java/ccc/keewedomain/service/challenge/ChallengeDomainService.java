@@ -80,6 +80,14 @@ public class ChallengeDomainService {
         return challengeParticipationQueryRepository.countByChallengeAndStatus(challenge, CHALLENGING);
     }
 
+    public Long countFinishedParticipation(User user) {
+        return challengeParticipationRepository.countByChallengerAndStatusNot(user, CHALLENGING);
+    }
+
+    public List<ChallengeParticipation> getFinishedParticipation(User user, Long size) {
+        return challengeParticipationQueryRepository.findFinishedParticipation(user, size);
+    }
+
     private void exitCurrentChallengeIfExist(User challenger) {
         findCurrentChallengeParticipation(challenger).ifPresent(ChallengeParticipation::cancel);
     }

@@ -5,6 +5,7 @@ import ccc.keeweapi.dto.challenge.*;
 import ccc.keeweapi.utils.SecurityUtil;
 import ccc.keewedomain.persistence.domain.challenge.Challenge;
 import ccc.keewedomain.persistence.domain.challenge.ChallengeParticipation;
+import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.service.challenge.ChallengeDomainService;
 import ccc.keewedomain.service.insight.InsightDomainService;
 import lombok.RequiredArgsConstructor;
@@ -95,5 +96,13 @@ public class ChallengeApiService {
         }
 
         return dates;
+    }
+
+    public ChallengeHistoryListResponse getHistoryOfChallenge(Long size) {
+        User user = SecurityUtil.getUser();
+        Long historyCount = challengeDomainService.countFinishedParticipation(user);
+        List<ChallengeParticipation> finishedParticipation = challengeDomainService.getFinishedParticipation(user, size);
+
+        return challengeAssembler.toChallengeHistoryListResponse(finishedParticipation, historyCount);
     }
 }

@@ -10,4 +10,5 @@ import java.util.Optional;
 public interface ChallengeParticipationRepository extends JpaRepository<ChallengeParticipation, Long> {
 
     Optional<ChallengeParticipation> findByChallengerAndStatusAndDeletedFalse(User challenger, ChallengeParticipationStatus status);
+    Long countByChallengerAndStatusNot(User challenger, ChallengeParticipationStatus status);
 }
