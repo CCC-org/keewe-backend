@@ -55,6 +55,11 @@ public class ChallengeController {
         return ApiResponse.ok(challengeApiService.getSpecifiedNumberOfChallenge(size));
     }
 
+    @GetMapping("/detail/{challengeId}")
+    public ApiResponse<ChallengeDetailResponse> getChallengeDetail(@PathVariable Long challengeId) {
+        return ApiResponse.ok(challengeApiService.getChallengeDetail(challengeId));
+    }
+
     @GetMapping("/history")
     public ApiResponse<ChallengeHistoryListResponse> getHistoryOfChallenge(
             @RequestParam(value = "size", defaultValue = KeeweConsts.LONG_MAX_STRING) @Min(1) Long size) {
