@@ -89,6 +89,20 @@ public class ChallengeApiService {
                 .collect(Collectors.toList());
     }
 
+    public ChallengeHistoryListResponse getHistoryOfChallenge(Long size) {
+        User user = SecurityUtil.getUser();
+        Long historyCount = challengeDomainService.countFinishedParticipation(user);
+        List<ChallengeParticipation> finishedParticipation = challengeDomainService.getFinishedParticipation(user, size);
+
+        return challengeAssembler.toChallengeHistoryListResponse(finishedParticipation, historyCount);
+    }
+
+    public ChallengeDetailResponse getChallengeDetail(Long challengeId) {
+        Challenge challenge = challengeDomainService.getByIdOrElseThrow(challengeId);
+        Long insightCount = insightDomainService.getInsightCountByChallenge(challenge);
+        return challengeAssembler.toChallengeDetailResponse(challenge, insightCount);
+    }
+
     private List<String> datesOfWeek(LocalDate startDate) {
         List<String> dates = new ArrayList<>(7);
         for (int i = 0; i < 7; i++) {
@@ -96,13 +110,5 @@ public class ChallengeApiService {
         }
 
         return dates;
-    }
-
-    public ChallengeHistoryListResponse getHistoryOfChallenge(Long size) {
-        User user = SecurityUtil.getUser();
-        Long historyCount = challengeDomainService.countFinishedParticipation(user);
-        List<ChallengeParticipation> finishedParticipation = challengeDomainService.getFinishedParticipation(user, size);
-
-        return challengeAssembler.toChallengeHistoryListResponse(finishedParticipation, historyCount);
     }
 }

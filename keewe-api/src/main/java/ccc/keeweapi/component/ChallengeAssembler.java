@@ -126,4 +126,13 @@ public class ChallengeAssembler {
                 participation.getUpdatedAt().toLocalDate().toString()
         );
     }
+
+    public ChallengeDetailResponse toChallengeDetailResponse(Challenge challenge, Long insightCount) {
+        return ChallengeDetailResponse.of(
+                challenge.getId(),
+                challenge.getName(),
+                challenge.getIntroduction(),
+                insightCount
+        );
+    }
 }

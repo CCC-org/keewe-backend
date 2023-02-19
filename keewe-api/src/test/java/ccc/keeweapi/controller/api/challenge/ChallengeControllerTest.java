@@ -379,4 +379,38 @@ public class ChallengeControllerTest extends ApiDocumentationTest {
                         .build()
         )));
     }
+
+    @Test
+    @DisplayName("챌린지 상세 조회 API")
+    void get_challenge_detail() throws Exception {
+        long challengeId = 1L;
+        ChallengeDetailResponse response = ChallengeDetailResponse.of(challengeId, "챌린지 이름", "챌린지 설명~~", 1000L);
+
+        when(challengeApiService.getChallengeDetail(anyLong()))
+                .thenReturn(response);
+
+        ResultActions resultActions = mockMvc.perform(get("/api/v1/challenge/detail/{challengeId}", challengeId)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        resultActions.andDo(restDocs.document(resource(
+                ResourceSnippetParameters.builder()
+                        .description("챌린지 상세 조회 API 입니다.")
+                        .summary("챌린지 상세 조회 API")
+                        .requestHeaders(
+                                headerWithName("Authorization").description("유저의 JWT")
+                        )
+                        .responseFields(
+                                fieldWithPath("message").description("요청 결과 메세지"),
+                                fieldWithPath("code").description("결과 코드"),
+                                fieldWithPath("data.challengeId").description("챌린지의 ID"),
+                                fieldWithPath("data.challengeName").description("챌린지의 이름"),
+                                fieldWithPath("data.challengeIntroduction").description("챌린지 설명"),
+                                fieldWithPath("data.insightCount").description("챌린지에 기록한 인사이트 수")
+                        )
+                        .tag("Challenge")
+                        .build()
+        )));
+    }
 }

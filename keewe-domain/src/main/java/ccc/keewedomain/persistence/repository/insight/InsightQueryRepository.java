@@ -134,6 +134,16 @@ public class InsightQueryRepository {
                 .transform(GroupBy.groupBy(challenge.id).as(insight.count()));
     }
 
+    public Long countByChallenge(Challenge target) {
+        return queryFactory
+                .select(insight.count())
+                .from(insight)
+                .innerJoin(insight.challengeParticipation, challengeParticipation)
+                .innerJoin(challengeParticipation.challenge, challenge)
+                .where(challenge.eq(target))
+                .fetchFirst();
+    }
+
     private BooleanExpression drawerIdEq(Long drawerId) {
         return drawerId != null ? insight.drawer.id.eq(drawerId) : null;
     }

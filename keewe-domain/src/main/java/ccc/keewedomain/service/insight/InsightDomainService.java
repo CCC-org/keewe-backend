@@ -194,6 +194,10 @@ public class InsightDomainService {
         return insightQueryRepository.countPerChallenge(challenges);
     }
 
+    public Long getInsightCountByChallenge(Challenge challenge) {
+        return insightQueryRepository.countByChallenge(challenge);
+    }
+
     /*****************************************************************
      ********************** private 메소드 영역 분리 *********************
      *****************************************************************/
