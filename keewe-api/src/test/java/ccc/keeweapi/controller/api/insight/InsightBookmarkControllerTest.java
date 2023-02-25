@@ -25,14 +25,14 @@ import org.springframework.test.web.servlet.ResultActions;
 public class InsightBookmarkControllerTest extends ApiDocumentationTest {
 
     @InjectMocks
-    InsightCommentController insightCommentController;
+    InsightBookmarkController insightBookmarkController;
 
     @Mock
     InsightApiService insightApiService;
 
     @BeforeEach
     void setup(RestDocumentationContextProvider provider) {
-        super.setup(insightCommentController, provider);
+        super.setup(insightBookmarkController, provider);
     }
 
     @Test
