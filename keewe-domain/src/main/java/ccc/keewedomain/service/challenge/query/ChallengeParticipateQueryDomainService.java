@@ -1,54 +1,29 @@
-package ccc.keewedomain.service.challenge;
+package ccc.keewedomain.service.challenge.query;
+
+import static ccc.keewedomain.persistence.domain.challenge.enums.ChallengeParticipationStatus.CHALLENGING;
 
 import ccc.keewecore.consts.KeeweRtnConsts;
 import ccc.keewecore.exception.KeeweException;
-import ccc.keewedomain.dto.challenge.ChallengeCreateDto;
-import ccc.keewedomain.dto.challenge.ChallengeParticipateDto;
 import ccc.keewedomain.persistence.domain.challenge.Challenge;
 import ccc.keewedomain.persistence.domain.challenge.ChallengeParticipation;
 import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.persistence.repository.challenge.ChallengeParticipationQueryRepository;
 import ccc.keewedomain.persistence.repository.challenge.ChallengeParticipationRepository;
-import ccc.keewedomain.persistence.repository.challenge.ChallengeQueryRepository;
-import ccc.keewedomain.persistence.repository.challenge.ChallengeRepository;
-import ccc.keewedomain.service.user.UserDomainService;
-import java.util.List;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
-import static ccc.keewedomain.persistence.domain.challenge.enums.ChallengeParticipationStatus.CHALLENGING;
-
-@Service
 @RequiredArgsConstructor
-public class ChallengeDomainService {
-    private final ChallengeRepository challengeRepository;
-    private final ChallengeQueryRepository challengeQueryRepository;
+@Service
+public class ChallengeParticipateQueryDomainService {
+
     private final ChallengeParticipationRepository challengeParticipationRepository;
     private final ChallengeParticipationQueryRepository challengeParticipationQueryRepository;
-    private final UserDomainService userDomainService;
-
-    public Challenge save(ChallengeCreateDto dto) {
-        User writer = userDomainService.getUserByIdOrElseThrow(dto.getUserId());
-        Challenge challenge = Challenge.of(writer, dto.getName(), dto.getInterest(), dto.getIntroduction());
-        return challengeRepository.save(challenge);
-    }
-
-    public ChallengeParticipation participate(ChallengeParticipateDto dto) {
-        User challenger = userDomainService.getUserByIdOrElseThrow(dto.getChallengerId());
-        exitCurrentChallengeIfExist(challenger);
-        Challenge challenge = getByIdOrElseThrow(dto.getChallengeId());
-        return challenge.participate(challenger, dto.getMyTopic(), dto.getInsightPerWeek(), dto.getDuration());
-    }
-
-    public Challenge getByIdOrElseThrow(Long id) {
-        return challengeRepository.findById(id).orElseThrow(() -> new KeeweException(KeeweRtnConsts.ERR430));
-    }
 
     public boolean checkParticipation(Long userId) {
         return challengeParticipationQueryRepository.existsByChallengerIdAndStatus(userId, CHALLENGING);
@@ -72,10 +47,6 @@ public class ChallengeDomainService {
         return challengeParticipationQueryRepository.getRecordCountPerDate(participation, startDateTime, startDateTime.plusDays(7L));
     }
 
-    public List<Challenge> getSpecifiedNumberOfRecentChallenge(int size) {
-        return challengeQueryRepository.getSpecifiedNumberOfChallenge(size);
-    }
-
     public Long countParticipatingUser(Challenge challenge) {
         return challengeParticipationQueryRepository.countByChallengeAndStatus(challenge, CHALLENGING);
     }
@@ -86,9 +57,5 @@ public class ChallengeDomainService {
 
     public List<ChallengeParticipation> getFinishedParticipation(User user, Long size) {
         return challengeParticipationQueryRepository.findFinishedParticipation(user, size);
-    }
-
-    private void exitCurrentChallengeIfExist(User challenger) {
-        findCurrentChallengeParticipation(challenger).ifPresent(ChallengeParticipation::cancel);
     }
 }

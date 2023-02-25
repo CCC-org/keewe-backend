@@ -1,7 +1,21 @@
 package ccc.keeweapi.service.user;
 
+import static ccc.keewecore.consts.KeeweConsts.MY_PAGE_TITLE_LIMIT;
+
 import ccc.keeweapi.component.ProfileAssembler;
-import ccc.keeweapi.dto.user.*;
+import ccc.keeweapi.dto.user.AllAchievedTitleResponse;
+import ccc.keeweapi.dto.user.BlockUserResponse;
+import ccc.keeweapi.dto.user.FollowToggleResponse;
+import ccc.keeweapi.dto.user.FollowUserListResponse;
+import ccc.keeweapi.dto.user.MyBlockUserListResponse;
+import ccc.keeweapi.dto.user.MyPageTitleResponse;
+import ccc.keeweapi.dto.user.OnboardRequest;
+import ccc.keeweapi.dto.user.OnboardResponse;
+import ccc.keeweapi.dto.user.ProfileMyPageResponse;
+import ccc.keeweapi.dto.user.ProfileUpdateRequest;
+import ccc.keeweapi.dto.user.ProfileUpdateResponse;
+import ccc.keeweapi.dto.user.UnblockUserResponse;
+import ccc.keeweapi.dto.user.UploadProfilePhotoResponse;
 import ccc.keeweapi.utils.SecurityUtil;
 import ccc.keewedomain.dto.user.FollowCheckDto;
 import ccc.keewedomain.persistence.domain.title.TitleAchievement;
@@ -9,21 +23,18 @@ import ccc.keewedomain.persistence.domain.user.Block;
 import ccc.keewedomain.persistence.domain.user.Follow;
 import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.persistence.repository.utils.CursorPageable;
-import ccc.keewedomain.service.challenge.ChallengeDomainService;
+import ccc.keewedomain.service.challenge.query.ChallengeParticipateQueryDomainService;
 import ccc.keewedomain.service.user.ProfileDomainService;
 import ccc.keewedomain.service.user.UserDomainService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-
-import static ccc.keewecore.consts.KeeweConsts.MY_PAGE_TITLE_LIMIT;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 
 @Service
@@ -32,7 +43,7 @@ public class ProfileApiService {
 
     private final ProfileDomainService profileDomainService;
     private final UserDomainService userDomainService;
-    private final ChallengeDomainService challengeDomainService;
+    private final ChallengeParticipateQueryDomainService challengeParticipateQueryDomainService;
     private final ProfileAssembler profileAssembler;
 
     @Transactional
@@ -62,7 +73,7 @@ public class ProfileApiService {
         Long followerCount = profileDomainService.getFollowerCount(targetUser);
         Long followingCount = profileDomainService.getFollowingCount(targetUser);
 
-        String challengeName = challengeDomainService.findCurrentParticipationWithChallenge(targetId)
+        String challengeName = challengeParticipateQueryDomainService.findCurrentParticipationWithChallenge(targetId)
                 .map(challengeParticipation -> challengeParticipation.getChallenge().getName())
                 .orElse(null);
 

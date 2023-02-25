@@ -8,7 +8,15 @@ import ccc.keewedomain.cache.domain.insight.CReactionCount;
 import ccc.keewedomain.cache.repository.insight.CInsightViewRepository;
 import ccc.keewedomain.cache.repository.insight.CReactionCountRepository;
 import ccc.keewedomain.domain.insight.ReactionAggregation;
-import ccc.keewedomain.dto.insight.*;
+import ccc.keewedomain.dto.insight.BookmarkToggleDto;
+import ccc.keewedomain.dto.insight.InsightCreateDto;
+import ccc.keewedomain.dto.insight.InsightDetailDto;
+import ccc.keewedomain.dto.insight.InsightGetDto;
+import ccc.keewedomain.dto.insight.InsightGetForHomeDto;
+import ccc.keewedomain.dto.insight.InsightMyPageDto;
+import ccc.keewedomain.dto.insight.InsightViewIncrementDto;
+import ccc.keewedomain.dto.insight.InsightWriterDto;
+import ccc.keewedomain.dto.insight.ReactionAggregationGetDto;
 import ccc.keewedomain.persistence.domain.challenge.Challenge;
 import ccc.keewedomain.persistence.domain.challenge.ChallengeParticipation;
 import ccc.keewedomain.persistence.domain.common.Link;
@@ -24,20 +32,19 @@ import ccc.keewedomain.persistence.repository.insight.ReactionAggregationReposit
 import ccc.keewedomain.persistence.repository.user.BookmarkQueryRepository;
 import ccc.keewedomain.persistence.repository.user.BookmarkRepository;
 import ccc.keewedomain.persistence.repository.utils.CursorPageable;
-import ccc.keewedomain.service.challenge.ChallengeDomainService;
+import ccc.keewedomain.service.challenge.query.ChallengeParticipateQueryDomainService;
 import ccc.keewedomain.service.user.UserDomainService;
 import ccc.keeweinfra.service.messagequeue.MQPublishService;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -50,7 +57,7 @@ public class InsightDomainService {
     private final BookmarkQueryRepository bookmarkQueryRepository;
     private final MQPublishService mqPublishService;
     private final UserDomainService userDomainService;
-    private final ChallengeDomainService challengeDomainService;
+    private final ChallengeParticipateQueryDomainService challengeParticipateQueryDomainService;
     private final DrawerDomainService drawerDomainService;
     private final InsightQueryRepository insightQueryRepository;
     private final CInsightViewRepository cInsightViewRepository;
@@ -62,7 +69,7 @@ public class InsightDomainService {
         ChallengeParticipation participation = null;
         boolean valid = false;
         if (dto.isParticipate()) {
-            participation = challengeDomainService.getCurrentChallengeParticipation(writer);
+            participation = challengeParticipateQueryDomainService.getCurrentChallengeParticipation(writer);
             valid = isRecordable(participation);
         }
 
