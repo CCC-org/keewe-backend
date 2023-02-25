@@ -1,8 +1,8 @@
 package ccc.keeweapi.controller.api.challenge;
 
-import static com.epages.restdocs.apispec.ResourceDocumentation.headerWithName;
-import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
+import static com.epages.restdocs.apispec.ResourceDocumentation.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
@@ -10,12 +10,7 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWit
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import ccc.keeweapi.document.utils.ApiDocumentationTest;
-import ccc.keeweapi.dto.challenge.ChallengeParticipationResponse;
-import ccc.keeweapi.dto.challenge.DayProgressResponse;
-import ccc.keeweapi.dto.challenge.InsightProgressResponse;
-import ccc.keeweapi.dto.challenge.ParticipatingChallengeResponse;
-import ccc.keeweapi.dto.challenge.ParticipationCheckResponse;
-import ccc.keeweapi.dto.challenge.WeekProgressResponse;
+import ccc.keeweapi.dto.challenge.*;
 import ccc.keeweapi.service.challenge.ChallengeApiService;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import java.time.LocalDate;
@@ -29,6 +24,7 @@ import org.mockito.Mock;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
+import org.springframework.restdocs.payload.FieldDescriptor;
 import org.springframework.test.web.servlet.ResultActions;
 
 public class ChallengeParticipationControllerTest extends ApiDocumentationTest {
@@ -235,6 +231,44 @@ public class ChallengeParticipationControllerTest extends ApiDocumentationTest {
                                 fieldWithPath("data.participatingUserNumber").description("도전(참가)중인 유저의 수"),
                                 fieldWithPath("data.interest").description("관심사"),
                                 fieldWithPath("data.startDate").description("챌린지에 참가한 날짜")
+                        )
+                        .tag("Challenge")
+                        .build()
+        )));
+    }
+
+    @Test
+    @DisplayName("챌린지 상세 함께 기록 조회 API")
+    void get_together() throws Exception {
+        List<TogetherChallengerResponse> response = List.of(
+                TogetherChallengerResponse.of("닉네임1", "이미지 URL1", 1L, 4L),
+                TogetherChallengerResponse.of("닉네임2", "이미지 URL2", 2L, 4L),
+                TogetherChallengerResponse.of("닉네임3", "이미지 URL3", 3L, 4L)
+        );
+
+        when(challengeApiService.getTogetherChallengers(anyLong())).thenReturn(response);
+
+        ResultActions resultActions = mockMvc.perform(get("/api/v1/challenge/{challengeId}/challenger", 1L)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        resultActions.andDo(restDocs.document(resource(
+                ResourceSnippetParameters.builder()
+                        .description("챌린지 상세 함께 기록 조회 API 입니다.")
+                        .summary("챌린지 상세 함께 기록 조회 API")
+                        .requestHeaders(
+                                headerWithName("Authorization").description("유저의 JWT")
+                        )
+                        .pathParameters(parameterWithName("challengeId").description("챌린지의 ID"))
+                        .responseFields(
+                                fieldWithPath("message").description("요청 결과 메세지"),
+                                fieldWithPath("code").description("결과 코드"),
+                                fieldWithPath("data").description("없는 경우 비어 있음. 최대 5개 조회"),
+                                fieldWithPath("data[].nickname").description("참가자의 닉네임"),
+                                fieldWithPath("data[].imageURL").description("참가자의 프로필 이미지 URL"),
+                                fieldWithPath("data[].current").description("현재 기록한 개수"),
+                                fieldWithPath("data[].total").description("전체 기록해야 하는 개수")
                         )
                         .tag("Challenge")
                         .build()
