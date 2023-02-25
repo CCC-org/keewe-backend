@@ -23,14 +23,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class UserSignupControllerTest extends ApiDocumentationTest {
 
     @InjectMocks
-    private UserController userController;
+    private UserSignUpController userSignUpController;
 
     @Mock
     private UserApiService userApiService;
 
     @BeforeEach
     void setup(RestDocumentationContextProvider provider) {
-        super.setup(userController, provider);
+        super.setup(userSignUpController, provider);
     }
 
     @Test
