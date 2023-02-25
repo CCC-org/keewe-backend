@@ -1,9 +1,26 @@
 package ccc.keeweapi.controller.api.insight;
 
+import static com.epages.restdocs.apispec.ResourceDocumentation.headerWithName;
+import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName;
+import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import ccc.keeweapi.document.utils.ApiDocumentationTest;
-import ccc.keeweapi.dto.insight.*;
-import ccc.keeweapi.service.insight.CommentApiService;
+import ccc.keeweapi.dto.insight.CommentCreateResponse;
+import ccc.keeweapi.dto.insight.CommentResponse;
+import ccc.keeweapi.dto.insight.CommentWriterResponse;
+import ccc.keeweapi.dto.insight.ReplyResponse;
+import ccc.keeweapi.dto.insight.RepresentativeCommentResponse;
+import ccc.keeweapi.service.insight.command.InsightCommentCommandApiService;
+import ccc.keeweapi.service.insight.query.InsightCommentQueryApiService;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
+import java.time.LocalDateTime;
+import java.util.List;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -15,28 +32,20 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.test.web.servlet.ResultActions;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
-import static com.epages.restdocs.apispec.ResourceDocumentation.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-public class CommentControllerTest extends ApiDocumentationTest {
+public class InsightCommentControllerTest extends ApiDocumentationTest {
 
     @InjectMocks
-    CommentController commentController;
+    InsightCommentController insightCommentController;
 
     @Mock
-    CommentApiService commentApiService;
+    InsightCommentCommandApiService insightCommentCommandApiService;
+
+    @Mock
+    InsightCommentQueryApiService insightCommentQueryApiService;
 
     @BeforeEach
     void setup(RestDocumentationContextProvider provider) {
-        super.setup(commentController, provider);
+        super.setup(insightCommentController, provider);
     }
 
     private CommentWriterResponse writer1 = CommentWriterResponse.of(1L, "유승훈", "타이틀1", "www.api-keewe.com/images");
@@ -58,7 +67,7 @@ public class CommentControllerTest extends ApiDocumentationTest {
                 .put("insightId", insightId)
                 .put("parentId", parentId);
 
-        when(commentApiService.create(any())).thenReturn(CommentCreateResponse.of(commentId));
+        when(insightCommentCommandApiService.create(any())).thenReturn(CommentCreateResponse.of(commentId));
 
         ResultActions resultActions = mockMvc.perform(post("/api/v1/comments")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
@@ -97,7 +106,7 @@ public class CommentControllerTest extends ApiDocumentationTest {
         CommentResponse commentResponse = CommentResponse.of(1L, writer1, "댓글의 내용", now, List.of(reply1, reply2), totalReply);
         RepresentativeCommentResponse response = RepresentativeCommentResponse.of(10L, List.of(commentResponse));
 
-        when(commentApiService.getRepresentativeComments(insightId)).thenReturn(response);
+        when(insightCommentQueryApiService.getRepresentativeComments(insightId)).thenReturn(response);
 
         ResultActions resultActions = mockMvc.perform(
                 get("/api/v1/comments/representative/insights/{insightId}", insightId)
@@ -152,7 +161,7 @@ public class CommentControllerTest extends ApiDocumentationTest {
         CommentResponse comment1 = CommentResponse.of(1L, writer1, "댓글의 내용1", now, List.of(reply1), totalReply);
         CommentResponse comment2 = CommentResponse.of(2L, writer1, "댓글의 내용2", now, List.of(reply2), totalReply);
 
-        when(commentApiService.getCommentsWithFirstReply(any(), any())).thenReturn(List.of(comment1, comment2));
+        when(insightCommentQueryApiService.getCommentsWithFirstReply(any(), any())).thenReturn(List.of(comment1, comment2));
 
         ResultActions resultActions = mockMvc.perform(
                 get("/api/v1/comments/insights/{insightId}", insightId)
@@ -208,7 +217,7 @@ public class CommentControllerTest extends ApiDocumentationTest {
         ReplyResponse reply1 = ReplyResponse.of(writer1, 2L, parentId, "답글1 내용", now);
         ReplyResponse reply2 = ReplyResponse.of(writer2, 3L, parentId, "답글2 내용", now);
 
-        when(commentApiService.getReplies(any(), any())).thenReturn(List.of(reply1, reply2));
+        when(insightCommentQueryApiService.getReplies(any(), any())).thenReturn(List.of(reply1, reply2));
 
         ResultActions resultActions = mockMvc.perform(
                 get("/api/v1/comments/{parentId}/replies", parentId)

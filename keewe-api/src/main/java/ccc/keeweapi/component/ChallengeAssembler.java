@@ -120,8 +120,8 @@ public class ChallengeAssembler {
     public ChallengeHistoryResponse toChallengeHistoryResponse(ChallengeParticipation participation) {
         return ChallengeHistoryResponse.of(
                 participation.getChallenge().getId(),
-                participation.getChallenge().getName(),
                 participation.getChallenge().getInterest().getName(),
+                participation.getChallenge().getName(),
                 participation.getCreatedAt().toLocalDate().toString(),
                 participation.getUpdatedAt().toLocalDate().toString()
         );

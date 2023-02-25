@@ -2,7 +2,7 @@ package ccc.keeweapi.controller.api.insight;
 
 import ccc.keeweapi.document.utils.ApiDocumentationTest;
 import ccc.keeweapi.dto.insight.ReactResponse;
-import ccc.keeweapi.service.insight.ReactionApiService;
+import ccc.keeweapi.service.insight.command.InsightReactionCommandApiService;
 import ccc.keewedomain.persistence.domain.insight.enums.ReactionType;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import org.json.JSONObject;
@@ -24,15 +24,16 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class ReactionControllerTest extends ApiDocumentationTest {
+public class InsightReactionControllerTest extends ApiDocumentationTest {
     @InjectMocks
-    ReactionController reactionController;
+    InsightReactionController insightReactionController;
+
     @Mock
-    ReactionApiService reactionApiService;
+    InsightReactionCommandApiService insightReactionCommandApiService;
 
     @BeforeEach
     public void setup(RestDocumentationContextProvider provider) {
-        super.setup(reactionController, provider);
+        super.setup(insightReactionController, provider);
     }
 
     @Test
@@ -43,7 +44,7 @@ public class ReactionControllerTest extends ApiDocumentationTest {
                 .put("reactionType", ReactionType.CLAP)
                 .put("value", 1L);
 
-        when(reactionApiService.react(any())).thenReturn(ReactResponse.of(0L, ReactionType.CLAP, 5L));
+        when(insightReactionCommandApiService.react(any())).thenReturn(ReactResponse.of(0L, ReactionType.CLAP, 5L));
 
         ResultActions resultActions = mockMvc.perform(post("/api/v1/reaction")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)

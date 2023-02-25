@@ -1,4 +1,4 @@
-package ccc.keeweapi.service.insight;
+package ccc.keeweapi.service.insight.command;
 
 import ccc.keeweapi.component.ReactionAssembler;
 import ccc.keeweapi.dto.insight.ReactRequest;
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class ReactionApiService {
+public class InsightReactionCommandApiService {
     private final ReactionAssembler reactionAssembler;
     private final ReactionDomainService reactionDomainService;
 

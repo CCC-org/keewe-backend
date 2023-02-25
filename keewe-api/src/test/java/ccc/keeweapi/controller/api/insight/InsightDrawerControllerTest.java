@@ -1,10 +1,21 @@
 package ccc.keeweapi.controller.api.insight;
 
+import static com.epages.restdocs.apispec.ResourceDocumentation.headerWithName;
+import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import ccc.keeweapi.document.utils.ApiDocumentationTest;
 import ccc.keeweapi.dto.insight.DrawerCreateResponse;
 import ccc.keeweapi.dto.insight.DrawerResponse;
-import ccc.keeweapi.service.insight.DrawerApiService;
+import ccc.keeweapi.service.insight.command.InsightDrawerCommandApiService;
+import ccc.keeweapi.service.insight.query.InsightDrawerQueryApiService;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
+import java.util.List;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -16,28 +27,20 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.test.web.servlet.ResultActions;
 
-import java.util.List;
-
-import static com.epages.restdocs.apispec.ResourceDocumentation.headerWithName;
-import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-public class DrawerControllerTest extends ApiDocumentationTest {
+public class InsightDrawerControllerTest extends ApiDocumentationTest {
 
     @InjectMocks
-    DrawerController drawerController;
+    InsightDrawerController insightDrawerController;
 
     @Mock
-    DrawerApiService drawerApiService;
+    InsightDrawerCommandApiService insightDrawerCommandApiService;
+
+    @Mock
+    InsightDrawerQueryApiService insightDrawerQueryApiService;
 
     @BeforeEach
     void setup(RestDocumentationContextProvider provider) {
-        super.setup(drawerController, provider);
+        super.setup(insightDrawerController, provider);
     }
 
     @Test
@@ -49,7 +52,7 @@ public class DrawerControllerTest extends ApiDocumentationTest {
         drawerCreateRequest
                 .put("name", drawerName);
 
-        when(drawerApiService.create(any())).thenReturn(DrawerCreateResponse.of(1L));
+        when(insightDrawerCommandApiService.create(any())).thenReturn(DrawerCreateResponse.of(1L));
 
         ResultActions resultActions = mockMvc.perform(post("/api/v1/drawer")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
@@ -83,7 +86,7 @@ public class DrawerControllerTest extends ApiDocumentationTest {
                 DrawerResponse.of(3L, "디자인")
         );
 
-        when(drawerApiService.getMyDrawers()).thenReturn(responses);
+        when(insightDrawerQueryApiService.getMyDrawers()).thenReturn(responses);
 
         ResultActions resultActions = mockMvc.perform(get("/api/v1/drawer")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
@@ -118,7 +121,7 @@ public class DrawerControllerTest extends ApiDocumentationTest {
                 DrawerResponse.of(3L, "디자인")
         );
 
-        when(drawerApiService.getDrawers(userId)).thenReturn(responses);
+        when(insightDrawerQueryApiService.getDrawers(userId)).thenReturn(responses);
 
         ResultActions resultActions = mockMvc.perform(get("/api/v1/drawer/{userId}", userId)
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)

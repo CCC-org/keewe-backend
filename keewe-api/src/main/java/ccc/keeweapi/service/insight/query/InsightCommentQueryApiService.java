@@ -1,36 +1,28 @@
-package ccc.keeweapi.service.insight;
+package ccc.keeweapi.service.insight.query;
+
+import static ccc.keewecore.consts.KeeweConsts.REPRESENTATIVE_COMMENT_REPLY_LIMIT;
 
 import ccc.keeweapi.component.CommentAssembler;
-import ccc.keeweapi.component.InsightAssembler;
-import ccc.keeweapi.dto.insight.*;
+import ccc.keeweapi.dto.insight.CommentResponse;
+import ccc.keeweapi.dto.insight.ReplyResponse;
+import ccc.keeweapi.dto.insight.RepresentativeCommentResponse;
 import ccc.keewedomain.persistence.domain.insight.Comment;
 import ccc.keewedomain.persistence.repository.utils.CursorPageable;
 import ccc.keewedomain.service.insight.CommentDomainService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import static ccc.keewecore.consts.KeeweConsts.REPRESENTATIVE_COMMENT_REPLY_LIMIT;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class CommentApiService {
+public class InsightCommentQueryApiService {
 
     private final CommentDomainService commentDomainService;
-
-    private final InsightAssembler insightAssembler;
     private final CommentAssembler commentAssembler;
-
-    @Transactional
-    public CommentCreateResponse create(CommentCreateRequest request) {
-        Comment comment = commentDomainService.create(insightAssembler.toCommentCreateDto(request));
-        return insightAssembler.toCommentCreateResponse(comment);
-    }
 
     // 인사이트의 대표 댓글
     // 답글의 수가 가장 많은 댓글 1개 + 답글 최대 2개

@@ -25,31 +25,6 @@ public class ChallengeController {
         return ApiResponse.ok(challengeApiService.createChallenge(request));
     }
 
-    @PostMapping(value = "/participation")
-    public ApiResponse<ChallengeParticipationResponse> participate(@RequestBody @Valid ChallengeParticipateRequest request) {
-        return ApiResponse.ok(challengeApiService.participate(request));
-    }
-
-    @GetMapping(value = "/participation/check")
-    public ApiResponse<ParticipationCheckResponse> checkParticipation() {
-        return ApiResponse.ok(challengeApiService.checkParticipation());
-    }
-
-    @GetMapping("/participation/progress/insight")
-    public ApiResponse<InsightProgressResponse> getMyParticipationProgress() {
-        return ApiResponse.ok(challengeApiService.getMyParticipationProgress());
-    }
-
-    @GetMapping("/participation/my-week-progress")
-    public ApiResponse<WeekProgressResponse> getMyThisWeekProgress() {
-        return ApiResponse.ok(challengeApiService.getWeekProgress());
-    }
-
-    @GetMapping("/participating")
-    public ApiResponse<ParticipatingChallengeResponse> getParticipatingChallenge() {
-        return ApiResponse.ok(challengeApiService.getParticipatingChallenege());
-    }
-
     @GetMapping("/specified-size")
     public ApiResponse<List<ChallengeInfoResponse>> getSpecifiedNumberOfChallenge(@RequestParam("size") @Min(1) @Max(10) Integer size) {
         return ApiResponse.ok(challengeApiService.getSpecifiedNumberOfChallenge(size));
