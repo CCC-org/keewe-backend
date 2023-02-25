@@ -18,7 +18,9 @@ import java.util.Optional;
 
 import static ccc.keewedomain.persistence.domain.challenge.QChallenge.challenge;
 import static ccc.keewedomain.persistence.domain.challenge.QChallengeParticipation.challengeParticipation;
+import static ccc.keewedomain.persistence.domain.challenge.enums.ChallengeParticipationStatus.CHALLENGING;
 import static ccc.keewedomain.persistence.domain.insight.QInsight.insight;
+import static ccc.keewedomain.persistence.domain.user.QFollow.follow;
 import static ccc.keewedomain.persistence.domain.user.QUser.user;
 
 @Repository
@@ -82,6 +84,23 @@ public class ChallengeParticipationQueryRepository {
                 .where(challengeParticipation.status.ne(ChallengeParticipationStatus.CHALLENGING))
                 .orderBy(challengeParticipation.id.desc())
                 .limit(size)
+                .fetch();
+    }
+
+
+    public List<ChallengeParticipation> findFollowingChallengerParticipations(Challenge targetChallenge, User targetUser) {
+        return queryFactory
+                .select(challengeParticipation)
+                .from(challengeParticipation)
+                .innerJoin(challengeParticipation.challenger, user)
+                .fetchJoin()
+                .leftJoin(user.followees, follow).on(follow.follower.eq(targetUser))
+                .where(challengeParticipation.challenge.eq(targetChallenge))
+                .where(challengeParticipation.status.eq(CHALLENGING))
+                .where(follow.follower.eq(targetUser).or(follow.follower.isNull()))
+                .orderBy(follow.follower.id.asc().nullsLast())
+                .orderBy(challengeParticipation.createdAt.asc())
+                .limit(5)
                 .fetch();
     }
 }

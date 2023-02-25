@@ -111,4 +111,19 @@ public class ChallengeApiService {
 
         return dates;
     }
+
+    @Transactional(readOnly = true)
+    public List<TogetherChallengerResponse> getTogetherChallengers(Long challengeId) {
+        User user = SecurityUtil.getUser();
+        Challenge challenge = challengeDomainService.getByIdOrElseThrow(challengeId);
+        List<ChallengeParticipation> participations = challengeDomainService.findTogetherChallengeParticipations(challenge, user);
+        Map<Long, Long> insightCountPerParticipation = insightDomainService.getInsightCountPerParticipation(participations);
+
+        return participations.stream()
+                .map(participation -> challengeAssembler.toTogetherChallengerResponse(
+                        participation,
+                        insightCountPerParticipation.getOrDefault(participation.getId(), 0L))
+                )
+                .collect(Collectors.toList());
+    }
 }
