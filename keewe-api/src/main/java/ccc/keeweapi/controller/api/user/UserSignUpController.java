@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @Slf4j
 @CrossOrigin(origins = "*", maxAge = 3600)
-public class UserController {
+public class UserSignUpController {
     private final UserApiService userService;
 
     @GetMapping("/kakao")
