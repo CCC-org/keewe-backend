@@ -46,4 +46,9 @@ public class ChallengeParticipationController {
     public ApiResponse<List<TogetherChallengerResponse>> getTogetherChallengers(@PathVariable Long challengeId) {
         return ApiResponse.ok(challengeApiService.getTogetherChallengers(challengeId));
     }
+
+    @GetMapping("/{challengeId}/challenger/count")
+    public ApiResponse<ChallengerCountResponse> getChallengerCount(@PathVariable Long challengeId) {
+        return ApiResponse.ok(challengeApiService.getChallengerCount(challengeId));
+    }
 }

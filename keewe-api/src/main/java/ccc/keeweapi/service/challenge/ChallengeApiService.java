@@ -126,4 +126,10 @@ public class ChallengeApiService {
                 )
                 .collect(Collectors.toList());
     }
+
+    @Transactional(readOnly = true)
+    public ChallengerCountResponse getChallengerCount(Long challengeId) {
+        Challenge challenge = challengeDomainService.getByIdOrElseThrow(challengeId);
+        return challengeAssembler.toChallengerCountResponse(challengeDomainService.countParticipatingUser(challenge));
+    }
 }

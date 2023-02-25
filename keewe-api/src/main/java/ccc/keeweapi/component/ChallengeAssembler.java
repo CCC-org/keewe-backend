@@ -145,4 +145,8 @@ public class ChallengeAssembler {
                 current,
                 participation.getTotalInsightNumber());
     }
+
+    public ChallengerCountResponse toChallengerCountResponse(Long countParticipatingUser) {
+        return ChallengerCountResponse.of(countParticipatingUser);
+    }
 }
