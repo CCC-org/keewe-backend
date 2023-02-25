@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/user/profile")
 @RequiredArgsConstructor
 public class UserRelationController {
+
     private final ProfileApiService profileApiService;
 
     @PostMapping("/follow/{targetId}")

@@ -15,7 +15,7 @@ import static ccc.keewecore.consts.KeeweConsts.LONG_MAX_STRING;
 @RestController
 @RequestMapping("/api/v1/comments")
 @RequiredArgsConstructor
-public class CommentController {
+public class InsightCommentController {
 
     private final CommentApiService commentApiService;
 

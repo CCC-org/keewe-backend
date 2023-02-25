@@ -14,7 +14,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/drawer")
 @RequiredArgsConstructor
-public class DrawerController {
+public class InsightDrawerController {
 
     private final DrawerApiService drawerApiService;
 
