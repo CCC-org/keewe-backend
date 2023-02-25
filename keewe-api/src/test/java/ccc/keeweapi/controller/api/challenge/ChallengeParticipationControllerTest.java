@@ -274,4 +274,34 @@ public class ChallengeParticipationControllerTest extends ApiDocumentationTest {
                         .build()
         )));
     }
+
+    @Test
+    @DisplayName("챌린지 참가중인 인원 조회 API")
+    void get_challenger_count() throws Exception {
+        ChallengerCountResponse response = ChallengerCountResponse.of(1000L);
+
+        when(challengeApiService.getChallengerCount(anyLong())).thenReturn(response);
+
+        ResultActions resultActions = mockMvc.perform(get("/api/v1/challenge/{challengeId}/challenger/count", 1L)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        resultActions.andDo(restDocs.document(resource(
+                ResourceSnippetParameters.builder()
+                        .description("챌린지 참가중인 인원 조회 API 입니다.")
+                        .summary("챌린지 참가중인 인원 조회 API")
+                        .requestHeaders(
+                                headerWithName("Authorization").description("유저의 JWT")
+                        )
+                        .pathParameters(parameterWithName("challengeId").description("챌린지의 ID"))
+                        .responseFields(
+                                fieldWithPath("message").description("요청 결과 메세지"),
+                                fieldWithPath("code").description("결과 코드"),
+                                fieldWithPath("data.challengerNumber").description("참가자의 닉네임")
+                        )
+                        .tag("Challenge")
+                        .build()
+        )));
+    }
 }
