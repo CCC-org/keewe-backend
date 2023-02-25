@@ -13,7 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/reaction")
 @RestController
-public class ReactionController {
+public class InsightReactionController {
+
     private final ReactionApiService reactionApiService;
 
     @PostMapping

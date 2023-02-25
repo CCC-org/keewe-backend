@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/user/profile")
 @RequiredArgsConstructor
 public class UserTitleController {
+
     private final ProfileApiService profileApiService;
 
     @GetMapping("/achieved-title/{userId}")

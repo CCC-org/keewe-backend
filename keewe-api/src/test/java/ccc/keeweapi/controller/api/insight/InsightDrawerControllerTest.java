@@ -27,17 +27,17 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class DrawerControllerTest extends ApiDocumentationTest {
+public class InsightDrawerControllerTest extends ApiDocumentationTest {
 
     @InjectMocks
-    DrawerController drawerController;
+    InsightDrawerController insightDrawerController;
 
     @Mock
     DrawerApiService drawerApiService;
 
     @BeforeEach
     void setup(RestDocumentationContextProvider provider) {
-        super.setup(drawerController, provider);
+        super.setup(insightDrawerController, provider);
     }
 
     @Test

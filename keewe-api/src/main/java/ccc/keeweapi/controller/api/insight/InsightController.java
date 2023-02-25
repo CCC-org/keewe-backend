@@ -48,12 +48,6 @@ public class InsightController {
         return ApiResponse.ok(insightApiService.getInsightAuthorAreaInfo(insightId));
     }
 
-    @PostMapping("/bookmark/{insightId}")
-    @FLogging
-    public ApiResponse<BookmarkToggleResponse> toggleBookmark(@PathVariable Long insightId) {
-        return ApiResponse.ok(insightApiService.toggleInsightBookmark(insightId));
-    }
-
     @GetMapping("/{insightId}/challenge-record")
     public ApiResponse<ChallengeRecordResponse> getChallengeRecord(@PathVariable Long insightId) {
         return ApiResponse.ok(insightApiService.getChallengeRecord(insightId));

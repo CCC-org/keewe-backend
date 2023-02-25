@@ -24,15 +24,16 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class ReactionControllerTest extends ApiDocumentationTest {
+public class InsightReactionControllerTest extends ApiDocumentationTest {
     @InjectMocks
-    ReactionController reactionController;
+    InsightReactionController insightReactionController;
+
     @Mock
     ReactionApiService reactionApiService;
 
     @BeforeEach
     public void setup(RestDocumentationContextProvider provider) {
-        super.setup(reactionController, provider);
+        super.setup(insightReactionController, provider);
     }
 
     @Test

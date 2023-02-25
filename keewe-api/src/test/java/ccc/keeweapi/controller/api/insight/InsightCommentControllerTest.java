@@ -26,17 +26,17 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class CommentControllerTest extends ApiDocumentationTest {
+public class InsightCommentControllerTest extends ApiDocumentationTest {
 
     @InjectMocks
-    CommentController commentController;
+    InsightCommentController insightCommentController;
 
     @Mock
     CommentApiService commentApiService;
 
     @BeforeEach
     void setup(RestDocumentationContextProvider provider) {
-        super.setup(commentController, provider);
+        super.setup(insightCommentController, provider);
     }
 
     private CommentWriterResponse writer1 = CommentWriterResponse.of(1L, "유승훈", "타이틀1", "www.api-keewe.com/images");

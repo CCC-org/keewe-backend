@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 @RequestMapping("/api/v1/user/profile")
 @RequiredArgsConstructor
 public class UserProfileController {
+
     private final ProfileApiService profileApiService;
 
     @PostMapping

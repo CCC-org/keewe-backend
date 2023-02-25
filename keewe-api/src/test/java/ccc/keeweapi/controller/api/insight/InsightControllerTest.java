@@ -258,35 +258,6 @@ public class InsightControllerTest extends ApiDocumentationTest {
     }
 
     @Test
-    @DisplayName("인사이트 북마크 토글 API")
-    void insight_bookmark() throws Exception {
-
-        when(insightApiService.toggleInsightBookmark(anyLong())).thenReturn(
-                BookmarkToggleResponse.of(true)
-        );
-
-        ResultActions resultActions = mockMvc.perform(post("/api/v1/insight/bookmark/{insightId}", 1L)
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
-
-        resultActions.andDo(restDocs.document(resource(
-                ResourceSnippetParameters.builder()
-                        .description("인사이트 북마크 등록/제거 (토글) API 입니다.")
-                        .summary("인사이트 북마크 토글 API")
-                        .requestHeaders(
-                                headerWithName("Authorization").description("유저의 JWT"))
-                        .responseFields(
-                                fieldWithPath("message").description("요청 결과 메세지"),
-                                fieldWithPath("code").description("결과 코드"),
-                                fieldWithPath("data.bookmark").description("북마크 여부 (토글이므로 false, true를 왔다갔다 함)"))
-                        .tag("Insight")
-                        .build()
-        )));
-
-    }
-
-    @Test
     @DisplayName("인사이트의 챌린지 기록 조회 API")
     void insight_challenge_record() throws Exception {
 
