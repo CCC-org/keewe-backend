@@ -38,8 +38,8 @@ public class InsightApiService {
     }
 
     @Transactional
-    public Long delete(Long id) {
-        return insightDomainService.delete(id);
+    public InsightDeleteResponse delete(Long id) {
+        return InsightDeleteResponse.of(insightDomainService.delete(id));
     }
 
     public InsightViewIncrementResponse incrementViewCount(Long insightId) {

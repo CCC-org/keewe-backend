@@ -35,9 +35,8 @@ public class InsightController {
     }
 
     @DeleteMapping("/{insightId}")
-    public ApiResponse<Void> deleteInsight(@PathVariable Long insightId) {
-        insightApiService.delete(insightId);
-        return ApiResponse.ok();
+    public ApiResponse<InsightDeleteResponse> deleteInsight(@PathVariable Long insightId) {
+        return ApiResponse.ok(insightApiService.delete(insightId));
     }
 
     @GetMapping
