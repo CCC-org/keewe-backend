@@ -37,6 +37,11 @@ public class InsightApiService {
         return insightAssembler.toInsightCreateResponse(insight);
     }
 
+    @Transactional
+    public Long delete(Long id) {
+        return insightDomainService.delete(id);
+    }
+
     public InsightViewIncrementResponse incrementViewCount(Long insightId) {
         Long viewCount = insightDomainService.incrementViewCount(insightAssembler.toInsightViewIncrementDto(insightId));
         return insightAssembler.toInsightViewIncrementResponse(viewCount);

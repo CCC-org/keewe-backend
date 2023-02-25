@@ -78,4 +78,7 @@ public class Insight extends BaseTimeEntity {
         return ++view;
     }
 
+    public void delete() {
+        deleted = true;
+    }
 }

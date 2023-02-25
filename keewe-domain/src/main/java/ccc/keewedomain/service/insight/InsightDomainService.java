@@ -72,6 +72,17 @@ public class InsightDomainService {
         return insight;
     }
 
+    public Long delete(Long id) {
+        Insight insight = insightRepository.findByIdWithLockOrElseThrow(id);
+
+        // remove relevant data from cache
+        cInsightViewRepository.deleteById(id);
+        cReactionCountRepository.deleteById(id);
+
+        insight.delete();
+        return id;
+    }
+
     public InsightGetDto getInsight(InsightDetailDto detailDto) {
         Insight entity = getByIdOrElseThrow(detailDto.getInsightId());
         ReactionAggregationGetDto reactionAggregationGetDto = getReactionAggregation(detailDto.getInsightId());

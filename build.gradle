@@ -223,7 +223,4 @@ project(':keewe-api') {
 		description = 'Keewe의 API 문서입니다.'
 		format = 'yaml'
 	}
-
-
-
 }

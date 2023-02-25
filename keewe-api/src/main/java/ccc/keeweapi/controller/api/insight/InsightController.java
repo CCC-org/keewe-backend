@@ -34,6 +34,12 @@ public class InsightController {
         return ApiResponse.ok(insightApiService.getInsight(insightId));
     }
 
+    @DeleteMapping("/{insightId}")
+    public ApiResponse<Void> deleteInsight(@PathVariable Long insightId) {
+        insightApiService.delete(insightId);
+        return ApiResponse.ok();
+    }
+
     @GetMapping
     public ApiResponse<List<InsightGetForHomeResponse>> getInsightsForHome(
             @RequestParam(required = false, defaultValue = KeeweConsts.LONG_MAX_STRING) Long cursor,
