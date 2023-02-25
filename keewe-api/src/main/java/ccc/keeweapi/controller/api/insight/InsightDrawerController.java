@@ -4,32 +4,38 @@ import ccc.keeweapi.dto.ApiResponse;
 import ccc.keeweapi.dto.insight.DrawerCreateRequest;
 import ccc.keeweapi.dto.insight.DrawerCreateResponse;
 import ccc.keeweapi.dto.insight.DrawerResponse;
-import ccc.keeweapi.service.insight.DrawerApiService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
+import ccc.keeweapi.service.insight.command.InsightDrawerCommandApiService;
+import ccc.keeweapi.service.insight.query.InsightDrawerQueryApiService;
 import java.util.List;
+import javax.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/v1/drawer")
 @RequiredArgsConstructor
 public class InsightDrawerController {
 
-    private final DrawerApiService drawerApiService;
+    private final InsightDrawerCommandApiService insightDrawerCommandApiService;
+    private final InsightDrawerQueryApiService insightDrawerQueryApiService;
 
     @PostMapping
     public ApiResponse<DrawerCreateResponse> create(@RequestBody @Valid DrawerCreateRequest request) {
-        return ApiResponse.ok(drawerApiService.create(request));
+        return ApiResponse.ok(insightDrawerCommandApiService.create(request));
     }
 
     @GetMapping
     public ApiResponse<List<DrawerResponse>> getMyDrawers() {
-        return ApiResponse.ok(drawerApiService.getMyDrawers());
+        return ApiResponse.ok(insightDrawerQueryApiService.getMyDrawers());
     }
 
     @GetMapping("/{userId}")
     public ApiResponse<List<DrawerResponse>> getDrawers(@PathVariable Long userId) {
-        return ApiResponse.ok(drawerApiService.getDrawers(userId));
+        return ApiResponse.ok(insightDrawerQueryApiService.getDrawers(userId));
     }
 }

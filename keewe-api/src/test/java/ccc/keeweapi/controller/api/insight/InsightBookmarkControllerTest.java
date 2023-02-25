@@ -10,7 +10,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import ccc.keeweapi.document.utils.ApiDocumentationTest;
 import ccc.keeweapi.dto.insight.BookmarkToggleResponse;
-import ccc.keeweapi.service.insight.InsightApiService;
+import ccc.keeweapi.service.insight.command.InsightCommandApiService;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -28,7 +28,7 @@ public class InsightBookmarkControllerTest extends ApiDocumentationTest {
     InsightBookmarkController insightBookmarkController;
 
     @Mock
-    InsightApiService insightApiService;
+    InsightCommandApiService insightCommandApiService;
 
     @BeforeEach
     void setup(RestDocumentationContextProvider provider) {
@@ -39,7 +39,7 @@ public class InsightBookmarkControllerTest extends ApiDocumentationTest {
     @DisplayName("인사이트 북마크 토글 API")
     void insight_bookmark() throws Exception {
 
-        when(insightApiService.toggleInsightBookmark(anyLong())).thenReturn(
+        when(insightCommandApiService.toggleInsightBookmark(anyLong())).thenReturn(
                 BookmarkToggleResponse.of(true)
         );
 

@@ -1,13 +1,34 @@
 package ccc.keeweapi.controller.api.insight;
 
+import static com.epages.restdocs.apispec.ResourceDocumentation.headerWithName;
+import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName;
+import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.when;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import ccc.keeweapi.document.utils.ApiDocumentationTest;
-import ccc.keeweapi.dto.insight.*;
-import ccc.keeweapi.service.insight.InsightApiService;
+import ccc.keeweapi.dto.insight.ChallengeRecordResponse;
+import ccc.keeweapi.dto.insight.InsightAuthorAreaResponse;
+import ccc.keeweapi.dto.insight.InsightCreateResponse;
+import ccc.keeweapi.dto.insight.InsightGetForHomeResponse;
+import ccc.keeweapi.dto.insight.InsightGetResponse;
+import ccc.keeweapi.dto.insight.InsightMyPageResponse;
+import ccc.keeweapi.dto.insight.InsightViewIncrementResponse;
+import ccc.keeweapi.dto.insight.ReactionAggregationResponse;
+import ccc.keeweapi.service.insight.command.InsightCommandApiService;
+import ccc.keeweapi.service.insight.query.InsightQueryApiService;
 import ccc.keewedomain.dto.insight.InsightWriterDto;
 import ccc.keewedomain.persistence.domain.common.Interest;
 import ccc.keewedomain.persistence.domain.common.Link;
 import ccc.keewedomain.persistence.repository.utils.CursorPageable;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
+import java.time.LocalDateTime;
+import java.util.List;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -19,25 +40,16 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.test.web.servlet.ResultActions;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
-import static com.epages.restdocs.apispec.ResourceDocumentation.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.when;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 public class InsightControllerTest extends ApiDocumentationTest {
 
     @InjectMocks
     InsightController insightController;
 
     @Mock
-    InsightApiService insightApiService;
+    InsightQueryApiService insightQueryApiService;
+
+    @Mock
+    InsightCommandApiService insightCommandApiService;
 
     @BeforeEach
     public void setup(RestDocumentationContextProvider provider) {
@@ -59,7 +71,7 @@ public class InsightControllerTest extends ApiDocumentationTest {
                 .put("participation", participation)
                 .put("drawerId", drawerId);
 
-        when(insightApiService.create(any())).thenReturn(InsightCreateResponse.of(1L));
+        when(insightCommandApiService.create(any())).thenReturn(InsightCreateResponse.of(1L));
 
         ResultActions resultActions = mockMvc.perform(post("/api/v1/insight")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
@@ -92,7 +104,7 @@ public class InsightControllerTest extends ApiDocumentationTest {
     void get_insight_test() throws Exception {
         Long insightId = 1L;
 
-        when(insightApiService.getInsight(insightId)).thenReturn(InsightGetResponse.of(
+        when(insightQueryApiService.getInsight(insightId)).thenReturn(InsightGetResponse.of(
                 insightId,
                 "인사이트 내용입니다. 즐거운 개발 되세요!",
                 Link.of("www.keewe.com"),
@@ -136,7 +148,7 @@ public class InsightControllerTest extends ApiDocumentationTest {
         long cursor = Long.MAX_VALUE;
         long limit = 10L;
 
-        when(insightApiService.getInsightsForHome(any(), any())).thenReturn(List.of(InsightGetForHomeResponse.of(
+        when(insightQueryApiService.getInsightsForHome(any(), any())).thenReturn(List.of(InsightGetForHomeResponse.of(
                 insightId,
                 "인사이트 내용입니다. 즐거운 개발 되세요!",
                 true,
@@ -191,7 +203,7 @@ public class InsightControllerTest extends ApiDocumentationTest {
     @DisplayName("인사이트 조회수 증가 API")
     void increment_insight_views() throws Exception {
 
-        when(insightApiService.incrementViewCount(anyLong())).thenReturn(InsightViewIncrementResponse.of(123L));
+        when(insightCommandApiService.incrementViewCount(anyLong())).thenReturn(InsightViewIncrementResponse.of(123L));
 
         ResultActions resultActions = mockMvc.perform(post("/api/v1/insight/view/{insightId}", 1L)
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
@@ -217,7 +229,7 @@ public class InsightControllerTest extends ApiDocumentationTest {
     @DisplayName("인사이트 작성자 프로필 조회 API")
     void insight_author_get() throws Exception {
 
-        when(insightApiService.getInsightAuthorAreaInfo(anyLong())).thenReturn(
+        when(insightQueryApiService.getInsightAuthorAreaInfo(anyLong())).thenReturn(
                 InsightAuthorAreaResponse.of(1L,
                         "nickname",
                         "고급 기록가",
@@ -261,7 +273,7 @@ public class InsightControllerTest extends ApiDocumentationTest {
     @DisplayName("인사이트의 챌린지 기록 조회 API")
     void insight_challenge_record() throws Exception {
 
-        when(insightApiService.getChallengeRecord(anyLong())).thenReturn(
+        when(insightQueryApiService.getChallengeRecord(anyLong())).thenReturn(
                 ChallengeRecordResponse.of(1L, "챌린지 이름", 1L, 12L)
         );
 
@@ -325,7 +337,7 @@ public class InsightControllerTest extends ApiDocumentationTest {
 
 
 
-        when(insightApiService.getInsightsForMyPage(any(), any(), any()))
+        when(insightQueryApiService.getInsightsForMyPage(any(), any(), any()))
                 .thenReturn(List.of(insight1, insight2, insight3));
 
         ResultActions resultActions = mockMvc.perform(get("/api/v1/insight/my-page/{userId}", targetUserId)
