@@ -3,7 +3,7 @@ package ccc.keeweapi.controller.api.insight;
 import ccc.keeweapi.dto.ApiResponse;
 import ccc.keeweapi.dto.insight.ReactRequest;
 import ccc.keeweapi.dto.insight.ReactResponse;
-import ccc.keeweapi.service.insight.ReactionApiService;
+import ccc.keeweapi.service.insight.command.InsightReactionCommandApiService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,10 +15,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class InsightReactionController {
 
-    private final ReactionApiService reactionApiService;
+    private final InsightReactionCommandApiService insightReactionCommandApiService;
 
     @PostMapping
     public ApiResponse<ReactResponse> react(@RequestBody ReactRequest request) {
-        return ApiResponse.ok(reactionApiService.react(request));
+        return ApiResponse.ok(insightReactionCommandApiService.react(request));
     }
 }
