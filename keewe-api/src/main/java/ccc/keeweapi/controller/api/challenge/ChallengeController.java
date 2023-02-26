@@ -29,29 +29,12 @@ public class ChallengeController {
         return ApiResponse.ok(challengeApiService.createChallenge(request));
     }
 
-    @GetMapping("/specified-size")
-    public ApiResponse<List<ChallengeInfoResponse>> getSpecifiedNumberOfChallenge(@RequestParam("size") @Min(1) @Max(10) Integer size) {
-        return ApiResponse.ok(challengeApiService.getSpecifiedNumberOfChallenge(size));
-    }
-
-    @GetMapping("/history/specifed-size")
-    public ApiResponse<ChallengeHistoryListResponse> getSpecifiedNumberOfChallengeHistory(
-            @RequestParam(value = "size", defaultValue = KeeweConsts.LONG_MAX_STRING) @Min(1) Long size
-    ) {
-        return ApiResponse.ok(challengeApiService.getHistoryOfChallenge(size));
-    }
-
-    @GetMapping("/history") //TODO: path 일관성 확보 필요
+    @GetMapping("/history")
     public ApiResponse<ChallengeHistoryListResponse> getHistoryOfChallenge(
             @RequestParam(value = "size", defaultValue = KeeweConsts.LONG_MAX_STRING) @Min(1) Long size
     ) {
         return ApiResponse.ok(challengeApiService.getHistoryOfChallenge(size));
     }
-
-//    @GetMapping("/history")
-//    public ApiResponse<?> paginateTerminatedChallenges() {
-//
-//    }
 
     @GetMapping
     public ApiResponse<List<OpenedChallengeResponse>> paginateChallenges(
@@ -59,6 +42,12 @@ public class ChallengeController {
             @RequestParam Long limit
     ) {
         return ApiResponse.ok(challengeQueryApiService.paginate(CursorPageable.of(cursor, limit)));
+    }
+
+    @GetMapping("/specified-size")
+    @Deprecated
+    public ApiResponse<List<ChallengeInfoResponse>> getSpecifiedNumberOfChallenge(@RequestParam("size") @Min(1) @Max(10) Integer size) {
+        return ApiResponse.ok(challengeApiService.getSpecifiedNumberOfChallenge(size));
     }
 
     @GetMapping("/detail/{challengeId}")
