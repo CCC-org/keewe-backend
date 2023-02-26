@@ -58,7 +58,7 @@ public class InsightBookmarkControllerTest extends ApiDocumentationTest {
                                 fieldWithPath("message").description("요청 결과 메세지"),
                                 fieldWithPath("code").description("결과 코드"),
                                 fieldWithPath("data.bookmark").description("북마크 여부 (토글이므로 false, true를 왔다갔다 함)"))
-                        .tag("Insight")
+                        .tag("InsightBookmark")
                         .build()
         )));
     }

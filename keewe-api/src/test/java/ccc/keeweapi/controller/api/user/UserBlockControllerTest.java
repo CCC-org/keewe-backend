@@ -64,7 +64,7 @@ public class UserBlockControllerTest extends ApiDocumentationTest {
                                 fieldWithPath("message").description("요청 결과 메세지"),
                                 fieldWithPath("code").description("결과 코드"),
                                 fieldWithPath("data.blockedUserId").description("차단된 유저의 ID"))
-                        .tag("Profile")
+                        .tag("UserBlock")
                         .build()
         )));
     }
@@ -93,7 +93,7 @@ public class UserBlockControllerTest extends ApiDocumentationTest {
                                 fieldWithPath("message").description("요청 결과 메세지"),
                                 fieldWithPath("code").description("결과 코드"),
                                 fieldWithPath("data.unblockedUserId").description("차단 해제된 유저의 ID"))
-                        .tag("Profile")
+                        .tag("UserBlock")
                         .build()
         )));
     }
@@ -129,7 +129,7 @@ public class UserBlockControllerTest extends ApiDocumentationTest {
                                 fieldWithPath("data.blockedUsers[].title").description("대표 타이틀"),
                                 fieldWithPath("data.blockedUsers[].imageURL").description("프로필 이미지 URL")
                         )
-                        .tag("Profile")
+                        .tag("UserBlock")
                         .build()
         )));
     }

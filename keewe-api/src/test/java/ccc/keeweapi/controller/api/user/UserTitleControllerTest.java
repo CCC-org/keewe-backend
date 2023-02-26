@@ -73,7 +73,7 @@ public class UserTitleControllerTest extends ApiDocumentationTest {
                                 fieldWithPath("data.achievedTitles[].name").description("타이틀의 이름"),
                                 fieldWithPath("data.achievedTitles[].introduction").description("타이틀 소개"),
                                 fieldWithPath("data.achievedTitles[].achievedDate").description("타이틀 획득 시각"))
-                        .tag("MyPage")
+                        .tag("UserTitle")
                         .build()
         )));
     }
@@ -113,7 +113,7 @@ public class UserTitleControllerTest extends ApiDocumentationTest {
                                 fieldWithPath("data.achievedTitles[].name").description("타이틀의 이름"),
                                 fieldWithPath("data.achievedTitles[].introduction").description("타이틀 소개"),
                                 fieldWithPath("data.achievedTitles[].achievedDate").description("타이틀 획득 시각"))
-                        .tag("MyPage")
+                        .tag("UserTitle")
                         .build()
         )));
     }

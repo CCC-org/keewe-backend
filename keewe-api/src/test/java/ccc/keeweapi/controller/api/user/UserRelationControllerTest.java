@@ -65,7 +65,7 @@ public class UserRelationControllerTest extends ApiDocumentationTest {
                                 fieldWithPath("message").description("요청 결과 메세지"),
                                 fieldWithPath("code").description("결과 코드"),
                                 fieldWithPath("data.following").description("팔로잉 토글 결과 (true: 팔로잉 상태, false: 언팔로잉 상태)"))
-                        .tag("Profile")
+                        .tag("UserRelation")
                         .build()
         )));
     }
@@ -104,7 +104,7 @@ public class UserRelationControllerTest extends ApiDocumentationTest {
                                 parameterWithName("cursor").description("페이징을 위한 커서 yyyy-MM-dd'T'hh:mm:ss.SSS"),
                                 parameterWithName("limit").description("한번에 조회할 개수"))
                         .responseFields(followUserListResponseFields())
-                        .tag("MyPage")
+                        .tag("UserRelation")
                         .build()
         )));
     }
@@ -143,7 +143,7 @@ public class UserRelationControllerTest extends ApiDocumentationTest {
                                 parameterWithName("cursor").description("페이징을 위한 커서 yyyy-MM-dd'T'hh:mm:ss.SSS"),
                                 parameterWithName("limit").description("한번에 조회할 개수"))
                         .responseFields(followUserListResponseFields())
-                        .tag("MyPage")
+                        .tag("UserRelation")
                         .build()
         )));
     }
