@@ -32,7 +32,7 @@ public class FLoggingAspect {
         Instant startTm = Instant.now();
         String uuid = UUID.randomUUID().toString();
         mapThreadLocal.set(Map.of(KEY_START, startTm, KEY_UUID, uuid));
-        log.debug("{} :: [{}] Function start {}", uuid, joinPoint.getSignature().getName(), joinPoint.getArgs());
+        log.info("{} :: [{}] Function start {}", uuid, joinPoint.getSignature().getName(), joinPoint.getArgs());
     }
 
     @AfterReturning(pointcut = "@annotation(ccc.keewecore.aop.annotations.FLogging)", returning = "returnValue")
@@ -42,7 +42,7 @@ public class FLoggingAspect {
         Map<String, Object> map = mapThreadLocal.get();
         if (map != null) {
             mapThreadLocal.remove();
-            log.debug("{} :: [{}] Function end, Elapsed time = {}ms, Return = {}"
+            log.info("{} :: [{}] Function end, Elapsed time = {}ms, Return = {}"
                     , map.get(KEY_UUID)
                     , joinPoint.getSignature().getName()
                     , Duration.between((Instant) map.get(KEY_START), endTm).toMillis(), returnValue);

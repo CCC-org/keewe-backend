@@ -4,6 +4,7 @@ import ccc.keeweapi.dto.ApiResponse;
 import ccc.keeweapi.dto.challenge.*;
 import ccc.keeweapi.service.challenge.ChallengeApiService;
 import ccc.keeweapi.service.challenge.query.ChallengeQueryApiService;
+import ccc.keewecore.aop.annotations.FLogging;
 import ccc.keewecore.consts.KeeweConsts;
 import ccc.keewedomain.persistence.repository.utils.CursorPageable;
 import lombok.RequiredArgsConstructor;
@@ -25,11 +26,13 @@ public class ChallengeController {
     private final ChallengeQueryApiService challengeQueryApiService;
 
     @PostMapping
+    @FLogging
     public ApiResponse<ChallengeCreateResponse> create(@RequestBody @Valid ChallengeCreateRequest request) {
         return ApiResponse.ok(challengeApiService.createChallenge(request));
     }
 
     @GetMapping("/history")
+    @FLogging
     public ApiResponse<ChallengeHistoryListResponse> getHistoryOfChallenge(
             @RequestParam(value = "size", defaultValue = KeeweConsts.LONG_MAX_STRING) @Min(1) Long size
     ) {
@@ -37,6 +40,7 @@ public class ChallengeController {
     }
 
     @GetMapping
+    @FLogging
     public ApiResponse<List<OpenedChallengeResponse>> paginateChallenges(
             @RequestParam(required = false, defaultValue = KeeweConsts.LONG_MAX_STRING) Long cursor,
             @RequestParam Long limit
@@ -46,11 +50,13 @@ public class ChallengeController {
 
     @GetMapping("/specified-size")
     @Deprecated
+    @FLogging
     public ApiResponse<List<ChallengeInfoResponse>> getSpecifiedNumberOfChallenge(@RequestParam("size") @Min(1) @Max(10) Integer size) {
         return ApiResponse.ok(challengeApiService.getSpecifiedNumberOfChallenge(size));
     }
 
     @GetMapping("/detail/{challengeId}")
+    @FLogging
     public ApiResponse<ChallengeDetailResponse> getChallengeDetail(@PathVariable Long challengeId) {
         return ApiResponse.ok(challengeApiService.getChallengeDetail(challengeId));
     }

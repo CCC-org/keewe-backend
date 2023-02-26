@@ -1,6 +1,7 @@
 package ccc.keeweapi.config.security.jwt;
 
 import ccc.keeweapi.exception.KeeweAuthException;
+import ccc.keeweapi.utils.SecurityUtil;
 import ccc.keewecore.consts.KeeweRtnConsts;
 import ccc.keewecore.exception.KeeweException;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -33,7 +34,6 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
-        log.info("[doFilterInternal] request uri {}", request.getRequestURL());
         String jwt = jwtUtils.extractToken(request);
         try {
             if(!StringUtils.hasText(jwt))
@@ -41,6 +41,7 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
 
             if(jwtUtils.validateTokenOrElseThrow(jwt)) {
                 SecurityContextHolder.getContext().setAuthentication(jwtUtils.getAuthentication(jwt));
+                log.info("[doFilterInternal] Request URI = {}, userId = {}", request.getRequestURL(), SecurityUtil.getUserId());
                 chain.doFilter(request, response);
             } else {
                 throw new KeeweAuthException(KeeweRtnConsts.ERR401);
@@ -52,7 +53,5 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
         } catch (ExpiredJwtException ex) {
             authenticationEntryPoint.commence(request, response, new KeeweAuthException(KeeweRtnConsts.ERR402));
         }
-
     }
-
 }

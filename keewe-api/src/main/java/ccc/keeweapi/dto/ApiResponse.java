@@ -4,9 +4,11 @@ import ccc.keewecore.consts.KeeweRtnConsts;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.ToString;
 
 @Getter
 @AllArgsConstructor
+@ToString
 public class ApiResponse<T> {
     @JsonIgnore
     private final KeeweRtnConsts status;
