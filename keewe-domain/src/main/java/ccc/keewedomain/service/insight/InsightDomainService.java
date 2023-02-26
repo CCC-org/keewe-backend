@@ -10,6 +10,7 @@ import ccc.keewedomain.cache.repository.insight.CReactionCountRepository;
 import ccc.keewedomain.domain.insight.ReactionAggregation;
 import ccc.keewedomain.dto.insight.BookmarkToggleDto;
 import ccc.keewedomain.dto.insight.InsightCreateDto;
+import ccc.keewedomain.dto.insight.InsightDeleteDto;
 import ccc.keewedomain.dto.insight.InsightDetailDto;
 import ccc.keewedomain.dto.insight.InsightGetDto;
 import ccc.keewedomain.dto.insight.InsightGetForHomeDto;
