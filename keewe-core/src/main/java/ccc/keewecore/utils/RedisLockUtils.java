@@ -26,7 +26,7 @@ public class RedisLockUtils {
     }
 
     private void lock(String key, Long expirationSeconds) {
-        final boolean result = redisTemplate.opsForValue().setIfAbsent(key, 1L, Duration.ofSeconds(expirationSeconds));
+        final boolean result = redisTemplate.opsForValue().setIfAbsent(key, "1", Duration.ofSeconds(expirationSeconds));
         if(!result) {
             throw new KeeweException(KeeweRtnConsts.ERR507);
         }
