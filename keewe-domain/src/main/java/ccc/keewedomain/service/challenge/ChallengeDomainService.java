@@ -17,6 +17,7 @@ import ccc.keewedomain.service.user.UserDomainService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -91,6 +92,11 @@ public class ChallengeDomainService {
 
     public List<ChallengeParticipation> getFinishedParticipation(User user, Long size) {
         return challengeParticipationQueryRepository.findFinishedParticipation(user, size);
+    }
+
+    @Transactional(readOnly = true)
+    public List<ChallengeParticipation> findTogetherChallengeParticipations(Challenge challenge, User user) {
+        return challengeParticipationQueryRepository.findFollowingChallengerParticipations(challenge, user);
     }
 
     private void exitCurrentChallengeIfExist(User challenger) {

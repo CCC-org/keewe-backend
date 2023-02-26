@@ -1,21 +1,14 @@
 package ccc.keeweapi.controller.api.challenge;
 
 import ccc.keeweapi.dto.ApiResponse;
-import ccc.keeweapi.dto.challenge.ChallengeParticipateRequest;
-import ccc.keeweapi.dto.challenge.ChallengeParticipationResponse;
-import ccc.keeweapi.dto.challenge.InsightProgressResponse;
-import ccc.keeweapi.dto.challenge.ParticipatingChallengeResponse;
-import ccc.keeweapi.dto.challenge.ParticipationCheckResponse;
-import ccc.keeweapi.dto.challenge.WeekProgressResponse;
+import ccc.keeweapi.dto.challenge.*;
 import ccc.keeweapi.service.challenge.ChallengeApiService;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/challenge")
@@ -47,5 +40,15 @@ public class ChallengeParticipationController {
     @GetMapping("/participation/my-week-progress")
     public ApiResponse<WeekProgressResponse> getMyThisWeekProgress() {
         return ApiResponse.ok(challengeApiService.getWeekProgress());
+    }
+
+    @GetMapping("/{challengeId}/challengers")
+    public ApiResponse<List<TogetherChallengerResponse>> getTogetherChallengers(@PathVariable Long challengeId) {
+        return ApiResponse.ok(challengeApiService.getTogetherChallengers(challengeId));
+    }
+
+    @GetMapping("/{challengeId}/challengers/count")
+    public ApiResponse<ChallengerCountResponse> getChallengerCount(@PathVariable Long challengeId) {
+        return ApiResponse.ok(challengeApiService.getChallengerCount(challengeId));
     }
 }

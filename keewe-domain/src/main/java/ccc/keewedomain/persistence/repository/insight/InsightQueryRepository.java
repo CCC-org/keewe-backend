@@ -53,6 +53,15 @@ public class InsightQueryRepository {
                 .fetchFirst();
     }
 
+    public Map<Long, Long> countValidPerParticipation(List<ChallengeParticipation> participations) {
+        return queryFactory.select(insight.id.count())
+                .from(insight)
+                .where(insight.challengeParticipation.in(participations))
+                .where(insight.valid.isTrue())
+                .transform(GroupBy.groupBy(challengeParticipation.id).as(insight.count()));
+    }
+
+
     public List<Insight> findForHome(User user, CursorPageable<Long> cPage, Boolean follow) {
         BooleanExpression followFilter = Expressions.asBoolean(true).isTrue();
         if (follow != null && follow)

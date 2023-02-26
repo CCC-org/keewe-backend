@@ -6,6 +6,7 @@ import ccc.keewedomain.dto.challenge.ChallengeCreateDto;
 import ccc.keewedomain.dto.challenge.ChallengeParticipateDto;
 import ccc.keewedomain.persistence.domain.challenge.Challenge;
 import ccc.keewedomain.persistence.domain.challenge.ChallengeParticipation;
+import ccc.keewedomain.persistence.domain.user.User;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -134,5 +135,18 @@ public class ChallengeAssembler {
                 challenge.getIntroduction(),
                 insightCount
         );
+    }
+
+    public TogetherChallengerResponse toTogetherChallengerResponse(ChallengeParticipation participation, Long current) {
+        User challenger = participation.getChallenger();
+        return TogetherChallengerResponse.of(
+                challenger.getNickname(),
+                challenger.getProfilePhotoURL(),
+                current,
+                participation.getTotalInsightNumber());
+    }
+
+    public ChallengerCountResponse toChallengerCountResponse(Long countParticipatingUser) {
+        return ChallengerCountResponse.of(countParticipatingUser);
     }
 }

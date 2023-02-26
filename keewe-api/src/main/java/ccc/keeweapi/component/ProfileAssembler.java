@@ -48,13 +48,12 @@ public class ProfileAssembler {
         );
     }
 
-    //TODO 프로필 사진, 자기소개 수정
     public ProfileMyPageResponse toProfileMyPageResponse(User user, Boolean isFollowing, Long followerCount, Long followingCount, String challengeName) {
         return ProfileMyPageResponse.of(
                 user.getNickname(),
                 user.getProfilePhotoURL(),
                 user.getRepTitleName(),
-                "introduction",
+                user.getIntroduction(),
                 user.getInterests().stream()
                         .map(Interest::getName)
                         .collect(Collectors.toList()),

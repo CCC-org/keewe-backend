@@ -198,6 +198,10 @@ public class InsightDomainService {
         return insightQueryRepository.countByChallenge(challenge);
     }
 
+    public Map<Long, Long> getInsightCountPerParticipation(List<ChallengeParticipation> participations) {
+        return insightQueryRepository.countValidPerParticipation(participations);
+    }
+
     /*****************************************************************
      ********************** private 메소드 영역 분리 *********************
      *****************************************************************/
