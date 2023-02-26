@@ -142,6 +142,13 @@ public class InsightAssembler {
         );
     }
 
+    public InsightDeleteDto toInsightDeleteDto(Long insightId) {
+        return InsightDeleteDto.of(
+                insightId,
+                SecurityUtil.getUserId()
+        );
+    }
+
     private boolean isAuthor(Insight insight) {
         return insight.getWriter().getId() == SecurityUtil.getUserId();
     }

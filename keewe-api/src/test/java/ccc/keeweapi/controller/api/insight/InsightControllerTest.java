@@ -151,6 +151,9 @@ public class InsightControllerTest extends ApiDocumentationTest {
                         .summary("인사이트 삭제 API")
                         .requestHeaders(
                                 headerWithName("Authorization").description("유저의 JWT"))
+                        .requestParameters(
+                                parameterWithName("insightId").description("삭제 인사이트 ID")
+                        )
                         .responseFields(
                                 fieldWithPath("message").description("요청 결과 메세지"),
                                 fieldWithPath("code").description("결과 코드"),

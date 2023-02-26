@@ -37,7 +37,10 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
+
+import static ccc.keewecore.consts.KeeweRtnConsts.ERR447;
 
 @Service
 @RequiredArgsConstructor
@@ -72,15 +75,20 @@ public class InsightDomainService {
         return insight;
     }
 
-    public Long delete(Long id) {
-        Insight insight = insightRepository.findByIdWithLockOrElseThrow(id);
+    public Long delete(InsightDeleteDto dto) {
+        Long writerId = dto.getWriterId();
+        Long insightId = dto.getInsightId();
+        Insight insight = insightRepository.findByIdWithLockOrElseThrow(insightId);
+
+        if (!Objects.equals(writerId, insight.getWriter().getId()))
+            throw new KeeweException(ERR447);
 
         // remove relevant data from cache
-        cInsightViewRepository.deleteById(id);
-        cReactionCountRepository.deleteById(id);
+        cInsightViewRepository.deleteById(insightId);
+        cReactionCountRepository.deleteById(insightId);
 
         insight.delete();
-        return id;
+        return insightId;
     }
 
     public InsightGetDto getInsight(InsightDetailDto detailDto) {

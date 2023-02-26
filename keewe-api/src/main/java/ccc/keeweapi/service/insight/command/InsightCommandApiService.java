@@ -36,6 +36,6 @@ public class InsightCommandApiService {
 
     @Transactional
     public InsightDeleteResponse delete(Long id) {
-        return InsightDeleteResponse.of(insightDomainService.delete(id));
+        return InsightDeleteResponse.of(insightDomainService.delete(insightAssembler.toInsightDeleteDto(id)));
     }
 }

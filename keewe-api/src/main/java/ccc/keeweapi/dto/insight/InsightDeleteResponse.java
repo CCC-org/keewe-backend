@@ -10,8 +10,8 @@ public class InsightDeleteResponse {
     private Long insightId;
 
     public static InsightDeleteResponse of(Long insightId) {
-        InsightDeleteResponse entity = new InsightDeleteResponse();
-        entity.insightId = insightId;
-        return entity;
+        InsightDeleteResponse response = new InsightDeleteResponse();
+        response.insightId = insightId;
+        return response;
     }
 }
