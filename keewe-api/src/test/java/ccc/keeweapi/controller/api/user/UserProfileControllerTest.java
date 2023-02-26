@@ -88,7 +88,7 @@ public class UserProfileControllerTest extends ApiDocumentationTest {
                                 fieldWithPath("data.userId").description("유저의 ID"),
                                 fieldWithPath("data.nickname").description("등록된 닉네임"),
                                 fieldWithPath("data.interests[].name").description("등록한 관심사 이름"))
-                        .tag("Profile")
+                        .tag("UserProfile")
                         .build()
         )));
     }
@@ -136,7 +136,7 @@ public class UserProfileControllerTest extends ApiDocumentationTest {
                                 fieldWithPath("data.followerCount").description("팔로워 수"),
                                 fieldWithPath("data.followingCount").description("팔로우 하는 수"),
                                 fieldWithPath("data.challengeName").description("진행중인 챌린지 이름"))
-                        .tag("MyPage")
+                        .tag("UserProfile")
                         .build()
         )));
     }
@@ -186,7 +186,7 @@ public class UserProfileControllerTest extends ApiDocumentationTest {
                                 fieldWithPath("message").description("요청 결과 메세지"),
                                 fieldWithPath("code").description("결과 코드"),
                                 fieldWithPath("data.imageURL").description("변경된 프로필 이미지 URL"))
-                        .tag("Profile")
+                        .tag("UserProfile")
                         .build()
         )));
     }

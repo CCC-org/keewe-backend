@@ -89,7 +89,7 @@ public class InsightCommentControllerTest extends ApiDocumentationTest {
                                 fieldWithPath("message").description("요청 결과 메세지"),
                                 fieldWithPath("code").description("결과 코드"),
                                 fieldWithPath("data.commentId").description("생성된 댓글(답글) ID"))
-                        .tag("Insight")
+                        .tag("InsightComment")
                         .build()
         )));
     }
@@ -142,7 +142,7 @@ public class InsightCommentControllerTest extends ApiDocumentationTest {
                                 fieldWithPath("data.comments[].replies[].writer.name").description("닉네임"),
                                 fieldWithPath("data.comments[].replies[].writer.title").description("타이틀"),
                                 fieldWithPath("data.comments[].replies[].writer.image").description("프로필 사진"))
-                        .tag("Insight")
+                        .tag("InsightComment")
                         .build()
         )));
     }
@@ -201,7 +201,7 @@ public class InsightCommentControllerTest extends ApiDocumentationTest {
                                 fieldWithPath("data[].replies[].writer.name").description("닉네임"),
                                 fieldWithPath("data[].replies[].writer.title").description("타이틀"),
                                 fieldWithPath("data[].replies[].writer.image").description("프로필 사진"))
-                        .tag("Insight")
+                        .tag("InsightComment")
                         .build()
         )));
     }
@@ -248,7 +248,7 @@ public class InsightCommentControllerTest extends ApiDocumentationTest {
                                 fieldWithPath("data[].writer.name").description("닉네임"),
                                 fieldWithPath("data[].writer.title").description("타이틀"),
                                 fieldWithPath("data[].writer.image").description("프로필 사진"))
-                        .tag("Insight")
+                        .tag("InsightComment")
                         .build()
         )));
     }

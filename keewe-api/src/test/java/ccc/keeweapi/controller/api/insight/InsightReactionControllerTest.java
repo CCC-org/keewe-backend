@@ -68,7 +68,7 @@ public class InsightReactionControllerTest extends ApiDocumentationTest {
                                 fieldWithPath("data.insightId").description("인사이트 ID"),
                                 fieldWithPath("data.reactionType").description("반응 종류"),
                                 fieldWithPath("data.count").description("현재 반응 count"))
-                        .tag("Insight")
+                        .tag("InsightReaction")
                         .build()
         )));
     }

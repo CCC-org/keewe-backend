@@ -83,7 +83,7 @@ public class ChallengeParticipationControllerTest extends ApiDocumentationTest {
                                 fieldWithPath("data.insightPerWeek").description("주마다 올릴 인사이트 개수"),
                                 fieldWithPath("data.duration").description("참가 기간 단위: 주"),
                                 fieldWithPath("data.endDate").description("챌린지 참가 종료일 yyyy-mm-dd"))
-                        .tag("Challenge")
+                        .tag("ChallengeParticipation")
                         .build()
         )));
     }
@@ -112,7 +112,7 @@ public class ChallengeParticipationControllerTest extends ApiDocumentationTest {
                                 fieldWithPath("code").description("결과 코드"),
                                 fieldWithPath("data.participation").description("챌린지 참여 여부")
                         )
-                        .tag("Challenge")
+                        .tag("ChallengeParticipation")
                         .build()
         )));
     }
@@ -146,7 +146,7 @@ public class ChallengeParticipationControllerTest extends ApiDocumentationTest {
                                 fieldWithPath("data.current").description("지금까지 기록한 인사이트의 수"),
                                 fieldWithPath("data.total").description("총 기록해야 하는 인사이트의 수")
                         )
-                        .tag("Challenge")
+                        .tag("ChallengeParticipation")
                         .build()
         )));
     }
@@ -193,7 +193,7 @@ public class ChallengeParticipationControllerTest extends ApiDocumentationTest {
                                 fieldWithPath("data.startDate").description("이번 주의 챌린지 시작일"),
                                 fieldWithPath("data.dayProgresses[].check").description("해당 날짜에 인사이트를 작성했는지 true or false")
                         )
-                        .tag("Challenge")
+                        .tag("ChallengeParticipation")
                         .build()
         )));
     }
@@ -232,7 +232,7 @@ public class ChallengeParticipationControllerTest extends ApiDocumentationTest {
                                 fieldWithPath("data.interest").description("관심사"),
                                 fieldWithPath("data.startDate").description("챌린지에 참가한 날짜")
                         )
-                        .tag("Challenge")
+                        .tag("ChallengeParticipation")
                         .build()
         )));
     }
@@ -270,7 +270,7 @@ public class ChallengeParticipationControllerTest extends ApiDocumentationTest {
                                 fieldWithPath("data[].currentRecord").description("현재 기록한 개수"),
                                 fieldWithPath("data[].goalRecord").description("전체 기록해야 하는 개수")
                         )
-                        .tag("Challenge")
+                        .tag("ChallengeParticipation")
                         .build()
         )));
     }
@@ -300,7 +300,7 @@ public class ChallengeParticipationControllerTest extends ApiDocumentationTest {
                                 fieldWithPath("code").description("결과 코드"),
                                 fieldWithPath("data.challengerCount").description("참가자의 닉네임")
                         )
-                        .tag("Challenge")
+                        .tag("ChallengeParticipation")
                         .build()
         )));
     }

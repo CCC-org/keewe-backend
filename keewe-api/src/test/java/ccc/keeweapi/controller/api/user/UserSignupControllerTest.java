@@ -61,7 +61,7 @@ public class UserSignupControllerTest extends ApiDocumentationTest {
                                         fieldWithPath("data.userId").description("생성된 유저 ID"),
                                         fieldWithPath("data.alreadySignedUp").description("기존 회원가입 여부"),
                                         fieldWithPath("data.accessToken").description("발급된 유저의 JWT"))
-                                .tag("SignUp")
+                                .tag("UserSignUp")
                                 .build()
                 )));
     }
@@ -102,7 +102,7 @@ public class UserSignupControllerTest extends ApiDocumentationTest {
                                         fieldWithPath("data.userId").description("생성된 유저 ID"),
                                         fieldWithPath("data.alreadySignedUp").description("기존 회원가입 여부"),
                                         fieldWithPath("data.accessToken").description("발급된 유저의 JWT"))
-                                .tag("SignUp")
+                                .tag("UserSignUp")
                                 .build()
                 )));
     }
@@ -134,7 +134,7 @@ public class UserSignupControllerTest extends ApiDocumentationTest {
                                         fieldWithPath("data.userId").description("생성된 유저 ID"),
                                         fieldWithPath("data.alreadySignedUp").description("기존 회원가입 여부"),
                                         fieldWithPath("data.accessToken").description("발급된 유저의 JWT"))
-                                .tag("SignUp")
+                                .tag("UserSignUp")
                                 .build()
                 )));
     }

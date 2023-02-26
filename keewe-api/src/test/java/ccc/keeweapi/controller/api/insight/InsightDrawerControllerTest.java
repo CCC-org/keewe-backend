@@ -72,7 +72,7 @@ public class InsightDrawerControllerTest extends ApiDocumentationTest {
                                 fieldWithPath("message").description("요청 결과 메세지"),
                                 fieldWithPath("code").description("결과 코드"),
                                 fieldWithPath("data.drawerId").description("생성된 서랍의 ID"))
-                        .tag("Insight")
+                        .tag("InsightDrawer")
                         .build()
         )));
     }
@@ -104,7 +104,7 @@ public class InsightDrawerControllerTest extends ApiDocumentationTest {
                                 fieldWithPath("code").description("결과 코드"),
                                 fieldWithPath("data.[].id").description("서랍의 ID"),
                                 fieldWithPath("data.[].name").description("서랍의 이름"))
-                        .tag("Insight")
+                        .tag("InsightDrawer")
                         .build()
         )));
     }
@@ -139,7 +139,7 @@ public class InsightDrawerControllerTest extends ApiDocumentationTest {
                                 fieldWithPath("code").description("결과 코드"),
                                 fieldWithPath("data.[].id").description("서랍의 ID"),
                                 fieldWithPath("data.[].name").description("서랍의 이름"))
-                        .tag("Insight")
+                        .tag("InsightDrawer")
                         .build()
         )));
     }
