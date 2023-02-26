@@ -1,12 +1,9 @@
 name: 키위봇 🤖
 
 on:
-  push:
-    branches: main
   pull_request:
     branches:
     - main
-    - test/prcheck
 
 jobs:
   test:
