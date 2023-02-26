@@ -8,6 +8,9 @@ spring:
     activate:
       on-profile: local
 
+spring.servlet.multipart.maxFileSize: 50MB
+spring.servlet.multipart.maxRequestSize: 50MB
+
 ---
 spring:
   config:
