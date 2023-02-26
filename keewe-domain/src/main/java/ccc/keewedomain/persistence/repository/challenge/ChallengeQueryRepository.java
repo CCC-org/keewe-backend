@@ -26,7 +26,9 @@ public class ChallengeQueryRepository {
     public List<Challenge> paginate(CursorPageable<Long> cPage) {
         return queryFactory.select(challenge)
                 .from(challenge)
-                .where(challenge.deleted.isFalse().and(challenge.id.lt(cPage.getCursor())))
+                .where(challenge.deleted.isFalse()
+                        .and(challenge.id.lt(cPage.getCursor()))
+                )
                 .orderBy(challenge.id.desc())
                 .limit(cPage.getLimit())
                 .fetch();
