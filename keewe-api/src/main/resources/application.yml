@@ -7,15 +7,20 @@ spring:
   config:
     activate:
       on-profile: local
-
-spring.servlet.multipart.maxFileSize: 50MB
-spring.servlet.multipart.maxRequestSize: 50MB
+  servlet:
+    multipart:
+      maxFileSize: 50MB
+      maxRequestSize: 50MB
 
 ---
 spring:
   config:
     activate:
       on-profile: dev
+  servlet:
+    multipart:
+      maxFileSize: 50MB
+      maxRequestSize: 50MB
 
 server:
   tomcat:

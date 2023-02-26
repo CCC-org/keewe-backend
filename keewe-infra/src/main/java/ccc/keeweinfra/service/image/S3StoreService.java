@@ -19,6 +19,7 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.util.Objects;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -41,6 +42,9 @@ public class S3StoreService implements StoreService {
 
     @Override
     public String upload(MultipartFile multipartFile, Integer width, Integer height) {
+        if (!checkFileFormat(Objects.requireNonNull(multipartFile.getOriginalFilename())))
+            throw new KeeweException(KeeweRtnConsts.ERR449);
+
         try {
             BufferedImage bufferedImage = ImageIO.read(multipartFile.getInputStream());
             bufferedImage = resizeImage(bufferedImage, width, height);
@@ -95,5 +99,9 @@ public class S3StoreService implements StoreService {
                 Scalr.crop(originalImage, (originalImage.getWidth() - imageLength) / 2,
                         (originalImage.getHeight() - imageLength) / 2, imageLength, imageLength);
         return Scalr.resize(scaledImage, Scalr.Method.AUTOMATIC, Scalr.Mode.FIT_EXACT, targetWidth, targetHeight, Scalr.OP_ANTIALIAS);
+    }
+
+    private boolean checkFileFormat(String fileName) {
+        return fileName.endsWith(".jpeg") || fileName.endsWith(".jpg") || fileName.endsWith(".png");
     }
 }
