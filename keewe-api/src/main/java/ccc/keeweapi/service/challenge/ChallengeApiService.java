@@ -8,9 +8,11 @@ import ccc.keeweapi.dto.challenge.ChallengeHistoryListResponse;
 import ccc.keeweapi.dto.challenge.ChallengeInfoResponse;
 import ccc.keeweapi.dto.challenge.ChallengeParticipateRequest;
 import ccc.keeweapi.dto.challenge.ChallengeParticipationResponse;
+import ccc.keeweapi.dto.challenge.ChallengerCountResponse;
 import ccc.keeweapi.dto.challenge.InsightProgressResponse;
 import ccc.keeweapi.dto.challenge.ParticipatingChallengeResponse;
 import ccc.keeweapi.dto.challenge.ParticipationCheckResponse;
+import ccc.keeweapi.dto.challenge.TogetherChallengerResponse;
 import ccc.keeweapi.dto.challenge.WeekProgressResponse;
 import ccc.keeweapi.utils.SecurityUtil;
 import ccc.keewedomain.persistence.domain.challenge.Challenge;
@@ -130,8 +132,8 @@ public class ChallengeApiService {
     @Transactional(readOnly = true)
     public List<TogetherChallengerResponse> getTogetherChallengers(Long challengeId) {
         User user = SecurityUtil.getUser();
-        Challenge challenge = challengeDomainService.getByIdOrElseThrow(challengeId);
-        List<ChallengeParticipation> participations = challengeDomainService.findTogetherChallengeParticipations(challenge, user);
+        Challenge challenge = challengeQueryDomainService.getByIdOrElseThrow(challengeId);
+        List<ChallengeParticipation> participations = challengeParticipateQueryDomainService.findTogetherChallengeParticipations(challenge, user);
         Map<Long, Long> insightCountPerParticipation = insightDomainService.getInsightCountPerParticipation(participations);
 
         return participations.stream()
@@ -144,7 +146,7 @@ public class ChallengeApiService {
 
     @Transactional(readOnly = true)
     public ChallengerCountResponse getChallengerCount(Long challengeId) {
-        Challenge challenge = challengeDomainService.getByIdOrElseThrow(challengeId);
-        return challengeAssembler.toChallengerCountResponse(challengeDomainService.countParticipatingUser(challenge));
+        Challenge challenge = challengeQueryDomainService.getByIdOrElseThrow(challengeId);
+        return challengeAssembler.toChallengerCountResponse(challengeParticipateQueryDomainService.countParticipatingUser(challenge));
     }
 }
