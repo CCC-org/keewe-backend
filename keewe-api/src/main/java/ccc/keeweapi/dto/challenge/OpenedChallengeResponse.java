@@ -10,5 +10,4 @@ public class OpenedChallengeResponse {
     private String challengeCategory;
     private String challengeName;
     private String startDate;
-    private String endDate;
 }

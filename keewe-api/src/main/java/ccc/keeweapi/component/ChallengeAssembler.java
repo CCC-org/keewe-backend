@@ -141,8 +141,7 @@ public class ChallengeAssembler {
                 challenge.getId(),
                 challenge.getInterest().getName(),
                 challenge.getName(),
-                challenge.getCreatedAt().toLocalDate().toString(),
-                challenge.getCreatedAt().toLocalDate().toString() // FIXME
+                challenge.getCreatedAt().toLocalDate().toString()
         );
     }
 }
