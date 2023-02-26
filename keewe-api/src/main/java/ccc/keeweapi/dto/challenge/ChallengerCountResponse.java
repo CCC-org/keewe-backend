@@ -6,5 +6,5 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor(staticName = "of")
 public class ChallengerCountResponse {
-    private Long challengerNumber;
+    private Long challengerCount;
 }

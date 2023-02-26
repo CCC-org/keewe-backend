@@ -248,7 +248,7 @@ public class ChallengeParticipationControllerTest extends ApiDocumentationTest {
 
         when(challengeApiService.getTogetherChallengers(anyLong())).thenReturn(response);
 
-        ResultActions resultActions = mockMvc.perform(get("/api/v1/challenge/{challengeId}/challenger", 1L)
+        ResultActions resultActions = mockMvc.perform(get("/api/v1/challenge/{challengeId}/challengers", 1L)
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
@@ -267,8 +267,8 @@ public class ChallengeParticipationControllerTest extends ApiDocumentationTest {
                                 fieldWithPath("data").description("없는 경우 비어 있음. 최대 5개 조회"),
                                 fieldWithPath("data[].nickname").description("참가자의 닉네임"),
                                 fieldWithPath("data[].imageURL").description("참가자의 프로필 이미지 URL"),
-                                fieldWithPath("data[].current").description("현재 기록한 개수"),
-                                fieldWithPath("data[].total").description("전체 기록해야 하는 개수")
+                                fieldWithPath("data[].currentRecord").description("현재 기록한 개수"),
+                                fieldWithPath("data[].goalRecord").description("전체 기록해야 하는 개수")
                         )
                         .tag("Challenge")
                         .build()
@@ -282,7 +282,7 @@ public class ChallengeParticipationControllerTest extends ApiDocumentationTest {
 
         when(challengeApiService.getChallengerCount(anyLong())).thenReturn(response);
 
-        ResultActions resultActions = mockMvc.perform(get("/api/v1/challenge/{challengeId}/challenger/count", 1L)
+        ResultActions resultActions = mockMvc.perform(get("/api/v1/challenge/{challengeId}/challengers/count", 1L)
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
@@ -298,7 +298,7 @@ public class ChallengeParticipationControllerTest extends ApiDocumentationTest {
                         .responseFields(
                                 fieldWithPath("message").description("요청 결과 메세지"),
                                 fieldWithPath("code").description("결과 코드"),
-                                fieldWithPath("data.challengerNumber").description("참가자의 닉네임")
+                                fieldWithPath("data.challengerCount").description("참가자의 닉네임")
                         )
                         .tag("Challenge")
                         .build()

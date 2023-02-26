@@ -8,6 +8,6 @@ import lombok.Getter;
 public class TogetherChallengerResponse {
     private String nickname;
     private String imageURL;
-    private long current;
-    private long total;
+    private long currentRecord;
+    private long goalRecord;
 }
