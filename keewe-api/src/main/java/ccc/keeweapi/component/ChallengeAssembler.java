@@ -137,6 +137,15 @@ public class ChallengeAssembler {
         );
     }
 
+    public OpenedChallengeResponse toOpenedChallengeResponse(Challenge challenge) {
+        return OpenedChallengeResponse.of(
+                challenge.getId(),
+                challenge.getInterest().getName(),
+                challenge.getName(),
+                challenge.getCreatedAt().toLocalDate().toString()
+        );
+    }
+
     public TogetherChallengerResponse toTogetherChallengerResponse(ChallengeParticipation participation, Long current) {
         User challenger = participation.getChallenger();
         return TogetherChallengerResponse.of(
