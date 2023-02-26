@@ -1,7 +1,9 @@
 package ccc.keewedomain.service.challenge;
 
 import ccc.keewecore.consts.KeeweRtnConsts;
+import ccc.keewecore.consts.LockType;
 import ccc.keewecore.exception.KeeweException;
+import ccc.keewecore.utils.RedisLockUtils;
 import ccc.keewedomain.dto.challenge.ChallengeCreateDto;
 import ccc.keewedomain.dto.challenge.ChallengeParticipateDto;
 import ccc.keewedomain.persistence.domain.challenge.Challenge;
@@ -32,6 +34,7 @@ public class ChallengeDomainService {
     private final ChallengeParticipationRepository challengeParticipationRepository;
     private final ChallengeParticipationQueryRepository challengeParticipationQueryRepository;
     private final UserDomainService userDomainService;
+    private final RedisLockUtils redisLockUtils;
 
     public Challenge save(ChallengeCreateDto dto) {
         User writer = userDomainService.getUserByIdOrElseThrow(dto.getUserId());
@@ -40,10 +43,12 @@ public class ChallengeDomainService {
     }
 
     public ChallengeParticipation participate(ChallengeParticipateDto dto) {
-        User challenger = userDomainService.getUserByIdOrElseThrow(dto.getChallengerId());
-        exitCurrentChallengeIfExist(challenger);
-        Challenge challenge = getByIdOrElseThrow(dto.getChallengeId());
-        return challenge.participate(challenger, dto.getMyTopic(), dto.getInsightPerWeek(), dto.getDuration());
+        return redisLockUtils.executeWithLock(LockType.CHALLENGE_PARTICIPATE, dto.getChallengerId().toString(), 3L, () -> {
+            User challenger = userDomainService.getUserByIdOrElseThrow(dto.getChallengerId());
+            exitCurrentChallengeIfExist(challenger);
+            Challenge challenge = this.getByIdOrElseThrow(dto.getChallengeId());
+            return challenge.participate(challenger, dto.getMyTopic(), dto.getInsightPerWeek(), dto.getDuration());
+        });
     }
 
     public Challenge getByIdOrElseThrow(Long id) {
