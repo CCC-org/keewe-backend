@@ -43,7 +43,7 @@ public class ChallengeDomainService {
     }
 
     public ChallengeParticipation participate(ChallengeParticipateDto dto) {
-        return redisLockUtils.runWithLock(LockType.CHALLENGE_PARTICIPATE, dto.getChallengerId().toString(), 3L, () -> {
+        return redisLockUtils.executeWithLock(LockType.CHALLENGE_PARTICIPATE, dto.getChallengerId().toString(), 3L, () -> {
             User challenger = userDomainService.getUserByIdOrElseThrow(dto.getChallengerId());
             exitCurrentChallengeIfExist(challenger);
             Challenge challenge = this.getByIdOrElseThrow(dto.getChallengeId());

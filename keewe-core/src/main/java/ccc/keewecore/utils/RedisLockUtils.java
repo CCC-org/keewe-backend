@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 public class RedisLockUtils {
     private final RedisTemplate redisTemplate;
 
-    public <T> T runWithLock(LockType lockType, String key, Long expirationSeconds, Supplier<T> supplier) {
+    public <T> T executeWithLock(LockType lockType, String key, Long expirationSeconds, Supplier<T> supplier) {
         try {
             lock(String.format(lockType.getKeyFormat(), key), expirationSeconds);
             return supplier.get();
