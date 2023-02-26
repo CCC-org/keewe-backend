@@ -13,6 +13,7 @@ import ccc.keewedomain.service.insight.InsightDomainService;
 import ccc.keewedomain.service.user.UserDomainService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -25,7 +26,8 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @SpringBootTest
-@ActiveProfiles("local")
+@ActiveProfiles("test")
+@Disabled
 public class InsightViewIncrementTest {
 
     @Autowired

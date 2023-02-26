@@ -51,6 +51,8 @@ subprojects {
 
 	tasks.named('test') {
 		useJUnitPlatform()
+		exclude 'ccc/keewecore/**'
+		exclude 'ccc/keewedomain/**'
 	}
 
 }

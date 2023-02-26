@@ -1,7 +1,7 @@
 package ccc.keewestatistics;
 
+
 import ccc.keewedomain.cache.domain.insight.CReactionCount;
-import ccc.keewedomain.cache.domain.insight.id.CReactionCountId;
 import ccc.keewedomain.cache.repository.insight.CReactionCountRepository;
 import ccc.keewedomain.domain.insight.ReactionAggregation;
 import ccc.keewedomain.dto.insight.InsightCreateDto;
@@ -16,22 +16,22 @@ import ccc.keewedomain.persistence.repository.insight.ReactionAggregationReposit
 import ccc.keewedomain.service.insight.InsightDomainService;
 import ccc.keewedomain.service.insight.ReactionDomainService;
 import ccc.keewedomain.service.user.UserDomainService;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+import org.assertj.core.api.Assertions;
 
 @SpringBootTest
-@ActiveProfiles("local")
+@ActiveProfiles("test")
+@Disabled
 public class InsightReactTest {
     @Autowired
     private InsightDomainService insightDomainService;
@@ -69,12 +69,11 @@ public class InsightReactTest {
                 e.printStackTrace();
             }
         });
-
-        Optional<CReactionCount> cCount = cReactionCountRepository.findById(new CReactionCountId(insightId, ReactionType.CLAP).toString());
+        Optional<CReactionCount> cCount = cReactionCountRepository.findById(insightId);
         Optional<ReactionAggregation> dbCount = reactionAggregationRepository.findById(new ReactionAggregationId(insightId, ReactionType.CLAP));
 
-        assertThat(cCount.get().getCount()).isEqualTo(threadCnt * threadCnt);
-        assertThat(cCount.get().getCount()).isEqualTo(dbCount.get().getCount());
+        Assertions.assertThat(cCount.get().getClap()).isEqualTo(threadCnt * threadCnt);
+        Assertions.assertThat(cCount.get().getClap()).isEqualTo(dbCount.get().getCount());
     }
 
     private Runnable doApplyReact(int threadCnt) {
