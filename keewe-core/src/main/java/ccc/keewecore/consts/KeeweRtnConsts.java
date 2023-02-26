@@ -38,6 +38,7 @@ public enum KeeweRtnConsts {
     ERR444(KeeweRtnGrp.Validation, 444, "서랍의 주인이 아니에요."),
     ERR445(KeeweRtnGrp.Validation, 445, "인사이트를 찾을 수 없어요."),
     ERR446(KeeweRtnGrp.Validation, 446, "자기 자신을 팔로잉 할 수 없어요."),
+    ERR447(KeeweRtnGrp.Validation, 447, "인사이트 작성자만 삭제 가능해요."),
 
     ERR450(KeeweRtnGrp.Validation, 450, "이미 차단한 유저에요."),
     ERR451(KeeweRtnGrp.Validation, 451, "자신을 차단할 수 없어요."),

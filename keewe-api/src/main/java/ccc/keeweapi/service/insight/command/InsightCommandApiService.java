@@ -1,10 +1,7 @@
 package ccc.keeweapi.service.insight.command;
 
 import ccc.keeweapi.component.InsightAssembler;
-import ccc.keeweapi.dto.insight.BookmarkToggleResponse;
-import ccc.keeweapi.dto.insight.InsightCreateRequest;
-import ccc.keeweapi.dto.insight.InsightCreateResponse;
-import ccc.keeweapi.dto.insight.InsightViewIncrementResponse;
+import ccc.keeweapi.dto.insight.*;
 import ccc.keeweapi.utils.annotations.TitleEventPublish;
 import ccc.keewecore.consts.TitleCategory;
 import ccc.keewedomain.persistence.domain.insight.Insight;
@@ -35,5 +32,10 @@ public class InsightCommandApiService {
     public BookmarkToggleResponse toggleInsightBookmark(Long insightId) {
         boolean isBookmark = insightDomainService.toggleInsightBookmark(insightAssembler.toBookmarkToggleDto(insightId));
         return insightAssembler.toBookmarkToggleResponse(isBookmark);
+    }
+
+    @Transactional
+    public InsightDeleteResponse delete(Long id) {
+        return InsightDeleteResponse.of(insightDomainService.delete(insightAssembler.toInsightDeleteDto(id)));
     }
 }

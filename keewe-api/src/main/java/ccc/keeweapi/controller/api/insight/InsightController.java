@@ -1,13 +1,7 @@
 package ccc.keeweapi.controller.api.insight;
 
 import ccc.keeweapi.dto.ApiResponse;
-import ccc.keeweapi.dto.insight.ChallengeRecordResponse;
-import ccc.keeweapi.dto.insight.InsightAuthorAreaResponse;
-import ccc.keeweapi.dto.insight.InsightCreateRequest;
-import ccc.keeweapi.dto.insight.InsightCreateResponse;
-import ccc.keeweapi.dto.insight.InsightGetForHomeResponse;
-import ccc.keeweapi.dto.insight.InsightGetResponse;
-import ccc.keeweapi.dto.insight.InsightMyPageResponse;
+import ccc.keeweapi.dto.insight.*;
 import ccc.keeweapi.service.insight.command.InsightCommandApiService;
 import ccc.keeweapi.service.insight.query.InsightQueryApiService;
 import ccc.keewecore.consts.KeeweConsts;
@@ -15,13 +9,7 @@ import ccc.keewedomain.persistence.repository.utils.CursorPageable;
 import java.util.List;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/insight")
@@ -44,6 +32,11 @@ public class InsightController {
     @GetMapping("/{insightId}")
     public ApiResponse<InsightGetResponse> getInsight(@PathVariable Long insightId) {
         return ApiResponse.ok(insightQueryApiService.getInsight(insightId));
+    }
+
+    @DeleteMapping("/{insightId}")
+    public ApiResponse<InsightDeleteResponse> deleteInsight(@PathVariable Long insightId) {
+        return ApiResponse.ok(insightCommandApiService.delete(insightId));
     }
 
     @GetMapping

@@ -6,20 +6,12 @@ import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import ccc.keeweapi.document.utils.ApiDocumentationTest;
-import ccc.keeweapi.dto.insight.ChallengeRecordResponse;
-import ccc.keeweapi.dto.insight.InsightAuthorAreaResponse;
-import ccc.keeweapi.dto.insight.InsightCreateResponse;
-import ccc.keeweapi.dto.insight.InsightGetForHomeResponse;
-import ccc.keeweapi.dto.insight.InsightGetResponse;
-import ccc.keeweapi.dto.insight.InsightMyPageResponse;
-import ccc.keeweapi.dto.insight.InsightViewIncrementResponse;
-import ccc.keeweapi.dto.insight.ReactionAggregationResponse;
+import ccc.keeweapi.dto.insight.*;
 import ccc.keeweapi.service.insight.command.InsightCommandApiService;
 import ccc.keeweapi.service.insight.query.InsightQueryApiService;
 import ccc.keewedomain.dto.insight.InsightWriterDto;
@@ -136,6 +128,36 @@ public class InsightControllerTest extends ApiDocumentationTest {
                                 fieldWithPath("data.reaction.fire").description("인사이트 불 반응 수"),
                                 fieldWithPath("data.reaction.eyes").description("인사이트 눈 반응 수"),
                                 fieldWithPath("data.bookmark").description("인사이트 북마크 여부"))
+                        .tag("Insight")
+                        .build()
+        )));
+    }
+
+    @Test
+    @DisplayName("인사이트 삭제 API")
+    void delete_insight_test() throws Exception {
+        Long insightId = 1L;
+
+        when(insightCommandApiService.delete(insightId))
+                .thenReturn(InsightDeleteResponse.of(insightId));
+
+        ResultActions resultActions = mockMvc.perform(delete("/api/v1/insight/{insightId}", insightId)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT))
+                .andExpect(status().isOk());
+
+        resultActions.andDo(restDocs.document(resource(
+                ResourceSnippetParameters.builder()
+                        .description("인사이트 삭제 API 입니다.")
+                        .summary("인사이트 삭제 API")
+                        .requestHeaders(
+                                headerWithName("Authorization").description("유저의 JWT"))
+                        .requestParameters(
+                                parameterWithName("insightId").description("삭제 인사이트 ID")
+                        )
+                        .responseFields(
+                                fieldWithPath("message").description("요청 결과 메세지"),
+                                fieldWithPath("code").description("결과 코드"),
+                                fieldWithPath("data.insightId").description("삭제 인사이트 ID"))
                         .tag("Insight")
                         .build()
         )));
