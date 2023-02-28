@@ -1,7 +1,6 @@
-package ccc.keewedomain.domain.insight;
+package ccc.keewedomain.persistence.domain.insight;
 
 import ccc.keewedomain.persistence.domain.common.BaseTimeEntity;
-import ccc.keewedomain.persistence.domain.insight.Insight;
 import ccc.keewedomain.persistence.domain.insight.enums.ReactionType;
 import ccc.keewedomain.persistence.domain.insight.id.ReactionAggregationId;
 import lombok.AccessLevel;

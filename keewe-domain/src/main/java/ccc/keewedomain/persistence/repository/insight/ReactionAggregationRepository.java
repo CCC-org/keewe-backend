@@ -2,7 +2,7 @@ package ccc.keewedomain.persistence.repository.insight;
 
 import ccc.keewecore.consts.KeeweRtnConsts;
 import ccc.keewecore.exception.KeeweException;
-import ccc.keewedomain.domain.insight.ReactionAggregation;
+import ccc.keewedomain.persistence.domain.insight.ReactionAggregation;
 import ccc.keewedomain.dto.insight.ReactionAggregationGetDto;
 import ccc.keewedomain.persistence.domain.insight.enums.ReactionType;
 import ccc.keewedomain.persistence.domain.insight.id.ReactionAggregationId;

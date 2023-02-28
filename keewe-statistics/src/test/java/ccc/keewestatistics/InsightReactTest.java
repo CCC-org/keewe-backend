@@ -3,7 +3,7 @@ package ccc.keewestatistics;
 
 import ccc.keewedomain.cache.domain.insight.CReactionCount;
 import ccc.keewedomain.cache.repository.insight.CReactionCountRepository;
-import ccc.keewedomain.domain.insight.ReactionAggregation;
+import ccc.keewedomain.persistence.domain.insight.ReactionAggregation;
 import ccc.keewedomain.dto.insight.InsightCreateDto;
 import ccc.keewedomain.dto.insight.ReactionIncrementDto;
 import ccc.keewedomain.dto.user.UserSignUpDto;

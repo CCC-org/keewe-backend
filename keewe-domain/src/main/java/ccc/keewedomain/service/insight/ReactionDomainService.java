@@ -5,7 +5,7 @@ import ccc.keewecore.consts.KeeweRtnConsts;
 import ccc.keewecore.exception.KeeweException;
 import ccc.keewedomain.cache.domain.insight.CReactionCount;
 import ccc.keewedomain.cache.repository.insight.CReactionCountRepository;
-import ccc.keewedomain.domain.insight.ReactionAggregation;
+import ccc.keewedomain.persistence.domain.insight.ReactionAggregation;
 import ccc.keewedomain.dto.insight.ReactionAggregationGetDto;
 import ccc.keewedomain.dto.insight.ReactionDto;
 import ccc.keewedomain.dto.insight.ReactionIncrementDto;
