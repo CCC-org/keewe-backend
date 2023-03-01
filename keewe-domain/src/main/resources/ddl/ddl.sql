@@ -64,8 +64,8 @@ CREATE TABLE IF NOT EXISTS `block`
 
 CREATE TABLE IF NOT EXISTS `favorite_interests`
 (
-    user_id      BIGINT(20)      NOT NULL,
-    interest_name     VARCHAR(255)    NOT NULL,
+    user_id         BIGINT(20)      NOT NULL,
+    interest_name   VARCHAR(255)    NOT NULL,
 
     FOREIGN KEY (user_id) REFERENCES `user`(user_id),
     CONSTRAINT `favorite_activities_constraint` UNIQUE (user_id, interest_name)
@@ -100,8 +100,8 @@ CREATE TABLE IF NOT EXISTS `challenge`
 (
     challenge_id    BIGINT          NOT NULL    AUTO_INCREMENT,
     writer_id       BIGINT          NOT NULL,
-    interest_name   VARCHAR(8)    NOT NULL,
-    name            VARCHAR(25)    NOT NULL,
+    interest_name   VARCHAR(8)      NOT NULL,
+    name            VARCHAR(25)     NOT NULL,
     introduction    VARCHAR(150)    NOT NULL,
     deleted         BIT             NOT NULL,
     created_at      DATETIME(6)     NOT NULL,
@@ -116,7 +116,7 @@ CREATE TABLE IF NOT EXISTS `challenge_participation`
     challenge_participation_id  BIGINT          NOT NULL    AUTO_INCREMENT,
     challenger_id               BIGINT          NOT NULL,
     challenge_id                BIGINT          NOT NULL,
-    my_topic                    VARCHAR(25)    NOT NULL,
+    my_topic                    VARCHAR(25)     NOT NULL,
     insight_per_week            INT             NOT NULL,
     duration                    INT             NOT NULL,
     deleted                     BIT             NOT NULL,
@@ -160,7 +160,7 @@ CREATE TABLE IF NOT EXISTS `insight`
     url                         VARCHAR(2000)   NOT NULL,
     deleted                     BIT             NOT NULL,
     valid                       BIT             NOT NULL,
-    view                        BIGINT          NOT NULL   DEFAULT  0,
+    view                        BIGINT          NOT NULL    DEFAULT  0,
     created_at                  DATETIME(6)     NOT NULL,
     updated_at                  DATETIME(6)     NOT NULL,
 
@@ -177,20 +177,23 @@ CREATE TABLE IF NOT EXISTS `reaction`
     insight_id          BIGINT      NOT NULL,
     reactor_id          BIGINT      NOT NULL,
     reaction_type       VARCHAR(15) NOT NULL,
-    created_at          DATETIME(6)     NOT NULL,
-    updated_at          DATETIME(6)     NOT NULL,
+    created_at          DATETIME(6) NOT NULL,
+    updated_at          DATETIME(6) NOT NULL,
 
+    FOREIGN KEY (insight_id) REFERENCES `insight`(insight_id),
+    FOREIGN KEY (reaction_id) REFERENCES `user`(user_id),
     PRIMARY KEY (reaction_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS `reaction_aggregation`
 (
-    insight_id          BIGINT      NOT NULL ,
-    reaction_type       VARCHAR(15) NOT NULL,
-    count               BIGINT      NOT NULL  DEFAULT 0,
+    insight_id          BIGINT          NOT NULL,
+    reaction_type       VARCHAR(15)     NOT NULL,
+    count               BIGINT          NOT NULL  DEFAULT 0,
     created_at          DATETIME(6)     NOT NULL,
     updated_at          DATETIME(6)     NOT NULL,
 
+    FOREIGN KEY (insight_id) REFERENCES `insight`(insight_id),
     PRIMARY KEY (insight_id, reaction_type)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -234,7 +237,10 @@ CREATE TABLE IF NOT EXISTS `bookmark` (
     insight_id          BIGINT          NOT NULL,
     created_at          DATETIME(6)     NOT NULL,
     updated_at          DATETIME(6)     NOT NULL,
-    PRIMARY KEY(user_id, insight_id)
+
+    FOREIGN KEY (user_id) REFERENCES `user`(user_id),
+    FOREIGN KEY (insight_id) REFERENCES `insight`(insight_id),
+    PRIMARY KEY (user_id, insight_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
@@ -249,7 +255,7 @@ CREATE TABLE IF NOT EXISTS `report`
     created_at          DATETIME(6)     NOT NULL,
     updated_at          DATETIME(6)     NOT NULL,
 
-    PRIMARY KEY(report_id),
-    FOREIGN KEY (reporter_id) REFERENCES  `user`(user_id),
+    PRIMARY KEY (report_id),
+    FOREIGN KEY (reporter_id) REFERENCES `user`(user_id),
     FOREIGN KEY (insight_id) REFERENCES `insight`(insight_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
