@@ -52,4 +52,8 @@ public class Comment extends BaseTimeEntity {
 
         return comment;
     }
+
+    public void delete() {
+        deleted = true;
+    }
 }

@@ -3,6 +3,7 @@ package ccc.keewedomain.service.insight;
 import ccc.keewecore.consts.KeeweRtnConsts;
 import ccc.keewecore.exception.KeeweException;
 import ccc.keewedomain.dto.insight.CommentCreateDto;
+import ccc.keewedomain.dto.insight.CommentDeleteDto;
 import ccc.keewedomain.persistence.domain.insight.Comment;
 import ccc.keewedomain.persistence.domain.insight.Insight;
 import ccc.keewedomain.persistence.domain.user.User;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -37,6 +39,18 @@ public class CommentDomainService {
 
         Comment comment = Comment.of(insight, writer, parent, dto.getContent());
         return commentRepository.save(comment);
+    }
+
+    public Long delete(CommentDeleteDto dto) {
+        Comment comment = commentRepository.findById(dto.getCommentId()).orElseThrow(() -> {
+            throw new KeeweException(KeeweRtnConsts.ERR442);
+        });
+
+        if (!Objects.equals(comment.getWriter().getId(), dto.getUserId()))
+            throw new KeeweException(KeeweRtnConsts.ERR448);
+
+        comment.delete();
+        return comment.getId();
     }
 
     private Optional<Comment> findByIdAndInsightId(Long id, Long insightId) {

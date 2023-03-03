@@ -149,6 +149,17 @@ public class InsightAssembler {
         );
     }
 
+    public CommentDeleteDto toCommentDeleteDto(Long commentId) {
+        return CommentDeleteDto.of(
+                SecurityUtil.getUserId(),
+                commentId
+        );
+    }
+
+    public CommentDeleteResponse toCommentDeleteResponse(Long commentId) {
+        return CommentDeleteResponse.of(commentId);
+    }
+
     private boolean isAuthor(Insight insight) {
         return insight.getWriter().getId() == SecurityUtil.getUserId();
     }

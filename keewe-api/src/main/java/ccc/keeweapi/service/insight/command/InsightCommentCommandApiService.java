@@ -3,6 +3,8 @@ package ccc.keeweapi.service.insight.command;
 import ccc.keeweapi.component.InsightAssembler;
 import ccc.keeweapi.dto.insight.CommentCreateRequest;
 import ccc.keeweapi.dto.insight.CommentCreateResponse;
+import ccc.keeweapi.dto.insight.CommentDeleteRequest;
+import ccc.keeweapi.dto.insight.CommentDeleteResponse;
 import ccc.keewedomain.persistence.domain.insight.Comment;
 import ccc.keewedomain.service.insight.CommentDomainService;
 import lombok.RequiredArgsConstructor;
@@ -20,5 +22,11 @@ public class InsightCommentCommandApiService {
     public CommentCreateResponse create(CommentCreateRequest request) {
         Comment comment = commentDomainService.create(insightAssembler.toCommentCreateDto(request));
         return insightAssembler.toCommentCreateResponse(comment);
+    }
+
+    @Transactional
+    public CommentDeleteResponse delete(CommentDeleteRequest request) {
+        return insightAssembler.toCommentDeleteResponse(
+                commentDomainService.delete(insightAssembler.toCommentDeleteDto(request.getCommentId())));
     }
 }
