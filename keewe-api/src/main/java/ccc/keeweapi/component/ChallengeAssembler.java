@@ -137,12 +137,13 @@ public class ChallengeAssembler {
         );
     }
 
-    public OpenedChallengeResponse toOpenedChallengeResponse(Challenge challenge) {
+    public OpenedChallengeResponse toOpenedChallengeResponse(Challenge challenge, Long insightCount) {
         return OpenedChallengeResponse.of(
                 challenge.getId(),
                 challenge.getInterest().getName(),
+                challenge.getIntroduction(),
                 challenge.getName(),
-                challenge.getCreatedAt().toLocalDate().toString()
+                insightCount
         );
     }
 
