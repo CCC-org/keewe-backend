@@ -31,14 +31,6 @@ public class ChallengeController {
         return ApiResponse.ok(challengeApiService.createChallenge(request));
     }
 
-    @GetMapping("/history")
-    @FLogging
-    public ApiResponse<ChallengeHistoryListResponse> getHistoryOfChallenge(
-            @RequestParam(value = "size", defaultValue = KeeweConsts.LONG_MAX_STRING) @Min(1) Long size
-    ) {
-        return ApiResponse.ok(challengeApiService.getHistoryOfChallenge(size));
-    }
-
     @GetMapping
     @FLogging
     public ApiResponse<List<OpenedChallengeResponse>> paginateChallenges(
