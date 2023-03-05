@@ -8,6 +8,8 @@ import lombok.Getter;
 public class ChallengeDetailResponse {
     private Long challengeId;
     private String challengeName;
+    private String challengeCategory;
     private String challengeIntroduction;
     private Long insightCount;
+    private String createdAt;
 }

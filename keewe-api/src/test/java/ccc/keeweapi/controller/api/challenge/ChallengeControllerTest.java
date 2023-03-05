@@ -154,7 +154,7 @@ public class ChallengeControllerTest extends ApiDocumentationTest {
     @DisplayName("챌린지 상세 조회 API")
     void get_challenge_detail() throws Exception {
         long challengeId = 1L;
-        ChallengeDetailResponse response = ChallengeDetailResponse.of(challengeId, "챌린지 이름", "챌린지 설명~~", 1000L);
+        ChallengeDetailResponse response = ChallengeDetailResponse.of(challengeId, "챌린지 이름", "개발", "챌린지 설명~~", 1000L, "2019-01-01");
 
         when(challengeApiService.getChallengeDetail(anyLong()))
                 .thenReturn(response);
@@ -175,9 +175,11 @@ public class ChallengeControllerTest extends ApiDocumentationTest {
                                 fieldWithPath("message").description("요청 결과 메세지"),
                                 fieldWithPath("code").description("결과 코드"),
                                 fieldWithPath("data.challengeId").description("챌린지의 ID"),
+                                fieldWithPath("data.challengeCategory").description("챌린지의 카테고리"),
                                 fieldWithPath("data.challengeName").description("챌린지의 이름"),
                                 fieldWithPath("data.challengeIntroduction").description("챌린지 설명"),
-                                fieldWithPath("data.insightCount").description("챌린지에 기록한 인사이트 수")
+                                fieldWithPath("data.insightCount").description("챌린지에 기록한 인사이트 수"),
+                                fieldWithPath("data.createdAt").description("챌린지의 시작일자 yyyy-mm-dd")
                         )
                         .tag("Challenge")
                         .build()
