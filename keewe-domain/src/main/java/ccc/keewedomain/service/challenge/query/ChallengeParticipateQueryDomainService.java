@@ -9,9 +9,8 @@ import ccc.keewedomain.persistence.domain.challenge.ChallengeParticipation;
 import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.persistence.repository.challenge.ChallengeParticipationQueryRepository;
 import ccc.keewedomain.persistence.repository.challenge.ChallengeParticipationRepository;
-import ccc.keewedomain.persistence.repository.challenge.ChallengeQueryRepository;
-import ccc.keewedomain.persistence.repository.challenge.ChallengeRepository;
-import ccc.keewedomain.service.user.UserDomainService;
+import ccc.keewedomain.persistence.repository.utils.CursorPageable;
+
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,11 +19,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
 @Service
@@ -70,5 +66,9 @@ public class ChallengeParticipateQueryDomainService {
 
     public List<ChallengeParticipation> getFinishedParticipation(User user, Long size) {
         return challengeParticipationQueryRepository.findFinishedParticipation(user, size);
+    }
+
+    public List<ChallengeParticipation> paginateCompleted(User challenger, CursorPageable<Long> cPage) {
+        return challengeParticipationQueryRepository.paginateCompleted(challenger, cPage);
     }
 }
