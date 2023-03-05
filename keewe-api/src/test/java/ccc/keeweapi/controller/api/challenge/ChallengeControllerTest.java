@@ -141,7 +141,9 @@ public class ChallengeControllerTest extends ApiDocumentationTest {
     @Test
     @DisplayName("진행 중인 전체 챌린지 페이지네이션 조회")
     void paginate_challenges() throws Exception {
-        List<OpenedChallengeResponse> response = List.of(OpenedChallengeResponse.of(3L, "카테고리", "챌린지명", "2023-02-25"));
+        List<OpenedChallengeResponse> response = List.of(
+                OpenedChallengeResponse.of(3L, "카테고리", "챌린지설명", "챌린지명", 127L)
+        );
 
         when(challengeQueryApiService.paginate(any()))
                 .thenReturn(response);
@@ -169,9 +171,10 @@ public class ChallengeControllerTest extends ApiDocumentationTest {
                                 fieldWithPath("code").description("결과 코드"),
                                 fieldWithPath("data").description("데이터, 오류 시 null"),
                                 fieldWithPath("data[].challengeId").description("챌린지의 ID"),
+                                fieldWithPath("data[].challengeIntroduction").description("챌린지의 설명"),
                                 fieldWithPath("data[].challengeName").description("챌린지의 이름"),
                                 fieldWithPath("data[].challengeCategory").description("챌린지 카테고리"),
-                                fieldWithPath("data[].startDate").description("챌린지 생성일")
+                                fieldWithPath("data[].insightCount").description("인사이트 수")
                         )
                         .tag("Challenge")
                         .build()
