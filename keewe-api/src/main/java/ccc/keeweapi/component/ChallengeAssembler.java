@@ -132,7 +132,6 @@ public class ChallengeAssembler {
     public ChallengeDetailResponse toChallengeDetailResponse(Challenge challenge, Long insightCount) {
         return ChallengeDetailResponse.of(
                 challenge.getName(),
-                challenge.getInterest().getName(),
                 challenge.getIntroduction(),
                 insightCount,
                 challenge.getCreatedAt().toLocalDate().toString()
