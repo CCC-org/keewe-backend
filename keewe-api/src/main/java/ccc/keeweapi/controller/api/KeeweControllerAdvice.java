@@ -59,8 +59,8 @@ public class KeeweControllerAdvice {
 
     @ExceptionHandler(Exception.class)
     public ApiResponse<?> handleException(HttpServletRequest request, Exception ex) {
-        ex.printStackTrace();
-        log.error("Request: [{}] Exception: {}", request.getRequestURL(), ex.getMessage());
+        String message = String.format("request(%s), exception(%s)", request.getRequestURL(), ex.getMessage());
+        log.error(message, ex);
         return ApiResponse.failure(KeeweRtnConsts.ERR999, KeeweRtnConsts.ERR999.getDescription());
     }
 
