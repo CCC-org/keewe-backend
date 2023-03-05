@@ -60,4 +60,10 @@ public class ChallengeController {
     public ApiResponse<ChallengeDetailResponse> getChallengeDetail(@PathVariable Long challengeId) {
         return ApiResponse.ok(challengeApiService.getChallengeDetail(challengeId));
     }
+
+    @GetMapping("/detail/participating")
+    @FLogging
+    public ApiResponse<ParticipatingChallengeDetailResponse> getMyChallengeDetail() {
+        return ApiResponse.ok(challengeApiService.getMyChallengeDetail());
+    }
 }
