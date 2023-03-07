@@ -140,7 +140,6 @@ public class ChallengeApiService {
         return challengeAssembler.toChallengerCountResponse(challengeParticipateQueryDomainService.countParticipatingUser(challenge));
     }
 
-    @Transactional(readOnly = true)
     public ParticipatingChallengeDetailResponse getMyChallengeDetail() {
         Challenge challenge = challengeParticipateQueryDomainService.findCurrentParticipationWithChallenge(SecurityUtil.getUserId())
                 .map(ChallengeParticipation::getChallenge)
