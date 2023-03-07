@@ -5,9 +5,9 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor(staticName = "of")
-public class ChallengeDetailResponse {
+public class ParticipatingChallengeDetailResponse {
     private String challengeName;
+    private String challengeCategory;
     private String challengeIntroduction;
-    private Long insightCount;
     private String createdAt;
 }

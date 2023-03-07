@@ -1,20 +1,10 @@
 package ccc.keeweapi.service.challenge;
 
 import ccc.keeweapi.component.ChallengeAssembler;
-import ccc.keeweapi.dto.challenge.ChallengeCreateRequest;
-import ccc.keeweapi.dto.challenge.ChallengeCreateResponse;
-import ccc.keeweapi.dto.challenge.ChallengeDetailResponse;
-import ccc.keeweapi.dto.challenge.ChallengeHistoryListResponse;
-import ccc.keeweapi.dto.challenge.ChallengeInfoResponse;
-import ccc.keeweapi.dto.challenge.ChallengeParticipateRequest;
-import ccc.keeweapi.dto.challenge.ChallengeParticipationResponse;
-import ccc.keeweapi.dto.challenge.ChallengerCountResponse;
-import ccc.keeweapi.dto.challenge.InsightProgressResponse;
-import ccc.keeweapi.dto.challenge.ParticipatingChallengeResponse;
-import ccc.keeweapi.dto.challenge.ParticipationCheckResponse;
-import ccc.keeweapi.dto.challenge.TogetherChallengerResponse;
-import ccc.keeweapi.dto.challenge.WeekProgressResponse;
+import ccc.keeweapi.dto.challenge.*;
 import ccc.keeweapi.utils.SecurityUtil;
+import ccc.keewecore.consts.KeeweRtnConsts;
+import ccc.keewecore.exception.KeeweException;
 import ccc.keewedomain.persistence.domain.challenge.Challenge;
 import ccc.keewedomain.persistence.domain.challenge.ChallengeParticipation;
 import ccc.keewedomain.persistence.domain.user.User;
@@ -148,5 +138,12 @@ public class ChallengeApiService {
     public ChallengerCountResponse getChallengerCount(Long challengeId) {
         Challenge challenge = challengeQueryDomainService.getByIdOrElseThrow(challengeId);
         return challengeAssembler.toChallengerCountResponse(challengeParticipateQueryDomainService.countParticipatingUser(challenge));
+    }
+
+    public ParticipatingChallengeDetailResponse getMyChallengeDetail() {
+        Challenge challenge = challengeParticipateQueryDomainService.findCurrentParticipationWithChallenge(SecurityUtil.getUserId())
+                .map(ChallengeParticipation::getChallenge)
+                .orElseThrow(() -> new KeeweException(KeeweRtnConsts.ERR432));
+        return challengeAssembler.toParticipatingChallengeDetailResponse(challenge);
     }
 }

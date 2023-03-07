@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
@@ -130,10 +131,10 @@ public class ChallengeAssembler {
 
     public ChallengeDetailResponse toChallengeDetailResponse(Challenge challenge, Long insightCount) {
         return ChallengeDetailResponse.of(
-                challenge.getId(),
                 challenge.getName(),
                 challenge.getIntroduction(),
-                insightCount
+                insightCount,
+                challenge.getCreatedAt().toLocalDate().toString()
         );
     }
 
@@ -174,5 +175,14 @@ public class ChallengeAssembler {
 
     public ChallengerCountResponse toChallengerCountResponse(Long countParticipatingUser) {
         return ChallengerCountResponse.of(countParticipatingUser);
+    }
+
+    public ParticipatingChallengeDetailResponse toParticipatingChallengeDetailResponse(Challenge challenge) {
+        return ParticipatingChallengeDetailResponse.of(
+                challenge.getName(),
+                challenge.getInterest().getName(),
+                challenge.getIntroduction(),
+                challenge.getCreatedAt().toLocalDate().toString()
+        );
     }
 }
