@@ -396,4 +396,34 @@ public class ChallengeParticipationControllerTest extends ApiDocumentationTest {
                         .build()
         )));
     }
+
+    @Test
+    @DisplayName("완료된 챌린지 개수 조회")
+    void count_completed_challenges() throws Exception {
+        CompletedChallengeCountResponse response = CompletedChallengeCountResponse.of(14L);
+
+        when(challengeParticipationQueryApiService.countCompleted()).thenReturn(response);
+
+        ResultActions resultActions = mockMvc.perform(get("/api/v1/challenge/completed/count")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        resultActions.andDo(restDocs.document(resource(
+                ResourceSnippetParameters.builder()
+                        .description("완료된 챌린지 개수 조회 API 입니다.")
+                        .summary("완료된 챌린지 개수 조회 API")
+                        .requestHeaders(
+                                headerWithName("Authorization").description("유저의 JWT")
+                        )
+                        .responseFields(
+                                fieldWithPath("message").description("요청 결과 메세지"),
+                                fieldWithPath("code").description("결과 코드"),
+                                fieldWithPath("data").description("데이터, 오류 시 null"),
+                                fieldWithPath("data.count").description("완료된 챌린지 개수")
+                        )
+                        .tag("ChallengeParticipation")
+                        .build()
+        )));
+    }
 }

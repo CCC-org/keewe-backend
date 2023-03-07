@@ -55,7 +55,7 @@ public class ChallengeParticipateQueryDomainService {
         return challengeParticipationQueryRepository.countByChallengeAndStatus(challenge, CHALLENGING);
     }
 
-    public Long countFinishedParticipation(User user) {
+    public Long countCompletedParticipation(User user) {
         return challengeParticipationRepository.countByChallengerAndStatusNot(user, CHALLENGING);
     }
 

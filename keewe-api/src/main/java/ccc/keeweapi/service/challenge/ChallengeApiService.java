@@ -108,7 +108,7 @@ public class ChallengeApiService {
 
     public ChallengeHistoryListResponse getHistoryOfChallenge(Long size) {
         User user = SecurityUtil.getUser();
-        Long historyCount = challengeParticipateQueryDomainService.countFinishedParticipation(user);
+        Long historyCount = challengeParticipateQueryDomainService.countCompletedParticipation(user);
         List<ChallengeParticipation> finishedParticipation = challengeParticipateQueryDomainService.getFinishedParticipation(user, size);
 
         return challengeAssembler.toChallengeHistoryListResponse(finishedParticipation, historyCount);

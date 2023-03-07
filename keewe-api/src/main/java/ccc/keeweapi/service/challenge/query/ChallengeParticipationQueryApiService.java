@@ -1,8 +1,10 @@
 package ccc.keeweapi.service.challenge.query;
 
 import ccc.keeweapi.component.ChallengeAssembler;
+import ccc.keeweapi.dto.challenge.CompletedChallengeCountResponse;
 import ccc.keeweapi.dto.challenge.CompletedChallengeResponse;
 import ccc.keeweapi.utils.SecurityUtil;
+import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.persistence.repository.utils.CursorPageable;
 import ccc.keewedomain.service.challenge.query.ChallengeParticipateQueryDomainService;
 import lombok.RequiredArgsConstructor;
@@ -21,5 +23,11 @@ public class ChallengeParticipationQueryApiService {
         return challengeParticipateQueryDomainService.paginateCompleted(SecurityUtil.getUser(), cPage).stream()
                 .map(challengeAssembler::toCompletedChallengeResponse)
                 .collect(Collectors.toList());
+    }
+
+    public CompletedChallengeCountResponse countCompleted() {
+        User user = SecurityUtil.getUser();
+        Long count = challengeParticipateQueryDomainService.countCompletedParticipation(user);
+        return challengeAssembler.toCompletedChallengeCountResponse(count);
     }
 }

@@ -159,6 +159,10 @@ public class ChallengeAssembler {
         );
     }
 
+    public CompletedChallengeCountResponse toCompletedChallengeCountResponse(Long count) {
+        return CompletedChallengeCountResponse.of(count);
+    }
+
     public TogetherChallengerResponse toTogetherChallengerResponse(ChallengeParticipation participation, Long current) {
         User challenger = participation.getChallenger();
         return TogetherChallengerResponse.of(

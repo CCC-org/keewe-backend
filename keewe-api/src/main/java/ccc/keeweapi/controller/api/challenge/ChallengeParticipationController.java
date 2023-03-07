@@ -67,10 +67,15 @@ public class ChallengeParticipationController {
     }
 
     @GetMapping("/completed")
-    public ApiResponse<?> paginateCompletedChallenges(
+    public ApiResponse<List<CompletedChallengeResponse>> paginateCompletedChallenges(
             @RequestParam(required = false, defaultValue = KeeweConsts.LONG_MAX_STRING) Long cursor,
             @RequestParam Long limit
     ) {
         return ApiResponse.ok(challengeParticipationQueryApiService.paginateCompleted(CursorPageable.of(cursor, limit)));
+    }
+
+    @GetMapping("/completed/count")
+    public ApiResponse<CompletedChallengeCountResponse> countCompletedChallenges() {
+        return ApiResponse.ok(challengeParticipationQueryApiService.countCompleted());
     }
 }
