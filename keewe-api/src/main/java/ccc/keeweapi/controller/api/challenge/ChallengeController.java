@@ -55,13 +55,13 @@ public class ChallengeController {
         return ApiResponse.ok(challengeApiService.getSpecifiedNumberOfChallenge(size));
     }
 
-    @GetMapping("/detail/{challengeId}")
+    @GetMapping("/{challengeId}/detail")
     @FLogging
     public ApiResponse<ChallengeDetailResponse> getChallengeDetail(@PathVariable Long challengeId) {
         return ApiResponse.ok(challengeApiService.getChallengeDetail(challengeId));
     }
 
-    @GetMapping("/detail/participating")
+    @GetMapping("/my/detail")
     @FLogging
     public ApiResponse<ParticipatingChallengeDetailResponse> getMyChallengeDetail() {
         return ApiResponse.ok(challengeApiService.getMyChallengeDetail());

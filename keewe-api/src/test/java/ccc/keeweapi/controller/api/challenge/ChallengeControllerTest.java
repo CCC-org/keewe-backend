@@ -159,7 +159,7 @@ public class ChallengeControllerTest extends ApiDocumentationTest {
         when(challengeApiService.getChallengeDetail(anyLong()))
                 .thenReturn(response);
 
-        ResultActions resultActions = mockMvc.perform(get("/api/v1/challenge/detail/{challengeId}", challengeId)
+        ResultActions resultActions = mockMvc.perform(get("/api/v1/challenge/{challengeId}/detail", challengeId)
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
@@ -192,7 +192,7 @@ public class ChallengeControllerTest extends ApiDocumentationTest {
         when(challengeApiService.getMyChallengeDetail())
                 .thenReturn(response);
 
-        ResultActions resultActions = mockMvc.perform(get("/api/v1/challenge/detail/participating")
+        ResultActions resultActions = mockMvc.perform(get("/api/v1/challenge/my/detail")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
