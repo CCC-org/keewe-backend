@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import ccc.keewedomain.service.insight.InsightDomainService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +22,7 @@ public class ChallengeQueryApiService {
     private final ChallengeQueryDomainService challengeQueryDomainService;
     private final InsightDomainService insightDomainService;
 
+    @Transactional(readOnly = true)
     public List<OpenedChallengeResponse> paginate(CursorPageable<Long> cPage) {
         List<Challenge> challenges = challengeQueryDomainService.paginate(cPage);
         Map<Long, Long> insightCountPerChallengeMap = insightDomainService.getInsightCountPerChallenge(challenges);
