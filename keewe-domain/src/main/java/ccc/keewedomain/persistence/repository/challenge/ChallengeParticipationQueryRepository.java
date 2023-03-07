@@ -102,7 +102,7 @@ public class ChallengeParticipationQueryRepository {
                 .fetch();
     }
     
-    public List<ChallengeParticipation> paginateCompleted(User challenger, CursorPageable<Long> cPage) {
+    public List<ChallengeParticipation> paginateFinished(User challenger, CursorPageable<Long> cPage) {
         return queryFactory.select(challengeParticipation)
                 .from(challengeParticipation)
                 .innerJoin(challengeParticipation.challenge, challenge)

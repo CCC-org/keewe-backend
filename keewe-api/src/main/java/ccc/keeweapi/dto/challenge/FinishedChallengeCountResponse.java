@@ -5,6 +5,6 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor(staticName = "of")
-public class CompletedChallengeCountResponse {
+public class FinishedChallengeCountResponse {
     private Long count;
 }

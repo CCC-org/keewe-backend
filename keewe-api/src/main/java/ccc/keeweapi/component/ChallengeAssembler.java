@@ -147,9 +147,9 @@ public class ChallengeAssembler {
         );
     }
 
-    public CompletedChallengeResponse toCompletedChallengeResponse(ChallengeParticipation challengeParticipation) {
+    public FinishedChallengeResponse toFinishedChallengeResponse(ChallengeParticipation challengeParticipation) {
         Challenge challenge = challengeParticipation.getChallenge();
-        return CompletedChallengeResponse.of(
+        return FinishedChallengeResponse.of(
                 challengeParticipation.getId(),
                 challenge.getId(),
                 challenge.getInterest().getName(),
@@ -159,8 +159,8 @@ public class ChallengeAssembler {
         );
     }
 
-    public CompletedChallengeCountResponse toCompletedChallengeCountResponse(Long count) {
-        return CompletedChallengeCountResponse.of(count);
+    public FinishedChallengeCountResponse toFinishedChallengeCountResponse(Long count) {
+        return FinishedChallengeCountResponse.of(count);
     }
 
     public TogetherChallengerResponse toTogetherChallengerResponse(ChallengeParticipation participation, Long current) {

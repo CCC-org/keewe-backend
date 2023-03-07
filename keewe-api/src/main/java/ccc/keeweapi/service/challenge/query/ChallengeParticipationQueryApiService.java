@@ -1,8 +1,8 @@
 package ccc.keeweapi.service.challenge.query;
 
 import ccc.keeweapi.component.ChallengeAssembler;
-import ccc.keeweapi.dto.challenge.CompletedChallengeCountResponse;
-import ccc.keeweapi.dto.challenge.CompletedChallengeResponse;
+import ccc.keeweapi.dto.challenge.FinishedChallengeCountResponse;
+import ccc.keeweapi.dto.challenge.FinishedChallengeResponse;
 import ccc.keeweapi.utils.SecurityUtil;
 import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.persistence.repository.utils.CursorPageable;
@@ -19,15 +19,15 @@ public class ChallengeParticipationQueryApiService {
     private final ChallengeParticipateQueryDomainService challengeParticipateQueryDomainService;
     private final ChallengeAssembler challengeAssembler;
 
-    public List<CompletedChallengeResponse> paginateCompleted(CursorPageable<Long> cPage) {
-        return challengeParticipateQueryDomainService.paginateCompleted(SecurityUtil.getUser(), cPage).stream()
-                .map(challengeAssembler::toCompletedChallengeResponse)
+    public List<FinishedChallengeResponse> paginateFinished(CursorPageable<Long> cPage) {
+        return challengeParticipateQueryDomainService.paginateFinished(SecurityUtil.getUser(), cPage).stream()
+                .map(challengeAssembler::toFinishedChallengeResponse)
                 .collect(Collectors.toList());
     }
 
-    public CompletedChallengeCountResponse countCompleted() {
+    public FinishedChallengeCountResponse countFinished() {
         User user = SecurityUtil.getUser();
-        Long count = challengeParticipateQueryDomainService.countCompletedParticipation(user);
-        return challengeAssembler.toCompletedChallengeCountResponse(count);
+        Long count = challengeParticipateQueryDomainService.countFinishedParticipation(user);
+        return challengeAssembler.toFinishedChallengeCountResponse(count);
     }
 }

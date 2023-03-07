@@ -55,7 +55,7 @@ public class ChallengeParticipateQueryDomainService {
         return challengeParticipationQueryRepository.countByChallengeAndStatus(challenge, CHALLENGING);
     }
 
-    public Long countCompletedParticipation(User user) {
+    public Long countFinishedParticipation(User user) {
         return challengeParticipationRepository.countByChallengerAndStatusNot(user, CHALLENGING);
     }
 
@@ -68,7 +68,7 @@ public class ChallengeParticipateQueryDomainService {
         return challengeParticipationQueryRepository.findFinishedParticipation(user, size);
     }
 
-    public List<ChallengeParticipation> paginateCompleted(User challenger, CursorPageable<Long> cPage) {
-        return challengeParticipationQueryRepository.paginateCompleted(challenger, cPage);
+    public List<ChallengeParticipation> paginateFinished(User challenger, CursorPageable<Long> cPage) {
+        return challengeParticipationQueryRepository.paginateFinished(challenger, cPage);
     }
 }

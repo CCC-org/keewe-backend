@@ -353,17 +353,17 @@ public class ChallengeParticipationControllerTest extends ApiDocumentationTest {
     }
 
     @Test
-    @DisplayName("완료된 챌린지 페이지네이션 조회")
+    @DisplayName("종료된 챌린지 페이지네이션 조회")
     void get_completed_challenges() throws Exception {
         ChallengerCountResponse response = ChallengerCountResponse.of(1000L);
 
-        List<CompletedChallengeResponse> responses = List.of(
-                CompletedChallengeResponse.of(1L, 3L, "개발", "개발챌린지", "2023-03-05", "2023-03-12")
+        List<FinishedChallengeResponse> responses = List.of(
+                FinishedChallengeResponse.of(1L, 3L, "개발", "개발챌린지", "2023-03-05", "2023-03-12")
         );
 
-        when(challengeParticipationQueryApiService.paginateCompleted(any())).thenReturn(responses);
+        when(challengeParticipationQueryApiService.paginateFinished(any())).thenReturn(responses);
 
-        ResultActions resultActions = mockMvc.perform(get("/api/v1/challenge/completed")
+        ResultActions resultActions = mockMvc.perform(get("/api/v1/challenge/finished")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
                         .param("cursor", "100")
                         .param("limit", "10")
@@ -372,8 +372,8 @@ public class ChallengeParticipationControllerTest extends ApiDocumentationTest {
 
         resultActions.andDo(restDocs.document(resource(
                 ResourceSnippetParameters.builder()
-                        .description("완료된 챌린지 페이지네이션 조회 API 입니다.")
-                        .summary("완료된 챌린지 페이지네이션 조회 API")
+                        .description("종료된 챌린지 페이지네이션 조회 API 입니다.")
+                        .summary("종료된 챌린지 페이지네이션 조회 API")
                         .requestParameters(
                                 parameterWithName("cursor").description("마지막으로 받은 챌린지 참가 현황(challengeParticipationId) ID, 첫 요청 시 비우고 요청"),
                                 parameterWithName("limit").description("가져올 챌린지 개수")
@@ -398,21 +398,21 @@ public class ChallengeParticipationControllerTest extends ApiDocumentationTest {
     }
 
     @Test
-    @DisplayName("완료된 챌린지 개수 조회")
+    @DisplayName("종료된 챌린지 개수 조회")
     void count_completed_challenges() throws Exception {
-        CompletedChallengeCountResponse response = CompletedChallengeCountResponse.of(14L);
+        FinishedChallengeCountResponse response = FinishedChallengeCountResponse.of(14L);
 
-        when(challengeParticipationQueryApiService.countCompleted()).thenReturn(response);
+        when(challengeParticipationQueryApiService.countFinished()).thenReturn(response);
 
-        ResultActions resultActions = mockMvc.perform(get("/api/v1/challenge/completed/count")
+        ResultActions resultActions = mockMvc.perform(get("/api/v1/challenge/finished/count")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
         resultActions.andDo(restDocs.document(resource(
                 ResourceSnippetParameters.builder()
-                        .description("완료된 챌린지 개수 조회 API 입니다.")
-                        .summary("완료된 챌린지 개수 조회 API")
+                        .description("종료된 챌린지 개수 조회 API 입니다.")
+                        .summary("종료된 챌린지 개수 조회 API")
                         .requestHeaders(
                                 headerWithName("Authorization").description("유저의 JWT")
                         )
@@ -420,7 +420,7 @@ public class ChallengeParticipationControllerTest extends ApiDocumentationTest {
                                 fieldWithPath("message").description("요청 결과 메세지"),
                                 fieldWithPath("code").description("결과 코드"),
                                 fieldWithPath("data").description("데이터, 오류 시 null"),
-                                fieldWithPath("data.count").description("완료된 챌린지 개수")
+                                fieldWithPath("data.count").description("종료된 챌린지 개수")
                         )
                         .tag("ChallengeParticipation")
                         .build()
