@@ -17,7 +17,7 @@ import ccc.keeweapi.dto.insight.CommentResponse;
 import ccc.keeweapi.dto.insight.CommentWriterResponse;
 import ccc.keeweapi.dto.insight.InsightCommentCountResponse;
 import ccc.keeweapi.dto.insight.ReplyResponse;
-import ccc.keeweapi.dto.insight.RepresentativeCommentResponse;
+import ccc.keeweapi.dto.insight.PreviewCommentResponse;
 import ccc.keeweapi.service.insight.command.InsightCommentCommandApiService;
 import ccc.keeweapi.service.insight.query.InsightCommentQueryApiService;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
@@ -97,29 +97,29 @@ public class InsightCommentControllerTest extends ApiDocumentationTest {
     }
 
     @Test
-    @DisplayName("대표 댓글 조회 API")
+    @DisplayName("인사이트 댓글 미리보기 조회 API")
     void get_representative_comment() throws Exception {
         Long insightId = 1L;
         String now = LocalDateTime.now().toString();
 
-        List<RepresentativeCommentResponse> response = List.of(
-                RepresentativeCommentResponse.of(1L, writer1, "댓글1 내용", now),
-                RepresentativeCommentResponse.of(2L, writer2, "댓글2 내용", now),
-                RepresentativeCommentResponse.of(3L, writer1, "댓글3 내용", now)
+        List<PreviewCommentResponse> response = List.of(
+                PreviewCommentResponse.of(1L, writer1, "댓글1 내용", now),
+                PreviewCommentResponse.of(2L, writer2, "댓글2 내용", now),
+                PreviewCommentResponse.of(3L, writer1, "댓글3 내용", now)
         );
 
-        when(insightCommentQueryApiService.getRepresentativeComments(insightId)).thenReturn(response);
+        when(insightCommentQueryApiService.getPreviewComments(insightId)).thenReturn(response);
 
         ResultActions resultActions = mockMvc.perform(
-                get("/api/v1/comments/representative/insights/{insightId}", insightId)
+                get("/api/v1/comments/insights/{insightId}/preview", insightId)
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
                         .contentType(MediaType.APPLICATION_JSON)
                 ).andExpect(status().isOk());
 
         resultActions.andDo(restDocs.document(resource(
                 ResourceSnippetParameters.builder()
-                        .description("대표 댓글 조회 API 입니다.")
-                        .summary("대표 댓글 조회 API")
+                        .description("인사이트 댓글 미리보기 조회 API 입니다.")
+                        .summary("인사이트 댓글 미리보기 조회 API")
                         .requestHeaders(
                                 headerWithName("Authorization").description("유저의 JWT"))
                         .pathParameters(parameterWithName("insightId").description("대상 인사이트의 id"))

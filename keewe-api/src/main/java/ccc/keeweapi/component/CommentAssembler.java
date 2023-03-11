@@ -6,15 +6,14 @@ import ccc.keewedomain.persistence.domain.user.User;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Component
 public class CommentAssembler {
 
-    public RepresentativeCommentResponse toRepresentativeCommentResponse(Comment comment) {
-        return RepresentativeCommentResponse.of(
+    public PreviewCommentResponse toPreviewCommentResponse(Comment comment) {
+        return PreviewCommentResponse.of(
                 comment.getId(),
                 toCommentWriterResponse(comment.getWriter()),
                 comment.getContent(),

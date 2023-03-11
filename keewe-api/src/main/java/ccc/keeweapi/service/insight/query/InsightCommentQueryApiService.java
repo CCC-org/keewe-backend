@@ -4,7 +4,7 @@ import ccc.keeweapi.component.CommentAssembler;
 import ccc.keeweapi.dto.insight.CommentResponse;
 import ccc.keeweapi.dto.insight.InsightCommentCountResponse;
 import ccc.keeweapi.dto.insight.ReplyResponse;
-import ccc.keeweapi.dto.insight.RepresentativeCommentResponse;
+import ccc.keeweapi.dto.insight.PreviewCommentResponse;
 import ccc.keeweapi.utils.SecurityUtil;
 import ccc.keewedomain.persistence.domain.insight.Comment;
 import ccc.keewedomain.persistence.repository.utils.CursorPageable;
@@ -24,11 +24,8 @@ public class InsightCommentQueryApiService {
     private final CommentDomainService commentDomainService;
     private final CommentAssembler commentAssembler;
 
-    // 인사이트의 대표 댓글
-    // 답글의 수가 가장 많은 댓글 1개 + 답글 최대 2개
-    // 모든 댓글에 답글이 없는 경우 작성순 댓글 3개
     @Transactional(readOnly = true)
-    public List<RepresentativeCommentResponse> getRepresentativeComments(Long insightId) {
+    public List<PreviewCommentResponse> getPreviewComments(Long insightId) {
         List<Comment> comments = commentDomainService.getComments(insightId, CursorPageable.of(Long.MAX_VALUE, 3L));
         commentDomainService.findLatestCommentByWriter(SecurityUtil.getUser())
                 .ifPresent(myLatestComment -> {
@@ -38,7 +35,7 @@ public class InsightCommentQueryApiService {
 
         return comments.stream()
                 .limit(3)
-                .map(commentAssembler::toRepresentativeCommentResponse)
+                .map(commentAssembler::toPreviewCommentResponse)
                 .collect(Collectors.toList());
     }
 

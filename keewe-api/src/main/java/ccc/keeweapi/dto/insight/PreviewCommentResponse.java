@@ -3,11 +3,9 @@ package ccc.keeweapi.dto.insight;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import java.util.List;
-
 @Getter
 @AllArgsConstructor(staticName = "of")
-public class RepresentativeCommentResponse {
+public class PreviewCommentResponse {
     private Long id;
     private CommentWriterResponse writer;
     private String content;

@@ -32,8 +32,13 @@ public class InsightCommentController {
     }
 
     @GetMapping("/representative/insights/{insightId}")
-    public ApiResponse<List<RepresentativeCommentResponse>> getRepresentativeComments(@PathVariable Long insightId) {
-        return ApiResponse.ok(insightCommentQueryApiService.getRepresentativeComments(insightId));
+    public ApiResponse<RepresentativeCommentsResponse> getRepresentativeComments(@PathVariable Long insightId) {
+        return ApiResponse.ok(RepresentativeCommentsResponse.dummy());
+    }
+
+    @GetMapping("/insights/{insightId}/preview")
+    public ApiResponse<List<PreviewCommentResponse>> getPreviewComments(@PathVariable Long insightId) {
+        return ApiResponse.ok(insightCommentQueryApiService.getPreviewComments(insightId));
     }
 
     @GetMapping("/insights/{insightId}/count")
