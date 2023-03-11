@@ -37,8 +37,8 @@ public class InsightCommentQueryApiService {
                 });
 
         return comments.stream()
-                .map(commentAssembler::toRepresentativeCommentResponse)
                 .limit(3)
+                .map(commentAssembler::toRepresentativeCommentResponse)
                 .collect(Collectors.toList());
     }
 

@@ -12,7 +12,12 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWit
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import ccc.keeweapi.document.utils.ApiDocumentationTest;
-import ccc.keeweapi.dto.insight.*;
+import ccc.keeweapi.dto.insight.CommentCreateResponse;
+import ccc.keeweapi.dto.insight.CommentResponse;
+import ccc.keeweapi.dto.insight.CommentWriterResponse;
+import ccc.keeweapi.dto.insight.InsightCommentCountResponse;
+import ccc.keeweapi.dto.insight.ReplyResponse;
+import ccc.keeweapi.dto.insight.RepresentativeCommentResponse;
 import ccc.keeweapi.service.insight.command.InsightCommentCommandApiService;
 import ccc.keeweapi.service.insight.query.InsightCommentQueryApiService;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
