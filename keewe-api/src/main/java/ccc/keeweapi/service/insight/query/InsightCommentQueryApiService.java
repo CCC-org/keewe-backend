@@ -1,16 +1,15 @@
 package ccc.keeweapi.service.insight.query;
 
-import static ccc.keewecore.consts.KeeweConsts.REPRESENTATIVE_COMMENT_REPLY_LIMIT;
-
 import ccc.keeweapi.component.CommentAssembler;
 import ccc.keeweapi.dto.insight.CommentResponse;
 import ccc.keeweapi.dto.insight.InsightCommentCountResponse;
 import ccc.keeweapi.dto.insight.ReplyResponse;
 import ccc.keeweapi.dto.insight.RepresentativeCommentResponse;
+import ccc.keeweapi.utils.SecurityUtil;
 import ccc.keewedomain.persistence.domain.insight.Comment;
 import ccc.keewedomain.persistence.repository.utils.CursorPageable;
 import ccc.keewedomain.service.insight.CommentDomainService;
-import java.util.HashMap;
+
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -29,21 +28,18 @@ public class InsightCommentQueryApiService {
     // 답글의 수가 가장 많은 댓글 1개 + 답글 최대 2개
     // 모든 댓글에 답글이 없는 경우 작성순 댓글 3개
     @Transactional(readOnly = true)
-    public RepresentativeCommentResponse getRepresentativeComments(Long insightId) {
-        List<Comment> comments = commentDomainService.getRepresentativeCommentsWithWriter(insightId);
-        Map<Long, Long> replyNumberPerParentId = commentDomainService.getReplyNumbers(comments);
-        Long total = commentDomainService.countByInsightId(insightId);
-        Map<Long, List<Comment>> replyPerParentId = new HashMap<>();
+    public List<RepresentativeCommentResponse> getRepresentativeComments(Long insightId) {
+        List<Comment> comments = commentDomainService.getComments(insightId, CursorPageable.of(Long.MAX_VALUE, 3L));
+        commentDomainService.findLatestCommentByWriter(SecurityUtil.getUser())
+                .ifPresent(myLatestComment -> {
+                    comments.removeIf(comment -> comment.getId().equals(myLatestComment.getId()));
+                    comments.add(0, myLatestComment);
+                });
 
-        if (comments.size() == 1) {
-            replyPerParentId = commentDomainService.getReplies(
-                            comments.get(0).getId(),
-                            CursorPageable.of(Long.MAX_VALUE, REPRESENTATIVE_COMMENT_REPLY_LIMIT)
-                    ).stream()
-                    .collect(Collectors.groupingBy(reply -> reply.getParent().getId()));
-        }
-
-        return commentAssembler.toRepresentativeCommentResponse(comments, replyPerParentId, replyNumberPerParentId, total);
+        return comments.stream()
+                .map(commentAssembler::toRepresentativeCommentResponse)
+                .limit(3)
+                .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)

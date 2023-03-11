@@ -13,21 +13,13 @@ import java.util.stream.Collectors;
 @Component
 public class CommentAssembler {
 
-    public RepresentativeCommentResponse toRepresentativeCommentResponse(
-            List<Comment> comments,
-            Map<Long, List<Comment>> replyPerParentId,
-            Map<Long, Long> replyNumberPerParentId,
-            Long total) {
-
-        List<CommentResponse> commentResponses = comments.stream()
-                .map(comment -> toCommentResponse(
-                        comment,
-                        replyPerParentId.getOrDefault(comment.getId(), List.of()),
-                        replyNumberPerParentId.getOrDefault(comment.getId(), 0L)
-                ))
-                .collect(Collectors.toList());
-
-        return RepresentativeCommentResponse.of(total, commentResponses);
+    public RepresentativeCommentResponse toRepresentativeCommentResponse(Comment comment) {
+        return RepresentativeCommentResponse.of(
+                comment.getId(),
+                toCommentWriterResponse(comment.getWriter()),
+                comment.getContent(),
+                comment.getCreatedAt().toString()
+        );
     }
 
     public CommentResponse toCommentResponse(Comment comment, List<Comment> replies, Long replyNumber) {

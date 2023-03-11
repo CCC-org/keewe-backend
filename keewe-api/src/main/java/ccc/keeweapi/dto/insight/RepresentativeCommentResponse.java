@@ -8,7 +8,8 @@ import java.util.List;
 @Getter
 @AllArgsConstructor(staticName = "of")
 public class RepresentativeCommentResponse {
-
-    private Long total;
-    private List<CommentResponse> comments;
+    private Long id;
+    private CommentWriterResponse writer;
+    private String content;
+    private String createdAt;
 }

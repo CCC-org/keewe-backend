@@ -32,7 +32,7 @@ public class InsightCommentController {
     }
 
     @GetMapping("/representative/insights/{insightId}")
-    public ApiResponse<RepresentativeCommentResponse> getRepresentativeComments(@PathVariable Long insightId) {
+    public ApiResponse<List<RepresentativeCommentResponse>> getRepresentativeComments(@PathVariable Long insightId) {
         return ApiResponse.ok(insightCommentQueryApiService.getRepresentativeComments(insightId));
     }
 

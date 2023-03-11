@@ -49,17 +49,6 @@ public class CommentDomainService {
         }
     }
 
-    public List<Comment> getRepresentativeCommentsWithWriter(Long insightId) {
-        final Long commentNumber = 3L;
-
-        List<Comment> comments = commentQueryRepository.findByReplyNumberDescWithUser(insightId, 1L);
-        if (comments.isEmpty()) {
-            comments = commentQueryRepository.findByInsightIdOrderByIdDesc(insightId, CursorPageable.of(Long.MAX_VALUE, commentNumber));
-        }
-
-        return comments;
-    }
-
     public Long countByInsightId(Long insightId) {
         return commentQueryRepository.countByInsightId(insightId);
     }
@@ -70,6 +59,10 @@ public class CommentDomainService {
 
     public List<Comment> getComments(Long insightId, CursorPageable<Long> cPage) {
         return commentQueryRepository.findByInsightIdOrderByIdDesc(insightId, cPage);
+    }
+
+    public Optional<Comment> findLatestCommentByWriter(User writer) {
+        return commentQueryRepository.findLatestByWriterOrderById(writer);
     }
 
     public Map<Long, Comment> getFirstReplies(List<Comment> parents) {
