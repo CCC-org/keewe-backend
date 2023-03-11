@@ -37,12 +37,12 @@ public class InsightCommentController {
     }
 
     @GetMapping("/insights/{insightId}/preview")
-    public ApiResponse<List<PreviewCommentResponse>> getPreviewComments(@PathVariable Long insightId) {
+    public ApiResponse<List<PreviewCommentResponse>> previewComments(@PathVariable Long insightId) {
         return ApiResponse.ok(insightCommentQueryApiService.getPreviewComments(insightId));
     }
 
     @GetMapping("/insights/{insightId}/count")
-    public ApiResponse<InsightCommentCountResponse> getCommentCount(@PathVariable Long insightId) {
+    public ApiResponse<InsightCommentCountResponse> countComment(@PathVariable Long insightId) {
         return ApiResponse.ok(insightCommentQueryApiService.getCommentCount(insightId));
     }
 
