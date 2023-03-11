@@ -55,7 +55,12 @@ public class Comment extends BaseTimeEntity {
 
     // 올바른 로직...?
     public void delete() {
-        content = "삭제된 댓글입니다.";
         deleted = true;
+    }
+
+    public String getContent() {
+        if (deleted)
+            return "삭제된 댓글입니다.";
+        return content;
     }
 }

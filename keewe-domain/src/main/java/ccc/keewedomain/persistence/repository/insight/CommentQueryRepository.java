@@ -111,8 +111,7 @@ public class CommentQueryRepository {
                 .select(comment.id)
                 .from(comment)
                 .where(comment.parent.id.eq(parentId)
-                        .and(comment.id.lt(cPage.getCursor()))
-                        .and(comment.deleted.isFalse()))
+                        .and(comment.id.lt(cPage.getCursor())))
                 .orderBy(comment.id.desc())
                 .limit(cPage.getLimit())
                 .fetch();
@@ -124,8 +123,7 @@ public class CommentQueryRepository {
                 .from(comment)
                 .where(comment.insight.id.eq(insightId)
                         .and(comment.parent.isNull())
-                        .and(comment.id.lt(cPage.getCursor()))
-                        .and(comment.deleted.isFalse()))
+                        .and(comment.id.lt(cPage.getCursor())))
                 .orderBy(comment.id.desc())
                 .limit(cPage.getLimit())
                 .fetch();
