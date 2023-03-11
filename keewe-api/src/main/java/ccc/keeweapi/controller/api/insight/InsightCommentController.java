@@ -3,11 +3,7 @@ package ccc.keeweapi.controller.api.insight;
 import static ccc.keewecore.consts.KeeweConsts.LONG_MAX_STRING;
 
 import ccc.keeweapi.dto.ApiResponse;
-import ccc.keeweapi.dto.insight.CommentCreateRequest;
-import ccc.keeweapi.dto.insight.CommentCreateResponse;
-import ccc.keeweapi.dto.insight.CommentResponse;
-import ccc.keeweapi.dto.insight.ReplyResponse;
-import ccc.keeweapi.dto.insight.RepresentativeCommentResponse;
+import ccc.keeweapi.dto.insight.*;
 import ccc.keeweapi.service.insight.command.InsightCommentCommandApiService;
 import ccc.keeweapi.service.insight.query.InsightCommentQueryApiService;
 import ccc.keewedomain.persistence.repository.utils.CursorPageable;
@@ -38,6 +34,11 @@ public class InsightCommentController {
     @GetMapping("/representative/insights/{insightId}")
     public ApiResponse<RepresentativeCommentResponse> getRepresentativeComments(@PathVariable Long insightId) {
         return ApiResponse.ok(insightCommentQueryApiService.getRepresentativeComments(insightId));
+    }
+
+    @GetMapping("/insights/{insightId}/count")
+    public ApiResponse<InsightCommentCountResponse> getCommentCount(@PathVariable Long insightId) {
+        return ApiResponse.ok(insightCommentQueryApiService.getCommentCount(insightId));
     }
 
     @GetMapping("/insights/{insightId}")

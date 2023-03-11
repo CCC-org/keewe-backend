@@ -60,7 +60,7 @@ public class CommentDomainService {
         return comments;
     }
 
-    public Long getCommentNumberByInsightId(Long insightId) {
+    public Long countByInsightId(Long insightId) {
         return commentQueryRepository.countByInsightId(insightId);
     }
 

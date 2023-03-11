@@ -4,6 +4,7 @@ import static ccc.keewecore.consts.KeeweConsts.REPRESENTATIVE_COMMENT_REPLY_LIMI
 
 import ccc.keeweapi.component.CommentAssembler;
 import ccc.keeweapi.dto.insight.CommentResponse;
+import ccc.keeweapi.dto.insight.InsightCommentCountResponse;
 import ccc.keeweapi.dto.insight.ReplyResponse;
 import ccc.keeweapi.dto.insight.RepresentativeCommentResponse;
 import ccc.keewedomain.persistence.domain.insight.Comment;
@@ -31,7 +32,7 @@ public class InsightCommentQueryApiService {
     public RepresentativeCommentResponse getRepresentativeComments(Long insightId) {
         List<Comment> comments = commentDomainService.getRepresentativeCommentsWithWriter(insightId);
         Map<Long, Long> replyNumberPerParentId = commentDomainService.getReplyNumbers(comments);
-        Long total = commentDomainService.getCommentNumberByInsightId(insightId);
+        Long total = commentDomainService.countByInsightId(insightId);
         Map<Long, List<Comment>> replyPerParentId = new HashMap<>();
 
         if (comments.size() == 1) {
@@ -65,5 +66,9 @@ public class InsightCommentQueryApiService {
         return commentDomainService.getReplies(parentId, cPage).stream()
                 .map(commentAssembler::toReplyResponse)
                 .collect(Collectors.toList());
+    }
+
+    public InsightCommentCountResponse getCommentCount(Long insightId) {
+        return commentAssembler.toInsightCommentCountResponse(commentDomainService.countByInsightId(insightId));
     }
 }
