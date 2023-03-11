@@ -4,6 +4,7 @@ import static com.epages.restdocs.apispec.ResourceDocumentation.headerWithName;
 import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
@@ -11,11 +12,7 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWit
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import ccc.keeweapi.document.utils.ApiDocumentationTest;
-import ccc.keeweapi.dto.insight.CommentCreateResponse;
-import ccc.keeweapi.dto.insight.CommentResponse;
-import ccc.keeweapi.dto.insight.CommentWriterResponse;
-import ccc.keeweapi.dto.insight.ReplyResponse;
-import ccc.keeweapi.dto.insight.RepresentativeCommentResponse;
+import ccc.keeweapi.dto.insight.*;
 import ccc.keeweapi.service.insight.command.InsightCommentCommandApiService;
 import ccc.keeweapi.service.insight.query.InsightCommentQueryApiService;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
@@ -238,6 +235,32 @@ public class InsightCommentControllerTest extends ApiDocumentationTest {
                                 fieldWithPath("data[].writer.name").description("닉네임"),
                                 fieldWithPath("data[].writer.title").description("타이틀"),
                                 fieldWithPath("data[].writer.image").description("프로필 사진"))
+                        .tag("InsightComment")
+                        .build()
+        )));
+    }
+
+    @Test
+    @DisplayName("인사이트 댓글 개수 조회 API")
+    void count_comment() throws Exception {
+        long insightId = 1L;
+        InsightCommentCountResponse response = InsightCommentCountResponse.of(1000L);
+        when(insightCommentQueryApiService.getCommentCount(anyLong())).thenReturn(response);
+
+        ResultActions resultActions = mockMvc.perform(get("/api/v1/comments/insights/{insightId}/count", insightId)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT))
+                .andExpect(status().isOk());
+
+        resultActions.andDo(restDocs.document(resource(
+                ResourceSnippetParameters.builder()
+                        .description("인사이트 댓글 개수 조회 API 입니다.")
+                        .summary("인사이트 댓글 개수 조회 API")
+                        .requestHeaders(
+                                headerWithName("Authorization").description("유저의 JWT"))
+                        .responseFields(
+                                fieldWithPath("message").description("요청 결과 메세지"),
+                                fieldWithPath("code").description("결과 코드"),
+                                fieldWithPath("data.commentCount").description("댓글 총 개수"))
                         .tag("InsightComment")
                         .build()
         )));
