@@ -98,13 +98,13 @@ public class InsightCommentControllerTest extends ApiDocumentationTest {
     @DisplayName("대표 댓글 조회 API")
     void get_representative_comment() throws Exception {
         Long insightId = 1L;
-        Long totalReply = 2L;
         String now = LocalDateTime.now().toString();
 
-        ReplyResponse reply1 = ReplyResponse.of(writer1, 2L, 1L, "답글1 내용", now);
-        ReplyResponse reply2 = ReplyResponse.of(writer1, 3L, 1L, "답글2 내용", now);
-        CommentResponse commentResponse = CommentResponse.of(1L, writer1, "댓글의 내용", now, List.of(reply1, reply2), totalReply);
-        RepresentativeCommentResponse response = RepresentativeCommentResponse.of(10L, List.of(commentResponse));
+        List<RepresentativeCommentResponse> response = List.of(
+                RepresentativeCommentResponse.of(1L, writer1, "댓글1 내용", now),
+                RepresentativeCommentResponse.of(2L, writer2, "댓글2 내용", now),
+                RepresentativeCommentResponse.of(3L, writer1, "댓글3 내용", now)
+        );
 
         when(insightCommentQueryApiService.getRepresentativeComments(insightId)).thenReturn(response);
 
@@ -124,24 +124,14 @@ public class InsightCommentControllerTest extends ApiDocumentationTest {
                         .responseFields(
                                 fieldWithPath("message").description("요청 결과 메세지"),
                                 fieldWithPath("code").description("결과 코드"),
-                                fieldWithPath("data.total").description("인사이트의 총 댓글 개수"),
-                                fieldWithPath("data.comments[].id").description("댓글의 id"),
-                                fieldWithPath("data.comments[].content").description("댓글의 내용"),
-                                fieldWithPath("data.comments[].createdAt").description("댓글의 생성 시각"),
-                                fieldWithPath("data.comments[].totalReply").description("이 댓글의 답글 개수"),
-                                fieldWithPath("data.comments[].writer.id").description("작성자의 id"),
-                                fieldWithPath("data.comments[].writer.name").description("닉네임"),
-                                fieldWithPath("data.comments[].writer.title").description("타이틀"),
-                                fieldWithPath("data.comments[].writer.image").description("프로필 사진"),
-                                fieldWithPath("data.comments[].replies[]").description("댓글의 답글 목록"),
-                                fieldWithPath("data.comments[].replies[].id").description("답글의 id"),
-                                fieldWithPath("data.comments[].replies[].parentId").description("답글 부모의 id"),
-                                fieldWithPath("data.comments[].replies[].content").description("답글의 내용"),
-                                fieldWithPath("data.comments[].replies[].createdAt").description("답글의 생성 시각"),
-                                fieldWithPath("data.comments[].replies[].writer.id").description("작성자의 id"),
-                                fieldWithPath("data.comments[].replies[].writer.name").description("닉네임"),
-                                fieldWithPath("data.comments[].replies[].writer.title").description("타이틀"),
-                                fieldWithPath("data.comments[].replies[].writer.image").description("프로필 사진"))
+                                fieldWithPath("data[].id").description("댓글의 id"),
+                                fieldWithPath("data[].content").description("댓글의 내용"),
+                                fieldWithPath("data[].createdAt").description("댓글의 생성 시각"),
+                                fieldWithPath("data[].writer.id").description("작성자의 id"),
+                                fieldWithPath("data[].writer.name").description("닉네임"),
+                                fieldWithPath("data[].writer.title").description("타이틀"),
+                                fieldWithPath("data[].writer.image").description("프로필 사진")
+                        )
                         .tag("InsightComment")
                         .build()
         )));
