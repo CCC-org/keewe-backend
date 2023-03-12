@@ -76,8 +76,8 @@ public class CommentDomainService {
         return commentQueryRepository.findByInsightIdOrderByIdDesc(insightId, cPage);
     }
 
-    public Optional<Comment> findLatestCommentByWriter(User writer) {
-        return commentQueryRepository.findLatestByWriterOrderById(writer);
+    public Optional<Comment> findLatestCommentByWriter(User writer, Long insightId) {
+        return commentQueryRepository.findLatestByWriterOrderById(writer, insightId);
     }
 
     public Map<Long, Comment> getFirstReplies(List<Comment> parents) {

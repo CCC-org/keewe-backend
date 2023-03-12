@@ -115,7 +115,7 @@ public class CommentQueryRepository {
                 .transform(GroupBy.groupBy(comment.parent.id).as(comment.count()));
     }
 
-    public Optional<Comment> findLatestByWriterOrderById(User writer) {
+    public Optional<Comment> findLatestByWriterOrderById(User writer, Long insightId) {
         return Optional.ofNullable(queryFactory
                 .select(comment)
                 .from(comment)
@@ -126,6 +126,7 @@ public class CommentQueryRepository {
                 .leftJoin(user.repTitle, title)
                 .fetchJoin()
                 .where(comment.writer.eq(writer)
+                        .and(comment.insight.id.eq(insightId))
                         .and(comment.parent.isNull())
                 )
                 .orderBy(comment.id.desc())
