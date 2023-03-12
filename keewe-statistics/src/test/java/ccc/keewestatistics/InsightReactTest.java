@@ -3,38 +3,38 @@ package ccc.keewestatistics;
 
 import ccc.keewedomain.cache.domain.insight.CReactionCount;
 import ccc.keewedomain.cache.repository.insight.CReactionCountRepository;
-import ccc.keewedomain.persistence.domain.insight.ReactionAggregation;
 import ccc.keewedomain.dto.insight.InsightCreateDto;
 import ccc.keewedomain.dto.insight.ReactionIncrementDto;
 import ccc.keewedomain.dto.user.UserSignUpDto;
 import ccc.keewedomain.persistence.domain.insight.Insight;
+import ccc.keewedomain.persistence.domain.insight.ReactionAggregation;
 import ccc.keewedomain.persistence.domain.insight.enums.ReactionType;
 import ccc.keewedomain.persistence.domain.insight.id.ReactionAggregationId;
 import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.persistence.domain.user.enums.VendorType;
 import ccc.keewedomain.persistence.repository.insight.ReactionAggregationRepository;
-import ccc.keewedomain.service.insight.InsightDomainService;
 import ccc.keewedomain.service.insight.ReactionDomainService;
+import ccc.keewedomain.service.insight.command.InsightCommandDomainService;
 import ccc.keewedomain.service.user.UserDomainService;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.assertj.core.api.Assertions;
 
 @SpringBootTest
 @ActiveProfiles("test")
 @Disabled
 public class InsightReactTest {
     @Autowired
-    private InsightDomainService insightDomainService;
+    private InsightCommandDomainService insightCommandDomainService;
     @Autowired
     private UserDomainService userDomainService;
     @Autowired
@@ -86,7 +86,7 @@ public class InsightReactTest {
     }
 
     private Insight createInsight(User user) {
-        return insightDomainService.create(InsightCreateDto.of(
+        return insightCommandDomainService.create(InsightCreateDto.of(
                 user.getId(),
                 "컨텐츠!",
                 "www.kakaocorp.com",

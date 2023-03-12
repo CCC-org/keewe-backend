@@ -24,13 +24,13 @@ import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.service.challenge.command.ChallengeCommandDomainService;
 import ccc.keewedomain.service.challenge.query.ChallengeParticipateQueryDomainService;
 import ccc.keewedomain.service.challenge.query.ChallengeQueryDomainService;
-import ccc.keewedomain.service.insight.InsightDomainService;
 import ccc.keewedomain.service.user.ProfileDomainService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import ccc.keewedomain.service.insight.query.InsightQueryDomainService;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -48,7 +48,7 @@ public class ChallengeApiService {
     private final ChallengeParticipateQueryDomainService challengeParticipateQueryDomainService;
     private final ChallengeQueryDomainService challengeQueryDomainService;
     private final ChallengeCommandDomainService challengeCommandDomainService;
-    private final InsightDomainService insightDomainService;
+    private final InsightQueryDomainService insightQueryDomainService;
     private final ProfileDomainService profileDomainService;
     private final ChallengeAssembler challengeAssembler;
 
@@ -79,7 +79,7 @@ public class ChallengeApiService {
 
         return challengeParticipateQueryDomainService.findCurrentParticipationWithChallenge(userId)
                 .map(participation -> {
-                    Long current = insightDomainService.getRecordedInsightNumber(participation);
+                    Long current = insightQueryDomainService.getRecordedInsightNumber(participation);
                     return challengeAssembler.toParticipationProgressResponse(participation, current);
                 })
                 .orElse(null);
@@ -109,7 +109,7 @@ public class ChallengeApiService {
 
     public List<ChallengeInfoResponse> getSpecifiedNumberOfChallenge(int size) {
         List<Challenge> specifiedNumberOfChallenge = challengeQueryDomainService.getSpecifiedNumberOfRecentChallenge(size);
-        Map<Long, Long> insightCountPerChallengeMap = insightDomainService.getInsightCountPerChallenge(specifiedNumberOfChallenge);
+        Map<Long, Long> insightCountPerChallengeMap = insightQueryDomainService.getInsightCountPerChallenge(specifiedNumberOfChallenge);
         return specifiedNumberOfChallenge.stream()
                 .map(challenge -> challengeAssembler.toChallengeInfoResponse(challenge, insightCountPerChallengeMap.getOrDefault(challenge.getId(), 0L)))
                 .collect(Collectors.toList());
@@ -125,7 +125,7 @@ public class ChallengeApiService {
 
     public ChallengeDetailResponse getChallengeDetail(Long challengeId) {
         Challenge challenge = challengeQueryDomainService.getByIdOrElseThrow(challengeId);
-        Long insightCount = insightDomainService.getInsightCountByChallenge(challenge);
+        Long insightCount = insightQueryDomainService.getInsightCountByChallenge(challenge);
         return challengeAssembler.toChallengeDetailResponse(challenge, insightCount);
     }
 
@@ -147,9 +147,9 @@ public class ChallengeApiService {
             return Collections.emptyList();
         }
 
-        Map<Long, Long> insightCountPerParticipation = insightDomainService.getInsightCountPerParticipation(participations);
         List<User> challengers = participations.stream().map(ChallengeParticipation::getChallenger).collect(Collectors.toList());
         Set<Long> followingIdSet = profileDomainService.getFollowingTargetIdSet(SecurityUtil.getUser(), challengers);
+        Map<Long, Long> insightCountPerParticipation = insightQueryDomainService.getInsightCountPerParticipation(participations);
 
         return participations.stream()
                 .map(participation -> challengeAssembler.toFriendResponse(

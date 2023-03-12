@@ -9,7 +9,7 @@ import ccc.keewedomain.dto.insight.InsightCreateDto;
 import ccc.keewedomain.dto.user.UserSignUpDto;
 import ccc.keewedomain.persistence.repository.insight.InsightRepository;
 import ccc.keewedomain.persistence.repository.user.UserRepository;
-import ccc.keewedomain.service.insight.InsightDomainService;
+import ccc.keewedomain.service.insight.command.InsightCommandDomainService;
 import ccc.keewedomain.service.user.UserDomainService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
@@ -31,7 +31,7 @@ import java.util.stream.IntStream;
 public class InsightViewIncrementTest {
 
     @Autowired
-    private InsightDomainService insightDomainService;
+    private InsightCommandDomainService insightCommandDomainService;
 
     @Autowired
     private UserDomainService userDomainService;
@@ -65,7 +65,7 @@ public class InsightViewIncrementTest {
                 , false
                 , null);
 
-        Insight insight = insightDomainService.create(insightCreateDto);
+        Insight insight = insightCommandDomainService.create(insightCreateDto);
 
         userId = user.getId();
         insightId = insight.getId();
@@ -110,8 +110,7 @@ public class InsightViewIncrementTest {
     private Runnable doIncrement(Long insightId, int threadCnt) {
         return () -> {
             for(int i=0; i<threadCnt; i++)
-                insightDomainService.incrementViewCount(insightId);
+                insightCommandDomainService.incrementViewCount(insightId);
         };
     }
-
 }

@@ -16,6 +16,7 @@ import ccc.keewedomain.persistence.domain.insight.id.ReactionAggregationId;
 import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.persistence.repository.insight.ReactionAggregationRepository;
 import ccc.keewedomain.persistence.repository.insight.ReactionRepository;
+import ccc.keewedomain.service.insight.query.InsightQueryDomainService;
 import ccc.keewedomain.service.user.UserDomainService;
 import ccc.keeweinfra.service.messagequeue.MQPublishService;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +33,7 @@ public class ReactionDomainService {
     private final ReactionAggregationRepository reactionAggregationRepository;
     private final ReactionRepository reactionRepository;
     private final UserDomainService userDomainService;
-    private final InsightDomainService insightDomainService;
+    private final InsightQueryDomainService insightQueryDomainService;
 
     public ReactionDto react(ReactionIncrementDto dto) {
         ReactionAggregationGetDto reactionAggregation = getCurrentReactionAggregation(dto.getInsightId());
@@ -46,7 +47,7 @@ public class ReactionDomainService {
     @Transactional
     public Long applyReact(ReactionIncrementDto dto) {
         Long insightId = dto.getInsightId();
-        Insight insight = insightDomainService.getByIdOrElseThrow(insightId);
+        Insight insight = insightQueryDomainService.getByIdOrElseThrow(insightId);
         User user = userDomainService.getUserByIdOrElseThrow(dto.getUserId());
         ReactionAggregation reactionAggregation = getReactionAggregationByIdWithLock(new ReactionAggregationId(insightId, dto.getReactionType()));
 
@@ -64,7 +65,7 @@ public class ReactionDomainService {
                 .orElseThrow(() -> new KeeweException(KeeweRtnConsts.ERR471));
     }
 
-    private ReactionAggregationGetDto getCurrentReactionAggregation(Long id) {
+    public ReactionAggregationGetDto getCurrentReactionAggregation(Long id) {
         return ReactionAggregationGetDto.createByCnt(cReactionCountRepository.findByIdWithMissHandle(id, () ->
                 reactionAggregationRepository.findDtoByInsightId(id)
         ));

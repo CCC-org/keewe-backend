@@ -1,0 +1,159 @@
+package ccc.keewedomain.service.insight.query;
+
+import ccc.keewecore.consts.KeeweRtnConsts;
+import ccc.keewecore.exception.KeeweException;
+import ccc.keewedomain.cache.domain.insight.CInsightView;
+import ccc.keewedomain.cache.repository.insight.CInsightViewRepository;
+import ccc.keewedomain.dto.insight.InsightDetailDto;
+import ccc.keewedomain.dto.insight.InsightGetDto;
+import ccc.keewedomain.dto.insight.InsightGetForHomeDto;
+import ccc.keewedomain.dto.insight.InsightMyPageDto;
+import ccc.keewedomain.dto.insight.InsightWriterDto;
+import ccc.keewedomain.dto.insight.ReactionAggregationGetDto;
+import ccc.keewedomain.persistence.domain.challenge.Challenge;
+import ccc.keewedomain.persistence.domain.challenge.ChallengeParticipation;
+import ccc.keewedomain.persistence.domain.insight.Insight;
+import ccc.keewedomain.persistence.domain.insight.id.BookmarkId;
+import ccc.keewedomain.persistence.domain.user.User;
+import ccc.keewedomain.persistence.repository.insight.InsightQueryRepository;
+import ccc.keewedomain.persistence.repository.insight.InsightRepository;
+import ccc.keewedomain.persistence.repository.insight.BookmarkRepository;
+import ccc.keewedomain.persistence.repository.utils.CursorPageable;
+import ccc.keewedomain.service.insight.ReactionDomainService;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+@RequiredArgsConstructor
+@Slf4j
+@Service
+public class InsightQueryDomainService {
+    private final InsightRepository insightRepository;
+    private final BookmarkRepository bookmarkRepository;
+    private final BookmarkQueryDomainService bookmarkQueryDomainService;
+    private final InsightQueryRepository insightQueryRepository;
+    private final CInsightViewRepository cInsightViewRepository;
+    private final ReactionDomainService reactionDomainService;
+
+    public InsightGetDto getInsight(InsightDetailDto detailDto) {
+        Insight entity = getByIdOrElseThrow(detailDto.getInsightId());
+        ReactionAggregationGetDto reactionAggregationGetDto = reactionDomainService.getCurrentReactionAggregation(detailDto.getInsightId());
+        BookmarkId bookmarkId = BookmarkId.of(detailDto.getUserId(), detailDto.getInsightId());
+
+        return InsightGetDto.of(detailDto.getInsightId(), entity.getContents(), entity.getLink(), reactionAggregationGetDto, bookmarkQueryDomainService.isBookmark(bookmarkId));
+    }
+
+    public List<InsightGetForHomeDto> getInsightsForHome(User user, CursorPageable<Long> cPage, Boolean follow) {
+        List<Insight> forHome = insightQueryRepository.findForHome(user, cPage, follow);
+        Map<Long, Boolean> bookmarkPresence = bookmarkQueryDomainService.getBookmarkPresenceMap(user, forHome);
+
+        return forHome.parallelStream().map(i ->
+                InsightGetForHomeDto.of(
+                        i.getId(),
+                        i.getContents(),
+                        bookmarkPresence.getOrDefault(i.getId(), false),
+                        i.getLink(),
+                        reactionDomainService.getCurrentReactionAggregation(i.getId()),
+                        i.getCreatedAt(),
+                        InsightWriterDto.of(
+                                i.getWriter().getId(),
+                                i.getWriter().getNickname(),
+                                i.getWriter().getRepTitleName(),
+                                i.getWriter().getProfilePhotoURL()
+                        )
+                )
+        ).collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public Long getRecordOrder(ChallengeParticipation participation, Long insightId) {
+        return insightQueryRepository.countValidByIdBeforeAndParticipation(participation, insightId) + 1;
+    }
+
+    @Transactional(readOnly = true)
+    public Insight getByIdWithChallengeOrElseThrow(Long insightId) {
+        return insightQueryRepository.findByIdWithParticipationAndChallenge(insightId)
+                .orElseThrow(() -> new KeeweException(KeeweRtnConsts.ERR445));
+    }
+
+    @Transactional(readOnly = true)
+    public Long countInsightCreatedAtBetween(ChallengeParticipation participation, LocalDateTime startDate, LocalDateTime endDate) {
+        return insightQueryRepository.countByParticipationBetween(participation, startDate, endDate);
+    }
+
+    @Transactional(readOnly = true)
+    public List<InsightMyPageDto> getInsightsForMyPage(User user, Long targetUserId, Long drawerId, CursorPageable<Long> cPage) {
+        List<Insight> insights = insightQueryRepository.findByUserIdAndDrawerId(targetUserId, drawerId, cPage);
+        Map<Long, Boolean> bookmarkPresenceMap = bookmarkQueryDomainService.getBookmarkPresenceMap(user, insights);
+        return insights.parallelStream()
+                .map(insight -> InsightMyPageDto.of(
+                        insight.getId(),
+                        insight.getContents(),
+                        insight.getLink(),
+                        reactionDomainService.getCurrentReactionAggregation(insight.getId()),
+                        insight.getCreatedAt(),
+                        bookmarkPresenceMap.getOrDefault(insight.getId(), false)
+                ))
+                .collect(Collectors.toList());
+    }
+
+    public Map<Long, Long> getInsightCountPerChallenge(List<Challenge> challenges) {
+        return insightQueryRepository.countPerChallenge(challenges);
+    }
+
+    public Long getInsightCountByChallenge(Challenge challenge) {
+        return insightQueryRepository.countByChallenge(challenge);
+    }
+
+    public Map<Long, Long> getInsightCountPerParticipation(List<ChallengeParticipation> participations) {
+        return insightQueryRepository.countValidPerParticipation(participations);
+    }
+
+    public Insight getByIdWithWriter(Long insightId) {
+        return insightQueryRepository.findByIdWithWriter(insightId);
+    }
+
+    //FIXME get과 find 역할 정확히 정리하기
+    public Insight getByIdOrElseThrow(Long id) {
+        return insightRepository.findById(id).orElseThrow(() -> new KeeweException(KeeweRtnConsts.ERR445));
+    }
+
+    public Long getRecordedInsightNumber(ChallengeParticipation participation) {
+        return insightQueryRepository.countValidByParticipation(participation);
+    }
+
+    public Long getViewCount(Long insightId) {
+        CInsightView insightView = cInsightViewRepository.findById(insightId)
+                .orElseGet(() -> {
+                    log.info("[IDS::getViewCount] Initialize view count. insightId={}L", insightId);
+                    CInsightView dftInsightView = CInsightView.of(insightId, 0L);
+                    return dftInsightView;
+                });
+
+        return insightView.getViewCount() + 1;
+    }
+
+    public boolean isRecordable(ChallengeParticipation participation) {
+        if (isTodayRecorded(participation.getChallenger())) {
+            return false;
+        }
+        Long count = getRecordedInsightNumber(participation);
+        long weeks = participation.getCurrentWeek();
+        log.info("[IDS::isRecordable] count={} weeks={}", count, weeks);
+        return count < weeks * participation.getInsightPerWeek();
+    }
+
+    public boolean isTodayRecorded(User user) {
+        LocalDate now = LocalDate.now();
+        LocalDateTime startDate = now.atStartOfDay();
+        LocalDateTime endDate = startDate.plusDays(1);
+        return insightQueryRepository.existByWriterAndCreatedAtBetweenAndValidTrue(user, startDate, endDate);
+    }
+}
+

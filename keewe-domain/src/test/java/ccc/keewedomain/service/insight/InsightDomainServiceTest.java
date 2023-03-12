@@ -21,6 +21,8 @@ import ccc.keewedomain.persistence.repository.insight.InsightRepository;
 import ccc.keewedomain.persistence.repository.insight.ReactionAggregationRepository;
 import ccc.keewedomain.persistence.repository.user.UserRepository;
 import ccc.keewedomain.persistence.repository.utils.CursorPageable;
+import ccc.keewedomain.service.insight.command.InsightCommandDomainService;
+import ccc.keewedomain.service.insight.query.InsightQueryDomainService;
 import ccc.keewedomain.service.user.ProfileDomainService;
 import ccc.keewedomain.utils.DatabaseCleaner;
 import ccc.keeweinfra.KeeweInfraApplication;
@@ -47,7 +49,10 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 public class InsightDomainServiceTest {
 
     @Autowired
-    InsightDomainService insightDomainService;
+    InsightQueryDomainService insightQueryDomainService;
+
+    @Autowired
+    InsightCommandDomainService insightCommandDomainService;
 
     @Autowired
     ProfileDomainService profileDomainService;
@@ -100,7 +105,7 @@ public class InsightDomainServiceTest {
         //given
         InsightCreateDto dto = InsightCreateDto.of(user.getId(), "인사이트 내용", "https://comic.naver.com", false, null);
         //when
-        Insight insight = insightDomainService.create(dto);
+        Insight insight = insightCommandDomainService.create(dto);
 
         //then
         assertAll(
@@ -115,7 +120,7 @@ public class InsightDomainServiceTest {
         //given
         InsightCreateDto dto = InsightCreateDto.of(user.getId(), "인사이트 내용", "https://comic.naver.com", true, null);
         //when
-        Insight newInsight = insightDomainService.create(dto);
+        Insight newInsight = insightCommandDomainService.create(dto);
 
         //then
         assertAll(
@@ -138,7 +143,7 @@ public class InsightDomainServiceTest {
 
         //when
         List<Insight> insights = dtos.stream()
-                .map(dto -> insightDomainService.create(dto))
+                .map(dto -> insightCommandDomainService.create(dto))
                 .collect(Collectors.toList());
 
         Insight insight1 = insights.get(0);
@@ -162,7 +167,7 @@ public class InsightDomainServiceTest {
         InsightCreateDto dto = InsightCreateDto.of(user.getId(), "인사이트 내용", "https://comic.naver.com", true, 9999L);
 
         //when, then
-        assertThatThrownBy(() -> insightDomainService.create(dto))
+        assertThatThrownBy(() -> insightCommandDomainService.create(dto))
                 .isExactlyInstanceOf(KeeweException.class)
                 .hasMessage(KeeweRtnConsts.ERR440.getDescription());
     }
@@ -177,7 +182,7 @@ public class InsightDomainServiceTest {
         InsightCreateDto dto = InsightCreateDto.of(user.getId(), "인사이트 내용", "https://comic.naver.com", true, drawer.getId());
 
         //when, then
-        assertThatThrownBy(() -> insightDomainService.create(dto))
+        assertThatThrownBy(() -> insightCommandDomainService.create(dto))
                 .isExactlyInstanceOf(KeeweException.class)
                 .hasMessage(KeeweRtnConsts.ERR444.getDescription());
     }
@@ -191,12 +196,12 @@ public class InsightDomainServiceTest {
         userRepository.save(other);
 
         // user(other) follows no one
-        int noOne = insightDomainService.getInsightsForHome(other, CursorPageable.of(Long.MAX_VALUE, 10L), follow).size();
+        int noOne = insightQueryDomainService.getInsightsForHome(other, CursorPageable.of(Long.MAX_VALUE, 10L), follow).size();
         assertThat(noOne).isEqualTo(0);
 
         // user(other) follows user
         profileDomainService.toggleFollowership(FollowToggleDto.of(other.getId(), user.getId()));
-        int followUser = insightDomainService.getInsightsForHome(other, CursorPageable.of(Long.MAX_VALUE, 10L), follow).size();
+        int followUser = insightQueryDomainService.getInsightsForHome(other, CursorPageable.of(Long.MAX_VALUE, 10L), follow).size();
         assertThat(followUser).isEqualTo(1);
     }
 }
