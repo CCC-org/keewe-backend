@@ -51,10 +51,10 @@ public class ChallengeParticipationController {
     }
 
     @GetMapping("/{challengeId}/challengers")
-    public ApiResponse<List<TogetherChallengerResponse>> getTogetherChallengers(
+    public ApiResponse<List<TogetherChallengerResponse>> paginateTogetherChallengers(
             @PathVariable Long challengeId,
             @PageableDefault(page = 0, size = 10) Pageable pageable) {
-        return ApiResponse.ok(challengeApiService.getTogetherChallengers(challengeId, pageable));
+        return ApiResponse.ok(challengeApiService.paginateTogetherChallengers(challengeId, pageable));
     }
 
     @GetMapping("/{challengeId}/challengers/count")

@@ -139,7 +139,7 @@ public class ChallengeApiService {
     }
 
     @Transactional(readOnly = true)
-    public List<TogetherChallengerResponse> getTogetherChallengers(Long challengeId, Pageable pageable) {
+    public List<TogetherChallengerResponse> paginateTogetherChallengers(Long challengeId, Pageable pageable) {
         User user = SecurityUtil.getUser();
         Challenge challenge = challengeQueryDomainService.getByIdOrElseThrow(challengeId);
         List<ChallengeParticipation> participations = challengeParticipateQueryDomainService.findTogetherChallengeParticipations(challenge, user, pageable);
