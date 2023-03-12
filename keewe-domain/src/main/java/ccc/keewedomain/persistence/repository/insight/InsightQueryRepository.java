@@ -44,6 +44,15 @@ public class InsightQueryRepository {
 
     }
 
+    public List<Insight> findValidInsightsByParticipation(ChallengeParticipation participation) {
+        return queryFactory.select(insight)
+                .from(insight)
+                .where(insight.challengeParticipation.eq(participation)
+                        .and(insight.deleted.isFalse())
+                        .and(insight.valid.isTrue()))
+                .fetch();
+    }
+
     public Long countValidByParticipation(ChallengeParticipation participation) {
         return queryFactory.select(insight.id.count())
                 .from(insight)
@@ -154,10 +163,6 @@ public class InsightQueryRepository {
                 .fetchFirst();
     }
 
-    private BooleanExpression drawerIdEq(Long drawerId) {
-        return drawerId != null ? insight.drawer.id.eq(drawerId) : null;
-    }
-
     public boolean existByWriterAndCreatedAtBetweenAndValidTrue(User writer, LocalDateTime startDate, LocalDateTime endDate) {
         return queryFactory
                 .selectOne()
@@ -167,5 +172,9 @@ public class InsightQueryRepository {
                 .where(insight.valid.isTrue())
                 .where(insight.deleted.isFalse())
                 .fetchFirst() != null;
+    }
+
+    private BooleanExpression drawerIdEq(Long drawerId) {
+        return drawerId != null ? insight.drawer.id.eq(drawerId) : null;
     }
 }
