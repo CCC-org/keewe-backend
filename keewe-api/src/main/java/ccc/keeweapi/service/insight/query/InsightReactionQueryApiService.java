@@ -30,7 +30,7 @@ public class InsightReactionQueryApiService {
     private final ChallengeParticipateQueryDomainService challengeParticipateQueryDomainService;
     private final Executor worker;
 
-    public ReactionAggregationResponse aggregatePerReactionType() {
+    public ReactionAggregationResponse aggregateOfCurrentChallenge() {
         Assert.isInstanceOf(ThreadPoolTaskExecutor.class, worker);
 
         ChallengeParticipation participation = challengeParticipateQueryDomainService.getCurrentChallengeParticipation(SecurityUtil.getUser());

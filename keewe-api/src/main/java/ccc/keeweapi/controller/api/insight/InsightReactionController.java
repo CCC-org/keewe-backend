@@ -27,6 +27,6 @@ public class InsightReactionController {
 
     @GetMapping("/challenge-statistics")
     public ApiResponse<?> aggregateReactionOfCurrentChallenge() {
-        return ApiResponse.ok(insightReactionQueryApiService.aggregatePerReactionType());
+        return ApiResponse.ok(insightReactionQueryApiService.aggregateOfCurrentChallenge());
     }
 }
