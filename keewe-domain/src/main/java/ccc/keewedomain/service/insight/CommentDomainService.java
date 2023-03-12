@@ -9,6 +9,7 @@ import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.persistence.repository.insight.CommentQueryRepository;
 import ccc.keewedomain.persistence.repository.insight.CommentRepository;
 import ccc.keewedomain.persistence.repository.utils.CursorPageable;
+import ccc.keewedomain.service.insight.query.InsightQueryDomainService;
 import ccc.keewedomain.service.user.UserDomainService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,11 +25,11 @@ public class CommentDomainService {
     private final CommentRepository commentRepository;
     private final CommentQueryRepository commentQueryRepository;
 
-    private final InsightDomainService insightDomainService;
+    private final InsightQueryDomainService insightQueryDomainService;
     private final UserDomainService userDomainService;
 
     public Comment create(CommentCreateDto dto) {
-        Insight insight = insightDomainService.getByIdOrElseThrow(dto.getInsightId());
+        Insight insight = insightQueryDomainService.getByIdOrElseThrow(dto.getInsightId());
         User writer = userDomainService.getUserByIdOrElseThrow(dto.getWriterId());
 
         Optional<Comment> optParent = findByIdAndInsightId(dto.getParentId(), dto.getInsightId());

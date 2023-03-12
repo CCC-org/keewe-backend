@@ -14,6 +14,7 @@ import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.persistence.domain.user.enums.VendorType;
 import ccc.keewedomain.persistence.repository.insight.ReactionAggregationRepository;
 import ccc.keewedomain.persistence.repository.user.UserRepository;
+import ccc.keewedomain.service.insight.command.InsightCommandDomainService;
 import ccc.keewedomain.utils.DatabaseCleaner;
 import ccc.keeweinfra.KeeweInfraApplication;
 import ccc.keeweinfra.service.messagequeue.MQPublishService;
@@ -40,7 +41,7 @@ public class ReactionDomainServiceTest {
     ReactionDomainService reactionDomainService;
 
     @Autowired
-    InsightDomainService insightDomainService;
+    InsightCommandDomainService insightCommandDomainService;
 
     @Autowired
     UserRepository userRepository;
@@ -80,7 +81,7 @@ public class ReactionDomainServiceTest {
     @DisplayName("반응 테스트")
     void react() {
         InsightCreateDto insightCreateDto = InsightCreateDto.of(user.getId(), "인사이트 내용", "https://comic.naver.com", false, null);
-        Insight insight = insightDomainService.create(insightCreateDto);
+        Insight insight = insightCommandDomainService.create(insightCreateDto);
         Long insightId = insight.getId();
         ReactionType reactionType = ReactionType.CLAP;
         Long value = 1L;
@@ -99,7 +100,7 @@ public class ReactionDomainServiceTest {
     @DisplayName("applyReact 테스트 (반응 메세지 컨슈머 호출 함수)")
     void apply_react_test() {
         InsightCreateDto insightCreateDto = InsightCreateDto.of(user.getId(), "인사이트 내용", "https://comic.naver.com", false, null);
-        Insight insight = insightDomainService.create(insightCreateDto);
+        Insight insight = insightCommandDomainService.create(insightCreateDto);
         Long insightId = insight.getId();
         ReactionType reactionType = ReactionType.CLAP;
         Long value = 1L;

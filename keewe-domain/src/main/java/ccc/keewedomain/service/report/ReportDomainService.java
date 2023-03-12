@@ -6,7 +6,7 @@ import ccc.keewedomain.persistence.domain.insight.Insight;
 import ccc.keewedomain.persistence.domain.report.Report;
 import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.persistence.repository.report.ReportRepository;
-import ccc.keewedomain.service.insight.InsightDomainService;
+import ccc.keewedomain.service.insight.query.InsightQueryDomainService;
 import ccc.keewedomain.service.user.UserDomainService;
 import ccc.keeweinfra.service.notification.SlackNotiService;
 import ccc.keeweinfra.vo.Attachment;
@@ -23,7 +23,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class ReportDomainService {
     private final ReportRepository reportRepository;
-    private final InsightDomainService insightDomainService;
+    private final InsightQueryDomainService insightQueryDomainService;
     private final UserDomainService userDomainService;
     private final SlackNotiService slackNotiService;
 
@@ -33,7 +33,7 @@ public class ReportDomainService {
     @Transactional
     public Report save(ReportCreateDto reportCreateDto) {
         User reporter = userDomainService.getUserByIdOrElseThrow(reportCreateDto.getUserId());
-        Insight insight = insightDomainService.getByIdOrElseThrow(reportCreateDto.getInsightId());
+        Insight insight = insightQueryDomainService.getByIdOrElseThrow(reportCreateDto.getInsightId());
 
         Report report = Report.of(reporter, insight, reportCreateDto.getReportType(), reportCreateDto.getReason());
 
