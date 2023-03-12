@@ -13,7 +13,7 @@ import ccc.keeweapi.dto.challenge.InsightProgressResponse;
 import ccc.keeweapi.dto.challenge.ParticipatingChallengeDetailResponse;
 import ccc.keeweapi.dto.challenge.ParticipatingChallengeResponse;
 import ccc.keeweapi.dto.challenge.ParticipationCheckResponse;
-import ccc.keeweapi.dto.challenge.TogetherChallengerResponse;
+import ccc.keeweapi.dto.challenge.FriendResponse;
 import ccc.keeweapi.dto.challenge.WeekProgressResponse;
 import ccc.keeweapi.utils.SecurityUtil;
 import ccc.keewecore.consts.KeeweRtnConsts;
@@ -139,19 +139,20 @@ public class ChallengeApiService {
     }
 
     @Transactional(readOnly = true)
-    public List<TogetherChallengerResponse> paginateTogetherChallengers(Long challengeId, Pageable pageable) {
+    public List<FriendResponse> paginateFriends(Long challengeId, Pageable pageable) {
         User user = SecurityUtil.getUser();
         Challenge challenge = challengeQueryDomainService.getByIdOrElseThrow(challengeId);
-        List<ChallengeParticipation> participations = challengeParticipateQueryDomainService.findTogetherChallengeParticipations(challenge, user, pageable);
+        List<ChallengeParticipation> participations = challengeParticipateQueryDomainService.findFriendsParticipations(challenge, user, pageable);
         if(participations.isEmpty()) {
             return Collections.emptyList();
         }
+
         Map<Long, Long> insightCountPerParticipation = insightDomainService.getInsightCountPerParticipation(participations);
         List<User> challengers = participations.stream().map(ChallengeParticipation::getChallenger).collect(Collectors.toList());
         Set<Long> followingIdSet = profileDomainService.getFollowingTargetIdSet(SecurityUtil.getUser(), challengers);
 
         return participations.stream()
-                .map(participation -> challengeAssembler.toTogetherChallengerResponse(
+                .map(participation -> challengeAssembler.toFriendResponse(
                         participation,
                         insightCountPerParticipation.getOrDefault(participation.getId(), 0L),
                         followingIdSet.contains(participation.getChallenger().getId()))

@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor(staticName = "of")
-public class TogetherChallengerResponse {
+public class FriendResponse {
     private String nickname;
     private String imageURL;
     private long currentRecord;

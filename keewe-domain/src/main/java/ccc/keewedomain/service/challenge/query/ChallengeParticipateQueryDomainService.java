@@ -61,7 +61,7 @@ public class ChallengeParticipateQueryDomainService {
     }
 
     @Transactional(readOnly = true)
-    public List<ChallengeParticipation> findTogetherChallengeParticipations(Challenge challenge, User user, Pageable pageable) {
+    public List<ChallengeParticipation> findFriendsParticipations(Challenge challenge, User user, Pageable pageable) {
         return challengeParticipationQueryRepository.findByChallengeOrderByFollowing(challenge, user, pageable);
     }
 

@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
@@ -164,9 +163,9 @@ public class ChallengeAssembler {
         return FinishedChallengeCountResponse.of(count);
     }
 
-    public TogetherChallengerResponse toTogetherChallengerResponse(ChallengeParticipation participation, Long current, boolean isFollowing) {
+    public FriendResponse toFriendResponse(ChallengeParticipation participation, Long current, boolean isFollowing) {
         User challenger = participation.getChallenger();
-        return TogetherChallengerResponse.of(
+        return FriendResponse.of(
                 challenger.getNickname(),
                 challenger.getProfilePhotoURL(),
                 current,

@@ -50,11 +50,11 @@ public class ChallengeParticipationController {
         return ApiResponse.ok(challengeApiService.getWeekProgress());
     }
 
-    @GetMapping("/{challengeId}/challengers")
-    public ApiResponse<List<TogetherChallengerResponse>> paginateTogetherChallengers(
+    @GetMapping("/{challengeId}/friends")
+    public ApiResponse<List<FriendResponse>> paginateFriends(
             @PathVariable Long challengeId,
             @PageableDefault(page = 0, size = 10) Pageable pageable) {
-        return ApiResponse.ok(challengeApiService.paginateTogetherChallengers(challengeId, pageable));
+        return ApiResponse.ok(challengeApiService.paginateFriends(challengeId, pageable));
     }
 
     @GetMapping("/{challengeId}/challengers/count")

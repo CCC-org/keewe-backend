@@ -241,15 +241,15 @@ public class ChallengeParticipationControllerTest extends ApiDocumentationTest {
     @Test
     @DisplayName("챌린지 상세 함께 기록 조회 API")
     void get_together() throws Exception {
-        List<TogetherChallengerResponse> response = List.of(
-                TogetherChallengerResponse.of("닉네임1", "이미지 URL1", 1L, 4L, true),
-                TogetherChallengerResponse.of("닉네임2", "이미지 URL2", 2L, 4L, false),
-                TogetherChallengerResponse.of("닉네임3", "이미지 URL3", 3L, 4L, false)
+        List<FriendResponse> response = List.of(
+                FriendResponse.of("닉네임1", "이미지 URL1", 1L, 4L, true),
+                FriendResponse.of("닉네임2", "이미지 URL2", 2L, 4L, false),
+                FriendResponse.of("닉네임3", "이미지 URL3", 3L, 4L, false)
         );
 
-        when(challengeApiService.paginateTogetherChallengers(anyLong(), any())).thenReturn(response);
+        when(challengeApiService.paginateFriends(anyLong(), any())).thenReturn(response);
 
-        ResultActions resultActions = mockMvc.perform(get("/api/v1/challenge/{challengeId}/challengers", 1L)
+        ResultActions resultActions = mockMvc.perform(get("/api/v1/challenge/{challengeId}/friends", 1L)
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
                         .param("page", "0")
                         .param("size", "10")
