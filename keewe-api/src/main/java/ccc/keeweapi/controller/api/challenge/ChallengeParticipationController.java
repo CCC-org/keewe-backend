@@ -4,6 +4,11 @@ import ccc.keeweapi.dto.ApiResponse;
 import ccc.keeweapi.dto.challenge.*;
 import ccc.keeweapi.service.challenge.ChallengeApiService;
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
+import ccc.keeweapi.service.challenge.query.ChallengeParticipationQueryApiService;
+import ccc.keewecore.aop.annotations.FLogging;
+import ccc.keewecore.consts.KeeweConsts;
+import ccc.keewedomain.persistence.repository.utils.CursorPageable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +21,7 @@ import java.util.List;
 @Validated
 public class ChallengeParticipationController {
     private final ChallengeApiService challengeApiService;
+    private final ChallengeParticipationQueryApiService challengeParticipationQueryApiService;
 
     @PostMapping(value = "/participation")
     public ApiResponse<ChallengeParticipationResponse> participate(@RequestBody @Valid ChallengeParticipateRequest request) {
@@ -50,5 +56,26 @@ public class ChallengeParticipationController {
     @GetMapping("/{challengeId}/challengers/count")
     public ApiResponse<ChallengerCountResponse> getChallengerCount(@PathVariable Long challengeId) {
         return ApiResponse.ok(challengeApiService.getChallengerCount(challengeId));
+    }
+
+    @GetMapping("/history")
+    @FLogging
+    public ApiResponse<ChallengeHistoryListResponse> getHistoryOfChallenge(
+            @RequestParam(value = "size", defaultValue = KeeweConsts.LONG_MAX_STRING) @Min(1) Long size
+    ) {
+        return ApiResponse.ok(challengeApiService.getHistoryOfChallenge(size));
+    }
+
+    @GetMapping("/finished")
+    public ApiResponse<List<FinishedChallengeResponse>> paginateCompletedChallenges(
+            @RequestParam(required = false, defaultValue = KeeweConsts.LONG_MAX_STRING) Long cursor,
+            @RequestParam Long limit
+    ) {
+        return ApiResponse.ok(challengeParticipationQueryApiService.paginateFinished(CursorPageable.of(cursor, limit)));
+    }
+
+    @GetMapping("/finished/count")
+    public ApiResponse<FinishedChallengeCountResponse> countCompletedChallenges() {
+        return ApiResponse.ok(challengeParticipationQueryApiService.countFinished());
     }
 }

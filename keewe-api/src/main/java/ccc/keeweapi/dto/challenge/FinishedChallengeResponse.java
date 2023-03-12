@@ -5,10 +5,11 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor(staticName = "of")
-public class OpenedChallengeResponse {
+public class FinishedChallengeResponse {
+    private Long challengeParticipationId;
     private Long challengeId;
     private String challengeCategory;
-    private String challengeIntroduction;
     private String challengeName;
-    private Long insightCount;
+    private String startDate;
+    private String endDate;
 }

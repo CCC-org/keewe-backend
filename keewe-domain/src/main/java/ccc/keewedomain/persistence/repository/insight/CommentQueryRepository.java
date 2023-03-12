@@ -1,6 +1,7 @@
 package ccc.keewedomain.persistence.repository.insight;
 
 import ccc.keewedomain.persistence.domain.insight.Comment;
+import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.persistence.repository.utils.CursorPageable;
 import com.querydsl.core.group.GroupBy;
 import com.querydsl.jpa.JPAExpressions;
@@ -11,9 +12,11 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static ccc.keewedomain.persistence.domain.insight.QComment.comment;
 import static ccc.keewedomain.persistence.domain.title.QTitle.title;
+import static ccc.keewedomain.persistence.domain.user.QProfilePhoto.profilePhoto;
 import static ccc.keewedomain.persistence.domain.user.QUser.user;
 
 @Repository
@@ -32,8 +35,14 @@ public class CommentQueryRepository {
                 .fetchJoin()
                 .leftJoin(user.repTitle, title)
                 .fetchJoin()
-                .where(comment.id.in(findIdByInsightIdAndCursorDesc(insightId, cPage)))
+                .leftJoin(user.profilePhoto, profilePhoto)
+                .fetchJoin()
+                .where(comment.insight.id.eq(insightId)
+                    .and(comment.parent.isNull())
+                    .and(comment.id.lt(cPage.getCursor()))
+                )
                 .orderBy(comment.id.desc())
+                .limit(cPage.getLimit())
                 .fetch();
     }
 
@@ -106,23 +115,28 @@ public class CommentQueryRepository {
                 .transform(GroupBy.groupBy(comment.parent.id).as(comment.count()));
     }
 
+    public Optional<Comment> findLatestByWriterOrderById(User writer) {
+        return Optional.ofNullable(queryFactory
+                .select(comment)
+                .from(comment)
+                .innerJoin(comment.writer, user)
+                .fetchJoin()
+                .leftJoin(user.profilePhoto, profilePhoto)
+                .fetchJoin()
+                .leftJoin(user.repTitle, title)
+                .fetchJoin()
+                .where(comment.writer.eq(writer)
+                        .and(comment.parent.isNull())
+                )
+                .orderBy(comment.id.desc())
+                .fetchFirst());
+    }
+
     private List<Long> findIdByParentIdAndCursorDesc(Long parentId, CursorPageable<Long> cPage) {
         return queryFactory
                 .select(comment.id)
                 .from(comment)
                 .where(comment.parent.id.eq(parentId)
-                        .and(comment.id.lt(cPage.getCursor())))
-                .orderBy(comment.id.desc())
-                .limit(cPage.getLimit())
-                .fetch();
-    }
-
-    private List<Long> findIdByInsightIdAndCursorDesc(Long insightId, CursorPageable<Long> cPage) {
-        return queryFactory
-                .select(comment.id)
-                .from(comment)
-                .where(comment.insight.id.eq(insightId)
-                        .and(comment.parent.isNull())
                         .and(comment.id.lt(cPage.getCursor())))
                 .orderBy(comment.id.desc())
                 .limit(cPage.getLimit())

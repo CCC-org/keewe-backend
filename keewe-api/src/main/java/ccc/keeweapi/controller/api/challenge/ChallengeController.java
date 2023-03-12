@@ -31,14 +31,6 @@ public class ChallengeController {
         return ApiResponse.ok(challengeApiService.createChallenge(request));
     }
 
-    @GetMapping("/history")
-    @FLogging
-    public ApiResponse<ChallengeHistoryListResponse> getHistoryOfChallenge(
-            @RequestParam(value = "size", defaultValue = KeeweConsts.LONG_MAX_STRING) @Min(1) Long size
-    ) {
-        return ApiResponse.ok(challengeApiService.getHistoryOfChallenge(size));
-    }
-
     @GetMapping
     @FLogging
     public ApiResponse<List<OpenedChallengeResponse>> paginateChallenges(
@@ -55,9 +47,15 @@ public class ChallengeController {
         return ApiResponse.ok(challengeApiService.getSpecifiedNumberOfChallenge(size));
     }
 
-    @GetMapping("/detail/{challengeId}")
+    @GetMapping("/{challengeId}/detail")
     @FLogging
     public ApiResponse<ChallengeDetailResponse> getChallengeDetail(@PathVariable Long challengeId) {
         return ApiResponse.ok(challengeApiService.getChallengeDetail(challengeId));
+    }
+
+    @GetMapping("/my/detail")
+    @FLogging
+    public ApiResponse<ParticipatingChallengeDetailResponse> getMyChallengeDetail() {
+        return ApiResponse.ok(challengeApiService.getMyChallengeDetail());
     }
 }

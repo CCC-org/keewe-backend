@@ -1,3 +1,5 @@
+server:
+  shutdown: graceful
 spring:
   profiles:
     include: domain, core

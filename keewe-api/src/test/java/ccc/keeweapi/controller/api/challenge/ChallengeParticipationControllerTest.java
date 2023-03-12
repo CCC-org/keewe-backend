@@ -1,20 +1,10 @@
 package ccc.keeweapi.controller.api.challenge;
 
-import static com.epages.restdocs.apispec.ResourceDocumentation.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.when;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import ccc.keeweapi.document.utils.ApiDocumentationTest;
 import ccc.keeweapi.dto.challenge.*;
 import ccc.keeweapi.service.challenge.ChallengeApiService;
+import ccc.keeweapi.service.challenge.query.ChallengeParticipationQueryApiService;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
-import java.time.LocalDate;
-import java.util.List;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -24,8 +14,17 @@ import org.mockito.Mock;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
-import org.springframework.restdocs.payload.FieldDescriptor;
 import org.springframework.test.web.servlet.ResultActions;
+import java.time.LocalDate;
+import java.util.List;
+import static com.epages.restdocs.apispec.ResourceDocumentation.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.when;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class ChallengeParticipationControllerTest extends ApiDocumentationTest {
 
@@ -35,11 +34,13 @@ public class ChallengeParticipationControllerTest extends ApiDocumentationTest {
     @Mock
     ChallengeApiService challengeApiService;
 
+    @Mock
+    ChallengeParticipationQueryApiService challengeParticipationQueryApiService;
+
     @BeforeEach
     void setup(final RestDocumentationContextProvider provider) {
         super.setup(challengeParticipationController, provider);
     }
-
 
     @Test
     @DisplayName("챌린지 참여")
@@ -299,6 +300,127 @@ public class ChallengeParticipationControllerTest extends ApiDocumentationTest {
                                 fieldWithPath("message").description("요청 결과 메세지"),
                                 fieldWithPath("code").description("결과 코드"),
                                 fieldWithPath("data.challengerCount").description("참가자의 닉네임")
+                        )
+                        .tag("ChallengeParticipation")
+                        .build()
+        )));
+    }
+
+    @Test
+    @DisplayName("완료된 챌린지 지정한 개수 조회")
+    void get_challenge_history() throws Exception {
+        List<ChallengeHistoryResponse> historyResponses = List.of(
+                ChallengeHistoryResponse.of(1L, "개발", "챌린지1", "2023-01-01", "2023-01-13"),
+                ChallengeHistoryResponse.of(2L, "개발", "챌린지2", "2023-02-01", "2023-02-13")
+        );
+        ChallengeHistoryListResponse response = ChallengeHistoryListResponse.of(
+                2L,
+                historyResponses
+        );
+
+        when(challengeApiService.getHistoryOfChallenge(anyLong()))
+                .thenReturn(response);
+
+        ResultActions resultActions = mockMvc.perform(get("/api/v1/challenge/history")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
+                        .param("size", "5")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        resultActions.andDo(restDocs.document(resource(
+                ResourceSnippetParameters.builder()
+                        .description("완료된 챌린지 지정한 개수 만큼 조회 API 입니다.")
+                        .summary("완료된 챌린지 조회 지정한 개수 만큼 조회 API")
+                        .requestParameters(
+                                parameterWithName("size").description("조회할 챌린지 기록 개수. 미설정 시 전체 조회").optional()
+                        )
+                        .requestHeaders(
+                                headerWithName("Authorization").description("유저의 JWT")
+                        )
+                        .responseFields(
+                                fieldWithPath("message").description("요청 결과 메세지"),
+                                fieldWithPath("code").description("결과 코드"),
+                                fieldWithPath("data.historyNumber").description("전체 종료된 챌린지 개수, 최소값 1(size와 관련 없음)"),
+                                fieldWithPath("data.challengeHistories[].challengeId").description("챌린지의 ID"),
+                                fieldWithPath("data.challengeHistories[].challengeCategory").description("챌린지의 카테고리(관심사)"),
+                                fieldWithPath("data.challengeHistories[].challengeName").description("챌린지 이름"),
+                                fieldWithPath("data.challengeHistories[].startDate").description("챌린지 참가일"),
+                                fieldWithPath("data.challengeHistories[].endDate").description("챌린지 종료일")
+                        )
+                        .tag("Challenge")
+                        .build()
+        )));
+    }
+
+    @Test
+    @DisplayName("종료된 챌린지 페이지네이션 조회")
+    void get_completed_challenges() throws Exception {
+        ChallengerCountResponse response = ChallengerCountResponse.of(1000L);
+
+        List<FinishedChallengeResponse> responses = List.of(
+                FinishedChallengeResponse.of(1L, 3L, "개발", "개발챌린지", "2023-03-05", "2023-03-12")
+        );
+
+        when(challengeParticipationQueryApiService.paginateFinished(any())).thenReturn(responses);
+
+        ResultActions resultActions = mockMvc.perform(get("/api/v1/challenge/finished")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
+                        .param("cursor", "100")
+                        .param("limit", "10")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        resultActions.andDo(restDocs.document(resource(
+                ResourceSnippetParameters.builder()
+                        .description("종료된 챌린지 페이지네이션 조회 API 입니다.")
+                        .summary("종료된 챌린지 페이지네이션 조회 API")
+                        .requestParameters(
+                                parameterWithName("cursor").description("마지막으로 받은 챌린지 참가 현황(challengeParticipationId) ID, 첫 요청 시 비우고 요청"),
+                                parameterWithName("limit").description("가져올 챌린지 개수")
+                        )
+                        .requestHeaders(
+                                headerWithName("Authorization").description("유저의 JWT")
+                        )
+                        .responseFields(
+                                fieldWithPath("message").description("요청 결과 메세지"),
+                                fieldWithPath("code").description("결과 코드"),
+                                fieldWithPath("data").description("데이터, 오류 시 null"),
+                                fieldWithPath("data[].challengeParticipationId").description("챌린지 참가 현황 ID"),
+                                fieldWithPath("data[].challengeId").description("챌린지의 ID"),
+                                fieldWithPath("data[].challengeName").description("챌린지의 이름"),
+                                fieldWithPath("data[].challengeCategory").description("챌린지 카테고리"),
+                                fieldWithPath("data[].startDate").description("챌린지 생성일"),
+                                fieldWithPath("data[].endDate").description("챌린지 종료일")
+                        )
+                        .tag("ChallengeParticipation")
+                        .build()
+        )));
+    }
+
+    @Test
+    @DisplayName("종료된 챌린지 개수 조회")
+    void count_completed_challenges() throws Exception {
+        FinishedChallengeCountResponse response = FinishedChallengeCountResponse.of(14L);
+
+        when(challengeParticipationQueryApiService.countFinished()).thenReturn(response);
+
+        ResultActions resultActions = mockMvc.perform(get("/api/v1/challenge/finished/count")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        resultActions.andDo(restDocs.document(resource(
+                ResourceSnippetParameters.builder()
+                        .description("종료된 챌린지 개수 조회 API 입니다.")
+                        .summary("종료된 챌린지 개수 조회 API")
+                        .requestHeaders(
+                                headerWithName("Authorization").description("유저의 JWT")
+                        )
+                        .responseFields(
+                                fieldWithPath("message").description("요청 결과 메세지"),
+                                fieldWithPath("code").description("결과 코드"),
+                                fieldWithPath("data").description("데이터, 오류 시 null"),
+                                fieldWithPath("data.count").description("종료된 챌린지 개수")
                         )
                         .tag("ChallengeParticipation")
                         .build()

@@ -4,6 +4,7 @@ import ccc.keewedomain.persistence.domain.challenge.Challenge;
 import ccc.keewedomain.persistence.domain.challenge.ChallengeParticipation;
 import ccc.keewedomain.persistence.domain.challenge.enums.ChallengeParticipationStatus;
 import ccc.keewedomain.persistence.domain.user.User;
+import ccc.keewedomain.persistence.repository.utils.CursorPageable;
 import com.querydsl.core.group.GroupBy;
 import com.querydsl.core.types.dsl.DateTemplate;
 import com.querydsl.core.types.dsl.Expressions;
@@ -36,8 +37,7 @@ public class ChallengeParticipationQueryRepository {
             "%Y-%m-%d");
 
     public boolean existsByChallengerIdAndStatus(Long challengerId, ChallengeParticipationStatus status) {
-        Integer fetchFirst = queryFactory
-                .selectOne()
+        Integer fetchFirst = queryFactory.selectOne()
                 .from(challengeParticipation)
                 .where(user.id.eq(challengerId).and(challengeParticipation.status.eq(status)))
                 .fetchFirst();
@@ -46,18 +46,18 @@ public class ChallengeParticipationQueryRepository {
     }
 
     public Optional<ChallengeParticipation> findByChallengerIdAndStatusWithChallenge(Long challengerId, ChallengeParticipationStatus status) {
-        return Optional.ofNullable(queryFactory
-                .select(challengeParticipation)
+        return Optional.ofNullable(
+                queryFactory.select(challengeParticipation)
                 .from(challengeParticipation)
                 .innerJoin(challengeParticipation.challenge, challenge)
                 .fetchJoin()
                 .where(challengeParticipation.challenger.id.eq(challengerId).and(challengeParticipation.status.eq(status)))
-                .fetchOne());
+                .fetchOne()
+        );
     }
 
     public Map<String, Long> getRecordCountPerDate(ChallengeParticipation participation, LocalDateTime startDateTime, LocalDateTime endDateTime) {
-        return queryFactory
-                .from(insight)
+        return queryFactory.from(insight)
                 .where(insight.challengeParticipation.eq(participation)
                         .and(insight.valid.isTrue())
                         .and(insight.createdAt.goe(startDateTime).and(insight.createdAt.lt(endDateTime))))
@@ -75,8 +75,7 @@ public class ChallengeParticipationQueryRepository {
     }
 
     public List<ChallengeParticipation> findFinishedParticipation(User challenger, Long size) {
-        return queryFactory
-                .select(challengeParticipation)
+        return queryFactory.select(challengeParticipation)
                 .from(challengeParticipation)
                 .innerJoin(challengeParticipation.challenge, challenge)
                 .fetchJoin()
@@ -89,8 +88,7 @@ public class ChallengeParticipationQueryRepository {
 
 
     public List<ChallengeParticipation> findFollowingChallengerParticipations(Challenge targetChallenge, User targetUser) {
-        return queryFactory
-                .select(challengeParticipation)
+        return queryFactory.select(challengeParticipation)
                 .from(challengeParticipation)
                 .innerJoin(challengeParticipation.challenger, user)
                 .fetchJoin()
@@ -101,6 +99,21 @@ public class ChallengeParticipationQueryRepository {
                 .orderBy(follow.follower.id.asc().nullsLast())
                 .orderBy(challengeParticipation.createdAt.asc())
                 .limit(5)
+                .fetch();
+    }
+    
+    public List<ChallengeParticipation> paginateFinished(User challenger, CursorPageable<Long> cPage) {
+        return queryFactory.select(challengeParticipation)
+                .from(challengeParticipation)
+                .innerJoin(challengeParticipation.challenge, challenge)
+                .fetchJoin()
+                .where(challengeParticipation.challenger.eq(challenger)
+                    .and(challengeParticipation.status.ne(ChallengeParticipationStatus.CHALLENGING))
+                    .and(challengeParticipation.deleted.isFalse())
+                    .and(challengeParticipation.id.lt(cPage.getCursor()))
+                )
+                .orderBy(challengeParticipation.id.desc())
+                .limit(cPage.getLimit())
                 .fetch();
     }
 }

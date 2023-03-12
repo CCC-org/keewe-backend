@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
@@ -130,20 +131,37 @@ public class ChallengeAssembler {
 
     public ChallengeDetailResponse toChallengeDetailResponse(Challenge challenge, Long insightCount) {
         return ChallengeDetailResponse.of(
-                challenge.getId(),
                 challenge.getName(),
                 challenge.getIntroduction(),
+                insightCount,
+                challenge.getCreatedAt().toLocalDate().toString()
+        );
+    }
+
+    public OpenedChallengeResponse toOpenedChallengeResponse(Challenge challenge, Long insightCount) {
+        return OpenedChallengeResponse.of(
+                challenge.getId(),
+                challenge.getInterest().getName(),
+                challenge.getIntroduction(),
+                challenge.getName(),
                 insightCount
         );
     }
 
-    public OpenedChallengeResponse toOpenedChallengeResponse(Challenge challenge) {
-        return OpenedChallengeResponse.of(
+    public FinishedChallengeResponse toFinishedChallengeResponse(ChallengeParticipation challengeParticipation) {
+        Challenge challenge = challengeParticipation.getChallenge();
+        return FinishedChallengeResponse.of(
+                challengeParticipation.getId(),
                 challenge.getId(),
                 challenge.getInterest().getName(),
                 challenge.getName(),
-                challenge.getCreatedAt().toLocalDate().toString()
+                challenge.getCreatedAt().toLocalDate().toString(),
+                challengeParticipation.getEndDate().toString()
         );
+    }
+
+    public FinishedChallengeCountResponse toFinishedChallengeCountResponse(Long count) {
+        return FinishedChallengeCountResponse.of(count);
     }
 
     public TogetherChallengerResponse toTogetherChallengerResponse(ChallengeParticipation participation, Long current) {
@@ -157,5 +175,14 @@ public class ChallengeAssembler {
 
     public ChallengerCountResponse toChallengerCountResponse(Long countParticipatingUser) {
         return ChallengerCountResponse.of(countParticipatingUser);
+    }
+
+    public ParticipatingChallengeDetailResponse toParticipatingChallengeDetailResponse(Challenge challenge) {
+        return ParticipatingChallengeDetailResponse.of(
+                challenge.getName(),
+                challenge.getInterest().getName(),
+                challenge.getIntroduction(),
+                challenge.getCreatedAt().toLocalDate().toString()
+        );
     }
 }

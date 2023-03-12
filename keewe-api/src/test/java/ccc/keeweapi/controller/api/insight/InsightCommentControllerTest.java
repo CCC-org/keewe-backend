@@ -4,6 +4,7 @@ import static com.epages.restdocs.apispec.ResourceDocumentation.headerWithName;
 import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
@@ -14,8 +15,9 @@ import ccc.keeweapi.document.utils.ApiDocumentationTest;
 import ccc.keeweapi.dto.insight.CommentCreateResponse;
 import ccc.keeweapi.dto.insight.CommentResponse;
 import ccc.keeweapi.dto.insight.CommentWriterResponse;
+import ccc.keeweapi.dto.insight.InsightCommentCountResponse;
 import ccc.keeweapi.dto.insight.ReplyResponse;
-import ccc.keeweapi.dto.insight.RepresentativeCommentResponse;
+import ccc.keeweapi.dto.insight.PreviewCommentResponse;
 import ccc.keeweapi.service.insight.command.InsightCommentCommandApiService;
 import ccc.keeweapi.service.insight.query.InsightCommentQueryApiService;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
@@ -95,53 +97,43 @@ public class InsightCommentControllerTest extends ApiDocumentationTest {
     }
 
     @Test
-    @DisplayName("대표 댓글 조회 API")
+    @DisplayName("인사이트 댓글 미리보기 조회 API")
     void get_representative_comment() throws Exception {
         Long insightId = 1L;
-        Long totalReply = 2L;
         String now = LocalDateTime.now().toString();
 
-        ReplyResponse reply1 = ReplyResponse.of(writer1, 2L, 1L, "답글1 내용", now);
-        ReplyResponse reply2 = ReplyResponse.of(writer1, 3L, 1L, "답글2 내용", now);
-        CommentResponse commentResponse = CommentResponse.of(1L, writer1, "댓글의 내용", now, List.of(reply1, reply2), totalReply);
-        RepresentativeCommentResponse response = RepresentativeCommentResponse.of(10L, List.of(commentResponse));
+        List<PreviewCommentResponse> response = List.of(
+                PreviewCommentResponse.of(1L, writer1, "댓글1 내용", now),
+                PreviewCommentResponse.of(2L, writer2, "댓글2 내용", now),
+                PreviewCommentResponse.of(3L, writer1, "댓글3 내용", now)
+        );
 
-        when(insightCommentQueryApiService.getRepresentativeComments(insightId)).thenReturn(response);
+        when(insightCommentQueryApiService.getPreviewComments(insightId)).thenReturn(response);
 
         ResultActions resultActions = mockMvc.perform(
-                get("/api/v1/comments/representative/insights/{insightId}", insightId)
+                get("/api/v1/comments/insights/{insightId}/preview", insightId)
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
                         .contentType(MediaType.APPLICATION_JSON)
                 ).andExpect(status().isOk());
 
         resultActions.andDo(restDocs.document(resource(
                 ResourceSnippetParameters.builder()
-                        .description("대표 댓글 조회 API 입니다.")
-                        .summary("대표 댓글 조회 API")
+                        .description("인사이트 댓글 미리보기 조회 API 입니다.")
+                        .summary("인사이트 댓글 미리보기 조회 API")
                         .requestHeaders(
                                 headerWithName("Authorization").description("유저의 JWT"))
                         .pathParameters(parameterWithName("insightId").description("대상 인사이트의 id"))
                         .responseFields(
                                 fieldWithPath("message").description("요청 결과 메세지"),
                                 fieldWithPath("code").description("결과 코드"),
-                                fieldWithPath("data.total").description("인사이트의 총 댓글 개수"),
-                                fieldWithPath("data.comments[].id").description("댓글의 id"),
-                                fieldWithPath("data.comments[].content").description("댓글의 내용"),
-                                fieldWithPath("data.comments[].createdAt").description("댓글의 생성 시각"),
-                                fieldWithPath("data.comments[].totalReply").description("이 댓글의 답글 개수"),
-                                fieldWithPath("data.comments[].writer.id").description("작성자의 id"),
-                                fieldWithPath("data.comments[].writer.name").description("닉네임"),
-                                fieldWithPath("data.comments[].writer.title").description("타이틀"),
-                                fieldWithPath("data.comments[].writer.image").description("프로필 사진"),
-                                fieldWithPath("data.comments[].replies[]").description("댓글의 답글 목록"),
-                                fieldWithPath("data.comments[].replies[].id").description("답글의 id"),
-                                fieldWithPath("data.comments[].replies[].parentId").description("답글 부모의 id"),
-                                fieldWithPath("data.comments[].replies[].content").description("답글의 내용"),
-                                fieldWithPath("data.comments[].replies[].createdAt").description("답글의 생성 시각"),
-                                fieldWithPath("data.comments[].replies[].writer.id").description("작성자의 id"),
-                                fieldWithPath("data.comments[].replies[].writer.name").description("닉네임"),
-                                fieldWithPath("data.comments[].replies[].writer.title").description("타이틀"),
-                                fieldWithPath("data.comments[].replies[].writer.image").description("프로필 사진"))
+                                fieldWithPath("data[].id").description("댓글의 id"),
+                                fieldWithPath("data[].content").description("댓글의 내용"),
+                                fieldWithPath("data[].createdAt").description("댓글의 생성 시각"),
+                                fieldWithPath("data[].writer.id").description("작성자의 id"),
+                                fieldWithPath("data[].writer.name").description("닉네임"),
+                                fieldWithPath("data[].writer.title").description("타이틀"),
+                                fieldWithPath("data[].writer.image").description("프로필 사진")
+                        )
                         .tag("InsightComment")
                         .build()
         )));
@@ -248,6 +240,32 @@ public class InsightCommentControllerTest extends ApiDocumentationTest {
                                 fieldWithPath("data[].writer.name").description("닉네임"),
                                 fieldWithPath("data[].writer.title").description("타이틀"),
                                 fieldWithPath("data[].writer.image").description("프로필 사진"))
+                        .tag("InsightComment")
+                        .build()
+        )));
+    }
+
+    @Test
+    @DisplayName("인사이트 댓글 개수 조회 API")
+    void count_comment() throws Exception {
+        long insightId = 1L;
+        InsightCommentCountResponse response = InsightCommentCountResponse.of(1000L);
+        when(insightCommentQueryApiService.getCommentCount(anyLong())).thenReturn(response);
+
+        ResultActions resultActions = mockMvc.perform(get("/api/v1/comments/insights/{insightId}/count", insightId)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT))
+                .andExpect(status().isOk());
+
+        resultActions.andDo(restDocs.document(resource(
+                ResourceSnippetParameters.builder()
+                        .description("인사이트 댓글 개수 조회 API 입니다.")
+                        .summary("인사이트 댓글 개수 조회 API")
+                        .requestHeaders(
+                                headerWithName("Authorization").description("유저의 JWT"))
+                        .responseFields(
+                                fieldWithPath("message").description("요청 결과 메세지"),
+                                fieldWithPath("code").description("결과 코드"),
+                                fieldWithPath("data.commentCount").description("댓글 총 개수"))
                         .tag("InsightComment")
                         .build()
         )));
