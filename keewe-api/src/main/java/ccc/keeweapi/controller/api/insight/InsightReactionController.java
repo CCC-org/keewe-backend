@@ -3,6 +3,7 @@ package ccc.keeweapi.controller.api.insight;
 import ccc.keeweapi.dto.ApiResponse;
 import ccc.keeweapi.dto.insight.ReactRequest;
 import ccc.keeweapi.dto.insight.ReactResponse;
+import ccc.keeweapi.dto.insight.ReactionAggregationResponse;
 import ccc.keeweapi.service.insight.command.InsightReactionCommandApiService;
 import ccc.keeweapi.service.insight.query.InsightReactionQueryApiService;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +27,7 @@ public class InsightReactionController {
     }
 
     @GetMapping("/challenge-statistics")
-    public ApiResponse<?> aggregateReactionOfCurrentChallenge() {
+    public ApiResponse<ReactionAggregationResponse> aggregateReactionOfCurrentChallenge() {
         return ApiResponse.ok(insightReactionQueryApiService.aggregateOfCurrentChallenge());
     }
 }
