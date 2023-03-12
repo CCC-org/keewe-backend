@@ -3,6 +3,7 @@ package ccc.keeweapi.service.insight.query;
 import ccc.keeweapi.component.ReactionAssembler;
 import ccc.keeweapi.dto.insight.ReactionAggregationResponse;
 import ccc.keeweapi.utils.SecurityUtil;
+import ccc.keewedomain.dto.insight.ReactionAggregationGetDto;
 import ccc.keewedomain.persistence.domain.challenge.ChallengeParticipation;
 import ccc.keewedomain.persistence.domain.insight.Insight;
 import ccc.keewedomain.persistence.domain.insight.enums.ReactionType;
@@ -20,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
+import org.springframework.util.concurrent.ListenableFuture;
 
 @Service
 @RequiredArgsConstructor
@@ -36,8 +38,11 @@ public class InsightReactionQueryApiService {
         ChallengeParticipation participation = challengeParticipateQueryDomainService.getCurrentChallengeParticipation(SecurityUtil.getUser());
         List<Insight> insights = insightQueryDomainService.getRecordedInsights(participation);
         ThreadPoolTaskExecutor threadPoolTaskExecutor = (ThreadPoolTaskExecutor) worker;
-        Map<ReactionType, Long> reactionCntMap = insights.stream()
+        List<ListenableFuture<ReactionAggregationGetDto>> lFutures = insights.stream()
                 .map(insight -> threadPoolTaskExecutor.submitListenable(() -> reactionDomainService.getCurrentReactionAggregation(insight.getId())))
+                .collect(Collectors.toList());
+
+        Map<ReactionType, Long> reactionCntMap = lFutures.stream()
                 .map(listenableFuture -> listenableFuture.completable().join())
                 .map(reactionAggregate -> Arrays.stream(ReactionType.values())
                         .map(reactionType -> new SimpleEntry(reactionType, reactionAggregate.getByType(reactionType)))
