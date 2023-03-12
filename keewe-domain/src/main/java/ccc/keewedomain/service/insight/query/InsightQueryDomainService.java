@@ -4,6 +4,7 @@ import ccc.keewecore.consts.KeeweRtnConsts;
 import ccc.keewecore.exception.KeeweException;
 import ccc.keewedomain.cache.domain.insight.CInsightView;
 import ccc.keewedomain.cache.repository.insight.CInsightViewRepository;
+import ccc.keewedomain.cache.repository.insight.CReactionCountRepository;
 import ccc.keewedomain.dto.insight.InsightDetailDto;
 import ccc.keewedomain.dto.insight.InsightGetDto;
 import ccc.keewedomain.dto.insight.InsightGetForHomeDto;
@@ -17,9 +18,8 @@ import ccc.keewedomain.persistence.domain.insight.id.BookmarkId;
 import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.persistence.repository.insight.InsightQueryRepository;
 import ccc.keewedomain.persistence.repository.insight.InsightRepository;
-import ccc.keewedomain.persistence.repository.insight.BookmarkRepository;
+import ccc.keewedomain.persistence.repository.insight.ReactionAggregationRepository;
 import ccc.keewedomain.persistence.repository.utils.CursorPageable;
-import ccc.keewedomain.service.insight.ReactionDomainService;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -35,15 +35,15 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class InsightQueryDomainService {
     private final InsightRepository insightRepository;
-    private final BookmarkRepository bookmarkRepository;
-    private final BookmarkQueryDomainService bookmarkQueryDomainService;
     private final InsightQueryRepository insightQueryRepository;
+    private final BookmarkQueryDomainService bookmarkQueryDomainService;
     private final CInsightViewRepository cInsightViewRepository;
-    private final ReactionDomainService reactionDomainService;
+    private final CReactionCountRepository cReactionCountRepository;
+    private final ReactionAggregationRepository reactionAggregationRepository;
 
     public InsightGetDto getInsight(InsightDetailDto detailDto) {
         Insight entity = getByIdOrElseThrow(detailDto.getInsightId());
-        ReactionAggregationGetDto reactionAggregationGetDto = reactionDomainService.getCurrentReactionAggregation(detailDto.getInsightId());
+        ReactionAggregationGetDto reactionAggregationGetDto = this.getCurrentReactionAggregation(detailDto.getInsightId());
         BookmarkId bookmarkId = BookmarkId.of(detailDto.getUserId(), detailDto.getInsightId());
 
         return InsightGetDto.of(detailDto.getInsightId(), entity.getContents(), entity.getLink(), reactionAggregationGetDto, bookmarkQueryDomainService.isBookmark(bookmarkId));
@@ -59,7 +59,7 @@ public class InsightQueryDomainService {
                         i.getContents(),
                         bookmarkPresence.getOrDefault(i.getId(), false),
                         i.getLink(),
-                        reactionDomainService.getCurrentReactionAggregation(i.getId()),
+                        this.getCurrentReactionAggregation(i.getId()),
                         i.getCreatedAt(),
                         InsightWriterDto.of(
                                 i.getWriter().getId(),
@@ -69,6 +69,10 @@ public class InsightQueryDomainService {
                         )
                 )
         ).collect(Collectors.toList());
+    }
+
+    public List<Insight> getRecordedInsights(ChallengeParticipation challengeParticipation) {
+        return insightQueryRepository.findValidInsightsByParticipation(challengeParticipation);
     }
 
     @Transactional(readOnly = true)
@@ -96,7 +100,7 @@ public class InsightQueryDomainService {
                         insight.getId(),
                         insight.getContents(),
                         insight.getLink(),
-                        reactionDomainService.getCurrentReactionAggregation(insight.getId()),
+                        this.getCurrentReactionAggregation(insight.getId()),
                         insight.getCreatedAt(),
                         bookmarkPresenceMap.getOrDefault(insight.getId(), false)
                 ))
@@ -119,7 +123,6 @@ public class InsightQueryDomainService {
         return insightQueryRepository.findByIdWithWriter(insightId);
     }
 
-    //FIXME get과 find 역할 정확히 정리하기
     public Insight getByIdOrElseThrow(Long id) {
         return insightRepository.findById(id).orElseThrow(() -> new KeeweException(KeeweRtnConsts.ERR445));
     }
@@ -154,6 +157,12 @@ public class InsightQueryDomainService {
         LocalDateTime startDate = now.atStartOfDay();
         LocalDateTime endDate = startDate.plusDays(1);
         return insightQueryRepository.existByWriterAndCreatedAtBetweenAndValidTrue(user, startDate, endDate);
+    }
+
+    private ReactionAggregationGetDto getCurrentReactionAggregation(Long insightId) {
+        return ReactionAggregationGetDto.createByCnt(cReactionCountRepository.findByIdWithMissHandle(insightId, () ->
+                reactionAggregationRepository.findDtoByInsightId(insightId)
+        ));
     }
 }
 
