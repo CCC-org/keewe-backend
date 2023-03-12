@@ -10,6 +10,8 @@ import ccc.keewecore.aop.annotations.FLogging;
 import ccc.keewecore.consts.KeeweConsts;
 import ccc.keewedomain.persistence.repository.utils.CursorPageable;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -48,9 +50,11 @@ public class ChallengeParticipationController {
         return ApiResponse.ok(challengeApiService.getWeekProgress());
     }
 
-    @GetMapping("/{challengeId}/challengers")
-    public ApiResponse<List<TogetherChallengerResponse>> getTogetherChallengers(@PathVariable Long challengeId) {
-        return ApiResponse.ok(challengeApiService.getTogetherChallengers(challengeId));
+    @GetMapping("/{challengeId}/friends")
+    public ApiResponse<List<FriendResponse>> paginateFriends(
+            @PathVariable Long challengeId,
+            @PageableDefault(page = 0, size = 10) Pageable pageable) {
+        return ApiResponse.ok(challengeApiService.paginateFriends(challengeId, pageable));
     }
 
     @GetMapping("/{challengeId}/challengers/count")

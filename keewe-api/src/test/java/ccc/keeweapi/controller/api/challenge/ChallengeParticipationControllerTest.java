@@ -241,25 +241,31 @@ public class ChallengeParticipationControllerTest extends ApiDocumentationTest {
     @Test
     @DisplayName("챌린지 상세 함께 기록 조회 API")
     void get_together() throws Exception {
-        List<TogetherChallengerResponse> response = List.of(
-                TogetherChallengerResponse.of("닉네임1", "이미지 URL1", 1L, 4L),
-                TogetherChallengerResponse.of("닉네임2", "이미지 URL2", 2L, 4L),
-                TogetherChallengerResponse.of("닉네임3", "이미지 URL3", 3L, 4L)
+        List<FriendResponse> response = List.of(
+                FriendResponse.of("닉네임1", "이미지 URL1", 1L, 4L, true),
+                FriendResponse.of("닉네임2", "이미지 URL2", 2L, 4L, false),
+                FriendResponse.of("닉네임3", "이미지 URL3", 3L, 4L, false)
         );
 
-        when(challengeApiService.getTogetherChallengers(anyLong())).thenReturn(response);
+        when(challengeApiService.paginateFriends(anyLong(), any())).thenReturn(response);
 
-        ResultActions resultActions = mockMvc.perform(get("/api/v1/challenge/{challengeId}/challengers", 1L)
+        ResultActions resultActions = mockMvc.perform(get("/api/v1/challenge/{challengeId}/friends", 1L)
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
+                        .param("page", "0")
+                        .param("size", "10")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
         resultActions.andDo(restDocs.document(resource(
                 ResourceSnippetParameters.builder()
-                        .description("챌린지 상세 함께 기록 조회 API 입니다.")
-                        .summary("챌린지 상세 함께 기록 조회 API")
+                        .description("함께 기록(친구) 조회 API 입니다.")
+                        .summary("함께 기록(친구) 조회 API")
                         .requestHeaders(
                                 headerWithName("Authorization").description("유저의 JWT")
+                        )
+                        .requestParameters(
+                                parameterWithName("page").description("페이지 번호. 미 입력시 기본 0").optional(),
+                                parameterWithName("size").description("페이지 당 결과 개수. 미 입력시 기본 10").optional()
                         )
                         .pathParameters(parameterWithName("challengeId").description("챌린지의 ID"))
                         .responseFields(
@@ -269,7 +275,8 @@ public class ChallengeParticipationControllerTest extends ApiDocumentationTest {
                                 fieldWithPath("data[].nickname").description("참가자의 닉네임"),
                                 fieldWithPath("data[].imageURL").description("참가자의 프로필 이미지 URL"),
                                 fieldWithPath("data[].currentRecord").description("현재 기록한 개수"),
-                                fieldWithPath("data[].goalRecord").description("전체 기록해야 하는 개수")
+                                fieldWithPath("data[].goalRecord").description("전체 기록해야 하는 개수"),
+                                fieldWithPath("data[].following").description("팔로우 여부")
                         )
                         .tag("ChallengeParticipation")
                         .build()
