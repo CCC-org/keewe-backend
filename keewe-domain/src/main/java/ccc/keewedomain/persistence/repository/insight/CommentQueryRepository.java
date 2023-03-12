@@ -137,13 +137,11 @@ public class CommentQueryRepository {
                 .select(comment.id)
                 .from(comment)
                 .where(comment.parent.id.eq(parentId)
-                        .and(comment.id.lt(cPage.getCursor()))
-                        .and(comment.deleted.isFalse()))
+                        .and(comment.id.lt(cPage.getCursor())))
                 .orderBy(comment.id.desc())
                 .limit(cPage.getLimit())
                 .fetch();
     }
-
 
     //각 부모 댓글의 첫 답글의 id 조회
     private JPQLQuery<Long> findFirstReplyIds(List<Comment> parents) {

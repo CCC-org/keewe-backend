@@ -6,18 +6,12 @@ import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import ccc.keeweapi.document.utils.ApiDocumentationTest;
-import ccc.keeweapi.dto.insight.CommentCreateResponse;
-import ccc.keeweapi.dto.insight.CommentResponse;
-import ccc.keeweapi.dto.insight.CommentWriterResponse;
-import ccc.keeweapi.dto.insight.InsightCommentCountResponse;
-import ccc.keeweapi.dto.insight.ReplyResponse;
-import ccc.keeweapi.dto.insight.PreviewCommentResponse;
+import ccc.keeweapi.dto.insight.*;
 import ccc.keeweapi.service.insight.command.InsightCommentCommandApiService;
 import ccc.keeweapi.service.insight.query.InsightCommentQueryApiService;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
@@ -91,6 +85,37 @@ public class InsightCommentControllerTest extends ApiDocumentationTest {
                                 fieldWithPath("message").description("요청 결과 메세지"),
                                 fieldWithPath("code").description("결과 코드"),
                                 fieldWithPath("data.commentId").description("생성된 댓글(답글) ID"))
+                        .tag("InsightComment")
+                        .build()
+        )));
+    }
+
+    @Test
+    @DisplayName("댓글 삭제 API")
+    void delete_comment_test() throws Exception {
+        Long userId = 1L;
+        Long commentId = 1L;
+
+        when(insightCommentCommandApiService.delete(commentId))
+                .thenReturn(CommentDeleteResponse.of(commentId));
+
+        ResultActions resultActions = mockMvc.perform(delete("/api/v1/comments/{commentId}", commentId)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        resultActions.andDo(restDocs.document(resource(
+                ResourceSnippetParameters.builder()
+                        .description("댓글 삭제 API 입니다.")
+                        .summary("댓글 삭제 API")
+                        .requestHeaders(
+                                headerWithName("Authorization").description("유저의 JWT"))
+                        .pathParameters(
+                                parameterWithName("commentId").description("대상 댓글 ID"))
+                        .responseFields(
+                                fieldWithPath("message").description("요청 결과 메세지"),
+                                fieldWithPath("code").description("결과 코드"),
+                                fieldWithPath("data.commentId").description("삭제된 댓글(답글) ID"))
                         .tag("InsightComment")
                         .build()
         )));

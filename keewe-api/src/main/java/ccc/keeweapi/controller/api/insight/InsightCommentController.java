@@ -10,13 +10,7 @@ import ccc.keewedomain.persistence.repository.utils.CursorPageable;
 import java.util.List;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/comments")
@@ -29,6 +23,11 @@ public class InsightCommentController {
     @PostMapping
     public ApiResponse<CommentCreateResponse> create(@RequestBody @Valid CommentCreateRequest request) {
         return ApiResponse.ok(insightCommentCommandApiService.create(request));
+    }
+
+    @DeleteMapping("/{commentId}")
+    public ApiResponse<CommentDeleteResponse> delete(@PathVariable Long commentId) {
+        return ApiResponse.ok(insightCommentCommandApiService.delete(commentId));
     }
 
     @GetMapping("/representative/insights/{insightId}")

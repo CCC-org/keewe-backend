@@ -39,6 +39,7 @@ public enum KeeweRtnConsts {
     ERR445(KeeweRtnGrp.Validation, 445, "인사이트를 찾을 수 없어요."),
     ERR446(KeeweRtnGrp.Validation, 446, "자기 자신을 팔로잉 할 수 없어요."),
     ERR447(KeeweRtnGrp.Validation, 447, "인사이트 작성자만 삭제 가능해요."),
+    ERR448(KeeweRtnGrp.Validation, 448, "댓글 작성자만 삭제 가능해요."),
     ERR449(KeeweRtnGrp.Validation, 449, "이미지 형식이 올바르지 않습니다."),
 
     ERR450(KeeweRtnGrp.Validation, 450, "이미 차단한 유저에요."),
