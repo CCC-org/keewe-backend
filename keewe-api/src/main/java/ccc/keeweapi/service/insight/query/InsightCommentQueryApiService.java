@@ -27,7 +27,7 @@ public class InsightCommentQueryApiService {
     @Transactional(readOnly = true)
     public List<PreviewCommentResponse> getPreviewComments(Long insightId) {
         List<Comment> comments = commentDomainService.getComments(insightId, CursorPageable.of(Long.MAX_VALUE, 3L));
-        commentDomainService.findLatestCommentByWriter(SecurityUtil.getUser())
+        commentDomainService.findLatestCommentByWriter(SecurityUtil.getUser(), insightId)
                 .ifPresent(myLatestComment -> {
                     comments.removeIf(comment -> comment.getId().equals(myLatestComment.getId()));
                     comments.add(0, myLatestComment);
