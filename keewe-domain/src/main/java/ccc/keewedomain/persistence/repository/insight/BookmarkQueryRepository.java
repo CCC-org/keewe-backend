@@ -1,4 +1,4 @@
-package ccc.keewedomain.persistence.repository.user;
+package ccc.keewedomain.persistence.repository.insight;
 
 import ccc.keewedomain.persistence.domain.insight.Insight;
 import ccc.keewedomain.persistence.domain.user.User;
@@ -26,5 +26,4 @@ public class BookmarkQueryRepository {
                 .groupBy(bookmark.insight.id)
                 .transform(GroupBy.groupBy(bookmark.insight.id).as(bookmark.isNotNull()));
     }
-
 }

@@ -1,4 +1,4 @@
-package ccc.keewedomain.persistence.repository.user;
+package ccc.keewedomain.persistence.repository.insight;
 
 import ccc.keewedomain.persistence.domain.insight.Bookmark;
 import ccc.keewedomain.persistence.domain.insight.id.BookmarkId;

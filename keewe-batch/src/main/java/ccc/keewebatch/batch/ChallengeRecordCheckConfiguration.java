@@ -1,7 +1,7 @@
 package ccc.keewebatch.batch;
 
 import ccc.keewedomain.persistence.domain.challenge.ChallengeParticipation;
-import ccc.keewedomain.service.insight.InsightDomainService;
+import ccc.keewedomain.service.insight.query.InsightQueryDomainService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
@@ -38,7 +38,7 @@ public class ChallengeRecordCheckConfiguration {
     private final StepBuilderFactory stepBuilderFactory;
     private final EntityManagerFactory entityManagerFactory;
 
-    private final InsightDomainService insightDomainService;
+    private final InsightQueryDomainService insightQueryDomainService;
 
     private final int chunkSize = 100;
     public static final String JOB_NAME = "challengeRecordCheck";
@@ -98,7 +98,7 @@ public class ChallengeRecordCheckConfiguration {
             int remainDays = getRemainDays(cp.getCreatedAt(), endDateTime);
             int insightPerWeek = cp.getInsightPerWeek();
             LocalDateTime startOfWeekDateTime = endDateTime.minusDays(7 - remainDays);
-            Long thisWeekCount = insightDomainService.countInsightCreatedAtBetween(cp, startOfWeekDateTime, endDateTime);
+            Long thisWeekCount = insightQueryDomainService.countInsightCreatedAtBetween(cp, startOfWeekDateTime, endDateTime);
             int remainInsightNumber = (int) (insightPerWeek - thisWeekCount);
 
             if (remainDays < remainInsightNumber) {

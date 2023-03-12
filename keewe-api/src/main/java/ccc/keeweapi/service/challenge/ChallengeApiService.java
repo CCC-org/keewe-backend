@@ -12,6 +12,8 @@ import ccc.keewedomain.service.challenge.command.ChallengeCommandDomainService;
 import ccc.keewedomain.service.challenge.query.ChallengeParticipateQueryDomainService;
 import ccc.keewedomain.service.challenge.query.ChallengeQueryDomainService;
 import ccc.keewedomain.service.insight.InsightDomainService;
+import ccc.keewedomain.service.insight.command.InsightCommandDomainService;
+import ccc.keewedomain.service.insight.query.InsightQueryDomainService;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +32,7 @@ public class ChallengeApiService {
     private final ChallengeParticipateQueryDomainService challengeParticipateQueryDomainService;
     private final ChallengeQueryDomainService challengeQueryDomainService;
     private final ChallengeCommandDomainService challengeCommandDomainService;
-    private final InsightDomainService insightDomainService;
+    private final InsightQueryDomainService insightQueryDomainService;
     private final ChallengeAssembler challengeAssembler;
 
     @Transactional
@@ -60,7 +62,7 @@ public class ChallengeApiService {
 
         return challengeParticipateQueryDomainService.findCurrentParticipationWithChallenge(userId)
                 .map(participation -> {
-                    Long current = insightDomainService.getRecordedInsightNumber(participation);
+                    Long current = insightQueryDomainService.getRecordedInsightNumber(participation);
                     return challengeAssembler.toParticipationProgressResponse(participation, current);
                 })
                 .orElse(null);
@@ -90,7 +92,7 @@ public class ChallengeApiService {
 
     public List<ChallengeInfoResponse> getSpecifiedNumberOfChallenge(int size) {
         List<Challenge> specifiedNumberOfChallenge = challengeQueryDomainService.getSpecifiedNumberOfRecentChallenge(size);
-        Map<Long, Long> insightCountPerChallengeMap = insightDomainService.getInsightCountPerChallenge(specifiedNumberOfChallenge);
+        Map<Long, Long> insightCountPerChallengeMap = insightQueryDomainService.getInsightCountPerChallenge(specifiedNumberOfChallenge);
         return specifiedNumberOfChallenge.stream()
                 .map(challenge -> challengeAssembler.toChallengeInfoResponse(challenge, insightCountPerChallengeMap.getOrDefault(challenge.getId(), 0L)))
                 .collect(Collectors.toList());
@@ -106,7 +108,7 @@ public class ChallengeApiService {
 
     public ChallengeDetailResponse getChallengeDetail(Long challengeId) {
         Challenge challenge = challengeQueryDomainService.getByIdOrElseThrow(challengeId);
-        Long insightCount = insightDomainService.getInsightCountByChallenge(challenge);
+        Long insightCount = insightQueryDomainService.getInsightCountByChallenge(challenge);
         return challengeAssembler.toChallengeDetailResponse(challenge, insightCount);
     }
 
@@ -124,7 +126,7 @@ public class ChallengeApiService {
         User user = SecurityUtil.getUser();
         Challenge challenge = challengeQueryDomainService.getByIdOrElseThrow(challengeId);
         List<ChallengeParticipation> participations = challengeParticipateQueryDomainService.findTogetherChallengeParticipations(challenge, user);
-        Map<Long, Long> insightCountPerParticipation = insightDomainService.getInsightCountPerParticipation(participations);
+        Map<Long, Long> insightCountPerParticipation = insightQueryDomainService.getInsightCountPerParticipation(participations);
 
         return participations.stream()
                 .map(participation -> challengeAssembler.toTogetherChallengerResponse(
