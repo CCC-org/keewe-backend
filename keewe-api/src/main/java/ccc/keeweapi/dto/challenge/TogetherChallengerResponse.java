@@ -10,4 +10,5 @@ public class TogetherChallengerResponse {
     private String imageURL;
     private long currentRecord;
     private long goalRecord;
+    private boolean isFollowing;
 }

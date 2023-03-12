@@ -10,6 +10,7 @@ import com.querydsl.core.types.dsl.DateTemplate;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -86,8 +87,7 @@ public class ChallengeParticipationQueryRepository {
                 .fetch();
     }
 
-
-    public List<ChallengeParticipation> findFollowingChallengerParticipations(Challenge targetChallenge, User targetUser) {
+    public List<ChallengeParticipation> findByChallengeOrderByFollowing(Challenge targetChallenge, User targetUser, Pageable pageable) {
         return queryFactory.select(challengeParticipation)
                 .from(challengeParticipation)
                 .innerJoin(challengeParticipation.challenger, user)
@@ -98,7 +98,8 @@ public class ChallengeParticipationQueryRepository {
                 .where(follow.follower.eq(targetUser).or(follow.follower.isNull()))
                 .orderBy(follow.follower.id.asc().nullsLast())
                 .orderBy(challengeParticipation.createdAt.asc())
-                .limit(5)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
                 .fetch();
     }
     

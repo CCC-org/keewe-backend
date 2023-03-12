@@ -13,6 +13,7 @@ import ccc.keewedomain.persistence.repository.utils.CursorPageable;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -60,8 +61,8 @@ public class ChallengeParticipateQueryDomainService {
     }
 
     @Transactional(readOnly = true)
-    public List<ChallengeParticipation> findTogetherChallengeParticipations(Challenge challenge, User user) {
-        return challengeParticipationQueryRepository.findFollowingChallengerParticipations(challenge, user);
+    public List<ChallengeParticipation> findTogetherChallengeParticipations(Challenge challenge, User user, Pageable pageable) {
+        return challengeParticipationQueryRepository.findByChallengeOrderByFollowing(challenge, user, pageable);
     }
 
     public List<ChallengeParticipation> getFinishedParticipation(User user, Long size) {
