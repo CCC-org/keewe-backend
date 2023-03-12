@@ -25,9 +25,9 @@ public class InsightCommentController {
         return ApiResponse.ok(insightCommentCommandApiService.create(request));
     }
 
-    @DeleteMapping
-    public ApiResponse<CommentDeleteResponse> delete(@RequestBody CommentDeleteRequest request) {
-        return ApiResponse.ok(insightCommentCommandApiService.delete(request));
+    @DeleteMapping("/{commentId}")
+    public ApiResponse<CommentDeleteResponse> delete(@PathVariable Long commentId) {
+        return ApiResponse.ok(insightCommentCommandApiService.delete(commentId));
     }
 
     @GetMapping("/representative/insights/{insightId}")

@@ -25,8 +25,8 @@ public class InsightCommentCommandApiService {
     }
 
     @Transactional
-    public CommentDeleteResponse delete(CommentDeleteRequest request) {
+    public CommentDeleteResponse delete(Long commentId) {
         return insightAssembler.toCommentDeleteResponse(
-                commentDomainService.delete(insightAssembler.toCommentDeleteDto(request.getCommentId())));
+                commentDomainService.delete(insightAssembler.toCommentDeleteDto(commentId)));
     }
 }
