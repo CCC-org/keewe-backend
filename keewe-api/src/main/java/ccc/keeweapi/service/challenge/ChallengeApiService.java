@@ -169,7 +169,7 @@ public class ChallengeApiService {
     }
 
     public ParticipatingChallengeDetailResponse getMyChallengeDetail() {
-        Challenge challenge = challengeParticipateQueryDomainService.findCurrentParticipationWithChallenge(SecurityUtil.getUserId())
+        Challenge challenge = challengeParticipateQueryDomainService.findCurrentParticipationByUserId(SecurityUtil.getUserId())
                 .map(ChallengeParticipation::getChallenge)
                 .orElseThrow(() -> new KeeweException(KeeweRtnConsts.ERR432));
         return challengeAssembler.toParticipatingChallengeDetailResponse(challenge);

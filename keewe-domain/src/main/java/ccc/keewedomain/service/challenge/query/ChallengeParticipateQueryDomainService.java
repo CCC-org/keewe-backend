@@ -34,16 +34,16 @@ public class ChallengeParticipateQueryDomainService {
         return challengeParticipationQueryRepository.existsByChallengerIdAndStatus(userId, CHALLENGING);
     }
 
-    public ChallengeParticipation getCurrentChallengeParticipation(User challenger) {
-        return findCurrentChallengeParticipation(challenger).orElseThrow(() -> new KeeweException(KeeweRtnConsts.ERR432));
+    public ChallengeParticipation getCurrentChallengeParticipation(User user) {
+        return findCurrentChallengeParticipation(user).orElseThrow(() -> new KeeweException(KeeweRtnConsts.ERR432));
     }
 
-    public Optional<ChallengeParticipation> findCurrentParticipationWithChallenge(Long challengerId) {
-        return challengeParticipationQueryRepository.findByChallengerIdAndStatusWithChallenge(challengerId, CHALLENGING);
+    public Optional<ChallengeParticipation> findCurrentParticipationByUserId(Long userId) {
+        return challengeParticipationQueryRepository.findByUserIdAndStatus(userId, CHALLENGING);
     }
 
-    public Optional<ChallengeParticipation> findCurrentChallengeParticipation(User challenger) {
-        return challengeParticipationRepository.findByChallengerAndStatusAndDeletedFalse(challenger, CHALLENGING);
+    public Optional<ChallengeParticipation> findCurrentChallengeParticipation(User user) {
+        return challengeParticipationRepository.findByChallengerAndStatusAndDeletedFalse(user, CHALLENGING);
     }
 
     public Map<String, Long> getRecordCountPerDate(ChallengeParticipation participation) {
