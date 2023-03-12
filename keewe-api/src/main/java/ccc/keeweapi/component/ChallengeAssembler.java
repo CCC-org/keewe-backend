@@ -164,13 +164,14 @@ public class ChallengeAssembler {
         return FinishedChallengeCountResponse.of(count);
     }
 
-    public TogetherChallengerResponse toTogetherChallengerResponse(ChallengeParticipation participation, Long current) {
+    public TogetherChallengerResponse toTogetherChallengerResponse(ChallengeParticipation participation, Long current, boolean isFollowing) {
         User challenger = participation.getChallenger();
         return TogetherChallengerResponse.of(
                 challenger.getNickname(),
                 challenger.getProfilePhotoURL(),
                 current,
-                participation.getTotalInsightNumber());
+                participation.getTotalInsightNumber(),
+                isFollowing);
     }
 
     public ChallengerCountResponse toChallengerCountResponse(Long countParticipatingUser) {

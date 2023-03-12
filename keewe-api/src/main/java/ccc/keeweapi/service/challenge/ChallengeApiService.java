@@ -1,7 +1,20 @@
 package ccc.keeweapi.service.challenge;
 
 import ccc.keeweapi.component.ChallengeAssembler;
-import ccc.keeweapi.dto.challenge.*;
+import ccc.keeweapi.dto.challenge.ChallengeCreateRequest;
+import ccc.keeweapi.dto.challenge.ChallengeCreateResponse;
+import ccc.keeweapi.dto.challenge.ChallengeDetailResponse;
+import ccc.keeweapi.dto.challenge.ChallengeHistoryListResponse;
+import ccc.keeweapi.dto.challenge.ChallengeInfoResponse;
+import ccc.keeweapi.dto.challenge.ChallengeParticipateRequest;
+import ccc.keeweapi.dto.challenge.ChallengeParticipationResponse;
+import ccc.keeweapi.dto.challenge.ChallengerCountResponse;
+import ccc.keeweapi.dto.challenge.InsightProgressResponse;
+import ccc.keeweapi.dto.challenge.ParticipatingChallengeDetailResponse;
+import ccc.keeweapi.dto.challenge.ParticipatingChallengeResponse;
+import ccc.keeweapi.dto.challenge.ParticipationCheckResponse;
+import ccc.keeweapi.dto.challenge.TogetherChallengerResponse;
+import ccc.keeweapi.dto.challenge.WeekProgressResponse;
 import ccc.keeweapi.utils.SecurityUtil;
 import ccc.keewecore.consts.KeeweRtnConsts;
 import ccc.keewecore.exception.KeeweException;
@@ -12,14 +25,19 @@ import ccc.keewedomain.service.challenge.command.ChallengeCommandDomainService;
 import ccc.keewedomain.service.challenge.query.ChallengeParticipateQueryDomainService;
 import ccc.keewedomain.service.challenge.query.ChallengeQueryDomainService;
 import ccc.keewedomain.service.insight.InsightDomainService;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import ccc.keewedomain.service.user.ProfileDomainService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -31,6 +49,7 @@ public class ChallengeApiService {
     private final ChallengeQueryDomainService challengeQueryDomainService;
     private final ChallengeCommandDomainService challengeCommandDomainService;
     private final InsightDomainService insightDomainService;
+    private final ProfileDomainService profileDomainService;
     private final ChallengeAssembler challengeAssembler;
 
     @Transactional
@@ -120,16 +139,22 @@ public class ChallengeApiService {
     }
 
     @Transactional(readOnly = true)
-    public List<TogetherChallengerResponse> getTogetherChallengers(Long challengeId) {
+    public List<TogetherChallengerResponse> getTogetherChallengers(Long challengeId, Pageable pageable) {
         User user = SecurityUtil.getUser();
         Challenge challenge = challengeQueryDomainService.getByIdOrElseThrow(challengeId);
-        List<ChallengeParticipation> participations = challengeParticipateQueryDomainService.findTogetherChallengeParticipations(challenge, user);
+        List<ChallengeParticipation> participations = challengeParticipateQueryDomainService.findTogetherChallengeParticipations(challenge, user, pageable);
+        if(participations.isEmpty()) {
+            return Collections.emptyList();
+        }
         Map<Long, Long> insightCountPerParticipation = insightDomainService.getInsightCountPerParticipation(participations);
+        List<User> challengers = participations.stream().map(ChallengeParticipation::getChallenger).collect(Collectors.toList());
+        Set<Long> followingIdSet = profileDomainService.getFollowingTargetIdSet(SecurityUtil.getUser(), challengers);
 
         return participations.stream()
                 .map(participation -> challengeAssembler.toTogetherChallengerResponse(
                         participation,
-                        insightCountPerParticipation.getOrDefault(participation.getId(), 0L))
+                        insightCountPerParticipation.getOrDefault(participation.getId(), 0L),
+                        followingIdSet.contains(participation.getChallenger().getId()))
                 )
                 .collect(Collectors.toList());
     }

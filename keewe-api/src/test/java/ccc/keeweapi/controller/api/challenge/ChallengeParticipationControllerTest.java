@@ -247,7 +247,7 @@ public class ChallengeParticipationControllerTest extends ApiDocumentationTest {
                 TogetherChallengerResponse.of("닉네임3", "이미지 URL3", 3L, 4L)
         );
 
-        when(challengeApiService.getTogetherChallengers(anyLong())).thenReturn(response);
+        when(challengeApiService.getTogetherChallengers(anyLong(), any())).thenReturn(response);
 
         ResultActions resultActions = mockMvc.perform(get("/api/v1/challenge/{challengeId}/challengers", 1L)
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
