@@ -180,15 +180,4 @@ public class InsightQueryRepository {
     private BooleanExpression drawerIdEq(Long drawerId) {
         return drawerId != null ? insight.drawer.id.eq(drawerId) : null;
     }
-
-    public Long countValidByCreatedAtAfterAndParticipation(ChallengeParticipation participation, LocalDateTime start) {
-        return queryFactory
-                .select(insight.count())
-                .from(insight)
-                .where(insight.challengeParticipation.eq(participation)
-                        .and(insight.valid.isTrue())
-                        .and(insight.createdAt.goe(start))
-                )
-                .fetchFirst();
-    }
 }
