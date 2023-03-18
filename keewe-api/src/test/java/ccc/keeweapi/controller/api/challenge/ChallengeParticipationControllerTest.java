@@ -125,7 +125,7 @@ public class ChallengeParticipationControllerTest extends ApiDocumentationTest {
         Long current = 4L;
         Long total = 16L;
         when(challengeApiService.getMyParticipationProgress())
-                .thenReturn(MyParticipationProgressResponse.of(name, current, total));
+                .thenReturn(MyParticipationProgressResponse.of(name, current, total, false, true));
 
         ResultActions resultActions = mockMvc.perform(get("/api/v1/challenge/participation/progress/insight")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
@@ -145,7 +145,9 @@ public class ChallengeParticipationControllerTest extends ApiDocumentationTest {
                                 fieldWithPath("data").description("참가중이지 않은 경우 null"),
                                 fieldWithPath("data.name").description("참가중인 챌린지의 이름"),
                                 fieldWithPath("data.current").description("지금까지 기록한 인사이트의 수"),
-                                fieldWithPath("data.total").description("총 기록해야 하는 인사이트의 수")
+                                fieldWithPath("data.total").description("총 기록해야 하는 인사이트의 수"),
+                                fieldWithPath("data.todayRecorded").description("오늘 기록 여부"),
+                                fieldWithPath("data.weekCompleted").description("주간 목표 달성 여부")
                         )
                         .tag("ChallengeParticipation")
                         .build()
