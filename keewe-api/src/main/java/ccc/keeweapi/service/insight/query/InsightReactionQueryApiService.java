@@ -38,7 +38,7 @@ public class InsightReactionQueryApiService {
                 .collect(Collectors.toList());
 
         Map<ReactionType, Long> reactionCntMap = cFutures.stream()
-                .map(cFuture -> cFuture.join())
+                .map(CompletableFuture::join)
                 .map(reactionAggregate -> Arrays.stream(ReactionType.values())
                         .map(reactionType -> new SimpleEntry(reactionType, reactionAggregate.getByType(reactionType)))
                         .collect(Collectors.toList())
