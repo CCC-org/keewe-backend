@@ -102,7 +102,7 @@ public class ChallengeRecordCheckConfiguration {
             int remainInsightNumber = (int) (insightPerWeek - thisWeekCount);
 
             if (remainDays < remainInsightNumber) {
-                cp.expire();
+                cp.expire(LocalDate.now().minusDays(1L));
             } else if (isCompleted(endDate, cp.getEndDate(), remainInsightNumber)) {
                 cp.complete();
             }
