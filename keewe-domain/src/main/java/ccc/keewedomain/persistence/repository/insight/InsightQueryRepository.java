@@ -12,6 +12,9 @@ import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -176,5 +179,16 @@ public class InsightQueryRepository {
 
     private BooleanExpression drawerIdEq(Long drawerId) {
         return drawerId != null ? insight.drawer.id.eq(drawerId) : null;
+    }
+
+    public Long countValidByCreatedAtAfterAndParticipation(ChallengeParticipation participation, LocalDateTime start) {
+        return queryFactory
+                .select(insight.count())
+                .from(insight)
+                .where(insight.challengeParticipation.eq(participation)
+                        .and(insight.valid.isTrue())
+                        .and(insight.createdAt.goe(start))
+                )
+                .fetchFirst();
     }
 }

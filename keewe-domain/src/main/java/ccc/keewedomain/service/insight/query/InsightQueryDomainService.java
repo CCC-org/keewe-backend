@@ -164,5 +164,10 @@ public class InsightQueryDomainService {
                 reactionAggregationRepository.findDtoByInsightId(insightId)
         ));
     }
-}
 
+    public boolean isThisWeekCompleted(ChallengeParticipation participation) {
+        Long validNumber = insightQueryRepository.countValidByParticipation(participation);
+        log.info("validNumber = {}, currentWeek = {}, insightPerWeek = {}", validNumber, participation.getCurrentWeek(), participation.getInsightPerWeek());
+        return validNumber.equals(participation.getCurrentWeek() * participation.getInsightPerWeek());
+    }
+}

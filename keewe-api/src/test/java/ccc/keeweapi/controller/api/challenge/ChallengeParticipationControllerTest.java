@@ -125,7 +125,7 @@ public class ChallengeParticipationControllerTest extends ApiDocumentationTest {
         Long current = 4L;
         Long total = 16L;
         when(challengeApiService.getMyParticipationProgress())
-                .thenReturn(InsightProgressResponse.of(name, current, total));
+                .thenReturn(MyParticipationProgressResponse.of(name, current, total));
 
         ResultActions resultActions = mockMvc.perform(get("/api/v1/challenge/participation/progress/insight")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)

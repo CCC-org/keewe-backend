@@ -77,7 +77,7 @@ public class ChallengeParticipation extends BaseTimeEntity {
     public long getCurrentWeek() {
         LocalDate createdAt = getCreatedAt().toLocalDate();
         LocalDate today = LocalDate.now();
-        Period between = Period.between(today, createdAt);
+        Period between = Period.between(createdAt, today);
 
         return between.getDays() / 7 + 1; // 1주차부터 시작
     }
