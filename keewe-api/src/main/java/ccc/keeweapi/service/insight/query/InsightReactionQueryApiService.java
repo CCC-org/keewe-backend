@@ -15,13 +15,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.concurrent.Executor;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
-import org.springframework.util.concurrent.ListenableFuture;
 
 @Service
 @RequiredArgsConstructor
@@ -30,20 +28,17 @@ public class InsightReactionQueryApiService {
     private final ReactionDomainService reactionDomainService;
     private final InsightQueryDomainService insightQueryDomainService;
     private final ChallengeParticipateQueryDomainService challengeParticipateQueryDomainService;
-    private final Executor worker;
+    private final ExecutorService executorService;
 
     public ReactionAggregationResponse aggregateOfCurrentChallenge() {
-        Assert.isInstanceOf(ThreadPoolTaskExecutor.class, worker);
-
         ChallengeParticipation participation = challengeParticipateQueryDomainService.getCurrentChallengeParticipation(SecurityUtil.getUser());
         List<Insight> insights = insightQueryDomainService.getRecordedInsights(participation);
-        ThreadPoolTaskExecutor threadPoolTaskExecutor = (ThreadPoolTaskExecutor) worker;
-        List<ListenableFuture<ReactionAggregationGetDto>> lFutures = insights.stream()
-                .map(insight -> threadPoolTaskExecutor.submitListenable(() -> reactionDomainService.getCurrentReactionAggregation(insight.getId())))
+        List<CompletableFuture<ReactionAggregationGetDto>> cFutures = insights.stream()
+                .map(insight -> CompletableFuture.supplyAsync(() -> reactionDomainService.getCurrentReactionAggregation(insight.getId()), executorService))
                 .collect(Collectors.toList());
 
-        Map<ReactionType, Long> reactionCntMap = lFutures.stream()
-                .map(lFuture -> lFuture.completable().join())
+        Map<ReactionType, Long> reactionCntMap = cFutures.stream()
+                .map(cFuture -> cFuture.join())
                 .map(reactionAggregate -> Arrays.stream(ReactionType.values())
                         .map(reactionType -> new SimpleEntry(reactionType, reactionAggregate.getByType(reactionType)))
                         .collect(Collectors.toList())

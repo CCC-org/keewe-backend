@@ -50,7 +50,7 @@ public class InsightQueryDomainService {
     }
 
     public List<InsightGetForHomeDto> getInsightsForHome(User user, CursorPageable<Long> cPage, Boolean follow) {
-        List<Insight> forHome = insightQueryRepository.findForHome(user, cPage, follow);
+        List<Insight> forHome = insightQueryRepository.findAllForHome(user, cPage, follow);
         Map<Long, Boolean> bookmarkPresence = bookmarkQueryDomainService.getBookmarkPresenceMap(user, forHome);
 
         return forHome.parallelStream().map(i ->
@@ -72,7 +72,7 @@ public class InsightQueryDomainService {
     }
 
     public List<Insight> getRecordedInsights(ChallengeParticipation challengeParticipation) {
-        return insightQueryRepository.findValidInsightsByParticipation(challengeParticipation);
+        return insightQueryRepository.findAllValidByParticipation(challengeParticipation);
     }
 
     @Transactional(readOnly = true)
@@ -93,7 +93,7 @@ public class InsightQueryDomainService {
 
     @Transactional(readOnly = true)
     public List<InsightMyPageDto> getInsightsForMyPage(User user, Long targetUserId, Long drawerId, CursorPageable<Long> cPage) {
-        List<Insight> insights = insightQueryRepository.findByUserIdAndDrawerId(targetUserId, drawerId, cPage);
+        List<Insight> insights = insightQueryRepository.findAllByUserIdAndDrawerId(targetUserId, drawerId, cPage);
         Map<Long, Boolean> bookmarkPresenceMap = bookmarkQueryDomainService.getBookmarkPresenceMap(user, insights);
         return insights.parallelStream()
                 .map(insight -> InsightMyPageDto.of(

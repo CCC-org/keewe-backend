@@ -47,7 +47,7 @@ public class InsightQueryRepository {
 
     }
 
-    public List<Insight> findValidInsightsByParticipation(ChallengeParticipation participation) {
+    public List<Insight> findAllValidByParticipation(ChallengeParticipation participation) {
         return queryFactory.select(insight)
                 .from(insight)
                 .where(insight.challengeParticipation.eq(participation)
@@ -74,7 +74,7 @@ public class InsightQueryRepository {
     }
 
 
-    public List<Insight> findForHome(User user, CursorPageable<Long> cPage, Boolean follow) {
+    public List<Insight> findAllForHome(User user, CursorPageable<Long> cPage, Boolean follow) {
         BooleanExpression followFilter = Expressions.asBoolean(true).isTrue();
         if (follow != null && follow)
             followFilter = insight.writer.id.in(findFolloweesId(user));
@@ -133,7 +133,7 @@ public class InsightQueryRepository {
                 .fetchFirst();
     }
 
-    public List<Insight> findByUserIdAndDrawerId(Long userId, Long drawerId, CursorPageable<Long> cPage) {
+    public List<Insight> findAllByUserIdAndDrawerId(Long userId, Long drawerId, CursorPageable<Long> cPage) {
         return queryFactory
                 .select(insight)
                 .from(insight)
