@@ -21,10 +21,6 @@ public class ChallengeQueryDomainService {
         return challengeRepository.findById(id).orElseThrow(() -> new KeeweException(KeeweRtnConsts.ERR430));
     }
 
-    public List<Challenge> getSpecifiedNumberOfRecentChallenge(int size) {
-        return challengeQueryRepository.getSpecifiedNumberOfChallenge(size);
-    }
-
     public List<Challenge> paginate(CursorPageable<Long> cPage) {
         return challengeQueryRepository.paginate(cPage);
     }

@@ -4,16 +4,14 @@ import ccc.keeweapi.component.ChallengeAssembler;
 import ccc.keeweapi.dto.challenge.ChallengeCreateRequest;
 import ccc.keeweapi.dto.challenge.ChallengeCreateResponse;
 import ccc.keeweapi.dto.challenge.ChallengeDetailResponse;
-import ccc.keeweapi.dto.challenge.ChallengeHistoryListResponse;
-import ccc.keeweapi.dto.challenge.ChallengeInfoResponse;
 import ccc.keeweapi.dto.challenge.ChallengeParticipateRequest;
 import ccc.keeweapi.dto.challenge.ChallengeParticipationResponse;
 import ccc.keeweapi.dto.challenge.ChallengerCountResponse;
+import ccc.keeweapi.dto.challenge.FriendResponse;
 import ccc.keeweapi.dto.challenge.MyParticipationProgressResponse;
 import ccc.keeweapi.dto.challenge.ParticipatingChallengeDetailResponse;
 import ccc.keeweapi.dto.challenge.ParticipatingChallengeResponse;
 import ccc.keeweapi.dto.challenge.ParticipationCheckResponse;
-import ccc.keeweapi.dto.challenge.FriendResponse;
 import ccc.keeweapi.dto.challenge.WeekProgressResponse;
 import ccc.keeweapi.utils.SecurityUtil;
 import ccc.keewecore.consts.KeeweRtnConsts;
@@ -24,13 +22,8 @@ import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.service.challenge.command.ChallengeCommandDomainService;
 import ccc.keewedomain.service.challenge.query.ChallengeParticipateQueryDomainService;
 import ccc.keewedomain.service.challenge.query.ChallengeQueryDomainService;
-import ccc.keewedomain.service.user.ProfileDomainService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import ccc.keewedomain.service.insight.query.InsightQueryDomainService;
+import ccc.keewedomain.service.user.ProfileDomainService;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -38,6 +31,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
@@ -107,22 +104,6 @@ public class ChallengeApiService {
                     return challengeAssembler.toMyChallengeResponse(participation, participatingUser);
                 })
                 .orElse(null);
-    }
-
-    public List<ChallengeInfoResponse> getSpecifiedNumberOfChallenge(int size) {
-        List<Challenge> specifiedNumberOfChallenge = challengeQueryDomainService.getSpecifiedNumberOfRecentChallenge(size);
-        Map<Long, Long> insightCountPerChallengeMap = insightQueryDomainService.getInsightCountPerChallenge(specifiedNumberOfChallenge);
-        return specifiedNumberOfChallenge.stream()
-                .map(challenge -> challengeAssembler.toChallengeInfoResponse(challenge, insightCountPerChallengeMap.getOrDefault(challenge.getId(), 0L)))
-                .collect(Collectors.toList());
-    }
-
-    public ChallengeHistoryListResponse getHistoryOfChallenge(Long size) {
-        User user = SecurityUtil.getUser();
-        Long historyCount = challengeParticipateQueryDomainService.countFinishedParticipation(user);
-        List<ChallengeParticipation> finishedParticipation = challengeParticipateQueryDomainService.getFinishedParticipation(user, size);
-
-        return challengeAssembler.toChallengeHistoryListResponse(finishedParticipation, historyCount);
     }
 
     public ChallengeDetailResponse getChallengeDetail(Long challengeId) {
