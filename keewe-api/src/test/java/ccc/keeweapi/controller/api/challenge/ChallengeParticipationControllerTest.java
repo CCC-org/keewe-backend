@@ -125,7 +125,7 @@ public class ChallengeParticipationControllerTest extends ApiDocumentationTest {
         Long current = 4L;
         Long total = 16L;
         when(challengeApiService.getMyParticipationProgress())
-                .thenReturn(InsightProgressResponse.of(name, current, total));
+                .thenReturn(MyParticipationProgressResponse.of(name, current, total, false, true));
 
         ResultActions resultActions = mockMvc.perform(get("/api/v1/challenge/participation/progress/insight")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
@@ -145,7 +145,9 @@ public class ChallengeParticipationControllerTest extends ApiDocumentationTest {
                                 fieldWithPath("data").description("참가중이지 않은 경우 null"),
                                 fieldWithPath("data.name").description("참가중인 챌린지의 이름"),
                                 fieldWithPath("data.current").description("지금까지 기록한 인사이트의 수"),
-                                fieldWithPath("data.total").description("총 기록해야 하는 인사이트의 수")
+                                fieldWithPath("data.total").description("총 기록해야 하는 인사이트의 수"),
+                                fieldWithPath("data.todayRecorded").description("오늘 기록 여부"),
+                                fieldWithPath("data.weekCompleted").description("주간 목표 달성 여부")
                         )
                         .tag("ChallengeParticipation")
                         .build()
@@ -309,52 +311,6 @@ public class ChallengeParticipationControllerTest extends ApiDocumentationTest {
                                 fieldWithPath("data.challengerCount").description("참가자의 닉네임")
                         )
                         .tag("ChallengeParticipation")
-                        .build()
-        )));
-    }
-
-    @Test
-    @DisplayName("완료된 챌린지 지정한 개수 조회")
-    void get_challenge_history() throws Exception {
-        List<ChallengeHistoryResponse> historyResponses = List.of(
-                ChallengeHistoryResponse.of(1L, "개발", "챌린지1", "2023-01-01", "2023-01-13"),
-                ChallengeHistoryResponse.of(2L, "개발", "챌린지2", "2023-02-01", "2023-02-13")
-        );
-        ChallengeHistoryListResponse response = ChallengeHistoryListResponse.of(
-                2L,
-                historyResponses
-        );
-
-        when(challengeApiService.getHistoryOfChallenge(anyLong()))
-                .thenReturn(response);
-
-        ResultActions resultActions = mockMvc.perform(get("/api/v1/challenge/history")
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
-                        .param("size", "5")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
-
-        resultActions.andDo(restDocs.document(resource(
-                ResourceSnippetParameters.builder()
-                        .description("완료된 챌린지 지정한 개수 만큼 조회 API 입니다.")
-                        .summary("완료된 챌린지 조회 지정한 개수 만큼 조회 API")
-                        .requestParameters(
-                                parameterWithName("size").description("조회할 챌린지 기록 개수. 미설정 시 전체 조회").optional()
-                        )
-                        .requestHeaders(
-                                headerWithName("Authorization").description("유저의 JWT")
-                        )
-                        .responseFields(
-                                fieldWithPath("message").description("요청 결과 메세지"),
-                                fieldWithPath("code").description("결과 코드"),
-                                fieldWithPath("data.historyNumber").description("전체 종료된 챌린지 개수, 최소값 1(size와 관련 없음)"),
-                                fieldWithPath("data.challengeHistories[].challengeId").description("챌린지의 ID"),
-                                fieldWithPath("data.challengeHistories[].challengeCategory").description("챌린지의 카테고리(관심사)"),
-                                fieldWithPath("data.challengeHistories[].challengeName").description("챌린지 이름"),
-                                fieldWithPath("data.challengeHistories[].startDate").description("챌린지 참가일"),
-                                fieldWithPath("data.challengeHistories[].endDate").description("챌린지 종료일")
-                        )
-                        .tag("Challenge")
                         .build()
         )));
     }

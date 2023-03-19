@@ -143,4 +143,8 @@ public class ProfileAssembler {
     public ProfileUpdateResponse toProfileUpdateResponse(User user) {
         return ProfileUpdateResponse.of(user.getProfilePhotoURL());
     }
+
+    public InterestsResponse toInterestsResponse(List<String> interests) {
+        return InterestsResponse.of(interests);
+    }
 }

@@ -26,7 +26,6 @@ public class CommentDomainService {
 
     private final CommentRepository commentRepository;
     private final CommentQueryRepository commentQueryRepository;
-
     private final InsightQueryDomainService insightQueryDomainService;
     private final UserDomainService userDomainService;
 
@@ -40,6 +39,11 @@ public class CommentDomainService {
 
         Comment comment = Comment.of(insight, writer, parent, dto.getContent());
         return commentRepository.save(comment);
+    }
+
+    public Comment getByIdOrElseThrow(Long commentId) {
+        return commentRepository.findById(commentId)
+                .orElseThrow(() -> new KeeweException(KeeweRtnConsts.ERR481));
     }
 
     public Long delete(CommentDeleteDto dto) {

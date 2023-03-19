@@ -13,6 +13,7 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWit
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import ccc.keeweapi.document.utils.ApiDocumentationTest;
+import ccc.keeweapi.dto.user.InterestsResponse;
 import ccc.keeweapi.dto.user.OnboardResponse;
 import ccc.keeweapi.dto.user.ProfileMyPageResponse;
 import ccc.keeweapi.dto.user.ProfileUpdateResponse;
@@ -186,6 +187,35 @@ public class UserProfileControllerTest extends ApiDocumentationTest {
                                 fieldWithPath("message").description("요청 결과 메세지"),
                                 fieldWithPath("code").description("결과 코드"),
                                 fieldWithPath("data.imageURL").description("변경된 프로필 이미지 URL"))
+                        .tag("UserProfile")
+                        .build()
+        )));
+    }
+
+    @Test
+    @DisplayName("관심사 조회 테스트")
+    void get_interests() throws Exception {
+        when(profileApiService.getInterests()).thenReturn(
+                InterestsResponse.of(List.of(
+                        "주식",
+                        "운동"
+                ))
+        );
+
+        ResultActions resultActions = mockMvc.perform(get("/api/v1/user/profile/interests")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT))
+                .andExpect(status().isOk());
+
+        resultActions.andDo(restDocs.document(resource(
+                ResourceSnippetParameters.builder()
+                        .description("관심사 조회 API 입니다.")
+                        .summary("관심사 조회 API")
+                        .requestHeaders(
+                                headerWithName("Authorization").description("유저의 JWT"))
+                        .responseFields(
+                                fieldWithPath("message").description("요청 결과 메세지"),
+                                fieldWithPath("code").description("결과 코드"),
+                                fieldWithPath("data.interests").description("관심사 리스트"))
                         .tag("UserProfile")
                         .build()
         )));

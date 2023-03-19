@@ -62,11 +62,17 @@ public class ChallengeAssembler {
         return ParticipationCheckResponse.of(participation);
     }
 
-    public InsightProgressResponse toParticipationProgressResponse(ChallengeParticipation participation, Long current) {
-        return InsightProgressResponse.of(
+    public MyParticipationProgressResponse toMyParticipationProgressResponse(
+            ChallengeParticipation participation,
+            Long current,
+            boolean todayRecorded,
+            boolean weekCompleted) {
+        return MyParticipationProgressResponse.of(
                 participation.getChallenge().getName(),
                 current,
-                participation.getTotalInsightNumber()
+                participation.getTotalInsightNumber(),
+                todayRecorded,
+                weekCompleted
         );
     }
 
@@ -103,28 +109,6 @@ public class ChallengeAssembler {
                 participatingUser,
                 challenge.getInterest().getName(),
                 participation.getCreatedAt().toLocalDate().toString()
-        );
-    }
-
-    public ChallengeInfoResponse toChallengeInfoResponse(Challenge challenge, Long insightCount) {
-        return ChallengeInfoResponse.of(challenge.getId(), challenge.getInterest(), challenge.getName(), challenge.getIntroduction(), insightCount);
-    }
-
-    public ChallengeHistoryListResponse toChallengeHistoryListResponse(List<ChallengeParticipation> participations, Long historyCount) {
-        List<ChallengeHistoryResponse> historyResponses = participations.stream()
-                .map(this::toChallengeHistoryResponse)
-                .collect(Collectors.toList());
-
-        return ChallengeHistoryListResponse.of(historyCount, historyResponses);
-    }
-
-    public ChallengeHistoryResponse toChallengeHistoryResponse(ChallengeParticipation participation) {
-        return ChallengeHistoryResponse.of(
-                participation.getChallenge().getId(),
-                participation.getChallenge().getInterest().getName(),
-                participation.getChallenge().getName(),
-                participation.getCreatedAt().toLocalDate().toString(),
-                participation.getUpdatedAt().toLocalDate().toString()
         );
     }
 
@@ -192,5 +176,15 @@ public class ChallengeAssembler {
 
     public ChallengeMyInsightNumberResponse toChallengeMyInsightNumberResponse(Long insightNumber) {
         return ChallengeMyInsightNumberResponse.of(insightNumber);
+    }
+
+    public ChallengeStatisticsResponse toChallengeStatisticsResponse(
+            Long viewCount,
+            Long reactionCount,
+            Long commentCount,
+            Long bookmarkCount,
+            Long shareCount
+    ) {
+        return ChallengeStatisticsResponse.of(viewCount, reactionCount, commentCount, bookmarkCount, shareCount);
     }
 }

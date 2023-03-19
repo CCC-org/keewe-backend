@@ -4,18 +4,16 @@ import ccc.keeweapi.component.ChallengeAssembler;
 import ccc.keeweapi.dto.challenge.ChallengeCreateRequest;
 import ccc.keeweapi.dto.challenge.ChallengeCreateResponse;
 import ccc.keeweapi.dto.challenge.ChallengeDetailResponse;
-import ccc.keeweapi.dto.challenge.ChallengeHistoryListResponse;
-import ccc.keeweapi.dto.challenge.ChallengeInfoResponse;
 import ccc.keeweapi.dto.challenge.ChallengeInsightNumberResponse;
 import ccc.keeweapi.dto.challenge.ChallengeMyInsightNumberResponse;
 import ccc.keeweapi.dto.challenge.ChallengeParticipateRequest;
 import ccc.keeweapi.dto.challenge.ChallengeParticipationResponse;
 import ccc.keeweapi.dto.challenge.ChallengerCountResponse;
-import ccc.keeweapi.dto.challenge.InsightProgressResponse;
+import ccc.keeweapi.dto.challenge.FriendResponse;
+import ccc.keeweapi.dto.challenge.MyParticipationProgressResponse;
 import ccc.keeweapi.dto.challenge.ParticipatingChallengeDetailResponse;
 import ccc.keeweapi.dto.challenge.ParticipatingChallengeResponse;
 import ccc.keeweapi.dto.challenge.ParticipationCheckResponse;
-import ccc.keeweapi.dto.challenge.FriendResponse;
 import ccc.keeweapi.dto.challenge.WeekProgressResponse;
 import ccc.keeweapi.utils.SecurityUtil;
 import ccc.keewecore.consts.KeeweRtnConsts;
@@ -26,13 +24,13 @@ import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.service.challenge.command.ChallengeCommandDomainService;
 import ccc.keewedomain.service.challenge.query.ChallengeParticipateQueryDomainService;
 import ccc.keewedomain.service.challenge.query.ChallengeQueryDomainService;
+import ccc.keewedomain.service.insight.query.InsightQueryDomainService;
 import ccc.keewedomain.service.user.ProfileDomainService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import ccc.keewedomain.service.insight.query.InsightQueryDomainService;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -76,13 +74,15 @@ public class ChallengeApiService {
     }
 
     @Transactional(readOnly = true)
-    public InsightProgressResponse getMyParticipationProgress() {
-        Long userId = SecurityUtil.getUserId();
+    public MyParticipationProgressResponse getMyParticipationProgress() {
+        User user = SecurityUtil.getUser();
 
-        return challengeParticipateQueryDomainService.findCurrentParticipationWithChallenge(userId)
+        return challengeParticipateQueryDomainService.findCurrentParticipationByUserId(user.getId())
                 .map(participation -> {
                     Long current = insightQueryDomainService.getRecordedInsightNumber(participation);
-                    return challengeAssembler.toParticipationProgressResponse(participation, current);
+                    boolean todayRecorded = insightQueryDomainService.isTodayRecorded(user);
+                    boolean weekCompleted =  insightQueryDomainService.isThisWeekCompleted(participation);
+                    return challengeAssembler.toMyParticipationProgressResponse(participation, current, todayRecorded, weekCompleted);
                 })
                 .orElse(null);
     }
@@ -107,22 +107,6 @@ public class ChallengeApiService {
                     return challengeAssembler.toMyChallengeResponse(participation, participatingUser);
                 })
                 .orElse(null);
-    }
-
-    public List<ChallengeInfoResponse> getSpecifiedNumberOfChallenge(int size) {
-        List<Challenge> specifiedNumberOfChallenge = challengeQueryDomainService.getSpecifiedNumberOfRecentChallenge(size);
-        Map<Long, Long> insightCountPerChallengeMap = insightQueryDomainService.getInsightCountPerChallenge(specifiedNumberOfChallenge);
-        return specifiedNumberOfChallenge.stream()
-                .map(challenge -> challengeAssembler.toChallengeInfoResponse(challenge, insightCountPerChallengeMap.getOrDefault(challenge.getId(), 0L)))
-                .collect(Collectors.toList());
-    }
-
-    public ChallengeHistoryListResponse getHistoryOfChallenge(Long size) {
-        User user = SecurityUtil.getUser();
-        Long historyCount = challengeParticipateQueryDomainService.countFinishedParticipation(user);
-        List<ChallengeParticipation> finishedParticipation = challengeParticipateQueryDomainService.getFinishedParticipation(user, size);
-
-        return challengeAssembler.toChallengeHistoryListResponse(finishedParticipation, historyCount);
     }
 
     public ChallengeDetailResponse getChallengeDetail(Long challengeId) {
@@ -169,21 +153,21 @@ public class ChallengeApiService {
     }
 
     public ParticipatingChallengeDetailResponse getMyChallengeDetail() {
-        Challenge challenge = challengeParticipateQueryDomainService.findCurrentParticipationWithChallenge(SecurityUtil.getUserId())
+        Challenge challenge = challengeParticipateQueryDomainService.findCurrentParticipationByUserId(SecurityUtil.getUserId())
                 .map(ChallengeParticipation::getChallenge)
                 .orElseThrow(() -> new KeeweException(KeeweRtnConsts.ERR432));
         return challengeAssembler.toParticipatingChallengeDetailResponse(challenge);
     }
 
     public ChallengeInsightNumberResponse countInsightOfChallenge() {
-        Long insightNumber = challengeParticipateQueryDomainService.findCurrentParticipationWithChallenge(SecurityUtil.getUserId())
+        Long insightNumber = challengeParticipateQueryDomainService.findCurrentParticipationByUserId(SecurityUtil.getUserId())
                 .map(participation -> insightQueryDomainService.getInsightCountByChallenge(participation.getChallenge()))
                 .orElseThrow(() -> new KeeweException(KeeweRtnConsts.ERR432));
         return challengeAssembler.toChallengeInsightNumberResponse(insightNumber);
     }
 
     public ChallengeMyInsightNumberResponse countMyInsightOfChallenge() {
-        Long insightNumber = challengeParticipateQueryDomainService.findCurrentParticipationWithChallenge(SecurityUtil.getUserId())
+        Long insightNumber = challengeParticipateQueryDomainService.findCurrentParticipationByUserId(SecurityUtil.getUserId())
                 .map(insightQueryDomainService::getInsightCountByParticipation)
                 .orElseThrow(() -> new KeeweException(KeeweRtnConsts.ERR432));
         return challengeAssembler.toChallengeMyInsightNumberResponse(insightNumber);

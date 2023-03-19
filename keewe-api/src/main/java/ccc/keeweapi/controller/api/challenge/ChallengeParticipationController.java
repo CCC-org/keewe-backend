@@ -1,21 +1,34 @@
 package ccc.keeweapi.controller.api.challenge;
 
 import ccc.keeweapi.dto.ApiResponse;
-import ccc.keeweapi.dto.challenge.*;
+import ccc.keeweapi.dto.challenge.ChallengeMyInsightNumberResponse;
+import ccc.keeweapi.dto.challenge.ChallengeParticipateRequest;
+import ccc.keeweapi.dto.challenge.ChallengeParticipationResponse;
+import ccc.keeweapi.dto.challenge.ChallengerCountResponse;
+import ccc.keeweapi.dto.challenge.FinishedChallengeCountResponse;
+import ccc.keeweapi.dto.challenge.FinishedChallengeResponse;
+import ccc.keeweapi.dto.challenge.FriendResponse;
+import ccc.keeweapi.dto.challenge.MyParticipationProgressResponse;
+import ccc.keeweapi.dto.challenge.ParticipatingChallengeResponse;
+import ccc.keeweapi.dto.challenge.ParticipationCheckResponse;
+import ccc.keeweapi.dto.challenge.WeekProgressResponse;
 import ccc.keeweapi.service.challenge.ChallengeApiService;
-import javax.validation.Valid;
-import javax.validation.constraints.Min;
 import ccc.keeweapi.service.challenge.query.ChallengeParticipationQueryApiService;
-import ccc.keewecore.aop.annotations.FLogging;
 import ccc.keewecore.consts.KeeweConsts;
 import ccc.keewedomain.persistence.repository.utils.CursorPageable;
+import java.util.List;
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/v1/challenge")
@@ -41,7 +54,7 @@ public class ChallengeParticipationController {
     }
 
     @GetMapping("/participation/progress/insight")
-    public ApiResponse<InsightProgressResponse> getMyParticipationProgress() {
+    public ApiResponse<MyParticipationProgressResponse> getMyParticipationProgress() {
         return ApiResponse.ok(challengeApiService.getMyParticipationProgress());
     }
 
@@ -60,14 +73,6 @@ public class ChallengeParticipationController {
     @GetMapping("/{challengeId}/challengers/count")
     public ApiResponse<ChallengerCountResponse> getChallengerCount(@PathVariable Long challengeId) {
         return ApiResponse.ok(challengeApiService.getChallengerCount(challengeId));
-    }
-
-    @GetMapping("/history")
-    @FLogging
-    public ApiResponse<ChallengeHistoryListResponse> getHistoryOfChallenge(
-            @RequestParam(value = "size", defaultValue = KeeweConsts.LONG_MAX_STRING) @Min(1) Long size
-    ) {
-        return ApiResponse.ok(challengeApiService.getHistoryOfChallenge(size));
     }
 
     @GetMapping("/finished")

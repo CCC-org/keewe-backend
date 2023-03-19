@@ -25,4 +25,8 @@ public class BookmarkQueryDomainService {
     public Map<Long, Boolean> getBookmarkPresenceMap(User user, List<Insight> insightList) {
         return bookmarkQueryRepository.getBookmarkPresenceMap(user, insightList);
     }
+
+    public Long countBookmark(List<Insight> insights) {
+        return bookmarkQueryRepository.countBookmark(insights);
+    }
 }

@@ -50,7 +50,7 @@ public class InsightQueryDomainService {
     }
 
     public List<InsightGetForHomeDto> getInsightsForHome(User user, CursorPageable<Long> cPage, Boolean follow) {
-        List<Insight> forHome = insightQueryRepository.findForHome(user, cPage, follow);
+        List<Insight> forHome = insightQueryRepository.findAllForHome(user, cPage, follow);
         Map<Long, Boolean> bookmarkPresence = bookmarkQueryDomainService.getBookmarkPresenceMap(user, forHome);
 
         return forHome.parallelStream().map(i ->
@@ -72,7 +72,7 @@ public class InsightQueryDomainService {
     }
 
     public List<Insight> getRecordedInsights(ChallengeParticipation challengeParticipation) {
-        return insightQueryRepository.findValidInsightsByParticipation(challengeParticipation);
+        return insightQueryRepository.findAllValidByParticipation(challengeParticipation);
     }
 
     @Transactional(readOnly = true)
@@ -93,7 +93,7 @@ public class InsightQueryDomainService {
 
     @Transactional(readOnly = true)
     public List<InsightMyPageDto> getInsightsForMyPage(User user, Long targetUserId, Long drawerId, CursorPageable<Long> cPage) {
-        List<Insight> insights = insightQueryRepository.findByUserIdAndDrawerId(targetUserId, drawerId, cPage);
+        List<Insight> insights = insightQueryRepository.findAllByUserIdAndDrawerId(targetUserId, drawerId, cPage);
         Map<Long, Boolean> bookmarkPresenceMap = bookmarkQueryDomainService.getBookmarkPresenceMap(user, insights);
         return insights.parallelStream()
                 .map(insight -> InsightMyPageDto.of(
@@ -105,6 +105,51 @@ public class InsightQueryDomainService {
                         bookmarkPresenceMap.getOrDefault(insight.getId(), false)
                 ))
                 .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<InsightGetForHomeDto> getInsightForBookmark(User user, CursorPageable<Long> cPage) {
+        List<Insight> insights = insightQueryRepository.findBookmarkedInsight(user, cPage);
+        return insights.parallelStream().map(i ->
+                InsightGetForHomeDto.of(
+                        i.getId(),
+                        i.getContents(),
+                        true,
+                        i.getLink(),
+                        this.getCurrentReactionAggregation(i.getId()),
+                        i.getCreatedAt(),
+                        InsightWriterDto.of(
+                                i.getWriter().getId(),
+                                i.getWriter().getNickname(),
+                                i.getWriter().getRepTitleName(),
+                                i.getWriter().getProfilePhotoURL()
+                        )
+                )
+        ).collect(Collectors.toList());
+    }
+
+    // FIXME dto 개선 필요
+    @Transactional(readOnly = true)
+    public List<InsightGetForHomeDto> getByChallenge(Challenge challenge, User user, CursorPageable<Long> cPage, Long writerId) {
+        List<Insight> insights = insightQueryRepository.findByChallenge(challenge, cPage, writerId);
+        Map<Long, Boolean> bookmarkPresence = bookmarkQueryDomainService.getBookmarkPresenceMap(user, insights);
+
+        return insights.parallelStream().map(i ->
+                InsightGetForHomeDto.of(
+                        i.getId(),
+                        i.getContents(),
+                        bookmarkPresence.getOrDefault(i.getId(), false),
+                        i.getLink(),
+                        this.getCurrentReactionAggregation(i.getId()),
+                        i.getCreatedAt(),
+                        InsightWriterDto.of(
+                                i.getWriter().getId(),
+                                i.getWriter().getNickname(),
+                                i.getWriter().getRepTitleName(),
+                                i.getWriter().getProfilePhotoURL()
+                        )
+                )
+        ).collect(Collectors.toList());
     }
 
     public Map<Long, Long> getInsightCountPerChallenge(List<Challenge> challenges) {
@@ -161,6 +206,12 @@ public class InsightQueryDomainService {
         LocalDateTime startDate = now.atStartOfDay();
         LocalDateTime endDate = startDate.plusDays(1);
         return insightQueryRepository.existByWriterAndCreatedAtBetweenAndValidTrue(user, startDate, endDate);
+    }
+
+    public boolean isThisWeekCompleted(ChallengeParticipation participation) {
+        Long validNumber = insightQueryRepository.countValidByParticipation(participation);
+        log.info("[IQDS::isThisWeekCompleted] validNumber = {}, currentWeek = {}, insightPerWeek = {}", validNumber, participation.getCurrentWeek(), participation.getInsightPerWeek());
+        return validNumber.equals(participation.getCurrentWeek() * participation.getInsightPerWeek());
     }
 
     private ReactionAggregationGetDto getCurrentReactionAggregation(Long insightId) {

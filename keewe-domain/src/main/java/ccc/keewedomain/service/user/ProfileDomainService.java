@@ -4,6 +4,7 @@ import ccc.keewecore.consts.KeeweConsts;
 import ccc.keewecore.consts.KeeweRtnConsts;
 import ccc.keewecore.exception.KeeweException;
 import ccc.keewedomain.dto.user.*;
+import ccc.keewedomain.persistence.domain.common.Interest;
 import ccc.keewedomain.persistence.domain.title.Title;
 import ccc.keewedomain.persistence.domain.title.TitleAchievement;
 import ccc.keewedomain.persistence.domain.title.id.TitleAchievementId;
@@ -25,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -180,6 +182,15 @@ public class ProfileDomainService {
         user.updateProfile(dto.getNickname(), dto.getInterests(), title, dto.getIntroduction());
 
         return user;
+    }
+
+    @Transactional(readOnly = true)
+    public List<String> getInterests(User user) {
+        User userWithInterests = userDomainService.getUserByIdWithInterests(user.getId());
+
+        return userWithInterests.getInterests().stream()
+                .map(Interest::getName)
+                .collect(Collectors.toList());
     }
 
     private void updateProfilePhoto(User user, MultipartFile profilePhoto) {

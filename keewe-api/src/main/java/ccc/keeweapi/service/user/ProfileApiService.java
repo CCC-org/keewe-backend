@@ -3,19 +3,7 @@ package ccc.keeweapi.service.user;
 import static ccc.keewecore.consts.KeeweConsts.MY_PAGE_TITLE_LIMIT;
 
 import ccc.keeweapi.component.ProfileAssembler;
-import ccc.keeweapi.dto.user.AllAchievedTitleResponse;
-import ccc.keeweapi.dto.user.BlockUserResponse;
-import ccc.keeweapi.dto.user.FollowToggleResponse;
-import ccc.keeweapi.dto.user.FollowUserListResponse;
-import ccc.keeweapi.dto.user.MyBlockUserListResponse;
-import ccc.keeweapi.dto.user.MyPageTitleResponse;
-import ccc.keeweapi.dto.user.OnboardRequest;
-import ccc.keeweapi.dto.user.OnboardResponse;
-import ccc.keeweapi.dto.user.ProfileMyPageResponse;
-import ccc.keeweapi.dto.user.ProfileUpdateRequest;
-import ccc.keeweapi.dto.user.ProfileUpdateResponse;
-import ccc.keeweapi.dto.user.UnblockUserResponse;
-import ccc.keeweapi.dto.user.UploadProfilePhotoResponse;
+import ccc.keeweapi.dto.user.*;
 import ccc.keeweapi.utils.SecurityUtil;
 import ccc.keewedomain.dto.user.FollowCheckDto;
 import ccc.keewedomain.persistence.domain.title.TitleAchievement;
@@ -73,7 +61,7 @@ public class ProfileApiService {
         Long followerCount = profileDomainService.getFollowerCount(targetUser);
         Long followingCount = profileDomainService.getFollowingCount(targetUser);
 
-        String challengeName = challengeParticipateQueryDomainService.findCurrentParticipationWithChallenge(targetId)
+        String challengeName = challengeParticipateQueryDomainService.findCurrentParticipationByUserId(targetId)
                 .map(challengeParticipation -> challengeParticipation.getChallenge().getName())
                 .orElse(null);
 
@@ -140,5 +128,10 @@ public class ProfileApiService {
     public ProfileUpdateResponse updateProfile(ProfileUpdateRequest request) {
         User user = profileDomainService.updateProfile(SecurityUtil.getUserId(), profileAssembler.toProfileUpdateDto(request));
         return profileAssembler.toProfileUpdateResponse(user);
+    }
+
+    @Transactional(readOnly = true)
+    public InterestsResponse getInterests() {
+        return profileAssembler.toInterestsResponse(profileDomainService.getInterests(SecurityUtil.getUser()));
     }
 }

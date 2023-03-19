@@ -65,6 +65,7 @@ public class ChallengeParticipation extends BaseTimeEntity {
     }
 
     public void cancel() {
+        this.endDate = LocalDate.now();
         this.status = ChallengeParticipationStatus.CANCELED;
     }
 
@@ -77,7 +78,7 @@ public class ChallengeParticipation extends BaseTimeEntity {
     public long getCurrentWeek() {
         LocalDate createdAt = getCreatedAt().toLocalDate();
         LocalDate today = LocalDate.now();
-        Period between = Period.between(today, createdAt);
+        Period between = Period.between(createdAt, today);
 
         return between.getDays() / 7 + 1; // 1주차부터 시작
     }
@@ -90,7 +91,8 @@ public class ChallengeParticipation extends BaseTimeEntity {
         return (long) (insightPerWeek * duration);
     }
 
-    public void expire() {
+    public void expire(LocalDate endDate) {
+        this.endDate = endDate;
         this.status = ChallengeParticipationStatus.EXPIRED;
     }
 

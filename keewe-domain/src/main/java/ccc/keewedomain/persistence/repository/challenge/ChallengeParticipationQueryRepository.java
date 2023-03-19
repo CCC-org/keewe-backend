@@ -46,13 +46,13 @@ public class ChallengeParticipationQueryRepository {
         return fetchFirst != null;
     }
 
-    public Optional<ChallengeParticipation> findByChallengerIdAndStatusWithChallenge(Long challengerId, ChallengeParticipationStatus status) {
+    public Optional<ChallengeParticipation> findByUserIdAndStatus(Long userId, ChallengeParticipationStatus status) {
         return Optional.ofNullable(
                 queryFactory.select(challengeParticipation)
                 .from(challengeParticipation)
                 .innerJoin(challengeParticipation.challenge, challenge)
                 .fetchJoin()
-                .where(challengeParticipation.challenger.id.eq(challengerId).and(challengeParticipation.status.eq(status)))
+                .where(challengeParticipation.challenger.id.eq(userId).and(challengeParticipation.status.eq(status)))
                 .fetchOne()
         );
     }

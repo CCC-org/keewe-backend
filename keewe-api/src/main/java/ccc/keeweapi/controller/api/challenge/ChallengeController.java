@@ -1,7 +1,13 @@
 package ccc.keeweapi.controller.api.challenge;
 
 import ccc.keeweapi.dto.ApiResponse;
-import ccc.keeweapi.dto.challenge.*;
+import ccc.keeweapi.dto.challenge.ChallengeCreateRequest;
+import ccc.keeweapi.dto.challenge.ChallengeCreateResponse;
+import ccc.keeweapi.dto.challenge.ChallengeDetailResponse;
+import ccc.keeweapi.dto.challenge.ChallengeInsightNumberResponse;
+import ccc.keeweapi.dto.challenge.ChallengeStatisticsResponse;
+import ccc.keeweapi.dto.challenge.OpenedChallengeResponse;
+import ccc.keeweapi.dto.challenge.ParticipatingChallengeDetailResponse;
 import ccc.keeweapi.service.challenge.ChallengeApiService;
 import ccc.keeweapi.service.challenge.query.ChallengeQueryApiService;
 import ccc.keewecore.aop.annotations.FLogging;
@@ -9,11 +15,15 @@ import ccc.keewecore.consts.KeeweConsts;
 import ccc.keewedomain.persistence.repository.utils.CursorPageable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
 import java.util.List;
 
 @RestController
@@ -40,13 +50,6 @@ public class ChallengeController {
         return ApiResponse.ok(challengeQueryApiService.paginate(CursorPageable.of(cursor, limit)));
     }
 
-    @GetMapping("/specified-size")
-    @Deprecated
-    @FLogging
-    public ApiResponse<List<ChallengeInfoResponse>> getSpecifiedNumberOfChallenge(@RequestParam("size") @Min(1) @Max(10) Integer size) {
-        return ApiResponse.ok(challengeApiService.getSpecifiedNumberOfChallenge(size));
-    }
-
     @GetMapping("/{challengeId}/detail")
     @FLogging
     public ApiResponse<ChallengeDetailResponse> getChallengeDetail(@PathVariable Long challengeId) {
@@ -57,6 +60,12 @@ public class ChallengeController {
     @FLogging
     public ApiResponse<ParticipatingChallengeDetailResponse> getMyChallengeDetail() {
         return ApiResponse.ok(challengeApiService.getMyChallengeDetail());
+    }
+
+    @GetMapping("/statistics")
+    @FLogging
+    public ApiResponse<ChallengeStatisticsResponse> aggregateChallengeStatistics() {
+        return ApiResponse.ok(challengeQueryApiService.aggregateChallengeStatistics());
     }
 
     @GetMapping("/my/insight/count")
