@@ -3,7 +3,7 @@ package ccc.keewedomain.persistence.domain.report;
 import static javax.persistence.FetchType.LAZY;
 
 import ccc.keewedomain.persistence.domain.common.BaseTimeEntity;
-import ccc.keewedomain.persistence.domain.insight.Insight;
+import ccc.keewedomain.persistence.domain.insight.enums.ReportTarget;
 import ccc.keewedomain.persistence.domain.insight.enums.ReportType;
 import ccc.keewedomain.persistence.domain.user.User;
 import javax.persistence.Column;
@@ -34,9 +34,12 @@ public class Report extends BaseTimeEntity {
     @ManyToOne(fetch = LAZY)
     private User reporter;
 
-    @JoinColumn(name = "insight_id")
-    @ManyToOne(fetch = LAZY)
-    private Insight insight;
+    @Enumerated(value = EnumType.STRING)
+    @Column(name = "report_target")
+    private ReportTarget reportTarget;
+
+    @Column(name = "target_id")
+    private Long targetId;
 
     @Enumerated(value = EnumType.STRING)
     @Column(name = "report_type")
@@ -44,10 +47,11 @@ public class Report extends BaseTimeEntity {
 
     private String reason;
 
-    public static Report of(User reporter, Insight insight, ReportType reportType, String reason) {
+    public static Report of(User reporter, ReportTarget reportTarget, Long targetId, ReportType reportType, String reason) {
         Report report = new Report();
         report.reporter = reporter;
-        report.insight = insight;
+        report.reportTarget = reportTarget;
+        report.targetId = targetId;
         report.reportType = reportType;
         report.reason = reason;
         return report;
