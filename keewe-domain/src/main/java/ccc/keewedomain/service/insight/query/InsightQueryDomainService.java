@@ -161,7 +161,7 @@ public class InsightQueryDomainService {
 
     public boolean isThisWeekCompleted(ChallengeParticipation participation) {
         Long validNumber = insightQueryRepository.countValidByParticipation(participation);
-        log.info("validNumber = {}, currentWeek = {}, insightPerWeek = {}", validNumber, participation.getCurrentWeek(), participation.getInsightPerWeek());
+        log.info("[IQDS::isThisWeekCompleted] validNumber = {}, currentWeek = {}, insightPerWeek = {}", validNumber, participation.getCurrentWeek(), participation.getInsightPerWeek());
         return validNumber.equals(participation.getCurrentWeek() * participation.getInsightPerWeek());
     }
 
