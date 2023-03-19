@@ -67,4 +67,12 @@ public class InsightController {
 
         return ApiResponse.ok(insightQueryApiService.getInsightsForMyPage(userId, drawerId, CursorPageable.of(cursor, limit)));
     }
+
+    @GetMapping("/bookmark")
+    public ApiResponse<List<InsightGetForHomeResponse>> getInsightForBookmark(
+            @RequestParam(required = false, defaultValue = KeeweConsts.LONG_MAX_STRING) Long cursor,
+            @RequestParam Long limit
+    ) {
+        return ApiResponse.ok(insightQueryApiService.getInsightForBookmark(CursorPageable.of(cursor, limit)));
+    }
 }

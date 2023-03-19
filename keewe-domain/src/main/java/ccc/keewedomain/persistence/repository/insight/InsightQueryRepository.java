@@ -3,6 +3,7 @@ package ccc.keewedomain.persistence.repository.insight;
 import ccc.keewedomain.persistence.domain.challenge.Challenge;
 import ccc.keewedomain.persistence.domain.challenge.ChallengeParticipation;
 import ccc.keewedomain.persistence.domain.insight.Insight;
+import ccc.keewedomain.persistence.domain.insight.QBookmark;
 import ccc.keewedomain.persistence.domain.user.QUser;
 import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.persistence.repository.utils.CursorPageable;
@@ -26,6 +27,7 @@ import java.util.Optional;
 import static ccc.keewedomain.persistence.domain.challenge.QChallenge.challenge;
 import static ccc.keewedomain.persistence.domain.challenge.QChallengeParticipation.challengeParticipation;
 import static ccc.keewedomain.persistence.domain.common.QInterest.interest;
+import static ccc.keewedomain.persistence.domain.insight.QBookmark.*;
 import static ccc.keewedomain.persistence.domain.insight.QInsight.insight;
 import static ccc.keewedomain.persistence.domain.user.QFollow.follow;
 import static ccc.keewedomain.persistence.domain.user.QUser.user;
@@ -175,6 +177,25 @@ public class InsightQueryRepository {
                 .where(insight.valid.isTrue())
                 .where(insight.deleted.isFalse())
                 .fetchFirst() != null;
+    }
+
+    public List<Insight> findBookmarkedInsight(User user, CursorPageable<Long> cPage) {
+        return queryFactory
+                .select(insight)
+                .from(insight)
+                .where(insight.deleted.isFalse())
+                .where(insight.in(findBookmarkedInsightId(user)))
+                .where(insight.id.lt(cPage.getCursor()))
+                .orderBy(insight.id.desc())
+                .limit(cPage.getLimit())
+                .fetch();
+    }
+
+    private JPQLQuery<Insight> findBookmarkedInsightId(User user) {
+        return queryFactory
+                .select(bookmark.insight)
+                .from(bookmark)
+                .where(bookmark.user.id.eq(user.getId()));
     }
 
     private BooleanExpression drawerIdEq(Long drawerId) {

@@ -107,6 +107,27 @@ public class InsightQueryDomainService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
+    public List<InsightGetForHomeDto> getInsightForBookmark(User user, CursorPageable<Long> cPage) {
+        List<Insight> insights = insightQueryRepository.findBookmarkedInsight(user, cPage);
+        return insights.parallelStream().map(i ->
+                InsightGetForHomeDto.of(
+                        i.getId(),
+                        i.getContents(),
+                        true,
+                        i.getLink(),
+                        this.getCurrentReactionAggregation(i.getId()),
+                        i.getCreatedAt(),
+                        InsightWriterDto.of(
+                                i.getWriter().getId(),
+                                i.getWriter().getNickname(),
+                                i.getWriter().getRepTitleName(),
+                                i.getWriter().getProfilePhotoURL()
+                        )
+                )
+        ).collect(Collectors.toList());
+    }
+
     public Map<Long, Long> getInsightCountPerChallenge(List<Challenge> challenges) {
         return insightQueryRepository.countPerChallenge(challenges);
     }
