@@ -4,6 +4,7 @@ import ccc.keeweapi.component.ChallengeAssembler;
 import ccc.keeweapi.dto.challenge.ChallengeCreateRequest;
 import ccc.keeweapi.dto.challenge.ChallengeCreateResponse;
 import ccc.keeweapi.dto.challenge.ChallengeDetailResponse;
+import ccc.keeweapi.dto.challenge.ChallengeInsightNumberResponse;
 import ccc.keeweapi.dto.challenge.ChallengeParticipateRequest;
 import ccc.keeweapi.dto.challenge.ChallengeParticipationResponse;
 import ccc.keeweapi.dto.challenge.ChallengerCountResponse;
@@ -24,6 +25,11 @@ import ccc.keewedomain.service.challenge.query.ChallengeParticipateQueryDomainSe
 import ccc.keewedomain.service.challenge.query.ChallengeQueryDomainService;
 import ccc.keewedomain.service.insight.query.InsightQueryDomainService;
 import ccc.keewedomain.service.user.ProfileDomainService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -31,10 +37,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
@@ -108,7 +110,7 @@ public class ChallengeApiService {
 
     public ChallengeDetailResponse getChallengeDetail(Long challengeId) {
         Challenge challenge = challengeQueryDomainService.getByIdOrElseThrow(challengeId);
-        Long insightCount = insightQueryDomainService.getInsightCountByChallenge(challenge);
+        Long insightCount = insightQueryDomainService.getInsightCountByChallenge(challenge, null);
         return challengeAssembler.toChallengeDetailResponse(challenge, insightCount);
     }
 
@@ -154,5 +156,12 @@ public class ChallengeApiService {
                 .map(ChallengeParticipation::getChallenge)
                 .orElseThrow(() -> new KeeweException(KeeweRtnConsts.ERR432));
         return challengeAssembler.toParticipatingChallengeDetailResponse(challenge);
+    }
+
+    public ChallengeInsightNumberResponse countInsightOfChallenge(Long writerId) {
+        Long insightNumber = challengeParticipateQueryDomainService.findCurrentParticipationByUserId(SecurityUtil.getUserId())
+                .map(participation -> insightQueryDomainService.getInsightCountByChallenge(participation.getChallenge(), writerId))
+                .orElseThrow(() -> new KeeweException(KeeweRtnConsts.ERR432));
+        return challengeAssembler.toChallengeInsightNumberResponse(insightNumber);
     }
 }

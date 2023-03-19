@@ -14,6 +14,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import ccc.keeweapi.document.utils.ApiDocumentationTest;
 import ccc.keeweapi.dto.challenge.ChallengeCreateResponse;
 import ccc.keeweapi.dto.challenge.ChallengeDetailResponse;
+import ccc.keeweapi.dto.challenge.ChallengeInsightNumberResponse;
 import ccc.keeweapi.dto.challenge.ChallengeStatisticsResponse;
 import ccc.keeweapi.dto.challenge.OpenedChallengeResponse;
 import ccc.keeweapi.dto.challenge.ParticipatingChallengeDetailResponse;
@@ -243,6 +244,38 @@ public class ChallengeControllerTest extends ApiDocumentationTest {
                                 fieldWithPath("data.reactionCount").description("리액션 개수"),
                                 fieldWithPath("data.shareCount").description("공유하기 횟수"),
                                 fieldWithPath("data.viewCount").description("조회수")
+                        )
+                        .tag("Challenge")
+                        .build()
+        )));
+    }
+
+    @Test
+    @DisplayName("나의 챌린지 인사이트 수 조회 API")
+    void get_challenge_insight_count() throws Exception {
+        ChallengeInsightNumberResponse response = ChallengeInsightNumberResponse.of(100);
+
+        when(challengeApiService.countInsightOfChallenge(any())).thenReturn(response);
+
+        ResultActions resultActions = mockMvc.perform(get("/api/v1/challenge/my/insight/count")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        resultActions.andDo(restDocs.document(resource(
+                ResourceSnippetParameters.builder()
+                        .description("나의 챌린지 인사이트 수 조회 API 입니다.")
+                        .summary("나의 챌린지 인사이트 수 조회 API")
+                        .requestParameters(
+                                parameterWithName("writerId").optional().description("필터링할 작성자 ID, 없을 시 전체 조회")
+                        )
+                        .requestHeaders(
+                                headerWithName("Authorization").description("유저의 JWT")
+                        )
+                        .responseFields(
+                                fieldWithPath("message").description("요청 결과 메세지"),
+                                fieldWithPath("code").description("결과 코드"),
+                                fieldWithPath("data.insightNumber").description("챌린지의 전체 인사이트 수")
                         )
                         .tag("Challenge")
                         .build()

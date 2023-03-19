@@ -1,6 +1,23 @@
 package ccc.keeweapi.component;
 
-import ccc.keeweapi.dto.challenge.*;
+import ccc.keeweapi.dto.challenge.ChallengeCreateRequest;
+import ccc.keeweapi.dto.challenge.ChallengeCreateResponse;
+import ccc.keeweapi.dto.challenge.ChallengeDetailResponse;
+import ccc.keeweapi.dto.challenge.ChallengeInsightNumberResponse;
+import ccc.keeweapi.dto.challenge.ChallengeParticipateRequest;
+import ccc.keeweapi.dto.challenge.ChallengeParticipationResponse;
+import ccc.keeweapi.dto.challenge.ChallengeStatisticsResponse;
+import ccc.keeweapi.dto.challenge.ChallengerCountResponse;
+import ccc.keeweapi.dto.challenge.DayProgressResponse;
+import ccc.keeweapi.dto.challenge.FinishedChallengeCountResponse;
+import ccc.keeweapi.dto.challenge.FinishedChallengeResponse;
+import ccc.keeweapi.dto.challenge.FriendResponse;
+import ccc.keeweapi.dto.challenge.MyParticipationProgressResponse;
+import ccc.keeweapi.dto.challenge.OpenedChallengeResponse;
+import ccc.keeweapi.dto.challenge.ParticipatingChallengeDetailResponse;
+import ccc.keeweapi.dto.challenge.ParticipatingChallengeResponse;
+import ccc.keeweapi.dto.challenge.ParticipationCheckResponse;
+import ccc.keeweapi.dto.challenge.WeekProgressResponse;
 import ccc.keeweapi.utils.SecurityUtil;
 import ccc.keewedomain.dto.challenge.ChallengeCreateDto;
 import ccc.keewedomain.dto.challenge.ChallengeParticipateDto;
@@ -168,6 +185,10 @@ public class ChallengeAssembler {
                 challenge.getIntroduction(),
                 challenge.getCreatedAt().toLocalDate().toString()
         );
+    }
+
+    public ChallengeInsightNumberResponse toChallengeInsightNumberResponse(Long insightNumber) {
+        return ChallengeInsightNumberResponse.of(insightNumber);
     }
 
     public ChallengeStatisticsResponse toChallengeStatisticsResponse(

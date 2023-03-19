@@ -4,6 +4,7 @@ import ccc.keeweapi.dto.ApiResponse;
 import ccc.keeweapi.dto.challenge.ChallengeCreateRequest;
 import ccc.keeweapi.dto.challenge.ChallengeCreateResponse;
 import ccc.keeweapi.dto.challenge.ChallengeDetailResponse;
+import ccc.keeweapi.dto.challenge.ChallengeInsightNumberResponse;
 import ccc.keeweapi.dto.challenge.ChallengeStatisticsResponse;
 import ccc.keeweapi.dto.challenge.OpenedChallengeResponse;
 import ccc.keeweapi.dto.challenge.ParticipatingChallengeDetailResponse;
@@ -12,8 +13,6 @@ import ccc.keeweapi.service.challenge.query.ChallengeQueryApiService;
 import ccc.keewecore.aop.annotations.FLogging;
 import ccc.keewecore.consts.KeeweConsts;
 import ccc.keewedomain.persistence.repository.utils.CursorPageable;
-import java.util.List;
-import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,6 +22,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/challenge")
@@ -64,5 +66,12 @@ public class ChallengeController {
     @FLogging
     public ApiResponse<ChallengeStatisticsResponse> aggregateChallengeStatistics() {
         return ApiResponse.ok(challengeQueryApiService.aggregateChallengeStatistics());
+    }
+
+    @GetMapping("/my/insight/count")
+    public ApiResponse<ChallengeInsightNumberResponse> countInsightOfChallenge(
+            @RequestParam(required = false) Long writerId
+    ) {
+        return ApiResponse.ok(challengeApiService.countInsightOfChallenge(writerId));
     }
 }
