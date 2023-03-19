@@ -112,28 +112,6 @@ public class ChallengeAssembler {
         );
     }
 
-    public ChallengeInfoResponse toChallengeInfoResponse(Challenge challenge, Long insightCount) {
-        return ChallengeInfoResponse.of(challenge.getId(), challenge.getInterest(), challenge.getName(), challenge.getIntroduction(), insightCount);
-    }
-
-    public ChallengeHistoryListResponse toChallengeHistoryListResponse(List<ChallengeParticipation> participations, Long historyCount) {
-        List<ChallengeHistoryResponse> historyResponses = participations.stream()
-                .map(this::toChallengeHistoryResponse)
-                .collect(Collectors.toList());
-
-        return ChallengeHistoryListResponse.of(historyCount, historyResponses);
-    }
-
-    public ChallengeHistoryResponse toChallengeHistoryResponse(ChallengeParticipation participation) {
-        return ChallengeHistoryResponse.of(
-                participation.getChallenge().getId(),
-                participation.getChallenge().getInterest().getName(),
-                participation.getChallenge().getName(),
-                participation.getCreatedAt().toLocalDate().toString(),
-                participation.getUpdatedAt().toLocalDate().toString()
-        );
-    }
-
     public ChallengeDetailResponse toChallengeDetailResponse(Challenge challenge, Long insightCount) {
         return ChallengeDetailResponse.of(
                 challenge.getName(),

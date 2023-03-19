@@ -316,52 +316,6 @@ public class ChallengeParticipationControllerTest extends ApiDocumentationTest {
     }
 
     @Test
-    @DisplayName("완료된 챌린지 지정한 개수 조회")
-    void get_challenge_history() throws Exception {
-        List<ChallengeHistoryResponse> historyResponses = List.of(
-                ChallengeHistoryResponse.of(1L, "개발", "챌린지1", "2023-01-01", "2023-01-13"),
-                ChallengeHistoryResponse.of(2L, "개발", "챌린지2", "2023-02-01", "2023-02-13")
-        );
-        ChallengeHistoryListResponse response = ChallengeHistoryListResponse.of(
-                2L,
-                historyResponses
-        );
-
-        when(challengeApiService.getHistoryOfChallenge(anyLong()))
-                .thenReturn(response);
-
-        ResultActions resultActions = mockMvc.perform(get("/api/v1/challenge/history")
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
-                        .param("size", "5")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
-
-        resultActions.andDo(restDocs.document(resource(
-                ResourceSnippetParameters.builder()
-                        .description("완료된 챌린지 지정한 개수 만큼 조회 API 입니다.")
-                        .summary("완료된 챌린지 조회 지정한 개수 만큼 조회 API")
-                        .requestParameters(
-                                parameterWithName("size").description("조회할 챌린지 기록 개수. 미설정 시 전체 조회").optional()
-                        )
-                        .requestHeaders(
-                                headerWithName("Authorization").description("유저의 JWT")
-                        )
-                        .responseFields(
-                                fieldWithPath("message").description("요청 결과 메세지"),
-                                fieldWithPath("code").description("결과 코드"),
-                                fieldWithPath("data.historyNumber").description("전체 종료된 챌린지 개수, 최소값 1(size와 관련 없음)"),
-                                fieldWithPath("data.challengeHistories[].challengeId").description("챌린지의 ID"),
-                                fieldWithPath("data.challengeHistories[].challengeCategory").description("챌린지의 카테고리(관심사)"),
-                                fieldWithPath("data.challengeHistories[].challengeName").description("챌린지 이름"),
-                                fieldWithPath("data.challengeHistories[].startDate").description("챌린지 참가일"),
-                                fieldWithPath("data.challengeHistories[].endDate").description("챌린지 종료일")
-                        )
-                        .tag("Challenge")
-                        .build()
-        )));
-    }
-
-    @Test
     @DisplayName("종료된 챌린지 페이지네이션 조회")
     void get_completed_challenges() throws Exception {
         ChallengerCountResponse response = ChallengerCountResponse.of(1000L);

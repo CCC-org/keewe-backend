@@ -65,10 +65,6 @@ public class ChallengeParticipateQueryDomainService {
         return challengeParticipationQueryRepository.findByChallengeOrderByFollowing(challenge, user, pageable);
     }
 
-    public List<ChallengeParticipation> getFinishedParticipation(User user, Long size) {
-        return challengeParticipationQueryRepository.findFinishedParticipation(user, size);
-    }
-
     public List<ChallengeParticipation> paginateFinished(User challenger, CursorPageable<Long> cPage) {
         return challengeParticipationQueryRepository.paginateFinished(challenger, cPage);
     }

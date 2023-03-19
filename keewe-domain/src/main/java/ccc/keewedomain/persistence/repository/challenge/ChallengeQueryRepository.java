@@ -14,15 +14,6 @@ import org.springframework.stereotype.Repository;
 public class ChallengeQueryRepository {
     private final JPAQueryFactory queryFactory;
 
-    public List<Challenge> getSpecifiedNumberOfChallenge(int size) {
-        return queryFactory.select(challenge)
-                .from(challenge)
-                .where(challenge.deleted.isFalse())
-                .orderBy(challenge.id.desc())
-                .limit(size)
-                .fetch();
-    }
-
     public List<Challenge> paginate(CursorPageable<Long> cPage) {
         return queryFactory.select(challenge)
                 .from(challenge)
