@@ -45,8 +45,7 @@ public class UserProfileController {
     public ApiResponse<ProfileUpdateResponse> updateProfile(@Valid @ModelAttribute ProfileUpdateRequest request) {
         return ApiResponse.ok(profileApiService.updateProfile(request));
     }
-
-    @Transactional(readOnly = true)
+    
     @GetMapping("/interests")
     public ApiResponse<InterestsResponse> getInterests() {
         return ApiResponse.ok(profileApiService.getInterests());
