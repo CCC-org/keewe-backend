@@ -69,7 +69,7 @@ public class InsightController {
     }
 
     @GetMapping("/bookmark")
-    public ApiResponse<List<InsightGetForHomeResponse>> getInsightForBookmark(
+    public ApiResponse<List<InsightGetForHomeResponse>> getBookmarkedInsight(
             @RequestParam(required = false, defaultValue = KeeweConsts.LONG_MAX_STRING) Long cursor,
             @RequestParam Long limit
     ) {
