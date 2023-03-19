@@ -1,11 +1,30 @@
 package ccc.keeweapi.controller.api.challenge;
 
+import static com.epages.restdocs.apispec.ResourceDocumentation.headerWithName;
+import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName;
+import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.when;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import ccc.keeweapi.document.utils.ApiDocumentationTest;
-import ccc.keeweapi.dto.challenge.*;
+import ccc.keeweapi.dto.challenge.ChallengeCreateResponse;
+import ccc.keeweapi.dto.challenge.ChallengeDetailResponse;
+import ccc.keeweapi.dto.challenge.ChallengeInfoResponse;
+import ccc.keeweapi.dto.challenge.ChallengeStatisticsResponse;
+import ccc.keeweapi.dto.challenge.OpenedChallengeResponse;
+import ccc.keeweapi.dto.challenge.ParticipatingChallengeDetailResponse;
 import ccc.keeweapi.service.challenge.ChallengeApiService;
 import ccc.keeweapi.service.challenge.query.ChallengeQueryApiService;
 import ccc.keewedomain.persistence.domain.common.Interest;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
+import java.time.LocalDate;
+import java.util.List;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -16,17 +35,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.test.web.servlet.ResultActions;
-
-import java.time.LocalDate;
-import java.util.List;
-
-import static com.epages.restdocs.apispec.ResourceDocumentation.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.when;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class ChallengeControllerTest extends ApiDocumentationTest {
 
@@ -246,6 +254,36 @@ public class ChallengeControllerTest extends ApiDocumentationTest {
                                 fieldWithPath("data[].challengeCategory").description("챌린지 카테고리"),
                                 fieldWithPath("data[].challengeIntroduction").description("챌린지 설명"),
                                 fieldWithPath("data[].insightCount").description("챌린지에 기록한 인사이트 수")
+                        )
+                        .tag("Challenge")
+                        .build()
+        )));
+    }
+
+    @Test
+    @DisplayName("참여중인 챌린지 통계 조회 API")
+    void aggregation_reaction_of_challenge() throws Exception {
+        when(challengeQueryApiService.aggregateChallengeStatistics()).thenReturn(ChallengeStatisticsResponse.of(4L, 5L, 6L, 7L, 8L));
+
+        ResultActions resultActions = mockMvc.perform(get("/api/v1/challenge/statistics")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        resultActions.andDo(restDocs.document(resource(
+                ResourceSnippetParameters.builder()
+                        .description("참여중인 챌린지 통계 조회 API입니다.")
+                        .summary("참여중인 챌린지 통계 조회 API")
+                        .requestHeaders(
+                                headerWithName("Authorization").description("유저의 JWT"))
+                        .responseFields(
+                                fieldWithPath("message").description("요청 결과 메세지"),
+                                fieldWithPath("code").description("결과 코드"),
+                                fieldWithPath("data.bookmarkCount").description("북마크 개수"),
+                                fieldWithPath("data.commentCount").description("댓글 개수"),
+                                fieldWithPath("data.reactionCount").description("리액션 개수"),
+                                fieldWithPath("data.shareCount").description("공유하기 횟수"),
+                                fieldWithPath("data.viewCount").description("조회수")
                         )
                         .tag("Challenge")
                         .build()

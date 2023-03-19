@@ -77,7 +77,7 @@ public class ChallengeApiService {
     public MyParticipationProgressResponse getMyParticipationProgress() {
         User user = SecurityUtil.getUser();
 
-        return challengeParticipateQueryDomainService.findCurrentParticipationWithChallenge(user.getId())
+        return challengeParticipateQueryDomainService.findCurrentParticipationByUserId(user.getId())
                 .map(participation -> {
                     Long current = insightQueryDomainService.getRecordedInsightNumber(participation);
                     boolean todayRecorded = insightQueryDomainService.isTodayRecorded(user);
@@ -169,7 +169,7 @@ public class ChallengeApiService {
     }
 
     public ParticipatingChallengeDetailResponse getMyChallengeDetail() {
-        Challenge challenge = challengeParticipateQueryDomainService.findCurrentParticipationWithChallenge(SecurityUtil.getUserId())
+        Challenge challenge = challengeParticipateQueryDomainService.findCurrentParticipationByUserId(SecurityUtil.getUserId())
                 .map(ChallengeParticipation::getChallenge)
                 .orElseThrow(() -> new KeeweException(KeeweRtnConsts.ERR432));
         return challengeAssembler.toParticipatingChallengeDetailResponse(challenge);

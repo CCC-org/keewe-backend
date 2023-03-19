@@ -65,9 +65,9 @@ public class ReactionDomainService {
                 .orElseThrow(() -> new KeeweException(KeeweRtnConsts.ERR471));
     }
 
-    public ReactionAggregationGetDto getCurrentReactionAggregation(Long id) {
-        return ReactionAggregationGetDto.createByCnt(cReactionCountRepository.findByIdWithMissHandle(id, () ->
-                reactionAggregationRepository.findDtoByInsightId(id)
+    public ReactionAggregationGetDto getCurrentReactionAggregation(Long insightId) {
+        return ReactionAggregationGetDto.createByCnt(cReactionCountRepository.findByIdWithMissHandle(insightId, () ->
+                reactionAggregationRepository.findDtoByInsightId(insightId)
         ));
     }
 

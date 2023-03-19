@@ -44,4 +44,8 @@ public class ReactionAggregationGetDto {
         }
         return value;
     }
+
+    public Long getAllReactionCount() {
+        return clap + heart + sad + surprise + fire + eyes;
+    }
 }

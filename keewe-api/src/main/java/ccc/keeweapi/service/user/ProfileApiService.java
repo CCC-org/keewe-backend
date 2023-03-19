@@ -73,7 +73,7 @@ public class ProfileApiService {
         Long followerCount = profileDomainService.getFollowerCount(targetUser);
         Long followingCount = profileDomainService.getFollowingCount(targetUser);
 
-        String challengeName = challengeParticipateQueryDomainService.findCurrentParticipationWithChallenge(targetId)
+        String challengeName = challengeParticipateQueryDomainService.findCurrentParticipationByUserId(targetId)
                 .map(challengeParticipation -> challengeParticipation.getChallenge().getName())
                 .orElse(null);
 
