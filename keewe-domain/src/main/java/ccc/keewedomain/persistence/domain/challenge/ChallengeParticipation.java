@@ -65,6 +65,7 @@ public class ChallengeParticipation extends BaseTimeEntity {
     }
 
     public void cancel() {
+        this.endDate = LocalDate.now();
         this.status = ChallengeParticipationStatus.CANCELED;
     }
 
@@ -90,7 +91,8 @@ public class ChallengeParticipation extends BaseTimeEntity {
         return (long) (insightPerWeek * duration);
     }
 
-    public void expire() {
+    public void expire(LocalDate endDate) {
+        this.endDate = endDate;
         this.status = ChallengeParticipationStatus.EXPIRED;
     }
 
