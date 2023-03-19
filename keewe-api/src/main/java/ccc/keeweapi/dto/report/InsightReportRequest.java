@@ -1,4 +1,4 @@
-package ccc.keeweapi.dto.insight;
+package ccc.keeweapi.dto.report;
 
 import ccc.keewedomain.persistence.domain.insight.enums.ReportType;
 import lombok.AccessLevel;
@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
-public class ReportRequest {
+public class InsightReportRequest {
     private Long insightId;
     private ReportType reportType;
     private String reason;
