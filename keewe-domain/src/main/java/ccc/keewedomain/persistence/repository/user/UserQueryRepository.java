@@ -1,5 +1,6 @@
 package ccc.keewedomain.persistence.repository.user;
 
+import ccc.keewedomain.persistence.domain.common.Interest;
 import ccc.keewedomain.persistence.domain.user.Follow;
 import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.persistence.repository.utils.CursorPageable;
