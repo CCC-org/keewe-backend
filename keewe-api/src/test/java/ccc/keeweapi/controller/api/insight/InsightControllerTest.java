@@ -460,7 +460,7 @@ public class InsightControllerTest extends ApiDocumentationTest {
         long cursor = Long.MAX_VALUE;
         long limit = 10L;
 
-        when(insightQueryApiService.paginateInsightsOfChallenge(any(), anyLong())).thenReturn(List.of(InsightGetForHomeResponse.of(
+        when(insightQueryApiService.paginateInsightsOfChallenge(any(), any())).thenReturn(List.of(InsightGetForHomeResponse.of(
                 1L,
                 "인사이트 내용입니다. 즐거운 개발 되세요!",
                 true,
@@ -472,9 +472,9 @@ public class InsightControllerTest extends ApiDocumentationTest {
 
         ResultActions resultActions = mockMvc.perform(get("/api/v1/insight/challenge/my")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
-                        .param("follow", "false")
                         .param("cursor", Long.toString(cursor))
-                        .param("limit", Long.toString(limit)))
+                        .param("limit", Long.toString(limit))
+                        .param("writerId", Long.toString(1L)))
                 .andExpect(status().isOk());
 
         resultActions.andDo(restDocs.document(resource(
@@ -486,7 +486,7 @@ public class InsightControllerTest extends ApiDocumentationTest {
                         .requestParameters(
                                 parameterWithName("cursor").description("마지막으로 받은 인사이트 ID"),
                                 parameterWithName("limit").description("가져올 인사이트 개수"),
-                                parameterWithName("writerId").description("인사이트 작성자 필터링. 미포함 시 전체 조회"))
+                                parameterWithName("writerId").optional().description("인사이트 작성자 필터링. 미포함 시 전체 조회"))
                         .responseFields(
                                 fieldWithPath("message").description("요청 결과 메세지"),
                                 fieldWithPath("code").description("결과 코드"),
