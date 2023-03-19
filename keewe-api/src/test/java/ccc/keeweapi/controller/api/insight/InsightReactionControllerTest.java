@@ -1,8 +1,17 @@
 package ccc.keeweapi.controller.api.insight;
 
+import static com.epages.restdocs.apispec.ResourceDocumentation.headerWithName;
+import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import ccc.keeweapi.document.utils.ApiDocumentationTest;
 import ccc.keeweapi.dto.insight.ReactResponse;
 import ccc.keeweapi.service.insight.command.InsightReactionCommandApiService;
+import ccc.keeweapi.service.insight.query.InsightReactionQueryApiService;
 import ccc.keewedomain.persistence.domain.insight.enums.ReactionType;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import org.json.JSONObject;
@@ -16,20 +25,15 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.test.web.servlet.ResultActions;
 
-import static com.epages.restdocs.apispec.ResourceDocumentation.headerWithName;
-import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 public class InsightReactionControllerTest extends ApiDocumentationTest {
     @InjectMocks
     InsightReactionController insightReactionController;
 
     @Mock
     InsightReactionCommandApiService insightReactionCommandApiService;
+
+    @Mock
+    InsightReactionQueryApiService insightReactionQueryApiService;
 
     @BeforeEach
     public void setup(RestDocumentationContextProvider provider) {

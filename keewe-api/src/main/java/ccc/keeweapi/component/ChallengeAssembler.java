@@ -191,4 +191,14 @@ public class ChallengeAssembler {
                 challenge.getCreatedAt().toLocalDate().toString()
         );
     }
+
+    public ChallengeStatisticsResponse toChallengeStatisticsResponse(
+            Long viewCount,
+            Long reactionCount,
+            Long commentCount,
+            Long bookmarkCount,
+            Long shareCount
+    ) {
+        return ChallengeStatisticsResponse.of(viewCount, reactionCount, commentCount, bookmarkCount, shareCount);
+    }
 }

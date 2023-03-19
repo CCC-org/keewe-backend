@@ -58,4 +58,10 @@ public class ChallengeController {
     public ApiResponse<ParticipatingChallengeDetailResponse> getMyChallengeDetail() {
         return ApiResponse.ok(challengeApiService.getMyChallengeDetail());
     }
+
+    @GetMapping("/statistics")
+    @FLogging
+    public ApiResponse<ChallengeStatisticsResponse> aggregateChallengeStatistics() {
+        return ApiResponse.ok(challengeQueryApiService.aggregateChallengeStatistics());
+    }
 }

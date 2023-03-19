@@ -1,5 +1,12 @@
 package ccc.keewedomain.persistence.repository.insight;
 
+import static ccc.keewedomain.persistence.domain.challenge.QChallenge.challenge;
+import static ccc.keewedomain.persistence.domain.challenge.QChallengeParticipation.challengeParticipation;
+import static ccc.keewedomain.persistence.domain.common.QInterest.interest;
+import static ccc.keewedomain.persistence.domain.insight.QInsight.insight;
+import static ccc.keewedomain.persistence.domain.user.QFollow.follow;
+import static ccc.keewedomain.persistence.domain.user.QUser.user;
+
 import ccc.keewedomain.persistence.domain.challenge.Challenge;
 import ccc.keewedomain.persistence.domain.challenge.ChallengeParticipation;
 import ccc.keewedomain.persistence.domain.insight.Insight;
@@ -12,23 +19,12 @@ import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
-import java.time.LocalDateTime;
-import java.util.Optional;
-
-import static ccc.keewedomain.persistence.domain.challenge.QChallenge.challenge;
-import static ccc.keewedomain.persistence.domain.challenge.QChallengeParticipation.challengeParticipation;
-import static ccc.keewedomain.persistence.domain.common.QInterest.interest;
-import static ccc.keewedomain.persistence.domain.insight.QInsight.insight;
-import static ccc.keewedomain.persistence.domain.user.QFollow.follow;
-import static ccc.keewedomain.persistence.domain.user.QUser.user;
 
 @Repository
 @RequiredArgsConstructor
@@ -47,7 +43,7 @@ public class InsightQueryRepository {
 
     }
 
-    public List<Insight> findValidInsightsByParticipation(ChallengeParticipation participation) {
+    public List<Insight> findAllValidByParticipation(ChallengeParticipation participation) {
         return queryFactory.select(insight)
                 .from(insight)
                 .where(insight.challengeParticipation.eq(participation)
@@ -74,7 +70,7 @@ public class InsightQueryRepository {
     }
 
 
-    public List<Insight> findForHome(User user, CursorPageable<Long> cPage, Boolean follow) {
+    public List<Insight> findAllForHome(User user, CursorPageable<Long> cPage, Boolean follow) {
         BooleanExpression followFilter = Expressions.asBoolean(true).isTrue();
         if (follow != null && follow)
             followFilter = insight.writer.id.in(findFolloweesId(user));
@@ -133,7 +129,7 @@ public class InsightQueryRepository {
                 .fetchFirst();
     }
 
-    public List<Insight> findByUserIdAndDrawerId(Long userId, Long drawerId, CursorPageable<Long> cPage) {
+    public List<Insight> findAllByUserIdAndDrawerId(Long userId, Long drawerId, CursorPageable<Long> cPage) {
         return queryFactory
                 .select(insight)
                 .from(insight)
