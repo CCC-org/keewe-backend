@@ -1,16 +1,12 @@
 package ccc.keeweapi.controller.api.user;
 
 import ccc.keeweapi.dto.ApiResponse;
-import ccc.keeweapi.dto.user.OnboardRequest;
-import ccc.keeweapi.dto.user.OnboardResponse;
-import ccc.keeweapi.dto.user.ProfileMyPageResponse;
-import ccc.keeweapi.dto.user.ProfileUpdateRequest;
-import ccc.keeweapi.dto.user.ProfileUpdateResponse;
-import ccc.keeweapi.dto.user.UploadProfilePhotoResponse;
+import ccc.keeweapi.dto.user.*;
 import ccc.keeweapi.service.user.ProfileApiService;
 import ccc.keewecore.aop.annotations.FLogging;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -48,5 +44,11 @@ public class UserProfileController {
     @FLogging
     public ApiResponse<ProfileUpdateResponse> updateProfile(@Valid @ModelAttribute ProfileUpdateRequest request) {
         return ApiResponse.ok(profileApiService.updateProfile(request));
+    }
+
+    @Transactional(readOnly = true)
+    @GetMapping("/interests")
+    public ApiResponse<InterestsResponse> getInterests() {
+        return ApiResponse.ok(profileApiService.getInterests());
     }
 }
