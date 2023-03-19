@@ -251,11 +251,11 @@ public class ChallengeControllerTest extends ApiDocumentationTest {
     }
 
     @Test
-    @DisplayName("나의 챌린지 전체 인사이트 수 조회 API")
+    @DisplayName("나의 챌린지 인사이트 수 조회 API")
     void get_challenge_insight_count() throws Exception {
         ChallengeInsightNumberResponse response = ChallengeInsightNumberResponse.of(100);
 
-        when(challengeApiService.countInsightOfChallenge()).thenReturn(response);
+        when(challengeApiService.countInsightOfChallenge(any())).thenReturn(response);
 
         ResultActions resultActions = mockMvc.perform(get("/api/v1/challenge/my/insight/count")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
@@ -264,8 +264,11 @@ public class ChallengeControllerTest extends ApiDocumentationTest {
 
         resultActions.andDo(restDocs.document(resource(
                 ResourceSnippetParameters.builder()
-                        .description("나의 챌린지 전체 인사이트 수 조회 API 입니다.")
-                        .summary("나의 챌린지 전체 인사이트 수 조회 API")
+                        .description("나의 챌린지 인사이트 수 조회 API 입니다.")
+                        .summary("나의 챌린지 인사이트 수 조회 API")
+                        .requestParameters(
+                                parameterWithName("writerId").optional().description("필터링할 작성자 ID, 없을 시 전체 조회")
+                        )
                         .requestHeaders(
                                 headerWithName("Authorization").description("유저의 JWT")
                         )

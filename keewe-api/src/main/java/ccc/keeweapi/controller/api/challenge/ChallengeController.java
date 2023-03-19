@@ -69,7 +69,9 @@ public class ChallengeController {
     }
 
     @GetMapping("/my/insight/count")
-    public ApiResponse<ChallengeInsightNumberResponse> countInsightOfChallenge() {
-        return ApiResponse.ok(challengeApiService.countInsightOfChallenge());
+    public ApiResponse<ChallengeInsightNumberResponse> countInsightOfChallenge(
+            @RequestParam(required = false) Long writerId
+    ) {
+        return ApiResponse.ok(challengeApiService.countInsightOfChallenge(writerId));
     }
 }

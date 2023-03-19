@@ -156,8 +156,8 @@ public class InsightQueryDomainService {
         return insightQueryRepository.countPerChallenge(challenges);
     }
 
-    public Long getInsightCountByChallenge(Challenge challenge) {
-        return insightQueryRepository.countByChallenge(challenge);
+    public Long getInsightCountByChallenge(Challenge challenge, Long writerId) {
+        return insightQueryRepository.countByChallenge(challenge, writerId);
     }
 
     public Map<Long, Long> getInsightCountPerParticipation(List<ChallengeParticipation> participations) {

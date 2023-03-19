@@ -111,7 +111,7 @@ public class ChallengeApiService {
 
     public ChallengeDetailResponse getChallengeDetail(Long challengeId) {
         Challenge challenge = challengeQueryDomainService.getByIdOrElseThrow(challengeId);
-        Long insightCount = insightQueryDomainService.getInsightCountByChallenge(challenge);
+        Long insightCount = insightQueryDomainService.getInsightCountByChallenge(challenge, null);
         return challengeAssembler.toChallengeDetailResponse(challenge, insightCount);
     }
 
@@ -159,9 +159,9 @@ public class ChallengeApiService {
         return challengeAssembler.toParticipatingChallengeDetailResponse(challenge);
     }
 
-    public ChallengeInsightNumberResponse countInsightOfChallenge() {
+    public ChallengeInsightNumberResponse countInsightOfChallenge(Long writerId) {
         Long insightNumber = challengeParticipateQueryDomainService.findCurrentParticipationByUserId(SecurityUtil.getUserId())
-                .map(participation -> insightQueryDomainService.getInsightCountByChallenge(participation.getChallenge()))
+                .map(participation -> insightQueryDomainService.getInsightCountByChallenge(participation.getChallenge(), writerId))
                 .orElseThrow(() -> new KeeweException(KeeweRtnConsts.ERR432));
         return challengeAssembler.toChallengeInsightNumberResponse(insightNumber);
     }
