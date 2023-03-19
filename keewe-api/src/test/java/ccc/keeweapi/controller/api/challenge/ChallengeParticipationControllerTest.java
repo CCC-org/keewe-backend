@@ -433,4 +433,33 @@ public class ChallengeParticipationControllerTest extends ApiDocumentationTest {
                         .build()
         )));
     }
+
+    @Test
+    @DisplayName("나의 챌린지 내가 쓴 인사이트 수 조회 API")
+    void get_challenge_my_insight_count() throws Exception {
+        ChallengeMyInsightNumberResponse response = ChallengeMyInsightNumberResponse.of(100);
+
+        when(challengeApiService.countMyInsightOfChallenge()).thenReturn(response);
+
+        ResultActions resultActions = mockMvc.perform(get("/api/v1/challenge/my/participation/insight/count")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        resultActions.andDo(restDocs.document(resource(
+                ResourceSnippetParameters.builder()
+                        .description("나의 챌린지 내가 쓴 인사이트 수 조회 API 입니다.")
+                        .summary("나의 챌린지 내가 쓴 인사이트 수 조회 API")
+                        .requestHeaders(
+                                headerWithName("Authorization").description("유저의 JWT")
+                        )
+                        .responseFields(
+                                fieldWithPath("message").description("요청 결과 메세지"),
+                                fieldWithPath("code").description("결과 코드"),
+                                fieldWithPath("data.insightNumber").description("참가중인 챌린지에서 내가 쓴 인사이트 수")
+                        )
+                        .tag("ChallengeParticipation")
+                        .build()
+        )));
+    }
 }
