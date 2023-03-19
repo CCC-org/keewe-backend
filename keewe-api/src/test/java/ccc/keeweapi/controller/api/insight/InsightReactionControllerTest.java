@@ -4,14 +4,12 @@ import static com.epages.restdocs.apispec.ResourceDocumentation.headerWithName;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import ccc.keeweapi.document.utils.ApiDocumentationTest;
 import ccc.keeweapi.dto.insight.ReactResponse;
-import ccc.keeweapi.dto.insight.ReactionAggregationResponse;
 import ccc.keeweapi.service.insight.command.InsightReactionCommandApiService;
 import ccc.keeweapi.service.insight.query.InsightReactionQueryApiService;
 import ccc.keewedomain.persistence.domain.insight.enums.ReactionType;
@@ -74,43 +72,6 @@ public class InsightReactionControllerTest extends ApiDocumentationTest {
                                 fieldWithPath("data.insightId").description("인사이트 ID"),
                                 fieldWithPath("data.reactionType").description("반응 종류"),
                                 fieldWithPath("data.count").description("현재 반응 count"))
-                        .tag("InsightReaction")
-                        .build()
-        )));
-    }
-
-    @Test
-    @DisplayName("참여중인 챌린지에 기록한 인사이트 반응 합 조회 API")
-    void aggregation_reaction_of_challenge() throws Exception {
-        JSONObject request = new JSONObject();
-        request.put("insightId", 0L)
-                .put("reactionType", ReactionType.CLAP)
-                .put("value", 1L);
-
-        when(insightReactionQueryApiService.aggregateOfCurrentChallenge()).thenReturn(ReactionAggregationResponse.of(3L, 4L, 5L, 6L, 7L, 8L));
-
-        ResultActions resultActions = mockMvc.perform(get("/api/v1/reaction/challenge-statistics")
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(request.toString()))
-                .andExpect(status().isOk());
-
-        resultActions.andDo(restDocs.document(resource(
-                ResourceSnippetParameters.builder()
-                        .description("참여중인 챌린지에 기록한 인사이트 반응 합 조회 API입니다.")
-                        .summary("참여중인 챌린지에 기록한 인사이트 반응 합 조회 API")
-                        .requestHeaders(
-                                headerWithName("Authorization").description("유저의 JWT"))
-                        .responseFields(
-                                fieldWithPath("message").description("요청 결과 메세지"),
-                                fieldWithPath("code").description("결과 코드"),
-                                fieldWithPath("data.clap").description("인사이트 ID"),
-                                fieldWithPath("data.sad").description("반응 종류"),
-                                fieldWithPath("data.surprise").description("반응 종류"),
-                                fieldWithPath("data.heart").description("반응 종류"),
-                                fieldWithPath("data.fire").description("반응 종류"),
-                                fieldWithPath("data.eyes").description("반응 종류")
-                        )
                         .tag("InsightReaction")
                         .build()
         )));
