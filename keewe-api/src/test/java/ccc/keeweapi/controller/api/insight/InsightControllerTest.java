@@ -460,7 +460,7 @@ public class InsightControllerTest extends ApiDocumentationTest {
         long cursor = Long.MAX_VALUE;
         long limit = 10L;
 
-        when(insightQueryApiService.paginateInsightsOfChallenge(any())).thenReturn(List.of(InsightGetForHomeResponse.of(
+        when(insightQueryApiService.paginateInsightsOfChallenge(any(), anyLong())).thenReturn(List.of(InsightGetForHomeResponse.of(
                 1L,
                 "인사이트 내용입니다. 즐거운 개발 되세요!",
                 true,
@@ -484,9 +484,9 @@ public class InsightControllerTest extends ApiDocumentationTest {
                         .requestHeaders(
                                 headerWithName("Authorization").description("유저의 JWT"))
                         .requestParameters(
-                                parameterWithName("follow").description("팔로우 필터 여부").optional(),
                                 parameterWithName("cursor").description("마지막으로 받은 인사이트 ID"),
-                                parameterWithName("limit").description("가져올 인사이트 개수"))
+                                parameterWithName("limit").description("가져올 인사이트 개수"),
+                                parameterWithName("writerId").description("인사이트 작성자 필터링. 미포함 시 전체 조회"))
                         .responseFields(
                                 fieldWithPath("message").description("요청 결과 메세지"),
                                 fieldWithPath("code").description("결과 코드"),

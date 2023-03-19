@@ -194,7 +194,7 @@ public class InsightQueryRepository {
                 .where(bookmark.user.id.eq(user.getId()));
     }
 
-    public List<Insight> findByChallenge(Challenge challenge, CursorPageable<Long> cPage) {
+    public List<Insight> findByChallenge(Challenge challenge, CursorPageable<Long> cPage, Long writerId) {
         return queryFactory
                 .select(insight)
                 .from(insight)
@@ -205,6 +205,7 @@ public class InsightQueryRepository {
                 .fetchJoin()
                 .where(insight.challengeParticipation.challenge.eq(challenge)
                         .and(insight.id.lt(cPage.getCursor()))
+                        .and(writerIdEq(writerId))
                 )
                 .orderBy(insight.id.desc())
                 .fetch();
@@ -212,5 +213,9 @@ public class InsightQueryRepository {
 
     private BooleanExpression drawerIdEq(Long drawerId) {
         return drawerId != null ? insight.drawer.id.eq(drawerId) : null;
+    }
+
+    private BooleanExpression writerIdEq(Long writerId) {
+        return writerId != null ? insight.writer.id.eq(writerId) : null;
     }
 }

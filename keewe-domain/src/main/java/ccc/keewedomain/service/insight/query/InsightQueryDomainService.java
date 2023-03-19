@@ -130,8 +130,8 @@ public class InsightQueryDomainService {
 
     // FIXME dto 개선 필요
     @Transactional(readOnly = true)
-    public List<InsightGetForHomeDto> getByChallenge(Challenge challenge, User user, CursorPageable<Long> cPage) {
-        List<Insight> insights = insightQueryRepository.findByChallenge(challenge, cPage);
+    public List<InsightGetForHomeDto> getByChallenge(Challenge challenge, User user, CursorPageable<Long> cPage, Long writerId) {
+        List<Insight> insights = insightQueryRepository.findByChallenge(challenge, cPage, writerId);
         Map<Long, Boolean> bookmarkPresence = bookmarkQueryDomainService.getBookmarkPresenceMap(user, insights);
 
         return insights.parallelStream().map(i ->

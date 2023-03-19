@@ -60,13 +60,13 @@ public class InsightQueryApiService {
 
     // FIXME DTO 수정할 때 같이 네이밍 수정 필요
     @Transactional(readOnly = true)
-    public List<InsightGetForHomeResponse> paginateInsightsOfChallenge(CursorPageable<Long> cPage) {
+    public List<InsightGetForHomeResponse> paginateInsightsOfChallenge(CursorPageable<Long> cPage, Long writerId) {
         User user = SecurityUtil.getUser();
         Challenge challenge = challengeParticipateQueryDomainService.findCurrentParticipationByUserId(user.getId())
                 .map(ChallengeParticipation::getChallenge)
                 .orElseThrow(() -> new KeeweException(KeeweRtnConsts.ERR432));
 
-        return insightQueryDomainService.getByChallenge(challenge, user, cPage).stream()
+        return insightQueryDomainService.getByChallenge(challenge, user, cPage, writerId).stream()
                 .map(insightAssembler::toInsightGetForHomeResponse)
                 .collect(Collectors.toList());
     }
