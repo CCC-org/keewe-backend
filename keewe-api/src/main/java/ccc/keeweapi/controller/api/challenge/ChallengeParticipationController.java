@@ -1,7 +1,6 @@
 package ccc.keeweapi.controller.api.challenge;
 
 import ccc.keeweapi.dto.ApiResponse;
-import ccc.keeweapi.dto.challenge.ChallengeMyInsightNumberResponse;
 import ccc.keeweapi.dto.challenge.ChallengeParticipateRequest;
 import ccc.keeweapi.dto.challenge.ChallengeParticipationResponse;
 import ccc.keeweapi.dto.challenge.ChallengerCountResponse;
@@ -86,10 +85,5 @@ public class ChallengeParticipationController {
     @GetMapping("/finished/count")
     public ApiResponse<FinishedChallengeCountResponse> countCompletedChallenges() {
         return ApiResponse.ok(challengeParticipationQueryApiService.countFinished());
-    }
-
-    @GetMapping("/my/participation/insight/count")
-    public ApiResponse<ChallengeMyInsightNumberResponse> countMyInsightOfChallenge() {
-        return ApiResponse.ok(challengeApiService.countMyInsightOfChallenge());
     }
 }

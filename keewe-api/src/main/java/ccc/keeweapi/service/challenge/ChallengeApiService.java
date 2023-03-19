@@ -5,7 +5,6 @@ import ccc.keeweapi.dto.challenge.ChallengeCreateRequest;
 import ccc.keeweapi.dto.challenge.ChallengeCreateResponse;
 import ccc.keeweapi.dto.challenge.ChallengeDetailResponse;
 import ccc.keeweapi.dto.challenge.ChallengeInsightNumberResponse;
-import ccc.keeweapi.dto.challenge.ChallengeMyInsightNumberResponse;
 import ccc.keeweapi.dto.challenge.ChallengeParticipateRequest;
 import ccc.keeweapi.dto.challenge.ChallengeParticipationResponse;
 import ccc.keeweapi.dto.challenge.ChallengerCountResponse;
@@ -164,12 +163,5 @@ public class ChallengeApiService {
                 .map(participation -> insightQueryDomainService.getInsightCountByChallenge(participation.getChallenge(), writerId))
                 .orElseThrow(() -> new KeeweException(KeeweRtnConsts.ERR432));
         return challengeAssembler.toChallengeInsightNumberResponse(insightNumber);
-    }
-
-    public ChallengeMyInsightNumberResponse countMyInsightOfChallenge() {
-        Long insightNumber = challengeParticipateQueryDomainService.findCurrentParticipationByUserId(SecurityUtil.getUserId())
-                .map(insightQueryDomainService::getInsightCountByParticipation)
-                .orElseThrow(() -> new KeeweException(KeeweRtnConsts.ERR432));
-        return challengeAssembler.toChallengeMyInsightNumberResponse(insightNumber);
     }
 }

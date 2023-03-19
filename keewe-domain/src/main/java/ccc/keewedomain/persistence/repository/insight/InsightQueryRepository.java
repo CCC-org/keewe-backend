@@ -71,17 +71,6 @@ public class InsightQueryRepository {
                 .transform(GroupBy.groupBy(challengeParticipation.id).as(insight.count()));
     }
 
-    public Long countByParticipation(ChallengeParticipation participation) {
-        return queryFactory
-                .select(insight.count())
-                .from(insight)
-                .where(insight.challengeParticipation.eq(participation)
-                        .and(insight.deleted.isFalse())
-                )
-                .fetchFirst();
-    }
-
-
     public List<Insight> findAllForHome(User user, CursorPageable<Long> cPage, Boolean follow) {
         BooleanExpression followFilter = Expressions.asBoolean(true).isTrue();
         if (follow != null && follow)
