@@ -52,6 +52,13 @@ public class InsightQueryApiService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
+    public List<InsightGetForHomeResponse> getInsightForBookmark(CursorPageable<Long> cPage) {
+        return insightQueryDomainService.getInsightForBookmark(SecurityUtil.getUser(), cPage).stream()
+                .map(insightAssembler::toInsightGetForHomeResponse)
+                .collect(Collectors.toList());
+    }
+
     public ChallengeRecordResponse getChallengeRecord(Long insightId) {
         Insight insight = insightQueryDomainService.getByIdWithChallengeOrElseThrow(insightId);
         ChallengeParticipation participation = insight.getChallengeParticipation();

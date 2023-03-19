@@ -26,6 +26,8 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import static ccc.keewedomain.persistence.domain.insight.QBookmark.*;
+
 @Repository
 @RequiredArgsConstructor
 public class InsightQueryRepository {
@@ -171,6 +173,25 @@ public class InsightQueryRepository {
                 .where(insight.valid.isTrue())
                 .where(insight.deleted.isFalse())
                 .fetchFirst() != null;
+    }
+
+    public List<Insight> findBookmarkedInsight(User user, CursorPageable<Long> cPage) {
+        return queryFactory
+                .select(insight)
+                .from(insight)
+                .where(insight.deleted.isFalse())
+                .where(insight.in(findBookmarkedInsightId(user)))
+                .where(insight.id.lt(cPage.getCursor()))
+                .orderBy(insight.id.desc())
+                .limit(cPage.getLimit())
+                .fetch();
+    }
+
+    private JPQLQuery<Insight> findBookmarkedInsightId(User user) {
+        return queryFactory
+                .select(bookmark.insight)
+                .from(bookmark)
+                .where(bookmark.user.id.eq(user.getId()));
     }
 
     private BooleanExpression drawerIdEq(Long drawerId) {
