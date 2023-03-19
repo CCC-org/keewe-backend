@@ -58,4 +58,9 @@ public class ChallengeController {
     public ApiResponse<ParticipatingChallengeDetailResponse> getMyChallengeDetail() {
         return ApiResponse.ok(challengeApiService.getMyChallengeDetail());
     }
+
+    @GetMapping("/my/insight/count")
+    public ApiResponse<ChallengeInsightNumberResponse> countInsightOfChallenge() {
+        return ApiResponse.ok(challengeApiService.countInsightOfChallenge());
+    }
 }

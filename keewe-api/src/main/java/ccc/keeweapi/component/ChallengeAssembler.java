@@ -185,4 +185,8 @@ public class ChallengeAssembler {
                 challenge.getCreatedAt().toLocalDate().toString()
         );
     }
+
+    public ChallengeInsightNumberResponse toChallengeInsightNumberResponse(Long insightNumber) {
+        return ChallengeInsightNumberResponse.of(insightNumber);
+    }
 }
