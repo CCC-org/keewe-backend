@@ -41,7 +41,7 @@ public class ChallengeParticipationController {
     }
 
     @GetMapping("/participation/progress/insight")
-    public ApiResponse<InsightProgressResponse> getMyParticipationProgress() {
+    public ApiResponse<MyParticipationProgressResponse> getMyParticipationProgress() {
         return ApiResponse.ok(challengeApiService.getMyParticipationProgress());
     }
 

@@ -159,10 +159,15 @@ public class InsightQueryDomainService {
         return insightQueryRepository.existByWriterAndCreatedAtBetweenAndValidTrue(user, startDate, endDate);
     }
 
+    public boolean isThisWeekCompleted(ChallengeParticipation participation) {
+        Long validNumber = insightQueryRepository.countValidByParticipation(participation);
+        log.info("[IQDS::isThisWeekCompleted] validNumber = {}, currentWeek = {}, insightPerWeek = {}", validNumber, participation.getCurrentWeek(), participation.getInsightPerWeek());
+        return validNumber.equals(participation.getCurrentWeek() * participation.getInsightPerWeek());
+    }
+
     private ReactionAggregationGetDto getCurrentReactionAggregation(Long insightId) {
         return ReactionAggregationGetDto.createByCnt(cReactionCountRepository.findByIdWithMissHandle(insightId, () ->
                 reactionAggregationRepository.findDtoByInsightId(insightId)
         ));
     }
 }
-

@@ -9,7 +9,7 @@ import ccc.keeweapi.dto.challenge.ChallengeInfoResponse;
 import ccc.keeweapi.dto.challenge.ChallengeParticipateRequest;
 import ccc.keeweapi.dto.challenge.ChallengeParticipationResponse;
 import ccc.keeweapi.dto.challenge.ChallengerCountResponse;
-import ccc.keeweapi.dto.challenge.InsightProgressResponse;
+import ccc.keeweapi.dto.challenge.MyParticipationProgressResponse;
 import ccc.keeweapi.dto.challenge.ParticipatingChallengeDetailResponse;
 import ccc.keeweapi.dto.challenge.ParticipatingChallengeResponse;
 import ccc.keeweapi.dto.challenge.ParticipationCheckResponse;
@@ -74,13 +74,15 @@ public class ChallengeApiService {
     }
 
     @Transactional(readOnly = true)
-    public InsightProgressResponse getMyParticipationProgress() {
-        Long userId = SecurityUtil.getUserId();
+    public MyParticipationProgressResponse getMyParticipationProgress() {
+        User user = SecurityUtil.getUser();
 
-        return challengeParticipateQueryDomainService.findCurrentParticipationWithChallenge(userId)
+        return challengeParticipateQueryDomainService.findCurrentParticipationWithChallenge(user.getId())
                 .map(participation -> {
                     Long current = insightQueryDomainService.getRecordedInsightNumber(participation);
-                    return challengeAssembler.toParticipationProgressResponse(participation, current);
+                    boolean todayRecorded = insightQueryDomainService.isTodayRecorded(user);
+                    boolean weekCompleted =  insightQueryDomainService.isThisWeekCompleted(participation);
+                    return challengeAssembler.toMyParticipationProgressResponse(participation, current, todayRecorded, weekCompleted);
                 })
                 .orElse(null);
     }

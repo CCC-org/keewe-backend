@@ -5,8 +5,10 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor(staticName = "of")
-public class InsightProgressResponse {
+public class MyParticipationProgressResponse {
     private String name;
     private Long current;
     private Long total;
+    private boolean todayRecorded;
+    private boolean weekCompleted;
 }
