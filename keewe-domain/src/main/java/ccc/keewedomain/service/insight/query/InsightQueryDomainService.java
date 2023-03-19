@@ -119,6 +119,10 @@ public class InsightQueryDomainService {
         return insightQueryRepository.countValidPerParticipation(participations);
     }
 
+    public Long getInsightCountByParticipation(ChallengeParticipation participation) {
+        return insightQueryRepository.countByParticipation(participation);
+    }
+
     public Insight getByIdWithWriter(Long insightId) {
         return insightQueryRepository.findByIdWithWriter(insightId);
     }

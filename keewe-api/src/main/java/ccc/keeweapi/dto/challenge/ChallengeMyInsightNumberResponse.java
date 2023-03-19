@@ -5,6 +5,6 @@ import lombok.Getter;
 
 @AllArgsConstructor(staticName = "of")
 @Getter
-public class ChallengeInsightNumberResponse {
+public class ChallengeMyInsightNumberResponse {
     private long insightNumber;
 }

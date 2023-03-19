@@ -82,4 +82,9 @@ public class ChallengeParticipationController {
     public ApiResponse<FinishedChallengeCountResponse> countCompletedChallenges() {
         return ApiResponse.ok(challengeParticipationQueryApiService.countFinished());
     }
+
+    @GetMapping("/my/participation/insight/count")
+    public ApiResponse<ChallengeMyInsightNumberResponse> countMyInsightOfChallenge() {
+        return ApiResponse.ok(challengeApiService.countMyInsightOfChallenge());
+    }
 }

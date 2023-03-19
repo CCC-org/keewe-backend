@@ -189,4 +189,8 @@ public class ChallengeAssembler {
     public ChallengeInsightNumberResponse toChallengeInsightNumberResponse(Long insightNumber) {
         return ChallengeInsightNumberResponse.of(insightNumber);
     }
+
+    public ChallengeMyInsightNumberResponse toChallengeMyInsightNumberResponse(Long insightNumber) {
+        return ChallengeMyInsightNumberResponse.of(insightNumber);
+    }
 }
