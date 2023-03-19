@@ -77,7 +77,7 @@ public class ChallengeApiService {
     public MyParticipationProgressResponse getMyParticipationProgress() {
         User user = SecurityUtil.getUser();
 
-        return challengeParticipateQueryDomainService.findCurrentParticipationWithChallenge(user.getId())
+        return challengeParticipateQueryDomainService.findCurrentParticipationByUserId(user.getId())
                 .map(participation -> {
                     Long current = insightQueryDomainService.getRecordedInsightNumber(participation);
                     boolean todayRecorded = insightQueryDomainService.isTodayRecorded(user);
