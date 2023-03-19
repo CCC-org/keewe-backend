@@ -47,24 +47,26 @@ public class ChallengeQueryApiService {
     public ChallengeStatisticsResponse aggregateChallengeStatistics() {
         ChallengeParticipation participation = challengeParticipateQueryDomainService.getCurrentChallengeParticipation(SecurityUtil.getUser());
         List<Insight> insights = insightQueryDomainService.getRecordedInsights(participation);
-
         List<CompletableFuture<ReactionAggregationGetDto>> cFutures = insights.stream()
                 .map(insight -> CompletableFuture.supplyAsync(() -> reactionDomainService.getCurrentReactionAggregation(insight.getId()), executorService))
                 .collect(Collectors.toList());
 
-        long commentCounts = insights.stream()
-                .map(insight -> insight.getComments())
+        // 댓글 수
+        Long commentCounts = insights.stream()
+                .map(Insight::getComments)
                 .flatMap(List::stream)
                 .count();
 
-        long viewCounts = insights.stream()
-                .map(insight -> insight.getView())
+        // 조회 수
+        Long viewCounts = insights.stream()
+                .map(Insight::getView)
                 .count();
 
+        // 북마크 수
         Long bookmarkCounts = bookmarkQueryDomainService.countBookmark(insights);
 
-        // blocking 줄이기 위해 마지막에 실행
-        long reactionCounts = cFutures.stream()
+        // blocking 줄이기 위해 마지막에 실행 :: 리액션 수
+        Long reactionCounts = cFutures.stream()
                 .map(CompletableFuture::join)
                 .map(ReactionAggregationGetDto::getAllReactionCount)
                 .count();
