@@ -3,8 +3,10 @@ package ccc.keewedomain.persistence.repository.insight;
 import static ccc.keewedomain.persistence.domain.challenge.QChallenge.challenge;
 import static ccc.keewedomain.persistence.domain.challenge.QChallengeParticipation.challengeParticipation;
 import static ccc.keewedomain.persistence.domain.common.QInterest.interest;
+import static ccc.keewedomain.persistence.domain.insight.QBookmark.bookmark;
 import static ccc.keewedomain.persistence.domain.insight.QInsight.insight;
 import static ccc.keewedomain.persistence.domain.user.QFollow.follow;
+import static ccc.keewedomain.persistence.domain.user.QProfilePhoto.profilePhoto;
 import static ccc.keewedomain.persistence.domain.user.QUser.user;
 
 import ccc.keewedomain.persistence.domain.challenge.Challenge;
@@ -25,8 +27,6 @@ import java.util.Map;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
-
-import static ccc.keewedomain.persistence.domain.insight.QBookmark.*;
 
 @Repository
 @RequiredArgsConstructor
@@ -194,7 +194,28 @@ public class InsightQueryRepository {
                 .where(bookmark.user.id.eq(user.getId()));
     }
 
+    public List<Insight> findByChallenge(Challenge challenge, CursorPageable<Long> cPage, Long writerId) {
+        return queryFactory
+                .select(insight)
+                .from(insight)
+                .innerJoin(insight.challengeParticipation, challengeParticipation)
+                .innerJoin(insight.writer, user)
+                .fetchJoin()
+                .innerJoin(user.profilePhoto, profilePhoto)
+                .fetchJoin()
+                .where(insight.challengeParticipation.challenge.eq(challenge)
+                        .and(insight.id.lt(cPage.getCursor()))
+                        .and(writerIdEq(writerId))
+                )
+                .orderBy(insight.id.desc())
+                .fetch();
+    }
+
     private BooleanExpression drawerIdEq(Long drawerId) {
         return drawerId != null ? insight.drawer.id.eq(drawerId) : null;
+    }
+
+    private BooleanExpression writerIdEq(Long writerId) {
+        return writerId != null ? insight.writer.id.eq(writerId) : null;
     }
 }

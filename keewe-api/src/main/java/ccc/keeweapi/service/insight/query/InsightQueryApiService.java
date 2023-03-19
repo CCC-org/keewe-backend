@@ -8,19 +8,24 @@ import ccc.keeweapi.dto.insight.InsightGetForHomeResponse;
 import ccc.keeweapi.dto.insight.InsightGetResponse;
 import ccc.keeweapi.dto.insight.InsightMyPageResponse;
 import ccc.keeweapi.utils.SecurityUtil;
+import ccc.keewecore.consts.KeeweRtnConsts;
+import ccc.keewecore.exception.KeeweException;
 import ccc.keewedomain.dto.insight.InsightGetDto;
+import ccc.keewedomain.persistence.domain.challenge.Challenge;
 import ccc.keewedomain.persistence.domain.challenge.ChallengeParticipation;
 import ccc.keewedomain.persistence.domain.insight.Insight;
+import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.persistence.repository.utils.CursorPageable;
-import ccc.keewedomain.service.insight.command.InsightCommandDomainService;
+import ccc.keewedomain.service.challenge.query.ChallengeParticipateQueryDomainService;
 import ccc.keewedomain.service.insight.query.InsightQueryDomainService;
 import ccc.keewedomain.service.user.ProfileDomainService;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -30,6 +35,7 @@ public class InsightQueryApiService {
     private final ProfileDomainService profileDomainService;
     private final InsightAssembler insightAssembler;
     private final ProfileAssembler profileAssembler;
+    private final ChallengeParticipateQueryDomainService challengeParticipateQueryDomainService;
 
     @Transactional(readOnly = true)
     public InsightGetResponse getInsight(Long insightId) {
@@ -48,6 +54,19 @@ public class InsightQueryApiService {
     @Transactional(readOnly = true)
     public List<InsightGetForHomeResponse> getInsightsForHome(CursorPageable<Long> cPage, Boolean follow) {
         return insightQueryDomainService.getInsightsForHome(SecurityUtil.getUser(), cPage, follow).stream()
+                .map(insightAssembler::toInsightGetForHomeResponse)
+                .collect(Collectors.toList());
+    }
+
+    // FIXME DTO 수정할 때 같이 네이밍 수정 필요
+    @Transactional(readOnly = true)
+    public List<InsightGetForHomeResponse> paginateInsightsOfChallenge(CursorPageable<Long> cPage, Long writerId) {
+        User user = SecurityUtil.getUser();
+        Challenge challenge = challengeParticipateQueryDomainService.findCurrentParticipationByUserId(user.getId())
+                .map(ChallengeParticipation::getChallenge)
+                .orElseThrow(() -> new KeeweException(KeeweRtnConsts.ERR432));
+
+        return insightQueryDomainService.getByChallenge(challenge, user, cPage, writerId).stream()
                 .map(insightAssembler::toInsightGetForHomeResponse)
                 .collect(Collectors.toList());
     }

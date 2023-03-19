@@ -128,6 +128,30 @@ public class InsightQueryDomainService {
         ).collect(Collectors.toList());
     }
 
+    // FIXME dto 개선 필요
+    @Transactional(readOnly = true)
+    public List<InsightGetForHomeDto> getByChallenge(Challenge challenge, User user, CursorPageable<Long> cPage, Long writerId) {
+        List<Insight> insights = insightQueryRepository.findByChallenge(challenge, cPage, writerId);
+        Map<Long, Boolean> bookmarkPresence = bookmarkQueryDomainService.getBookmarkPresenceMap(user, insights);
+
+        return insights.parallelStream().map(i ->
+                InsightGetForHomeDto.of(
+                        i.getId(),
+                        i.getContents(),
+                        bookmarkPresence.getOrDefault(i.getId(), false),
+                        i.getLink(),
+                        this.getCurrentReactionAggregation(i.getId()),
+                        i.getCreatedAt(),
+                        InsightWriterDto.of(
+                                i.getWriter().getId(),
+                                i.getWriter().getNickname(),
+                                i.getWriter().getRepTitleName(),
+                                i.getWriter().getProfilePhotoURL()
+                        )
+                )
+        ).collect(Collectors.toList());
+    }
+
     public Map<Long, Long> getInsightCountPerChallenge(List<Challenge> challenges) {
         return insightQueryRepository.countPerChallenge(challenges);
     }
@@ -192,3 +216,4 @@ public class InsightQueryDomainService {
         ));
     }
 }
+

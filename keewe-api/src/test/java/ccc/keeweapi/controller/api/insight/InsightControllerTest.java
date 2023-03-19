@@ -453,4 +453,60 @@ public class InsightControllerTest extends ApiDocumentationTest {
         )));
     }
 
+
+    @Test
+    @DisplayName("나의 챌린지 전체 기록(인사이트) 조회 API")
+    void get_insights_of_my_challenge() throws Exception {
+        long cursor = Long.MAX_VALUE;
+        long limit = 10L;
+
+        when(insightQueryApiService.paginateInsightsOfChallenge(any(), any())).thenReturn(List.of(InsightGetForHomeResponse.of(
+                1L,
+                "인사이트 내용입니다. 즐거운 개발 되세요!",
+                true,
+                Link.of("www.keewe.com"),
+                ReactionAggregationResponse.of(1L, 2L, 3L, 4L, 5L, 6L),
+                LocalDateTime.now().toString(),
+                InsightWriterDto.of(1L, "nickname", "title", "image")
+        )));
+
+        ResultActions resultActions = mockMvc.perform(get("/api/v1/insight/challenge/my")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
+                        .param("cursor", Long.toString(cursor))
+                        .param("limit", Long.toString(limit))
+                        .param("writerId", Long.toString(1L)))
+                .andExpect(status().isOk());
+
+        resultActions.andDo(restDocs.document(resource(
+                ResourceSnippetParameters.builder()
+                        .description("나의 챌린지 전체 기록(인사이트) 조회 API 입니다.")
+                        .summary("나의 챌린지 전체 기록(인사이트) 조회 API")
+                        .requestHeaders(
+                                headerWithName("Authorization").description("유저의 JWT"))
+                        .requestParameters(
+                                parameterWithName("cursor").description("마지막으로 받은 인사이트 ID"),
+                                parameterWithName("limit").description("가져올 인사이트 개수"),
+                                parameterWithName("writerId").optional().description("인사이트 작성자 필터링. 미포함 시 전체 조회"))
+                        .responseFields(
+                                fieldWithPath("message").description("요청 결과 메세지"),
+                                fieldWithPath("code").description("결과 코드"),
+                                fieldWithPath("data[].id").description("인사이트 ID"),
+                                fieldWithPath("data[].contents").description("인사이트 내용"),
+                                fieldWithPath("data[].bookmark").description("인사이트 북마크 여부"),
+                                fieldWithPath("data[].link.url").description("인사이트 링크"),
+                                fieldWithPath("data[].reaction.clap").description("인사이트 박수 반응 수"),
+                                fieldWithPath("data[].reaction.heart").description("인사이트 하트 반응 수"),
+                                fieldWithPath("data[].reaction.sad").description("인사이트 슬픔 반응 수"),
+                                fieldWithPath("data[].reaction.surprise").description("인사이트 놀람 반응 수"),
+                                fieldWithPath("data[].reaction.fire").description("인사이트 불 반응 수"),
+                                fieldWithPath("data[].reaction.eyes").description("인사이트 눈 반응 수"),
+                                fieldWithPath("data[].createdAt").description("인사이트 생성 시간"),
+                                fieldWithPath("data[].writer.writerId").description("인사이트 저자 ID"),
+                                fieldWithPath("data[].writer.nickname").description("인사이트 저자 닉네임"),
+                                fieldWithPath("data[].writer.title").description("인사이트 저자 타이틀"),
+                                fieldWithPath("data[].writer.image").description("인사이트 저자 사진"))
+                        .tag("Insight")
+                        .build()
+        )));
+    }
 }

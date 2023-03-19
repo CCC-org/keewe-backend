@@ -75,4 +75,13 @@ public class InsightController {
     ) {
         return ApiResponse.ok(insightQueryApiService.getInsightForBookmark(CursorPageable.of(cursor, limit)));
     }
+
+    @GetMapping("/challenge/my")
+    public ApiResponse<List<InsightGetForHomeResponse>> paginateInsightsOfChallenge(
+            @RequestParam(required = false, defaultValue = KeeweConsts.LONG_MAX_STRING) Long cursor,
+            @RequestParam Long limit,
+            @RequestParam(required = false) Long writerId
+    ) {
+        return ApiResponse.ok(insightQueryApiService.paginateInsightsOfChallenge(CursorPageable.of(cursor, limit), writerId));
+    }
 }
