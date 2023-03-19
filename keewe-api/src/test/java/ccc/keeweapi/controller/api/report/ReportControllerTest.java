@@ -74,4 +74,43 @@ public class ReportControllerTest extends ApiDocumentationTest {
                         .build()
         )));
     }
+
+    @Test
+    @DisplayName("댓글 신고 API")
+    void comment_report_post() throws Exception {
+        // given
+        doNothing().when(reportApiService).reportComment(any());
+
+        JSONObject reportRequest = new JSONObject()
+                .put("commentId", 1L)
+                .put("reportType", "SPAM")
+                .put("reason", "그냥 보기싫은 글");
+        // when
+        ResultActions resultActions = mockMvc.perform(post("/api/v1/report/comment")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
+                        .content(reportRequest.toString())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        // then
+        resultActions.andDo(restDocs.document(resource(
+                ResourceSnippetParameters.builder()
+                        .description("댓글 신고 API 입니다.")
+                        .summary("댓글 신고 API")
+                        .requestHeaders(
+                                headerWithName("Authorization").description("유저의 JWT"))
+                        .requestFields(
+                                fieldWithPath("commentId").description("댓글ID"),
+                                fieldWithPath("reportType").description("신고 카테고리").type("ENUM")
+                                        .attributes(key("enumValues").value(List.of(ReportType.values()))),
+                                fieldWithPath("reason").description("댓글 신고이유")
+                        )
+                        .responseFields(
+                                fieldWithPath("message").description("요청 결과 메세지"),
+                                fieldWithPath("code").description("결과 코드"),
+                                fieldWithPath("data").description("응답 데이터"))
+                        .tag("Report")
+                        .build()
+        )));
+    }
 }
