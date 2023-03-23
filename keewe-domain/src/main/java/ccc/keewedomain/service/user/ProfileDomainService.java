@@ -148,8 +148,8 @@ public class ProfileDomainService {
     }
 
     private void removeRelation(User user, User blockedUser) {
-        followRepository.deleteById(FollowId.of(user.getId(), blockedUser.getId()));
-        followRepository.deleteById(FollowId.of(blockedUser.getId(), user.getId()));
+        followRepository.deleteByIdIfExists(FollowId.of(user.getId(), blockedUser.getId()));
+        followRepository.deleteByIdIfExists(FollowId.of(blockedUser.getId(), user.getId()));
     }
 
     @Transactional
