@@ -8,4 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface FollowRepository extends JpaRepository<Follow, FollowId> {
     Long countByFollowee(User followee);
     Long countByFollower(User follower);
+    default void deleteByIdIfExists(FollowId id) {
+        findById(id).ifPresent(this::delete);
+    }
 }
