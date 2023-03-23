@@ -40,7 +40,7 @@ public class ChallengeParticipationQueryRepository {
     public boolean existsByChallengerIdAndStatus(Long challengerId, ChallengeParticipationStatus status) {
         Integer fetchFirst = queryFactory.selectOne()
                 .from(challengeParticipation)
-                .where(user.id.eq(challengerId).and(challengeParticipation.status.eq(status)))
+                .where(challengeParticipation.challenger.id.eq(challengerId).and(challengeParticipation.status.eq(status)))
                 .fetchFirst();
 
         return fetchFirst != null;
