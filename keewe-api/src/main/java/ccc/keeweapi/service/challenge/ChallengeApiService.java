@@ -99,12 +99,9 @@ public class ChallengeApiService {
     }
 
     @Transactional(readOnly = true)
-    public ParticipatingChallengeResponse getParticipatingChallenege() {
+    public ParticipatingChallengeResponse getParticipatingChallenge() {
         return challengeParticipateQueryDomainService.findCurrentChallengeParticipation(SecurityUtil.getUser())
-                .map(participation -> {
-                    Long participatingUser = challengeParticipateQueryDomainService.countParticipatingUser(participation.getChallenge());
-                    return challengeAssembler.toMyChallengeResponse(participation, participatingUser);
-                })
+                .map(challengeAssembler::toMyChallengeResponse)
                 .orElse(null);
     }
 

@@ -118,12 +118,11 @@ public class ChallengeAssembler {
         );
     }
 
-    public ParticipatingChallengeResponse toMyChallengeResponse(ChallengeParticipation participation, Long participatingUser) {
+    public ParticipatingChallengeResponse toMyChallengeResponse(ChallengeParticipation participation) {
         Challenge challenge = participation.getChallenge();
         return ParticipatingChallengeResponse.of(
                 challenge.getId(),
                 challenge.getName(),
-                participatingUser,
                 challenge.getInterest().getName(),
                 participation.getCreatedAt().toLocalDate().toString()
         );

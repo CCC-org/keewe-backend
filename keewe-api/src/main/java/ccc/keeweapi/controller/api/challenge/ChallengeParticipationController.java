@@ -44,7 +44,7 @@ public class ChallengeParticipationController {
 
     @GetMapping("/participating")
     public ApiResponse<ParticipatingChallengeResponse> getParticipatingChallenge() {
-        return ApiResponse.ok(challengeApiService.getParticipatingChallenege());
+        return ApiResponse.ok(challengeApiService.getParticipatingChallenge());
     }
 
     @GetMapping(value = "/participation/check")

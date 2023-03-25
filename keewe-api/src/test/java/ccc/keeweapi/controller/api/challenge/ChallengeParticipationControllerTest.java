@@ -206,12 +206,11 @@ public class ChallengeParticipationControllerTest extends ApiDocumentationTest {
     void home_my_challenge() throws Exception {
         long challengeId = 1L;
         String name = "챌린지 이름";
-        Long participatingUser = 9999L;
         String interest = "프론트";
         String startDate = "2023-02-04";
-        ParticipatingChallengeResponse response = ParticipatingChallengeResponse.of(challengeId, name, participatingUser, interest, startDate);
+        ParticipatingChallengeResponse response = ParticipatingChallengeResponse.of(challengeId, name, interest, startDate);
 
-        when(challengeApiService.getParticipatingChallenege()).thenReturn(response);
+        when(challengeApiService.getParticipatingChallenge()).thenReturn(response);
 
         ResultActions resultActions = mockMvc.perform(get("/api/v1/challenge/participating")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
@@ -231,7 +230,6 @@ public class ChallengeParticipationControllerTest extends ApiDocumentationTest {
                                 fieldWithPath("data").description("참가중이지 않은 경우 null"),
                                 fieldWithPath("data.challengeId").description("참가중인 챌린지의 ID"),
                                 fieldWithPath("data.name").description("참가중인 챌린지의 이름"),
-                                fieldWithPath("data.participatingUserNumber").description("도전(참가)중인 유저의 수"),
                                 fieldWithPath("data.interest").description("관심사"),
                                 fieldWithPath("data.startDate").description("챌린지에 참가한 날짜")
                         )
