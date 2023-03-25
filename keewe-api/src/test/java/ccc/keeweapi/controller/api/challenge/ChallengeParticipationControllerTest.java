@@ -207,8 +207,12 @@ public class ChallengeParticipationControllerTest extends ApiDocumentationTest {
         long challengeId = 1L;
         String name = "챌린지 이름";
         String interest = "프론트";
+        String myTopic = "나만의 주제";
+        int insightPerWeek = 2;
+        int duration = 2;
+        String endDate = "2023-02-17";
         String startDate = "2023-02-04";
-        ParticipatingChallengeResponse response = ParticipatingChallengeResponse.of(challengeId, name, interest, startDate);
+        ParticipatingChallengeResponse response = ParticipatingChallengeResponse.of(challengeId, name, interest, myTopic, insightPerWeek, duration, endDate, startDate);
 
         when(challengeApiService.getParticipatingChallenge()).thenReturn(response);
 
@@ -231,7 +235,11 @@ public class ChallengeParticipationControllerTest extends ApiDocumentationTest {
                                 fieldWithPath("data.challengeId").description("참가중인 챌린지의 ID"),
                                 fieldWithPath("data.name").description("참가중인 챌린지의 이름"),
                                 fieldWithPath("data.interest").description("관심사"),
-                                fieldWithPath("data.startDate").description("챌린지에 참가한 날짜")
+                                fieldWithPath("data.myTopic").description("나만의 주제"),
+                                fieldWithPath("data.insightPerWeek").description("주마다 올릴 인사이트 개수"),
+                                fieldWithPath("data.duration").description("참가 기간 단위: 주"),
+                                fieldWithPath("data.startDate").description("챌린지에 참가한 날짜"),
+                                fieldWithPath("data.endDate").description("챌린지 종료 예정일")
                         )
                         .tag("ChallengeParticipation")
                         .build()

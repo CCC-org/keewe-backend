@@ -124,6 +124,10 @@ public class ChallengeAssembler {
                 challenge.getId(),
                 challenge.getName(),
                 challenge.getInterest().getName(),
+                participation.getMyTopic(),
+                participation.getInsightPerWeek(),
+                participation.getDuration(),
+                participation.getEndDate().toString(),
                 participation.getCreatedAt().toLocalDate().toString()
         );
     }
