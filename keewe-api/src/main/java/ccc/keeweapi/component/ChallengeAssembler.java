@@ -17,10 +17,12 @@ import ccc.keeweapi.dto.challenge.OpenedChallengeResponse;
 import ccc.keeweapi.dto.challenge.ParticipatingChallengeDetailResponse;
 import ccc.keeweapi.dto.challenge.ParticipatingChallengeResponse;
 import ccc.keeweapi.dto.challenge.ParticipationCheckResponse;
+import ccc.keeweapi.dto.challenge.ParticipationUpdateRequest;
 import ccc.keeweapi.dto.challenge.WeekProgressResponse;
 import ccc.keeweapi.utils.SecurityUtil;
 import ccc.keewedomain.dto.challenge.ChallengeCreateDto;
 import ccc.keewedomain.dto.challenge.ChallengeParticipateDto;
+import ccc.keewedomain.dto.challenge.ParticipationUpdateDto;
 import ccc.keewedomain.persistence.domain.challenge.Challenge;
 import ccc.keewedomain.persistence.domain.challenge.ChallengeParticipation;
 import ccc.keewedomain.persistence.domain.user.User;
@@ -202,5 +204,9 @@ public class ChallengeAssembler {
             Long shareCount
     ) {
         return ChallengeStatisticsResponse.of(viewCount, reactionCount, commentCount, bookmarkCount, shareCount);
+    }
+
+    public ParticipationUpdateDto toParticipationUpdateDto(ParticipationUpdateRequest request) {
+        return ParticipationUpdateDto.of(request.getMyTopic(), request.getInsightPerWeek(), request.getDuration());
     }
 }

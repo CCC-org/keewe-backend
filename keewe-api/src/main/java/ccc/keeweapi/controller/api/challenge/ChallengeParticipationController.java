@@ -10,6 +10,7 @@ import ccc.keeweapi.dto.challenge.FriendResponse;
 import ccc.keeweapi.dto.challenge.MyParticipationProgressResponse;
 import ccc.keeweapi.dto.challenge.ParticipatingChallengeResponse;
 import ccc.keeweapi.dto.challenge.ParticipationCheckResponse;
+import ccc.keeweapi.dto.challenge.ParticipationUpdateRequest;
 import ccc.keeweapi.dto.challenge.WeekProgressResponse;
 import ccc.keeweapi.service.challenge.ChallengeApiService;
 import ccc.keeweapi.service.challenge.query.ChallengeParticipationQueryApiService;
@@ -22,6 +23,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -45,6 +47,12 @@ public class ChallengeParticipationController {
     @GetMapping("/participating")
     public ApiResponse<ParticipatingChallengeResponse> getParticipatingChallenge() {
         return ApiResponse.ok(challengeApiService.getParticipatingChallenge());
+    }
+
+    @PatchMapping("/participating")
+    public ApiResponse<Void> updateParticipation(@RequestBody ParticipationUpdateRequest request) {
+        challengeApiService.updateParticipation(request);
+        return ApiResponse.ok();
     }
 
     @GetMapping(value = "/participation/check")

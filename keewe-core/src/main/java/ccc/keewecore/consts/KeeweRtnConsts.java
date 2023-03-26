@@ -29,7 +29,9 @@ public enum KeeweRtnConsts {
 
     ERR430(KeeweRtnGrp.Validation, 430, "챌린지를 찾을 수 없어요."),
     ERR431(KeeweRtnGrp.Validation, 431, "이미 챌린지에 참여중이에요."),
-    ERR432(KeeweRtnGrp.Validation, 432, "참가중인 챌린지가 없어요"),
+    ERR432(KeeweRtnGrp.Validation, 432, "참가중인 챌린지가 없어요."),
+    ERR433(KeeweRtnGrp.Validation, 433, "종료일을 오늘 이전으로 설정할 수 없어요."),
+    ERR434(KeeweRtnGrp.Validation, 434, "달성 불가능한 기록 횟수로 변경할 수 없어요."),
 
     ERR440(KeeweRtnGrp.Validation, 440, "서랍을 찾을 수 없어요"),
     ERR441(KeeweRtnGrp.Validation, 441, "이미 등록된 서랍 이름이에요"),

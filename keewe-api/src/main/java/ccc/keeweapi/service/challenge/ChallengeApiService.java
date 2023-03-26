@@ -13,10 +13,12 @@ import ccc.keeweapi.dto.challenge.MyParticipationProgressResponse;
 import ccc.keeweapi.dto.challenge.ParticipatingChallengeDetailResponse;
 import ccc.keeweapi.dto.challenge.ParticipatingChallengeResponse;
 import ccc.keeweapi.dto.challenge.ParticipationCheckResponse;
+import ccc.keeweapi.dto.challenge.ParticipationUpdateRequest;
 import ccc.keeweapi.dto.challenge.WeekProgressResponse;
 import ccc.keeweapi.utils.SecurityUtil;
 import ccc.keewecore.consts.KeeweRtnConsts;
 import ccc.keewecore.exception.KeeweException;
+import ccc.keewedomain.dto.challenge.ParticipationUpdateDto;
 import ccc.keewedomain.persistence.domain.challenge.Challenge;
 import ccc.keewedomain.persistence.domain.challenge.ChallengeParticipation;
 import ccc.keewedomain.persistence.domain.user.User;
@@ -160,5 +162,12 @@ public class ChallengeApiService {
                 .map(participation -> insightQueryDomainService.getInsightCountByChallenge(participation.getChallenge(), writerId))
                 .orElseThrow(() -> new KeeweException(KeeweRtnConsts.ERR432));
         return challengeAssembler.toChallengeInsightNumberResponse(insightNumber);
+    }
+
+    @Transactional
+    public void updateParticipation(ParticipationUpdateRequest request) {
+        ChallengeParticipation participation = challengeParticipateQueryDomainService.getCurrentChallengeParticipation(SecurityUtil.getUser());
+        ParticipationUpdateDto dto = challengeAssembler.toParticipationUpdateDto(request);
+        challengeCommandDomainService.updateParticipation(participation, dto);
     }
 }
