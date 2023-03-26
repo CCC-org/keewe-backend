@@ -206,7 +206,7 @@ public class ChallengeAssembler {
         return ChallengeStatisticsResponse.of(viewCount, reactionCount, commentCount, bookmarkCount, shareCount);
     }
 
-    public ParticipationUpdateDto toParticipationUpdateDto(ParticipationUpdateRequest request) {
-        return ParticipationUpdateDto.of(request.getMyTopic(), request.getInsightPerWeek(), request.getDuration());
+    public ParticipationUpdateDto toParticipationUpdateDto(Long userId, ParticipationUpdateRequest request) {
+        return ParticipationUpdateDto.of(userId, request.getMyTopic(), request.getInsightPerWeek(), request.getDuration());
     }
 }

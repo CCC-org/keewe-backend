@@ -47,7 +47,8 @@ public class ChallengeCommandDomainService {
         });
     }
 
-    public void updateParticipation(ChallengeParticipation participation, ParticipationUpdateDto dto) {
+    public void updateParticipation(ParticipationUpdateDto dto) {
+        ChallengeParticipation participation = challengeParticipateQueryDomainService.getCurrentParticipationByUserId(dto.getUserId());
         validateInsightPerWeek(participation, dto.getInsightPerWeek());
         participation.update(dto.getMyTopic(), dto.getInsightPerWeek(), dto.getDuration());
     }

@@ -166,8 +166,7 @@ public class ChallengeApiService {
 
     @Transactional
     public void updateParticipation(ParticipationUpdateRequest request) {
-        ChallengeParticipation participation = challengeParticipateQueryDomainService.getCurrentChallengeParticipation(SecurityUtil.getUser());
-        ParticipationUpdateDto dto = challengeAssembler.toParticipationUpdateDto(request);
-        challengeCommandDomainService.updateParticipation(participation, dto);
+        ParticipationUpdateDto dto = challengeAssembler.toParticipationUpdateDto(SecurityUtil.getUserId(), request);
+        challengeCommandDomainService.updateParticipation(dto);
     }
 }
