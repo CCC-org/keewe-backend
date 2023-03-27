@@ -13,6 +13,7 @@ import ccc.keewedomain.service.challenge.query.ChallengeQueryDomainService;
 import ccc.keewedomain.service.user.UserDomainService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
@@ -39,7 +40,8 @@ public class ChallengeCommandDomainService {
         });
     }
 
-    private void exitCurrentChallengeIfExist(User challenger) {
+    @Transactional
+    public void exitCurrentChallengeIfExist(User challenger) {
         challengeParticipateQueryDomainService.findCurrentChallengeParticipation(challenger).ifPresent(ChallengeParticipation::cancel);
     }
 }

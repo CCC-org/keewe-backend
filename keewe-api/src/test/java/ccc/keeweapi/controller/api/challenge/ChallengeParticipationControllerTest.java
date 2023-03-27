@@ -1,8 +1,18 @@
 package ccc.keeweapi.controller.api.challenge;
 
 import ccc.keeweapi.document.utils.ApiDocumentationTest;
-import ccc.keeweapi.dto.challenge.*;
+import ccc.keeweapi.dto.challenge.ChallengeParticipationResponse;
+import ccc.keeweapi.dto.challenge.ChallengerCountResponse;
+import ccc.keeweapi.dto.challenge.DayProgressResponse;
+import ccc.keeweapi.dto.challenge.FinishedChallengeCountResponse;
+import ccc.keeweapi.dto.challenge.FinishedChallengeResponse;
+import ccc.keeweapi.dto.challenge.FriendResponse;
+import ccc.keeweapi.dto.challenge.MyParticipationProgressResponse;
+import ccc.keeweapi.dto.challenge.ParticipatingChallengeResponse;
+import ccc.keeweapi.dto.challenge.ParticipationCheckResponse;
+import ccc.keeweapi.dto.challenge.WeekProgressResponse;
 import ccc.keeweapi.service.challenge.ChallengeApiService;
+import ccc.keeweapi.service.challenge.command.ChallengeParticipationCommandApiService;
 import ccc.keeweapi.service.challenge.query.ChallengeParticipationQueryApiService;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import org.json.JSONObject;
@@ -15,12 +25,17 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.test.web.servlet.ResultActions;
+
 import java.time.LocalDate;
 import java.util.List;
-import static com.epages.restdocs.apispec.ResourceDocumentation.*;
+
+import static com.epages.restdocs.apispec.ResourceDocumentation.headerWithName;
+import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName;
+import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
@@ -36,6 +51,9 @@ public class ChallengeParticipationControllerTest extends ApiDocumentationTest {
 
     @Mock
     ChallengeParticipationQueryApiService challengeParticipationQueryApiService;
+
+    @Mock
+    ChallengeParticipationCommandApiService challengeParticipationCommandApiService;
 
     @BeforeEach
     void setup(final RestDocumentationContextProvider provider) {
@@ -384,6 +402,31 @@ public class ChallengeParticipationControllerTest extends ApiDocumentationTest {
                                 fieldWithPath("code").description("결과 코드"),
                                 fieldWithPath("data").description("데이터, 오류 시 null"),
                                 fieldWithPath("data.count").description("종료된 챌린지 개수")
+                        )
+                        .tag("ChallengeParticipation")
+                        .build()
+        )));
+    }
+
+    @Test
+    @DisplayName("참가중인 챌린지 취소")
+    void cancel_current_challenge() throws Exception {
+        ResultActions resultActions = mockMvc.perform(delete("/api/v1/challenge/participating")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        resultActions.andDo(restDocs.document(resource(
+                ResourceSnippetParameters.builder()
+                        .description("참가중인 챌린지 취소 API 입니다.")
+                        .summary("참가중인 챌린지 취소 API")
+                        .requestHeaders(
+                                headerWithName("Authorization").description("유저의 JWT")
+                        )
+                        .responseFields(
+                                fieldWithPath("message").description("요청 결과 메세지"),
+                                fieldWithPath("code").description("결과 코드"),
+                                fieldWithPath("data").description("null")
                         )
                         .tag("ChallengeParticipation")
                         .build()
