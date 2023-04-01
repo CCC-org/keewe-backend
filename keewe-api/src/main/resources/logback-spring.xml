@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
     <springProperty name = "DSN" source = "env.sentry-dsn"/>
+    <springProperty name = "LOGSTASH_DSN" source = "env.logstash-dsn"/>
 
     <appender name="LAZY_SENTRY" class="ch.qos.logback.classic.sift.SiftingAppender">
         <discriminator>
@@ -31,6 +32,10 @@
         </sift>
     </appender>
 
+    <appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+        <destination>${LOGSTASH_DSN}:4560</destination>
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
+    </appender>
 
     <springProfile name="local">
         <root level="INFO">
@@ -42,6 +47,7 @@
         <root level="INFO">
             <appender-ref ref="LAZY_SENTRY"/>
             <appender-ref ref="LAZY_CONSOLE"/>
+            <appender-ref ref="LOGSTASH"/>
         </root>
     </springProfile>
 
