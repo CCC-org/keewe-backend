@@ -183,6 +183,7 @@ project(':keewe-api') {
 		implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
 		implementation group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
 		implementation 'org.springframework.boot:spring-boot-starter-validation'
+		implementation 'net.logstash.logback:logstash-logback-encoder:6.3'
 		testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
 		testImplementation 'com.epages:restdocs-api-spec-mockmvc:0.16.2'
 		testImplementation 'org.springframework.security:spring-security-test'
