@@ -17,6 +17,7 @@ import ccc.keewedomain.service.insight.query.InsightQueryDomainService;
 import ccc.keewedomain.service.user.UserDomainService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.Period;
@@ -47,6 +48,7 @@ public class ChallengeCommandDomainService {
         });
     }
 
+    @Transactional
     public void updateParticipation(ParticipationUpdateDto dto) {
         ChallengeParticipation participation = challengeParticipateQueryDomainService.getCurrentParticipationByUserId(dto.getUserId());
         validateInsightPerWeek(participation, dto.getInsightPerWeek());
@@ -67,7 +69,7 @@ public class ChallengeCommandDomainService {
         }
     }
 
-    private void exitCurrentChallengeIfExist(User challenger) {
+    public void exitCurrentChallengeIfExist(User challenger) {
         challengeParticipateQueryDomainService.findCurrentChallengeParticipation(challenger).ifPresent(ChallengeParticipation::cancel);
     }
 }

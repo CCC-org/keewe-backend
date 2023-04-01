@@ -13,6 +13,7 @@ import ccc.keeweapi.dto.challenge.ParticipationCheckResponse;
 import ccc.keeweapi.dto.challenge.ParticipationUpdateRequest;
 import ccc.keeweapi.dto.challenge.WeekProgressResponse;
 import ccc.keeweapi.service.challenge.ChallengeApiService;
+import ccc.keeweapi.service.challenge.command.ChallengeParticipationCommandApiService;
 import ccc.keeweapi.service.challenge.query.ChallengeParticipationQueryApiService;
 import ccc.keewecore.consts.KeeweConsts;
 import ccc.keewedomain.persistence.repository.utils.CursorPageable;
@@ -22,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -38,6 +40,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ChallengeParticipationController {
     private final ChallengeApiService challengeApiService;
     private final ChallengeParticipationQueryApiService challengeParticipationQueryApiService;
+    private final ChallengeParticipationCommandApiService challengeParticipationCommandApiService;
 
     @PostMapping(value = "/participation")
     public ApiResponse<ChallengeParticipationResponse> participate(@RequestBody @Valid ChallengeParticipateRequest request) {
@@ -93,5 +96,11 @@ public class ChallengeParticipationController {
     @GetMapping("/finished/count")
     public ApiResponse<FinishedChallengeCountResponse> countCompletedChallenges() {
         return ApiResponse.ok(challengeParticipationQueryApiService.countFinished());
+    }
+
+    @DeleteMapping("/participating")
+    public ApiResponse<Void> cancelParticipation() {
+        challengeParticipationCommandApiService.deleteChallenge();
+        return ApiResponse.ok();
     }
 }
