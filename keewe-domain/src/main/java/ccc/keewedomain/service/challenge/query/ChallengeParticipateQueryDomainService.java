@@ -38,6 +38,10 @@ public class ChallengeParticipateQueryDomainService {
         return findCurrentChallengeParticipation(user).orElseThrow(() -> new KeeweException(KeeweRtnConsts.ERR432));
     }
 
+    public ChallengeParticipation getCurrentParticipationByUserId(Long userId) {
+        return findCurrentParticipationByUserId(userId).orElseThrow(() -> new KeeweException(KeeweRtnConsts.ERR432));
+    }
+
     public Optional<ChallengeParticipation> findCurrentParticipationByUserId(Long userId) {
         return challengeParticipationQueryRepository.findByUserIdAndStatus(userId, CHALLENGING);
     }

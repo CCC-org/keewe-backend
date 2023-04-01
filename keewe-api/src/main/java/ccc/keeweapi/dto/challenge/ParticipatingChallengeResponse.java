@@ -8,7 +8,10 @@ import lombok.Getter;
 public class ParticipatingChallengeResponse {
     private Long challengeId;
     private String name;
-    private Long participatingUserNumber;
     private String interest;
+    private String myTopic;
+    private int insightPerWeek;
+    private int duration;
+    private String endDate;
     private String startDate;
 }

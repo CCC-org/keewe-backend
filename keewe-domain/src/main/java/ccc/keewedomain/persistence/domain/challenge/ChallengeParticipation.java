@@ -1,5 +1,7 @@
 package ccc.keewedomain.persistence.domain.challenge;
 
+import ccc.keewecore.consts.KeeweRtnConsts;
+import ccc.keewecore.exception.KeeweException;
 import ccc.keewedomain.persistence.domain.challenge.enums.ChallengeParticipationStatus;
 import ccc.keewedomain.persistence.domain.common.BaseTimeEntity;
 import ccc.keewedomain.persistence.domain.user.User;
@@ -64,16 +66,6 @@ public class ChallengeParticipation extends BaseTimeEntity {
         return participation;
     }
 
-    public void cancel() {
-        this.endDate = LocalDate.now();
-        this.status = ChallengeParticipationStatus.CANCELED;
-    }
-
-    private void initEndDate() {
-        LocalDate createdDate = getCreatedAt().toLocalDate();
-        this.endDate = createdDate.minusDays(1).plusWeeks(duration);
-    }
-
     // 현재가 몇 주차인지
     public long getCurrentWeek() {
         LocalDate createdAt = getCreatedAt().toLocalDate();
@@ -91,12 +83,37 @@ public class ChallengeParticipation extends BaseTimeEntity {
         return (long) (insightPerWeek * duration);
     }
 
+    public void update(String myTopic, int insightPerWeek, int duration) {
+        this.myTopic = myTopic;
+        this.insightPerWeek = insightPerWeek;
+        this.duration = duration;
+        initEndDate();
+    }
+
     public void expire(LocalDate endDate) {
         this.endDate = endDate;
         this.status = ChallengeParticipationStatus.EXPIRED;
     }
 
+    public void cancel() {
+        this.endDate = LocalDate.now();
+        this.status = ChallengeParticipationStatus.CANCELED;
+    }
+
     public void complete() {
         this.status = ChallengeParticipationStatus.COMPLETED;
+    }
+
+    private void initEndDate() {
+        LocalDate createdDate = getCreatedAt().toLocalDate();
+        LocalDate newEndDate = createdDate.minusDays(1).plusWeeks(duration);
+        validateEndDate(newEndDate);
+        this.endDate = newEndDate;
+    }
+
+    private void validateEndDate(LocalDate newEndDate) {
+        if(newEndDate.isBefore(LocalDate.now())) {
+            throw new KeeweException(KeeweRtnConsts.ERR433);
+        }
     }
 }
