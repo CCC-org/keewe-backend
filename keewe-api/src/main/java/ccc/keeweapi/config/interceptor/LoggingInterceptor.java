@@ -17,9 +17,9 @@ public class LoggingInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+        MDC.put("trace_id", UUID.randomUUID().toString());
         try {
             MDC.put("user_id", SecurityUtil.getUserId().toString());
-            MDC.put("trace_id", UUID.randomUUID().toString());
         } catch (KeeweException ex) {
             if(!KeeweRtnConsts.ERR404.equals(ex.getKeeweRtnConsts())) {
                 throw ex;
