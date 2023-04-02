@@ -26,12 +26,9 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
     private void commence(HttpServletResponse response, KeeweAuthException kex) throws IOException {
         response.setContentType("application/json;charset=UTF-8");
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        log.info("Auth Exception {}", kex.getKeeweRtnConsts().name());
-
         JSONObject body = new JSONObject();
         body.put("code", kex.getKeeweRtnConsts().getCode());
         body.put("message", kex.getKeeweRtnConsts().getDescription());
-
         response.getWriter().print(body);
     }
 

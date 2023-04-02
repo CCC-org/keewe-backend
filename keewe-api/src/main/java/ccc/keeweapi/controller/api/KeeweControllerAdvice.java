@@ -33,7 +33,8 @@ public class KeeweControllerAdvice {
     @ExceptionHandler(KeeweException.class)
     @ResponseStatus(BAD_REQUEST)
     public ApiResponse<?> handleKeeweException(KeeweException ex) {
-        log.error("KeeweException[{}]: {}", ex.getKeeweRtnConsts(), ex.getMessage());
+        String message = String.format("KeeweException[%s]: %s", ex.getKeeweRtnConsts(), ex.getMessage());
+        log.error(message, ex);
         return ApiResponse.failure(ex.getKeeweRtnConsts(), ex.getMessage());
     }
 
