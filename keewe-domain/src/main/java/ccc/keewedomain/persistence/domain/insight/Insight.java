@@ -81,4 +81,8 @@ public class Insight extends BaseTimeEntity {
     public void delete() {
         deleted = true;
     }
+
+    public void removeDrawer() {
+        this.drawer = null;
+    }
 }

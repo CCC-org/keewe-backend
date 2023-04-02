@@ -56,4 +56,8 @@ public class Drawer extends BaseTimeEntity {
     public void updateName(String newName) {
         this.name = newName;
     }
+
+    public void delete() {
+        this.deleted = true;
+    }
 }

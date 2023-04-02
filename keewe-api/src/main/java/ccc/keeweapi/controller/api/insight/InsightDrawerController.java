@@ -10,6 +10,7 @@ import ccc.keeweapi.service.insight.query.InsightDrawerQueryApiService;
 import java.util.List;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -44,6 +45,12 @@ public class InsightDrawerController {
     @PatchMapping("/{drawerId}")
     public ApiResponse<Void> updateDrawer(@PathVariable Long drawerId, @RequestBody DrawerUpdateRequest request) {
         insightDrawerCommandApiService.update(drawerId, request);
+        return ApiResponse.ok();
+    }
+
+    @DeleteMapping("/{drawerId}")
+    public ApiResponse<Void> deleteDrawer(@PathVariable Long drawerId) {
+        insightDrawerCommandApiService.delete(drawerId);
         return ApiResponse.ok();
     }
 }

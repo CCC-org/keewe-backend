@@ -3,9 +3,11 @@ package ccc.keewedomain.service.insight;
 import ccc.keewecore.consts.KeeweRtnConsts;
 import ccc.keewecore.exception.KeeweException;
 import ccc.keewedomain.persistence.domain.insight.Drawer;
+import ccc.keewedomain.persistence.domain.insight.Insight;
 import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.dto.insight.DrawerCreateDto;
 import ccc.keewedomain.persistence.repository.insight.DrawerRepository;
+import ccc.keewedomain.service.insight.query.InsightQueryDomainService;
 import ccc.keewedomain.service.user.UserDomainService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,6 +24,7 @@ public class DrawerDomainService {
     private final DrawerRepository drawerRepository;
 
     private final UserDomainService userDomainService;
+    private final InsightQueryDomainService insightQueryDomainService;
 
     public Drawer create(DrawerCreateDto dto) {
         validateNameDuplication(dto.getUserId(), dto.getName());
@@ -60,5 +63,13 @@ public class DrawerDomainService {
         Drawer drawer = drawerRepository.findByIdOrElseThrow(drawerId);
         drawer.validateOwner(user);
         drawer.updateName(newName);
+    }
+
+    public void delete(User user, Long drawerId) {
+        Drawer drawer = drawerRepository.findByIdOrElseThrow(drawerId);
+        drawer.validateOwner(user);
+        drawer.delete();
+        insightQueryDomainService.findAllByUserIdAndDrawerId(user.getId(), drawerId)
+                .forEach(Insight::removeDrawer);
     }
 }
