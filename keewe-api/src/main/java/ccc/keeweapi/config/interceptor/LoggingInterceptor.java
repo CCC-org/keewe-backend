@@ -1,8 +1,6 @@
 package ccc.keeweapi.config.interceptor;
 
 import ccc.keeweapi.utils.SecurityUtil;
-import ccc.keewecore.consts.KeeweRtnConsts;
-import ccc.keewecore.exception.KeeweException;
 import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -20,10 +18,8 @@ public class LoggingInterceptor implements HandlerInterceptor {
         MDC.put("trace_id", UUID.randomUUID().toString());
         try {
             MDC.put("user_id", SecurityUtil.getUserId().toString());
-        } catch (KeeweException ex) {
-            if(!KeeweRtnConsts.ERR404.equals(ex.getKeeweRtnConsts())) {
-                throw ex;
-            }
+        } catch (Exception ex) {
+            return true;
         }
         return true;
     }
