@@ -210,6 +210,11 @@ public class InsightQueryDomainService {
         return validNumber.equals(participation.getCurrentWeek() * participation.getInsightPerWeek());
     }
 
+    @Transactional(readOnly = true)
+    public List<Insight> findAllByUserIdAndDrawerId(Long userId, Long drawerId) {
+        return insightQueryRepository.findAllByUserIdAndDrawerId(userId, drawerId);
+    }
+
     private ReactionAggregationGetDto getCurrentReactionAggregation(Long insightId) {
         return ReactionAggregationGetDto.createByCnt(cReactionCountRepository.findByIdWithMissHandle(insightId, () ->
                 reactionAggregationRepository.findDtoByInsightId(insightId)

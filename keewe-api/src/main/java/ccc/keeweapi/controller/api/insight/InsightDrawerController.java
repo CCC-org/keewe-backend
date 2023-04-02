@@ -4,12 +4,15 @@ import ccc.keeweapi.dto.ApiResponse;
 import ccc.keeweapi.dto.insight.DrawerCreateRequest;
 import ccc.keeweapi.dto.insight.DrawerCreateResponse;
 import ccc.keeweapi.dto.insight.DrawerResponse;
+import ccc.keeweapi.dto.insight.DrawerUpdateRequest;
 import ccc.keeweapi.service.insight.command.InsightDrawerCommandApiService;
 import ccc.keeweapi.service.insight.query.InsightDrawerQueryApiService;
 import java.util.List;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -37,5 +40,17 @@ public class InsightDrawerController {
     @GetMapping("/{userId}")
     public ApiResponse<List<DrawerResponse>> getDrawers(@PathVariable Long userId) {
         return ApiResponse.ok(insightDrawerQueryApiService.getDrawers(userId));
+    }
+
+    @PatchMapping("/{drawerId}")
+    public ApiResponse<Void> updateDrawer(@PathVariable Long drawerId, @RequestBody DrawerUpdateRequest request) {
+        insightDrawerCommandApiService.update(drawerId, request);
+        return ApiResponse.ok();
+    }
+
+    @DeleteMapping("/{drawerId}")
+    public ApiResponse<Void> deleteDrawer(@PathVariable Long drawerId) {
+        insightDrawerCommandApiService.delete(drawerId);
+        return ApiResponse.ok();
     }
 }
