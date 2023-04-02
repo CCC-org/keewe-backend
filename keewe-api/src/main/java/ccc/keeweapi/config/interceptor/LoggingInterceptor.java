@@ -1,6 +1,8 @@
 package ccc.keeweapi.config.interceptor;
 
 import ccc.keeweapi.utils.SecurityUtil;
+import ccc.keewecore.consts.KeeweRtnConsts;
+import ccc.keewecore.exception.KeeweException;
 import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -15,10 +17,13 @@ public class LoggingInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        if(SecurityUtil.getUser() != null) {
+        try {
             MDC.put("user_id", SecurityUtil.getUserId().toString());
-            // note. 불필요한 trace_id 생성 방지
             MDC.put("trace_id", UUID.randomUUID().toString());
+        } catch (KeeweException ex) {
+            if(!KeeweRtnConsts.ERR404.equals(ex.getKeeweRtnConsts())) {
+                throw ex;
+            }
         }
         return true;
     }
