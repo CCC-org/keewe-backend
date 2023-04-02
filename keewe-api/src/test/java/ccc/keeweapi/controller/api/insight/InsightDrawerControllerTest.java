@@ -1,10 +1,12 @@
 package ccc.keeweapi.controller.api.insight;
 
 import static com.epages.restdocs.apispec.ResourceDocumentation.headerWithName;
+import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -44,7 +46,7 @@ public class InsightDrawerControllerTest extends ApiDocumentationTest {
     }
 
     @Test
-    @DisplayName("서랍 등록 API")
+    @DisplayName("폴더 등록 API")
     void create_drawer_test() throws Exception {
         String drawerName = "개발";
 
@@ -62,23 +64,23 @@ public class InsightDrawerControllerTest extends ApiDocumentationTest {
 
         resultActions.andDo(restDocs.document(resource(
                 ResourceSnippetParameters.builder()
-                        .description("서랍 생성 API 입니다.")
-                        .summary("서랍 생성 API")
+                        .description("폴더 생성 API 입니다.")
+                        .summary("폴더 생성 API")
                         .requestHeaders(
                                 headerWithName("Authorization").description("유저의 JWT"))
                         .requestFields(
-                                fieldWithPath("name").description("서랍의 이름. 15자 이내"))
+                                fieldWithPath("name").description("폴더의 이름. 15자 이내"))
                         .responseFields(
                                 fieldWithPath("message").description("요청 결과 메세지"),
                                 fieldWithPath("code").description("결과 코드"),
-                                fieldWithPath("data.drawerId").description("생성된 서랍의 ID"))
+                                fieldWithPath("data.drawerId").description("생성된 폴더의 ID"))
                         .tag("InsightDrawer")
                         .build()
         )));
     }
 
     @Test
-    @DisplayName("나의 서랍 조회 API")
+    @DisplayName("나의 폴더 조회 API")
     void get_my_drawers_test() throws Exception {
         List<DrawerResponse> responses = List.of(
                 DrawerResponse.of(1L, "개발"),
@@ -95,22 +97,22 @@ public class InsightDrawerControllerTest extends ApiDocumentationTest {
 
         resultActions.andDo(restDocs.document(resource(
                 ResourceSnippetParameters.builder()
-                        .description("나의 서랍 조회 API 입니다.")
-                        .summary("나의 서랍 조회 API")
+                        .description("나의 폴더 조회 API 입니다.")
+                        .summary("나의 폴더 조회 API")
                         .requestHeaders(
                                 headerWithName("Authorization").description("유저의 JWT"))
                         .responseFields(
                                 fieldWithPath("message").description("요청 결과 메세지"),
                                 fieldWithPath("code").description("결과 코드"),
-                                fieldWithPath("data.[].id").description("서랍의 ID"),
-                                fieldWithPath("data.[].name").description("서랍의 이름"))
+                                fieldWithPath("data.[].id").description("폴더의 ID"),
+                                fieldWithPath("data.[].name").description("폴더의 이름"))
                         .tag("InsightDrawer")
                         .build()
         )));
     }
 
     @Test
-    @DisplayName("유저의 서랍 조회 API")
+    @DisplayName("유저의 폴더 조회 API")
     void get_drawers_test() throws Exception {
 
         Long userId = 1L;
@@ -130,15 +132,47 @@ public class InsightDrawerControllerTest extends ApiDocumentationTest {
 
         resultActions.andDo(restDocs.document(resource(
                 ResourceSnippetParameters.builder()
-                        .description("유저의 서랍 조회 API 입니다.")
-                        .summary("유저의 서랍 조회 API")
+                        .description("유저의 폴더 조회 API 입니다.")
+                        .summary("유저의 폴더 조회 API")
                         .requestHeaders(
                                 headerWithName("Authorization").description("유저의 JWT"))
                         .responseFields(
                                 fieldWithPath("message").description("요청 결과 메세지"),
                                 fieldWithPath("code").description("결과 코드"),
-                                fieldWithPath("data.[].id").description("서랍의 ID"),
-                                fieldWithPath("data.[].name").description("서랍의 이름"))
+                                fieldWithPath("data.[].id").description("폴더의 ID"),
+                                fieldWithPath("data.[].name").description("폴더의 이름"))
+                        .tag("InsightDrawer")
+                        .build()
+        )));
+    }
+
+    @Test
+    @DisplayName("폴더 수정 API")
+    void update_drawer() throws Exception {
+        JSONObject request = new JSONObject()
+                .put("name", "새로운 폴더 이름");
+
+        ResultActions resultActions = mockMvc.perform(patch("/api/v1/drawer/{drawerId}", 1L)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
+                        .content(request.toString())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        resultActions.andDo(restDocs.document(resource(
+                ResourceSnippetParameters.builder()
+                        .description("폴더 수정 API 입니다.")
+                        .summary("폴더 수정 API")
+                        .pathParameters(
+                                parameterWithName("drawerId").description("수정할 폴더의 ID")
+                        )
+                        .requestHeaders(
+                                headerWithName("Authorization").description("유저의 JWT")
+                        )
+                        .responseFields(
+                                fieldWithPath("message").description("요청 결과 메세지"),
+                                fieldWithPath("code").description("결과 코드"),
+                                fieldWithPath("data").description("비어 있음(null)")
+                        )
                         .tag("InsightDrawer")
                         .build()
         )));
