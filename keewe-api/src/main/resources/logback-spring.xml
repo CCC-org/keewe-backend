@@ -42,6 +42,7 @@
                 <destination>${LOGSTASH_DSN}:4560</destination>
                 <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
                     <providers>
+                        <mdc/>
                         <pattern>
                             <pattern>{"service_name":"${SERVICE_NAME}"}</pattern>
                         </pattern>
