@@ -5,6 +5,7 @@ import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithNam
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
@@ -164,6 +165,35 @@ public class InsightDrawerControllerTest extends ApiDocumentationTest {
                         .summary("폴더 수정 API")
                         .pathParameters(
                                 parameterWithName("drawerId").description("수정할 폴더의 ID")
+                        )
+                        .requestHeaders(
+                                headerWithName("Authorization").description("유저의 JWT")
+                        )
+                        .responseFields(
+                                fieldWithPath("message").description("요청 결과 메세지"),
+                                fieldWithPath("code").description("결과 코드"),
+                                fieldWithPath("data").description("비어 있음(null)")
+                        )
+                        .tag("InsightDrawer")
+                        .build()
+        )));
+    }
+
+    @Test
+    @DisplayName("폴더 삭제 API")
+    void delete_drawer() throws Exception {
+
+        ResultActions resultActions = mockMvc.perform(delete("/api/v1/drawer/{drawerId}", 1L)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        resultActions.andDo(restDocs.document(resource(
+                ResourceSnippetParameters.builder()
+                        .description("폴더 삭제 API 입니다.")
+                        .summary("폴더 삭제 API")
+                        .pathParameters(
+                                parameterWithName("drawerId").description("삭제할 폴더의 ID")
                         )
                         .requestHeaders(
                                 headerWithName("Authorization").description("유저의 JWT")
