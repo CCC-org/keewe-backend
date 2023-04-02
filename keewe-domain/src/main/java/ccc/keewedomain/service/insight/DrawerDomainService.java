@@ -65,6 +65,7 @@ public class DrawerDomainService {
         drawer.updateName(newName);
     }
 
+    @Transactional
     public void delete(User user, Long drawerId) {
         Drawer drawer = drawerRepository.findByIdOrElseThrow(drawerId);
         drawer.validateOwner(user);

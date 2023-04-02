@@ -31,7 +31,6 @@ public class InsightDrawerCommandApiService {
         drawerDomainService.update(user, drawerId, request.getName());
     }
 
-    @Transactional
     public void delete(Long drawerId) {
         drawerDomainService.delete(SecurityUtil.getUser(), drawerId);
     }
