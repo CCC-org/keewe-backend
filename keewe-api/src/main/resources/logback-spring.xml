@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    <springProperty name = "DSN" source = "env.sentry-dsn"/>
+    <springProperty name = "SENTRY_DSN" source = "env.sentry-dsn"/>
     <springProperty name = "LOGSTASH_DSN" source = "env.logstash-dsn"/>
+    <springProperty name = "SERVICE_NAME" source="spring.service.name" />
 
     <appender name="LAZY_SENTRY" class="ch.qos.logback.classic.sift.SiftingAppender">
         <discriminator>
@@ -11,12 +12,11 @@
         <sift>
             <appender name="SENTRY" class="io.sentry.logback.SentryAppender">
                 <options>
-                    <dsn>${DSN}</dsn>
+                    <dsn>${SENTRY_DSN}</dsn>
                 </options>
             </appender>
         </sift>
     </appender>
-
 
     <appender name="LAZY_CONSOLE" class="ch.qos.logback.classic.sift.SiftingAppender">
         <discriminator>
@@ -32,9 +32,30 @@
         </sift>
     </appender>
 
-    <appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
-        <destination>${LOGSTASH_DSN}:4560</destination>
-        <encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
+    <appender name="LAZY_LOGSTASH" class="ch.qos.logback.classic.sift.SiftingAppender">
+        <discriminator>
+            <key>lazy-logstash</key>
+            <defaultValue>lazy-logstash</defaultValue>
+        </discriminator>
+        <sift>
+            <appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+                <destination>${LOGSTASH_DSN}:4560</destination>
+                <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+                    <providers>
+                        <pattern>
+                            <pattern>{"service_name":"${SERVICE_NAME}"}</pattern>
+                        </pattern>
+                        <timestamp />
+                        <threadName />
+                        <message />
+                        <loggerName />
+                        <logLevel />
+                        <stackTrace />
+                        <callerData />
+                    </providers>
+                </encoder>
+            </appender>
+        </sift>
     </appender>
 
     <springProfile name="local">
@@ -46,9 +67,9 @@
     <springProfile name="dev">
         <root level="INFO">
             <appender-ref ref="LAZY_SENTRY"/>
-            <appender-ref ref="LOGSTASH"/>
+            <appender-ref ref="LAZY_CONSOLE"/>
+            <appender-ref ref="LAZY_LOGSTASH"/>
         </root>
     </springProfile>
-
 
 </configuration>

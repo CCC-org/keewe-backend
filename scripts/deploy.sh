@@ -1,6 +1,6 @@
 #!/bin/bash
 
-JAVA_OPT='-Djava.security.egd=file:///dev/urandom -Duser.timezone=GMT+09:00 -Dspring.profiles.active='$3
+JAVA_OPT='-Djava.security.egd=file:///dev/urandom -Duser.timezone=GMT+09:00 -Dspring.profiles.active=$3 -Dspring.service.name=$1'
 
 is_stop () {
     limit=0

@@ -3,6 +3,8 @@ server:
 spring:
   profiles:
     include: domain, core
+  service:
+    name: LOCAL
 
 ---
 spring:
