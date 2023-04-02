@@ -143,6 +143,16 @@ public class InsightQueryRepository {
                 .fetch();
     }
 
+    public List<Insight> findAllByUserIdAndDrawerId(Long userId, Long drawerId) {
+        return queryFactory
+                .select(insight)
+                .from(insight)
+                .where(insight.writer.id.eq(userId)
+                        .and(insight.drawer.id.eq(drawerId))
+                )
+                .fetch();
+    }
+
     public Map<Long, Long> countPerChallenge(List<Challenge> challenges) {
         return queryFactory
                 .from(insight)
