@@ -9,6 +9,7 @@ import ccc.keewedomain.persistence.repository.insight.DrawerRepository;
 import ccc.keewedomain.service.user.UserDomainService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
@@ -52,5 +53,12 @@ public class DrawerDomainService {
         drawer.validateOwner(user);
 
         return drawer;
+    }
+
+    @Transactional
+    public void update(User user, Long drawerId, String newName) {
+        Drawer drawer = drawerRepository.findByIdOrElseThrow(drawerId);
+        drawer.validateOwner(user);
+        drawer.updateName(newName);
     }
 }

@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static javax.persistence.FetchType.LAZY;
 
@@ -47,8 +48,12 @@ public class Drawer extends BaseTimeEntity {
     }
 
     public void validateOwner(User user) {
-        if (this.user != user) {
+        if (!Objects.equals(this.user.getId(), user.getId())) {
             throw new KeeweException(KeeweRtnConsts.ERR444);
         }
+    }
+
+    public void updateName(String newName) {
+        this.name = newName;
     }
 }
