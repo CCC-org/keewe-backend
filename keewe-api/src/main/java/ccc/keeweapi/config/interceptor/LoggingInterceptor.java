@@ -15,14 +15,16 @@ public class LoggingInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        MDC.put("user_id", SecurityUtil.getUserId().toString());
-        MDC.put("trace_id", UUID.randomUUID().toString());
+        if(SecurityUtil.getUser() != null) {
+            MDC.put("user_id", SecurityUtil.getUserId().toString());
+            // note. 불필요한 trace_id 생성 방지
+            MDC.put("trace_id", UUID.randomUUID().toString());
+        }
         return true;
     }
 
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
-        MDC.remove("user_id");
-        MDC.remove("trace_id");
+        MDC.clear();
     }
 }
