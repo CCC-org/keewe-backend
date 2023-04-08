@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Set;
 
 import static ccc.keewedomain.persistence.domain.title.QTitle.title;
 import static ccc.keewedomain.persistence.domain.user.QBlock.block;
@@ -27,6 +28,14 @@ public class BlockQueryRepository {
                 .fetchJoin()
                 .leftJoin(user.repTitle, title)
                 .fetchJoin()
+                .where(block.user.id.eq(userId))
+                .fetch();
+    }
+
+    public List<Long> findBlockedUserIdsByUserId(Long userId) {
+        return queryFactory
+                .select(block.blockedUser.id)
+                .from(block)
                 .where(block.user.id.eq(userId))
                 .fetch();
     }

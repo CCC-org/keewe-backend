@@ -1,5 +1,6 @@
 package ccc.keeweapi.service.insight.query;
 
+import ccc.keeweapi.aop.annotations.BlockFilter;
 import ccc.keeweapi.component.InsightAssembler;
 import ccc.keeweapi.component.ProfileAssembler;
 import ccc.keeweapi.dto.insight.ChallengeRecordResponse;
@@ -52,6 +53,7 @@ public class InsightQueryApiService {
 
 
     @Transactional(readOnly = true)
+    @BlockFilter
     public List<InsightGetForHomeResponse> getInsightsForHome(CursorPageable<Long> cPage, Boolean follow) {
         return insightQueryDomainService.getInsightsForHome(SecurityUtil.getUser(), cPage, follow).stream()
                 .map(insightAssembler::toInsightGetForHomeResponse)
