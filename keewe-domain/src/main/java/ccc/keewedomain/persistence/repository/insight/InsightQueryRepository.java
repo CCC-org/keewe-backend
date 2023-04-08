@@ -4,6 +4,7 @@ import static ccc.keewedomain.persistence.domain.challenge.QChallenge.challenge;
 import static ccc.keewedomain.persistence.domain.challenge.QChallengeParticipation.challengeParticipation;
 import static ccc.keewedomain.persistence.domain.common.QInterest.interest;
 import static ccc.keewedomain.persistence.domain.insight.QBookmark.bookmark;
+import static ccc.keewedomain.persistence.domain.insight.QComment.comment;
 import static ccc.keewedomain.persistence.domain.insight.QInsight.insight;
 import static ccc.keewedomain.persistence.domain.user.QFollow.follow;
 import static ccc.keewedomain.persistence.domain.user.QProfilePhoto.profilePhoto;
@@ -48,6 +49,8 @@ public class InsightQueryRepository {
     public List<Insight> findAllValidByParticipation(ChallengeParticipation participation) {
         return queryFactory.select(insight)
                 .from(insight)
+                .leftJoin(insight.comments, comment)
+                .fetchJoin()
                 .where(insight.challengeParticipation.eq(participation)
                         .and(insight.deleted.isFalse())
                         .and(insight.valid.isTrue()))
