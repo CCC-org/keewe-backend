@@ -136,6 +136,7 @@ public class ChallengeApiService {
         Map<Long, Long> insightCountPerParticipation = insightQueryDomainService.getInsightCountPerParticipation(participations);
 
         return participations.stream()
+                .filter(participation -> !participation.getChallenger().equals(user))
                 .map(participation -> challengeAssembler.toFriendResponse(
                         participation,
                         insightCountPerParticipation.getOrDefault(participation.getId(), 0L),
