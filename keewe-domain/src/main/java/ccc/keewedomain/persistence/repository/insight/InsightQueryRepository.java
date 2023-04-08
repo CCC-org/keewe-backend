@@ -49,7 +49,7 @@ public class InsightQueryRepository {
     public List<Insight> findAllValidByParticipation(ChallengeParticipation participation) {
         return queryFactory.select(insight)
                 .from(insight)
-                .innerJoin(insight.comments, comment)
+                .leftJoin(insight.comments, comment)
                 .fetchJoin()
                 .where(insight.challengeParticipation.eq(participation)
                         .and(insight.deleted.isFalse())

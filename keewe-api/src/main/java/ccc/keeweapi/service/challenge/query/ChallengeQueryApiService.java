@@ -59,8 +59,8 @@ public class ChallengeQueryApiService {
 
         // 조회 수
         Long viewCounts = insights.stream()
-                .map(Insight::getView)
-                .count();
+                .mapToLong(Insight::getView)
+                .sum();
 
         // 북마크 수
         Long bookmarkCounts = bookmarkQueryDomainService.countBookmark(insights);
@@ -68,8 +68,8 @@ public class ChallengeQueryApiService {
         // blocking 줄이기 위해 마지막에 실행 :: 리액션 수
         Long reactionCounts = cFutures.stream()
                 .map(CompletableFuture::join)
-                .map(ReactionAggregationGetDto::getAllReactionCount)
-                .count();
+                .mapToLong(ReactionAggregationGetDto::getAllReactionCount)
+                .sum();
 
         return challengeAssembler.toChallengeStatisticsResponse(viewCounts, reactionCounts, commentCounts, bookmarkCounts, 0L);
     }
