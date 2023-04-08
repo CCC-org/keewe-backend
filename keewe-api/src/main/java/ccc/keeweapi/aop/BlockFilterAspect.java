@@ -4,7 +4,6 @@ import ccc.keeweapi.dto.BlockFilteringResponse;
 import ccc.keeweapi.utils.SecurityUtil;
 import ccc.keewedomain.service.user.ProfileDomainService;
 import lombok.RequiredArgsConstructor;
-import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.stereotype.Component;
@@ -24,14 +23,14 @@ public class BlockFilterAspect {
         Long userId = SecurityUtil.getUserId();
         Set<Long> blockedUserIds = profileDomainService.findBlockedUserIds(userId);
 
-        if(blockedUserIds.contains(response.getUserId())) {
+        if(blockedUserIds.contains(response.userId())) {
             return null;
         }
         return response;
     }
 
     @AfterReturning(pointcut = "@annotation(ccc.keeweapi.aop.annotations.BlockFilter)", returning = "returnValue")
-    public List filterBlockedUser(JoinPoint joinPoint, List returnValue) {
+    public List filterBlockedUser(List returnValue) {
         if(!(returnValue.get(0) instanceof BlockFilteringResponse)) {
             return returnValue;
         }
@@ -39,7 +38,7 @@ public class BlockFilterAspect {
         Long userId = SecurityUtil.getUserId();
         Set<Long> blockedUserIds = profileDomainService.findBlockedUserIds(userId);
 
-        responses.removeIf(response -> blockedUserIds.contains(response.getUserId()));
+        responses.removeIf(response -> blockedUserIds.contains(response.userId()));
         return responses;
     }
 }

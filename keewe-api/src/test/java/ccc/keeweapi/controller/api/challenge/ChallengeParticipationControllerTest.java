@@ -269,9 +269,9 @@ public class ChallengeParticipationControllerTest extends ApiDocumentationTest {
     @DisplayName("챌린지 상세 함께 기록 조회 API")
     void get_together() throws Exception {
         List<FriendResponse> response = List.of(
-                FriendResponse.of("닉네임1", "이미지 URL1", 1L, 4L, true),
-                FriendResponse.of("닉네임2", "이미지 URL2", 2L, 4L, false),
-                FriendResponse.of("닉네임3", "이미지 URL3", 3L, 4L, false)
+                FriendResponse.of(1L, "닉네임1", "이미지 URL1", 1L, 4L, true),
+                FriendResponse.of(2L, "닉네임2", "이미지 URL2", 2L, 4L, false),
+                FriendResponse.of(3L, "닉네임3", "이미지 URL3", 3L, 4L, false)
         );
 
         when(challengeApiService.paginateFriends(anyLong(), any())).thenReturn(response);
@@ -299,6 +299,7 @@ public class ChallengeParticipationControllerTest extends ApiDocumentationTest {
                                 fieldWithPath("message").description("요청 결과 메세지"),
                                 fieldWithPath("code").description("결과 코드"),
                                 fieldWithPath("data").description("없는 경우 비어 있음. 최대 5개 조회"),
+                                fieldWithPath("data[].userId").description("참가자의 id"),
                                 fieldWithPath("data[].nickname").description("참가자의 닉네임"),
                                 fieldWithPath("data[].imageURL").description("참가자의 프로필 이미지 URL"),
                                 fieldWithPath("data[].currentRecord").description("현재 기록한 개수"),

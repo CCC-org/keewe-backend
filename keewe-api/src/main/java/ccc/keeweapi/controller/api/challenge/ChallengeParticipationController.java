@@ -1,5 +1,6 @@
 package ccc.keeweapi.controller.api.challenge;
 
+import ccc.keeweapi.aop.annotations.BlockFilter;
 import ccc.keeweapi.dto.ApiResponse;
 import ccc.keeweapi.dto.challenge.ChallengeParticipateRequest;
 import ccc.keeweapi.dto.challenge.ChallengeParticipationResponse;
@@ -74,6 +75,7 @@ public class ChallengeParticipationController {
     }
 
     @GetMapping("/{challengeId}/friends")
+    @BlockFilter
     public ApiResponse<List<FriendResponse>> paginateFriends(
             @PathVariable Long challengeId,
             @PageableDefault(page = 0, size = 10) Pageable pageable) {

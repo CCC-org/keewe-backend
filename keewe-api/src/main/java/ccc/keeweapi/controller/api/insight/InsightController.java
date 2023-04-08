@@ -1,5 +1,6 @@
 package ccc.keeweapi.controller.api.insight;
 
+import ccc.keeweapi.aop.annotations.BlockFilter;
 import ccc.keeweapi.dto.ApiResponse;
 import ccc.keeweapi.dto.insight.*;
 import ccc.keeweapi.service.insight.command.InsightCommandApiService;
@@ -69,6 +70,7 @@ public class InsightController {
     }
 
     @GetMapping("/bookmark")
+    @BlockFilter
     public ApiResponse<List<InsightGetForHomeResponse>> getBookmarkedInsight(
             @RequestParam(required = false, defaultValue = KeeweConsts.LONG_MAX_STRING) Long cursor,
             @RequestParam Long limit
@@ -77,6 +79,7 @@ public class InsightController {
     }
 
     @GetMapping("/challenge/my")
+    @BlockFilter
     public ApiResponse<List<InsightGetForHomeResponse>> paginateInsightsOfChallenge(
             @RequestParam(required = false, defaultValue = KeeweConsts.LONG_MAX_STRING) Long cursor,
             @RequestParam Long limit,

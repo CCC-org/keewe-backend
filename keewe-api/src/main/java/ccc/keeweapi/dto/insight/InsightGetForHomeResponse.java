@@ -22,7 +22,7 @@ public class InsightGetForHomeResponse implements BlockFilteringResponse {
     private InsightWriterDto writer;
 
     @Override
-    public Long getUserId() {
+    public Long userId() {
         return writer.getWriterId();
     }
 }
