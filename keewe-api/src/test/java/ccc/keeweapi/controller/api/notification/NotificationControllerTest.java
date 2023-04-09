@@ -1,6 +1,7 @@
 package ccc.keeweapi.controller.api.notification;
 
 import static com.epages.restdocs.apispec.ResourceDocumentation.headerWithName;
+import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
@@ -63,6 +64,9 @@ public class NotificationControllerTest extends ApiDocumentationTest {
                         .summary("알림 API")
                         .requestHeaders(
                                 headerWithName("Authorization").description("유저의 JWT"))
+                        .requestParameters(
+                                parameterWithName("cursor").description("nextCursor 값"),
+                                parameterWithName("limit").description("가져올 알림 개수"))
                         .responseFields(
                                 fieldWithPath("message").description("요청 결과 메세지"),
                                 fieldWithPath("code").description("결과 코드"),

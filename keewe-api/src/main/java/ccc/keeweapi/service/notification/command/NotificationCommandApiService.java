@@ -18,8 +18,8 @@ public class NotificationCommandApiService {
     private final Map<NotificationCategory, NotificationProcessor> notificationProcessors;
 
     public NotificationCommandApiService(
-            NotificationCommandDomainService notificationCommandDomainService,
-            List<NotificationProcessor> notificationProcessors
+        NotificationCommandDomainService notificationCommandDomainService,
+        List<NotificationProcessor> notificationProcessors
     ) {
         this.notificationCommandDomainService = notificationCommandDomainService;
         this.notificationProcessors = notificationProcessors.stream()
