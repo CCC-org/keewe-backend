@@ -168,6 +168,10 @@ public class ProfileDomainService {
         return blockQueryRepository.findByUserId(userId);
     }
 
+    public Set<Long> findBlockedUserIds(Long userId) {
+        return blockQueryRepository.findBlockedUserIdsByUserId(userId);
+    }
+
     @Transactional
     public User updateProfile(Long userId, ProfileUpdateDto dto) {
         User user = userDomainService.getUserByIdOrElseThrow(userId);

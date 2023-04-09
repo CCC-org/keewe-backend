@@ -172,6 +172,7 @@ public class ChallengeAssembler {
     public FriendResponse toFriendResponse(ChallengeParticipation participation, Long current, boolean isFollowing) {
         User challenger = participation.getChallenger();
         return FriendResponse.of(
+                challenger.getId(),
                 challenger.getNickname(),
                 challenger.getProfilePhotoURL(),
                 current,
