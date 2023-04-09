@@ -1,5 +1,6 @@
 package ccc.keeweapi.service.challenge;
 
+import ccc.keeweapi.aop.annotations.BlockFilter;
 import ccc.keeweapi.component.ChallengeAssembler;
 import ccc.keeweapi.dto.challenge.ChallengeCreateRequest;
 import ccc.keeweapi.dto.challenge.ChallengeCreateResponse;
@@ -123,6 +124,7 @@ public class ChallengeApiService {
     }
 
     @Transactional(readOnly = true)
+    @BlockFilter
     public List<FriendResponse> paginateFriends(Long challengeId, Pageable pageable) {
         User user = SecurityUtil.getUser();
         Challenge challenge = challengeQueryDomainService.getByIdOrElseThrow(challengeId);

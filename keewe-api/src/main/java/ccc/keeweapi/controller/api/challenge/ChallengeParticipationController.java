@@ -1,6 +1,5 @@
 package ccc.keeweapi.controller.api.challenge;
 
-import ccc.keeweapi.aop.annotations.BlockFilter;
 import ccc.keeweapi.dto.ApiResponse;
 import ccc.keeweapi.dto.challenge.ChallengeParticipateRequest;
 import ccc.keeweapi.dto.challenge.ChallengeParticipationResponse;
@@ -18,8 +17,6 @@ import ccc.keeweapi.service.challenge.command.ChallengeParticipationCommandApiSe
 import ccc.keeweapi.service.challenge.query.ChallengeParticipationQueryApiService;
 import ccc.keewecore.consts.KeeweConsts;
 import ccc.keewedomain.persistence.repository.utils.CursorPageable;
-import java.util.List;
-import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -33,6 +30,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/challenge")
@@ -75,7 +75,6 @@ public class ChallengeParticipationController {
     }
 
     @GetMapping("/{challengeId}/friends")
-    @BlockFilter
     public ApiResponse<List<FriendResponse>> paginateFriends(
             @PathVariable Long challengeId,
             @PageableDefault(page = 0, size = 10) Pageable pageable) {

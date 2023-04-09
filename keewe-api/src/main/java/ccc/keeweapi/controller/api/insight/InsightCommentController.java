@@ -1,6 +1,5 @@
 package ccc.keeweapi.controller.api.insight;
 
-import ccc.keeweapi.aop.annotations.BlockFilter;
 import ccc.keeweapi.dto.ApiResponse;
 import ccc.keeweapi.dto.insight.CommentCreateRequest;
 import ccc.keeweapi.dto.insight.CommentCreateResponse;
@@ -52,7 +51,6 @@ public class InsightCommentController {
     }
 
     @GetMapping("/insights/{insightId}/preview")
-    @BlockFilter
     public ApiResponse<List<PreviewCommentResponse>> previewComments(@PathVariable Long insightId) {
         return ApiResponse.ok(insightCommentQueryApiService.getPreviewComments(insightId));
     }
@@ -63,7 +61,6 @@ public class InsightCommentController {
     }
 
     @GetMapping("/insights/{insightId}")
-    @BlockFilter
     public ApiResponse<List<CommentResponse>> getComments(
             @PathVariable Long insightId,
             @RequestParam(required = false, defaultValue = LONG_MAX_STRING) Long cursor,
@@ -73,7 +70,6 @@ public class InsightCommentController {
     }
 
     @GetMapping("{parentId}/replies")
-    @BlockFilter
     public ApiResponse<List<ReplyResponse>> getReplies(
             @PathVariable Long parentId,
             @RequestParam(required = false, defaultValue = LONG_MAX_STRING) Long cursor,

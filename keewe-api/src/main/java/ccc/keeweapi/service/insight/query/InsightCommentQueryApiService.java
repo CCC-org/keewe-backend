@@ -1,5 +1,6 @@
 package ccc.keeweapi.service.insight.query;
 
+import ccc.keeweapi.aop.annotations.BlockFilter;
 import ccc.keeweapi.component.CommentAssembler;
 import ccc.keeweapi.dto.insight.CommentResponse;
 import ccc.keeweapi.dto.insight.InsightCommentCountResponse;
@@ -25,6 +26,7 @@ public class InsightCommentQueryApiService {
     private final CommentAssembler commentAssembler;
 
     @Transactional(readOnly = true)
+    @BlockFilter
     public List<PreviewCommentResponse> getPreviewComments(Long insightId) {
         List<Comment> comments = commentDomainService.getComments(insightId, CursorPageable.of(Long.MAX_VALUE, 3L));
         commentDomainService.findLatestCommentByWriter(SecurityUtil.getUser(), insightId)
@@ -40,6 +42,7 @@ public class InsightCommentQueryApiService {
     }
 
     @Transactional(readOnly = true)
+    @BlockFilter
     public List<CommentResponse> getCommentsWithFirstReply(Long insightId, CursorPageable<Long> cPage) {
         List<Comment> comments = commentDomainService.getComments(insightId, cPage);
         Map<Long, Comment> firstReplyPerParentId = commentDomainService.getFirstReplies(comments);
@@ -55,6 +58,7 @@ public class InsightCommentQueryApiService {
     }
 
     @Transactional(readOnly = true)
+    @BlockFilter
     public List<ReplyResponse> getReplies(Long parentId, CursorPageable<Long> cPage) {
         return commentDomainService.getReplies(parentId, cPage).stream()
                 .map(commentAssembler::toReplyResponse)

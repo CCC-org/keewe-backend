@@ -1,16 +1,30 @@
 package ccc.keeweapi.controller.api.insight;
 
-import ccc.keeweapi.aop.annotations.BlockFilter;
 import ccc.keeweapi.dto.ApiResponse;
-import ccc.keeweapi.dto.insight.*;
+import ccc.keeweapi.dto.insight.ChallengeRecordResponse;
+import ccc.keeweapi.dto.insight.InsightAuthorAreaResponse;
+import ccc.keeweapi.dto.insight.InsightCreateRequest;
+import ccc.keeweapi.dto.insight.InsightCreateResponse;
+import ccc.keeweapi.dto.insight.InsightDeleteResponse;
+import ccc.keeweapi.dto.insight.InsightGetForHomeResponse;
+import ccc.keeweapi.dto.insight.InsightGetResponse;
+import ccc.keeweapi.dto.insight.InsightMyPageResponse;
 import ccc.keeweapi.service.insight.command.InsightCommandApiService;
 import ccc.keeweapi.service.insight.query.InsightQueryApiService;
 import ccc.keewecore.consts.KeeweConsts;
 import ccc.keewedomain.persistence.repository.utils.CursorPageable;
-import java.util.List;
-import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/insight")
@@ -70,7 +84,6 @@ public class InsightController {
     }
 
     @GetMapping("/bookmark")
-    @BlockFilter
     public ApiResponse<List<InsightGetForHomeResponse>> getBookmarkedInsight(
             @RequestParam(required = false, defaultValue = KeeweConsts.LONG_MAX_STRING) Long cursor,
             @RequestParam Long limit
@@ -79,7 +92,6 @@ public class InsightController {
     }
 
     @GetMapping("/challenge/my")
-    @BlockFilter
     public ApiResponse<List<InsightGetForHomeResponse>> paginateInsightsOfChallenge(
             @RequestParam(required = false, defaultValue = KeeweConsts.LONG_MAX_STRING) Long cursor,
             @RequestParam Long limit,
