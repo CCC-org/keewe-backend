@@ -169,7 +169,7 @@ public class ProfileDomainService {
     }
 
     public Set<Long> findBlockedUserIds(Long userId) {
-        return Set.copyOf(blockQueryRepository.findBlockedUserIdsByUserId(userId));
+        return blockQueryRepository.findBlockedUserIdsByUserId(userId);
     }
 
     @Transactional

@@ -13,9 +13,4 @@ public class FriendResponse implements BlockFilteringResponse {
     private long currentRecord;
     private long goalRecord;
     private boolean isFollowing;
-
-    @Override
-    public Long userId() {
-        return userId;
-    }
 }

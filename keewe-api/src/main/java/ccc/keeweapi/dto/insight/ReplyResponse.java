@@ -1,6 +1,7 @@
 package ccc.keeweapi.dto.insight;
 
 import ccc.keeweapi.dto.BlockFilteringResponse;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -15,7 +16,8 @@ public class ReplyResponse implements BlockFilteringResponse {
     private String createdAt;
 
     @Override
-    public Long userId() {
+    @JsonIgnore
+    public Long getUserId() {
         return writer.getId();
     }
 }

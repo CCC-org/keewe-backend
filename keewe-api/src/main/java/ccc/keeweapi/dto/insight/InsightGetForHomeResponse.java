@@ -3,6 +3,7 @@ package ccc.keeweapi.dto.insight;
 import ccc.keeweapi.dto.BlockFilteringResponse;
 import ccc.keewedomain.dto.insight.InsightWriterDto;
 import ccc.keewedomain.persistence.domain.common.Link;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,7 +23,8 @@ public class InsightGetForHomeResponse implements BlockFilteringResponse {
     private InsightWriterDto writer;
 
     @Override
-    public Long userId() {
+    @JsonIgnore
+    public Long getUserId() {
         return writer.getWriterId();
     }
 }

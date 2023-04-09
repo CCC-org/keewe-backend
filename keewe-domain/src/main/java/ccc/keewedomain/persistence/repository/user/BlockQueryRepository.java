@@ -32,11 +32,11 @@ public class BlockQueryRepository {
                 .fetch();
     }
 
-    public List<Long> findBlockedUserIdsByUserId(Long userId) {
-        return queryFactory
+    public Set<Long> findBlockedUserIdsByUserId(Long userId) {
+        return Set.copyOf(queryFactory
                 .select(block.blockedUser.id)
                 .from(block)
                 .where(block.user.id.eq(userId))
-                .fetch();
+                .fetch());
     }
 }
