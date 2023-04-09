@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class NotificationCommandApiService {
@@ -25,6 +26,7 @@ public class NotificationCommandApiService {
                 .collect(Collectors.toMap(NotificationProcessor::getCategory, notificationProcessor -> notificationProcessor));
     }
 
+    @Transactional
     public NotificationResponse markAsRead(Long notificationId) {
         Notification notification = notificationCommandDomainService.getByIdWithUserAssert(notificationId, SecurityUtil.getUserId());
         Notification readMarkedNotification = notificationCommandDomainService.save(notification.markAsRead());
