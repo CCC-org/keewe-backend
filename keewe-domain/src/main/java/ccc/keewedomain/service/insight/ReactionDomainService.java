@@ -35,6 +35,10 @@ public class ReactionDomainService {
     private final UserDomainService userDomainService;
     private final InsightQueryDomainService insightQueryDomainService;
 
+    public Reaction getByIdOrElseThrow(Long id) {
+        return reactionRepository.findById(id).orElseThrow(() -> new KeeweException(KeeweRtnConsts.ERR482));
+    }
+
     public ReactionDto react(ReactionIncrementDto dto) {
         ReactionAggregationGetDto reactionAggregation = getCurrentReactionAggregation(dto.getInsightId());
 
