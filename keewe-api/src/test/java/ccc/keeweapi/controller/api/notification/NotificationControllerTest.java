@@ -46,11 +46,12 @@ public class NotificationControllerTest extends ApiDocumentationTest {
     @Test
     @DisplayName("알림 현황 페이지네이션 API 테스트")
     void testPaginateNotifications() throws Exception {
-        when(notificationQueryApiService.paginateNotifications(any())).thenReturn(
-            PaginateNotificationResponse.of(3L,
-                List.of(NotificationResponse.of(3L, "내 인사이트에 \n누군가 댓글 남김", "유승훈님이 댓글을 남겼어요.", NotificationCategory.COMMENT, "3", false)
-            )
-        ));
+        // TODO(호성): 조회 연결 후 주석 제거
+//        when(notificationQueryApiService.paginateNotifications(any())).thenReturn(
+//            PaginateNotificationResponse.of(3L,
+//                List.of(NotificationResponse.of(3L, "내 인사이트에 \n누군가 댓글 남김", "유승훈님이 댓글을 남겼어요.", NotificationCategory.COMMENT, "3", false)
+//            )
+//        ));
 
         ResultActions resultActions = mockMvc.perform(get("/api/v1/notification")
                         .param("cursor", Long.toString(3))
