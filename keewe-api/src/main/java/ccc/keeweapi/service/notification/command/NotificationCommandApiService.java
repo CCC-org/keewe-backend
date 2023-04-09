@@ -2,6 +2,7 @@ package ccc.keeweapi.service.notification.command;
 
 import ccc.keeweapi.dto.notification.NotificationResponse;
 import ccc.keeweapi.service.notification.NotificationProcessor;
+import ccc.keeweapi.utils.SecurityUtil;
 import ccc.keewedomain.persistence.domain.notification.Notification;
 import ccc.keewedomain.persistence.domain.notification.enums.NotificationCategory;
 import ccc.keewedomain.service.notification.command.NotificationCommandDomainService;
@@ -25,8 +26,9 @@ public class NotificationCommandApiService {
     }
 
     public NotificationResponse markAsRead(Long notificationId) {
-        Notification notification = notificationCommandDomainService.markAsRead(notificationId);
-        return notificationProcessors.get(notification.getContents().getCategory())
-                .process(notification);
+        Notification notification = notificationCommandDomainService.getByIdWithUserAssert(notificationId, SecurityUtil.getUserId());
+        Notification readMarkedNotification = notificationCommandDomainService.save(notification.markAsRead());
+        return notificationProcessors.get(readMarkedNotification.getContents().getCategory())
+                .process(readMarkedNotification);
     }
 }
