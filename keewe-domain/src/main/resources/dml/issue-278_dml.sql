@@ -1,0 +1,1 @@
+ALTER TABLE `insight` MODIFY `contents` VARCHAR(400);

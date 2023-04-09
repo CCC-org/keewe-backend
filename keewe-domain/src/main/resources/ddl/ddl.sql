@@ -156,7 +156,7 @@ CREATE TABLE IF NOT EXISTS `insight`
     writer_id                   BIGINT          NOT NULL,
     drawer_id                   BIGINT,
     challenge_participation_id  BIGINT,
-    contents                    VARCHAR(300)    NOT NULL,
+    contents                    VARCHAR(400)    NOT NULL,
     url                         VARCHAR(2000)   NOT NULL,
     deleted                     BIT             NOT NULL,
     valid                       BIT             NOT NULL,
