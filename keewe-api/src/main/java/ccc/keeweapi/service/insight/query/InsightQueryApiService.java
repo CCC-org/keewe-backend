@@ -19,21 +19,20 @@ import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.persistence.repository.utils.CursorPageable;
 import ccc.keewedomain.service.challenge.query.ChallengeParticipateQueryDomainService;
 import ccc.keewedomain.service.insight.query.InsightQueryDomainService;
-import ccc.keewedomain.service.user.ProfileDomainService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
+import ccc.keewedomain.service.user.query.ProfileQueryDomainService;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 public class InsightQueryApiService {
 
     private final InsightQueryDomainService insightQueryDomainService;
-    private final ProfileDomainService profileDomainService;
+    private final ProfileQueryDomainService profileQueryDomainService;
     private final InsightAssembler insightAssembler;
     private final ProfileAssembler profileAssembler;
     private final ChallengeParticipateQueryDomainService challengeParticipateQueryDomainService;
@@ -49,12 +48,11 @@ public class InsightQueryApiService {
     @BlockFilter
     public InsightAuthorAreaResponse getInsightAuthorAreaInfo(Long insightId) {
         Insight insight = insightQueryDomainService.getByIdWithWriter(insightId);
-        boolean isFollowing = profileDomainService.getFollowingTargetIdSet(profileAssembler.toFollowCheckDto(insight.getWriter().getId()));
+        boolean isFollowing = profileQueryDomainService.isFollowing(profileAssembler.toFollowCheckDto(insight.getWriter().getId()));
         return insightAssembler.toInsightAuthorAreaResponse(insight, isFollowing);
     }
 
 
-    @Transactional(readOnly = true)
     @BlockFilter
     public List<InsightGetForHomeResponse> getInsightsForHome(CursorPageable<Long> cPage, Boolean follow) {
         return insightQueryDomainService.getInsightsForHome(SecurityUtil.getUser(), cPage, follow).stream()

@@ -6,25 +6,24 @@ import ccc.keeweapi.dto.UserIdBlockRequest;
 import ccc.keeweapi.utils.SecurityUtil;
 import ccc.keewecore.consts.KeeweRtnConsts;
 import ccc.keewecore.exception.KeeweException;
+import ccc.keewedomain.service.user.query.ProfileQueryDomainService;
+import java.util.List;
+import java.util.Set;
 import ccc.keewedomain.service.insight.query.InsightQueryDomainService;
-import ccc.keewedomain.service.user.ProfileDomainService;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-import java.util.Set;
-
 @Aspect
 @Component
 public class BlockFilterAspect {
-    public BlockFilterAspect(ProfileDomainService profileDomainService, InsightQueryDomainService insightQueryDomainService) {
-        this.profileDomainService = profileDomainService;
+    public BlockFilterAspect(ProfileQueryDomainService profileQueryDomainService, InsightQueryDomainService insightQueryDomainService) {
+        this.profileQueryDomainService = profileQueryDomainService;
         this.insightQueryDomainService = insightQueryDomainService;
     }
 
-    private final ProfileDomainService profileDomainService;
+    private final ProfileQueryDomainService profileQueryDomainService;
     private final InsightQueryDomainService insightQueryDomainService;
     private final ThreadLocal<Set<Long>> blockedUserIdsStore = new ThreadLocal<>();
     @Before(value = "@annotation(ccc.keeweapi.aop.annotations.BlockFilter) && args(insightId,..)")
@@ -60,7 +59,6 @@ public class BlockFilterAspect {
         }
         List<BlockFilteringResponse> responses = returnValue;
         Set<Long> blockedUserIds = getBlockedUserIds();
-
         responses.removeIf(response -> blockedUserIds.contains(response.getUserId()));
         return responses;
     }
@@ -79,7 +77,7 @@ public class BlockFilterAspect {
 
     private void initBlockedUserIds() {
         Long userId = SecurityUtil.getUserId();
-        blockedUserIdsStore.set(profileDomainService.findBlockedUserIds(userId));
+        blockedUserIdsStore.set(profileQueryDomainService.findBlockedUserIds(userId));
     }
 
     private Set<Long> getBlockedUserIds() {
