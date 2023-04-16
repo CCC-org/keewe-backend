@@ -10,6 +10,7 @@ import ccc.keewedomain.service.user.query.ProfileQueryDomainService;
 import java.util.List;
 import java.util.Set;
 import ccc.keewedomain.service.insight.query.InsightQueryDomainService;
+import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
@@ -17,38 +18,34 @@ import org.springframework.stereotype.Component;
 
 @Aspect
 @Component
+@RequiredArgsConstructor
 public class BlockFilterAspect {
-    public BlockFilterAspect(ProfileQueryDomainService profileQueryDomainService, InsightQueryDomainService insightQueryDomainService) {
-        this.profileQueryDomainService = profileQueryDomainService;
-        this.insightQueryDomainService = insightQueryDomainService;
-    }
-
     private final ProfileQueryDomainService profileQueryDomainService;
     private final InsightQueryDomainService insightQueryDomainService;
-    private final ThreadLocal<Set<Long>> blockedUserIdsStore = new ThreadLocal<>();
+
     @Before(value = "@annotation(ccc.keeweapi.aop.annotations.BlockFilter) && args(insightId,..)")
     public void filterBlockedInsightWriter(Long insightId) {
-        validateInsightId(insightId);
+        validateWriterIsBlocked(insightId);
     }
 
     @Before(value = "@annotation(ccc.keeweapi.aop.annotations.BlockFilter) && args(request,..)")
     public void filterBlockedInsightWriter(InsightIdBlockRequest request) {
-        validateInsightId(request.getInsightId());
+        validateWriterIsBlocked(request.getInsightId());
     }
 
     @Before(value = "@annotation(ccc.keeweapi.aop.annotations.BlockFilter) && args(userId,..)")
     public void filterBlockedUserId(Long userId) {
-        validateUserId(userId);
+        validateUserIsBlocked(userId);
     }
 
     @Before(value = "@annotation(ccc.keeweapi.aop.annotations.BlockFilter) && args(request,..)")
     public void filterBlockedUserId(UserIdBlockRequest request) {
-        validateUserId(request.getUserId());
+        validateUserIsBlocked(request.getUserId());
     }
 
     @AfterReturning(pointcut = "@annotation(ccc.keeweapi.aop.annotations.BlockFilter)", returning = "response")
     public BlockFilteringResponse filterBlockedUser(BlockFilteringResponse response) {
-        validateUserId(response.getUserId());
+        validateUserIsBlocked(response.getUserId());
         return response;
     }
 
@@ -63,27 +60,20 @@ public class BlockFilterAspect {
         return responses;
     }
 
-    private void validateInsightId(Long request) {
-        Long writerId = insightQueryDomainService.getByIdWithWriter(request).getWriter().getId();
-        validateUserId(writerId);
+    private void validateWriterIsBlocked(Long insightId) {
+        Long writerId = insightQueryDomainService.getByIdWithWriter(insightId).getWriter().getId();
+        validateUserIsBlocked(writerId);
     }
 
-    private void validateUserId(Long response) {
+    private void validateUserIsBlocked(Long response) {
         Set<Long> blockedUserIds = getBlockedUserIds();
         if (blockedUserIds.contains(response)) {
             throw new KeeweException(KeeweRtnConsts.ERR453);
         }
     }
 
-    private void initBlockedUserIds() {
-        Long userId = SecurityUtil.getUserId();
-        blockedUserIdsStore.set(profileQueryDomainService.findBlockedUserIds(userId));
-    }
-
     private Set<Long> getBlockedUserIds() {
-        if(blockedUserIdsStore.get() == null) {
-            initBlockedUserIds();
-        }
-        return blockedUserIdsStore.get();
+        Long userId = SecurityUtil.getUserId();
+        return profileQueryDomainService.findBlockedUserIds(userId);
     }
 }
