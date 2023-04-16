@@ -32,7 +32,7 @@ public class ReactionNotificationProcessor implements NotificationProcessor {
             contents.getTitle(), // note. 내 인사이트에 누군가 반응 남김
             String.format(contents.getContents(), user.getNickname()), // note. {UserName}님이 반응을 남겼어요.
             contents.getCategory(),
-            notification.getReferenceId(),
+            String.valueOf(reaction.getInsight().getId()), // note. 클릭 시 인사이트로 이동
             notification.isRead()
         );
     }

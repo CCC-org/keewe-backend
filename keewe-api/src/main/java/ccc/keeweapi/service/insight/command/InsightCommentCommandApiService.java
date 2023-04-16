@@ -39,7 +39,7 @@ public class InsightCommentCommandApiService {
     public void afterLeaveComment(Comment comment) {
         try {
             NotificationContents contents = (comment.getParent() != null) ? NotificationContents.답글 : NotificationContents.댓글;
-            Notification notification = Notification.of(comment.getInsight().getWriter(), contents, String.valueOf(comment.getInsight().getId()));
+            Notification notification = Notification.of(comment.getInsight().getWriter(), contents, String.valueOf(comment.getId()));
             notificationCommandDomainService.save(notification);
         } catch (Throwable t) {
             log.warn("[CommentApiService::afterLeaveComment] 댓글 작성 완료 후 작업 실패 - commentId({}), insightId({})", comment.getId(), comment.getInsight().getId(), t);
