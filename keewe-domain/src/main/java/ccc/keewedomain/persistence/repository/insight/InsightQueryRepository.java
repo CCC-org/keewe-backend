@@ -6,6 +6,7 @@ import static ccc.keewedomain.persistence.domain.common.QInterest.interest;
 import static ccc.keewedomain.persistence.domain.insight.QBookmark.bookmark;
 import static ccc.keewedomain.persistence.domain.insight.QComment.comment;
 import static ccc.keewedomain.persistence.domain.insight.QInsight.insight;
+import static ccc.keewedomain.persistence.domain.title.QTitle.title;
 import static ccc.keewedomain.persistence.domain.user.QFollow.follow;
 import static ccc.keewedomain.persistence.domain.user.QProfilePhoto.profilePhoto;
 import static ccc.keewedomain.persistence.domain.user.QUser.user;
@@ -13,6 +14,7 @@ import static ccc.keewedomain.persistence.domain.user.QUser.user;
 import ccc.keewedomain.persistence.domain.challenge.Challenge;
 import ccc.keewedomain.persistence.domain.challenge.ChallengeParticipation;
 import ccc.keewedomain.persistence.domain.insight.Insight;
+import ccc.keewedomain.persistence.domain.title.QTitle;
 import ccc.keewedomain.persistence.domain.user.QUser;
 import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.persistence.repository.utils.CursorPageable;
@@ -86,8 +88,9 @@ public class InsightQueryRepository {
                         .and(insight.id.lt(cPage.getCursor()))
                         .and(insight.deleted.isFalse())
                 )
-                .innerJoin(insight.writer, QUser.user)
-                .fetchJoin()
+                .innerJoin(insight.writer, QUser.user).fetchJoin()
+                .leftJoin(QUser.user.profilePhoto, profilePhoto).fetchJoin()
+                .leftJoin(QUser.user.repTitle, title).fetchJoin()
                 .orderBy(insight.id.desc())
                 .limit(cPage.getLimit())
                 .fetch();
