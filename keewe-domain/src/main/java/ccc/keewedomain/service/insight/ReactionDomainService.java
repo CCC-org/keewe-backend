@@ -13,10 +13,14 @@ import ccc.keewedomain.persistence.domain.insight.Insight;
 import ccc.keewedomain.persistence.domain.insight.Reaction;
 import ccc.keewedomain.persistence.domain.insight.enums.ReactionType;
 import ccc.keewedomain.persistence.domain.insight.id.ReactionAggregationId;
+import ccc.keewedomain.persistence.domain.notification.Notification;
+import ccc.keewedomain.persistence.domain.notification.enums.NotificationContents;
 import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.persistence.repository.insight.ReactionAggregationRepository;
+import ccc.keewedomain.persistence.repository.insight.ReactionQueryRepository;
 import ccc.keewedomain.persistence.repository.insight.ReactionRepository;
 import ccc.keewedomain.service.insight.query.InsightQueryDomainService;
+import ccc.keewedomain.service.notification.command.NotificationCommandDomainService;
 import ccc.keewedomain.service.user.UserDomainService;
 import ccc.keeweinfra.service.messagequeue.MQPublishService;
 import lombok.RequiredArgsConstructor;
@@ -32,8 +36,10 @@ public class ReactionDomainService {
     private final CReactionCountRepository cReactionCountRepository;
     private final ReactionAggregationRepository reactionAggregationRepository;
     private final ReactionRepository reactionRepository;
+    private final ReactionQueryRepository reactionQueryRepository;
     private final UserDomainService userDomainService;
     private final InsightQueryDomainService insightQueryDomainService;
+    private final NotificationCommandDomainService notificationCommandDomainService;
 
     public Reaction getByIdOrElseThrow(Long id) {
         return reactionRepository.findById(id).orElseThrow(() -> new KeeweException(KeeweRtnConsts.ERR482));
@@ -54,13 +60,15 @@ public class ReactionDomainService {
         Insight insight = insightQueryDomainService.getByIdOrElseThrow(insightId);
         User user = userDomainService.getUserByIdOrElseThrow(dto.getUserId());
         ReactionAggregation reactionAggregation = getReactionAggregationByIdWithLock(new ReactionAggregationId(insightId, dto.getReactionType()));
-
         ReactionAggregationGetDto reactionCnt = reactionAggregationRepository.findDtoByInsightId(insightId);
         reactionAggregation.incrementCountByValue(dto.getValue());
-        reactionRepository.save(Reaction.of(insight, user, dto.getReactionType()));
+        Reaction reaction = reactionRepository.save(Reaction.of(insight, user, dto.getReactionType()));
         cReactionCountRepository.save(createCReactionCountForUpdate(insightId, reactionAggregation, reactionCnt));
-        log.info("[RDS::applyReact] count {}", reactionAggregation.getCount());
-
+        Long reactionCount = reactionQueryRepository.countsAllByInsightAndReactor(insight, user);
+        if (reactionCount <= 1) {
+            afterReaction(insight, reaction);
+        }
+        log.info("[RDS::applyReact] insightId({}), count({})", insight.getId(), reactionAggregation.getCount());
         return reactionAggregation.getCount();
     }
 
@@ -89,5 +97,14 @@ public class ReactionDomainService {
         cnt.setByType(reactionAggregation.getType(), reactionAggregation.getCount());
 
         return cnt;
+    }
+
+    private void afterReaction(Insight insight, Reaction reaction) {
+        try {
+            Notification notification = Notification.of(insight.getWriter(), NotificationContents.반응, String.valueOf(reaction.getId()));
+            notificationCommandDomainService.save(notification);
+        } catch (Throwable t) {
+            log.warn("[RDS::afterReaction] 리액션 후 작업 실패 - reactorId({}), insightId({})", reaction.getReactor().getId(), insight.getId(), t);
+        }
     }
 }

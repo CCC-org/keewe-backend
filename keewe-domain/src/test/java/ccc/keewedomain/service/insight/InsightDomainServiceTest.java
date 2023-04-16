@@ -1,5 +1,9 @@
 package ccc.keewedomain.service.insight;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
+
 import ccc.keewecore.consts.KeeweRtnConsts;
 import ccc.keewecore.exception.KeeweException;
 import ccc.keewedomain.KeeweDomainApplication;
@@ -23,9 +27,11 @@ import ccc.keewedomain.persistence.repository.user.UserRepository;
 import ccc.keewedomain.persistence.repository.utils.CursorPageable;
 import ccc.keewedomain.service.insight.command.InsightCommandDomainService;
 import ccc.keewedomain.service.insight.query.InsightQueryDomainService;
-import ccc.keewedomain.service.user.ProfileDomainService;
+import ccc.keewedomain.service.user.command.ProfileCommandDomainService;
 import ccc.keewedomain.utils.DatabaseCleaner;
 import ccc.keeweinfra.KeeweInfraApplication;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -35,13 +41,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
 @SpringBootTest(classes = {KeeweDomainApplication.class, KeeweInfraApplication.class})
 @TestPropertySource(properties = {"spring.config.location = classpath:application-domain.yml"})
@@ -55,7 +54,7 @@ public class InsightDomainServiceTest {
     InsightCommandDomainService insightCommandDomainService;
 
     @Autowired
-    ProfileDomainService profileDomainService;
+    ProfileCommandDomainService profileDomainService;
 
     @Autowired
     UserRepository userRepository;

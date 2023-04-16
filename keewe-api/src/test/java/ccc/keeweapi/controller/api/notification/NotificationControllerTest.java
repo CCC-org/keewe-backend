@@ -3,6 +3,7 @@ package ccc.keeweapi.controller.api.notification;
 import static com.epages.restdocs.apispec.ResourceDocumentation.headerWithName;
 import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
@@ -12,10 +13,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import ccc.keeweapi.document.utils.ApiDocumentationTest;
 import ccc.keeweapi.dto.notification.NotificationResponse;
+import ccc.keeweapi.dto.notification.PaginateNotificationResponse;
 import ccc.keeweapi.service.notification.command.NotificationCommandApiService;
 import ccc.keeweapi.service.notification.query.NotificationQueryApiService;
 import ccc.keewedomain.persistence.domain.notification.enums.NotificationCategory;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -44,12 +47,11 @@ public class NotificationControllerTest extends ApiDocumentationTest {
     @Test
     @DisplayName("알림 현황 페이지네이션 API 테스트")
     void testPaginateNotifications() throws Exception {
-        // TODO(호성): 조회 연결 후 주석 제거
-//        when(notificationQueryApiService.paginateNotifications(any())).thenReturn(
-//            PaginateNotificationResponse.of(3L,
-//                List.of(NotificationResponse.of(3L, "내 인사이트에 \n누군가 댓글 남김", "유승훈님이 댓글을 남겼어요.", NotificationCategory.COMMENT, "3", false)
-//            )
-//        ));
+        when(notificationQueryApiService.paginateNotifications(any())).thenReturn(
+            PaginateNotificationResponse.of(3L,
+                List.of(NotificationResponse.of(3L, "내 인사이트에 \n누군가 댓글 남김", "유승훈님이 댓글을 남겼어요.", NotificationCategory.COMMENT, "3", false)
+            )
+        ));
 
         ResultActions resultActions = mockMvc.perform(get("/api/v1/notification")
                         .param("cursor", Long.toString(3))
