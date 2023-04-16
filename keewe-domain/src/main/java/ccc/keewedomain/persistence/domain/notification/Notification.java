@@ -34,12 +34,20 @@ public class Notification extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private NotificationContents contents;
 
-    // note. 챌린지 -> 챌린지참여 ID, 타이틀 -> 타이틀 ID, 댓글,답글 -> 댓글 ID, 리액션 -> 인사이트 ID
+    // note. 챌린지 -> 챌린지참여 ID, 타이틀 -> 타이틀 ID, 댓글,답글 -> 인사이트 ID, 리액션 -> 인사이트 ID
     @Column(name = "reference_id")
     private String referenceId;
 
     @Column(name = "is_read")
     private boolean isRead = false;
+
+    public static Notification of(User user, NotificationContents contents, String referenceId) {
+        Notification notification = new Notification();
+        notification.user = user;
+        notification.contents = contents;
+        notification.referenceId = referenceId;
+        return notification;
+    }
 
     public Notification markAsRead() {
         this.isRead = true;

@@ -27,7 +27,7 @@ import ccc.keewedomain.service.challenge.command.ChallengeCommandDomainService;
 import ccc.keewedomain.service.challenge.query.ChallengeParticipateQueryDomainService;
 import ccc.keewedomain.service.challenge.query.ChallengeQueryDomainService;
 import ccc.keewedomain.service.insight.query.InsightQueryDomainService;
-import ccc.keewedomain.service.user.ProfileDomainService;
+import ccc.keewedomain.service.user.query.ProfileQueryDomainService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -51,7 +51,7 @@ public class ChallengeApiService {
     private final ChallengeQueryDomainService challengeQueryDomainService;
     private final ChallengeCommandDomainService challengeCommandDomainService;
     private final InsightQueryDomainService insightQueryDomainService;
-    private final ProfileDomainService profileDomainService;
+    private final ProfileQueryDomainService profileQueryDomainService;
     private final ChallengeAssembler challengeAssembler;
 
     @Transactional
@@ -134,7 +134,7 @@ public class ChallengeApiService {
         }
 
         List<User> challengers = participations.stream().map(ChallengeParticipation::getChallenger).collect(Collectors.toList());
-        Set<Long> followingIdSet = profileDomainService.getFollowingTargetIdSet(SecurityUtil.getUser(), challengers);
+        Set<Long> followingIdSet = profileQueryDomainService.getFollowingTargetIdSet(SecurityUtil.getUser(), challengers);
         Map<Long, Long> insightCountPerParticipation = insightQueryDomainService.getInsightCountPerParticipation(participations);
 
         return participations.stream()

@@ -31,7 +31,6 @@ public class UserDomainService {
     private final GoogleInfraService googleInfraService;
 
     public <T extends OauthResponse> T getOauthProfile(String code, VendorType vendorType) {
-
         switch (vendorType) {
             case KAKAO:
                 return (T) getKakaoProfile(code);
@@ -42,7 +41,6 @@ public class UserDomainService {
             default:
                 throw new KeeweException(KeeweRtnConsts.ERR504);
         }
-
     }
 
     public User save(UserSignUpDto userSignUpDto) {
