@@ -1,21 +1,26 @@
 package ccc.keeweapi.service.user;
 
-import ccc.keeweapi.config.security.jwt.JwtUtils;
 import ccc.keeweapi.component.UserAssembler;
+import ccc.keeweapi.config.security.jwt.JwtUtils;
 import ccc.keeweapi.dto.user.UserSignUpResponse;
 import ccc.keewecore.aop.annotations.FLogging;
+import ccc.keewecore.consts.KeeweConsts;
+import ccc.keewecore.consts.TitleCategory;
 import ccc.keewecore.utils.KeeweStringUtils;
+import ccc.keewecore.utils.KeeweTitleHeader;
 import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.persistence.domain.user.enums.VendorType;
 import ccc.keewedomain.service.user.UserDomainService;
 import ccc.keeweinfra.dto.OauthResponse;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-
-import javax.transaction.Transactional;
+import ccc.keeweinfra.service.messagequeue.MQPublishService;
 import java.util.List;
 import java.util.Optional;
+import javax.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.core.MessageBuilder;
+import org.springframework.stereotype.Service;
 
 
 @Service
@@ -25,6 +30,7 @@ public class UserApiService {
     private final UserDomainService userDomainService;
     private final UserAssembler userAssembler;
     private final JwtUtils jwtUtils;
+    private final MQPublishService mqPublishService;
 
     @Transactional
     @FLogging
@@ -32,7 +38,6 @@ public class UserApiService {
         T account = userDomainService.getOauthProfile(code, vendorType);
         log.info("[UAS::signUp] account {}", account.toString());
         Optional<User> userOps = userDomainService.getUserByVendorIdAndVendorType(account.getId(), vendorType);
-
         if(userOps.isPresent()) {
             return userAssembler.toUserSignUpResponse(userOps.get(), true, getToken(userOps.get().getId()));
         }
@@ -43,6 +48,7 @@ public class UserApiService {
                 , KeeweStringUtils.getOrDefault(account.getEmail(), "")
         );
 
+        afterTheFirstSignUp(user);
         return userAssembler.toUserSignUpResponse(user, false, getToken(user.getId()));
     }
 
@@ -54,5 +60,14 @@ public class UserApiService {
         return userDomainService.save(userAssembler.toUserSignUpDto(vendorId, vendorType, email));
     }
 
-
+    private void afterTheFirstSignUp(User user) {
+        try {
+            Message message = MessageBuilder.withBody(new byte[0]).build();
+            KeeweTitleHeader header = KeeweTitleHeader.of(TitleCategory.SIGNUP, String.valueOf(user.getId()));
+            log.info("[UAS::afterSignUp] 타이틀 이벤트 발행 - category({}), userId({})", header.getCategory(), header.getUserId());
+            mqPublishService.publish(KeeweConsts.DEFAULT_ROUTING_KEY, KeeweConsts.TITLE_STAT_QUEUE, message, header::toMessageWithHeader);
+        } catch (Throwable t) {
+            log.warn("[UAS::afterSignUp] 최초 회원가입 후 작업 실패 - userId({})", user.getId(), t);
+        }
+    }
 }
