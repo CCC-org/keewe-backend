@@ -35,6 +35,7 @@ public class UserProfileController {
         return ApiResponse.ok(profileApiService.uploadProfilePhoto(imageFile));
     }
 
+    // TODO. targetId 네이밍 변경
     @GetMapping("/{targetId}")
     public ApiResponse<ProfileMyPageResponse> getMyPageProfile(@PathVariable Long targetId) {
         return ApiResponse.ok(profileApiService.getMyPageProfile(targetId));

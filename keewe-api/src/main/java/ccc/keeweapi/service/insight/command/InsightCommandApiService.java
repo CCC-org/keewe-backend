@@ -1,5 +1,6 @@
 package ccc.keeweapi.service.insight.command;
 
+import ccc.keeweapi.aop.annotations.BlockFilter;
 import ccc.keeweapi.component.InsightAssembler;
 import ccc.keeweapi.dto.insight.*;
 import ccc.keeweapi.utils.annotations.TitleEventPublish;
@@ -26,6 +27,7 @@ public class InsightCommandApiService {
         return insightAssembler.toInsightCreateResponse(insight);
     }
 
+    @BlockFilter
     public InsightViewIncrementResponse incrementViewCount(Long insightId) {
         Long viewCount = insightCommandDomainService.incrementViewCount(insightAssembler.toInsightViewIncrementDto(insightId));
         return insightAssembler.toInsightViewIncrementResponse(viewCount);

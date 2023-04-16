@@ -1,5 +1,6 @@
 package ccc.keeweapi.service.insight.query;
 
+import ccc.keeweapi.aop.annotations.BlockFilter;
 import ccc.keeweapi.component.InsightAssembler;
 import ccc.keeweapi.dto.insight.DrawerResponse;
 import ccc.keeweapi.utils.SecurityUtil;
@@ -27,6 +28,7 @@ public class InsightDrawerQueryApiService {
     }
 
     @Transactional(readOnly = true)
+    @BlockFilter
     public List<DrawerResponse> getDrawers(Long userId) {
         return drawerDomainService.findAllByUserId(userId).stream()
                 .map(insightAssembler::toDrawerResponse)

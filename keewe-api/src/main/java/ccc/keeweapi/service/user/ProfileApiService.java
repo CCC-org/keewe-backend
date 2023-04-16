@@ -2,6 +2,7 @@ package ccc.keeweapi.service.user;
 
 import static ccc.keewecore.consts.KeeweConsts.MY_PAGE_TITLE_LIMIT;
 
+import ccc.keeweapi.aop.annotations.BlockFilter;
 import ccc.keeweapi.component.ProfileAssembler;
 import ccc.keeweapi.dto.user.*;
 import ccc.keeweapi.utils.SecurityUtil;
@@ -69,6 +70,7 @@ public class ProfileApiService {
     }
 
     @Transactional(readOnly = true)
+    @BlockFilter
     public MyPageTitleResponse getMyPageTitles(Long userId) {
         List<TitleAchievement> titleAchievements = profileDomainService.getTitleAchievements(userId, MY_PAGE_TITLE_LIMIT);
         Long total = profileDomainService.getAchievedTitleCount(userId);
@@ -77,6 +79,7 @@ public class ProfileApiService {
     }
 
     @Transactional(readOnly = true)
+    @BlockFilter
     public AllAchievedTitleResponse getAllAchievedTitles(Long userId) {
         List<TitleAchievement> titleAchievements = profileDomainService.getTitleAchievements(userId, Integer.MAX_VALUE);
 
@@ -84,6 +87,7 @@ public class ProfileApiService {
     }
 
     @Transactional(readOnly = true)
+    @BlockFilter
     public FollowUserListResponse getFollowers(Long userId, CursorPageable<LocalDateTime> cPage) {
         List<Follow> follows = profileDomainService.getFollowers(userId, cPage);
 
@@ -91,6 +95,7 @@ public class ProfileApiService {
     }
 
     @Transactional(readOnly = true)
+    @BlockFilter
     public FollowUserListResponse getFollowees(Long userId, CursorPageable<LocalDateTime> cPage) {
         List<Follow> follows = profileDomainService.getFollowees(userId, cPage);
 
