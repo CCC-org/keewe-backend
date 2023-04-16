@@ -42,8 +42,9 @@ public class ProfileApiService {
     }
 
     @Transactional
-    public FollowToggleResponse toggleFollowership(Long targetId) {
-        boolean following = profileDomainService.toggleFollowership(profileAssembler.toFollowToggleDto(targetId));
+    @BlockFilter
+    public FollowToggleResponse toggleFollowership(Long userId) {
+        boolean following = profileDomainService.toggleFollowership(profileAssembler.toFollowToggleDto(userId));
         return profileAssembler.toFollowToggleResponse(following);
     }
 
@@ -54,15 +55,16 @@ public class ProfileApiService {
     }
 
     @Transactional(readOnly = true)
-    public ProfileMyPageResponse getMyPageProfile(Long targetId) {
-        User targetUser = userDomainService.getUserByIdWithInterests(targetId);
-        Long userId = SecurityUtil.getUserId();
+    @BlockFilter
+    public ProfileMyPageResponse getMyPageProfile(Long userId) {
+        User targetUser = userDomainService.getUserByIdWithInterests(userId);
+        Long requestUserId = SecurityUtil.getUserId();
 
-        boolean isFollowing = profileDomainService.getFollowingTargetIdSet(FollowCheckDto.of(userId, targetId));
+        boolean isFollowing = profileDomainService.getFollowingTargetIdSet(FollowCheckDto.of(requestUserId, userId));
         Long followerCount = profileDomainService.getFollowerCount(targetUser);
         Long followingCount = profileDomainService.getFollowingCount(targetUser);
 
-        String challengeName = challengeParticipateQueryDomainService.findCurrentParticipationByUserId(targetId)
+        String challengeName = challengeParticipateQueryDomainService.findCurrentParticipationByUserId(userId)
                 .map(challengeParticipation -> challengeParticipation.getChallenge().getName())
                 .orElse(null);
 

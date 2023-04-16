@@ -22,7 +22,6 @@ public class UserRelationController {
 
     private final ProfileApiService profileApiService;
 
-    // TODO. targetId 네이밍 변경
     @PostMapping("/follow/{targetId}")
     public ApiResponse<FollowToggleResponse> toggleFollowership(@PathVariable Long targetId) {
         return ApiResponse.ok(profileApiService.toggleFollowership(targetId));
