@@ -67,7 +67,8 @@
 
     <springProfile name="dev">
         <root level="INFO">
-            <appender-ref ref="LAZY_CONSOLE"/>
+            <appender-ref ref="LAZY_SENTRY"/>
+            <appender-ref ref="LAZY_LOGSTASH"/>
         </root>
     </springProfile>
 
