@@ -38,12 +38,14 @@ public class InsightQueryApiService {
     private final ChallengeParticipateQueryDomainService challengeParticipateQueryDomainService;
 
     @Transactional(readOnly = true)
+    @BlockFilter
     public InsightGetResponse getInsight(Long insightId) {
         InsightGetDto insightGetDto = insightQueryDomainService.getInsight(insightAssembler.toInsightDetailDto(insightId));
         return insightAssembler.toInsightGetResponse(insightGetDto);
     }
 
     @Transactional(readOnly = true)
+    @BlockFilter
     public InsightAuthorAreaResponse getInsightAuthorAreaInfo(Long insightId) {
         Insight insight = insightQueryDomainService.getByIdWithWriter(insightId);
         boolean isFollowing = profileQueryDomainService.isFollowing(profileAssembler.toFollowCheckDto(insight.getWriter().getId()));
@@ -80,6 +82,7 @@ public class InsightQueryApiService {
                 .collect(Collectors.toList());
     }
 
+    @BlockFilter
     public ChallengeRecordResponse getChallengeRecord(Long insightId) {
         Insight insight = insightQueryDomainService.getByIdWithChallengeOrElseThrow(insightId);
         ChallengeParticipation participation = insight.getChallengeParticipation();
@@ -97,6 +100,7 @@ public class InsightQueryApiService {
     }
 
     @Transactional(readOnly = true)
+    @BlockFilter
     public List<InsightMyPageResponse> getInsightsForMyPage(Long userId, Long drawerId, CursorPageable<Long> cPage) {
         return insightQueryDomainService.getInsightsForMyPage(SecurityUtil.getUser(), userId, drawerId, cPage).stream()
                 .map(insightAssembler::toInsightMyPageResponse)

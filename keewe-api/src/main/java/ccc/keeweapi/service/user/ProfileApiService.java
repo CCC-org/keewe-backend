@@ -2,6 +2,7 @@ package ccc.keeweapi.service.user;
 
 import static ccc.keewecore.consts.KeeweConsts.MY_PAGE_TITLE_LIMIT;
 
+import ccc.keeweapi.aop.annotations.BlockFilter;
 import ccc.keeweapi.component.ProfileAssembler;
 import ccc.keeweapi.dto.user.AllAchievedTitleResponse;
 import ccc.keeweapi.dto.user.BlockUserResponse;
@@ -55,8 +56,9 @@ public class ProfileApiService {
     }
 
     @Transactional
-    public FollowToggleResponse toggleFollowership(Long targetId) {
-        boolean following = profileCommandDomainService.toggleFollowership(profileAssembler.toFollowToggleDto(targetId));
+    @BlockFilter
+    public FollowToggleResponse toggleFollowership(Long userId) {
+        boolean following = profileCommandDomainService.toggleFollowership(profileAssembler.toFollowToggleDto(userId));
         return profileAssembler.toFollowToggleResponse(following);
     }
 
@@ -67,15 +69,16 @@ public class ProfileApiService {
     }
 
     @Transactional(readOnly = true)
-    public ProfileMyPageResponse getMyPageProfile(Long targetId) {
-        User targetUser = userDomainService.getUserByIdWithInterests(targetId);
-        Long userId = SecurityUtil.getUserId();
+    @BlockFilter
+    public ProfileMyPageResponse getMyPageProfile(Long userId) {
+        User targetUser = userDomainService.getUserByIdWithInterests(userId);
+        Long requestUserId = SecurityUtil.getUserId();
 
-        boolean isFollowing = profileQueryDomainService.isFollowing(FollowCheckDto.of(userId, targetId));
+        boolean isFollowing = profileQueryDomainService.isFollowing(FollowCheckDto.of(userId, requestUserId));
         Long followerCount = profileQueryDomainService.getFollowerCount(targetUser);
         Long followingCount = profileQueryDomainService.getFollowingCount(targetUser);
 
-        String challengeName = challengeParticipateQueryDomainService.findCurrentParticipationByUserId(targetId)
+        String challengeName = challengeParticipateQueryDomainService.findCurrentParticipationByUserId(requestUserId)
                 .map(challengeParticipation -> challengeParticipation.getChallenge().getName())
                 .orElse(null);
 
@@ -83,6 +86,7 @@ public class ProfileApiService {
     }
 
     @Transactional(readOnly = true)
+    @BlockFilter
     public MyPageTitleResponse getMyPageTitles(Long userId) {
         List<TitleAchievement> titleAchievements = profileQueryDomainService.getTitleAchievements(userId, MY_PAGE_TITLE_LIMIT);
         Long total = profileQueryDomainService.getAchievedTitleCount(userId);
@@ -91,6 +95,7 @@ public class ProfileApiService {
     }
 
     @Transactional(readOnly = true)
+    @BlockFilter
     public AllAchievedTitleResponse getAllAchievedTitles(Long userId) {
         List<TitleAchievement> titleAchievements = profileQueryDomainService.getTitleAchievements(userId, Integer.MAX_VALUE);
 
@@ -98,6 +103,7 @@ public class ProfileApiService {
     }
 
     @Transactional(readOnly = true)
+    @BlockFilter
     public FollowUserListResponse getFollowers(Long userId, CursorPageable<LocalDateTime> cPage) {
         List<Follow> follows = profileQueryDomainService.getFollowers(userId, cPage);
 
@@ -105,6 +111,7 @@ public class ProfileApiService {
     }
 
     @Transactional(readOnly = true)
+    @BlockFilter
     public FollowUserListResponse getFollowees(Long userId, CursorPageable<LocalDateTime> cPage) {
         List<Follow> follows = profileQueryDomainService.getFollowees(userId, cPage);
 
