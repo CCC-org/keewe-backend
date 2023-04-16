@@ -104,7 +104,7 @@ public class ReactionDomainService {
             Notification notification = Notification.of(insight.getWriter(), NotificationContents.반응, String.valueOf(reaction.getId()));
             notificationCommandDomainService.save(notification);
         } catch (Throwable t) {
-            log.warn("[RDS::afterReaction] 팔로우 후 작업 실패 - reactorId({}), insightId({})", reaction.getReactor().getId(), insight.getId(), t);
+            log.warn("[RDS::afterReaction] 리액션 후 작업 실패 - reactorId({}), insightId({})", reaction.getReactor().getId(), insight.getId(), t);
         }
     }
 }
