@@ -51,7 +51,6 @@ public class InsightQueryApiService {
     }
 
 
-    @Transactional(readOnly = true)
     @BlockFilter
     public List<InsightGetForHomeResponse> getInsightsForHome(CursorPageable<Long> cPage, Boolean follow) {
         return insightQueryDomainService.getInsightsForHome(SecurityUtil.getUser(), cPage, follow).stream()

@@ -49,6 +49,7 @@ public class InsightQueryDomainService {
         return InsightGetDto.of(detailDto.getInsightId(), entity.getContents(), entity.getLink(), reactionAggregationGetDto, bookmarkQueryDomainService.isBookmark(bookmarkId));
     }
 
+    @Transactional(readOnly = true)
     public List<InsightGetForHomeDto> getInsightsForHome(User user, CursorPageable<Long> cPage, Boolean follow) {
         List<Insight> forHome = insightQueryRepository.findAllForHome(user, cPage, follow);
         Map<Long, Boolean> bookmarkPresence = bookmarkQueryDomainService.getBookmarkPresenceMap(user, forHome);
