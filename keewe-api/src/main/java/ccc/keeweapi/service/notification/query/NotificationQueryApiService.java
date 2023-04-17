@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
+import javax.transaction.Transactional;
 
 @Service
 @Slf4j
@@ -30,6 +31,7 @@ public class NotificationQueryApiService {
                 .collect(Collectors.toMap(NotificationProcessor::getCategory, notificationProcessor -> notificationProcessor));
     }
 
+    @Transactional
     public PaginateNotificationResponse paginateNotifications(CursorPageable<Long> cPage) {
         List<NotificationResponse> notificationResponses = notificationQueryDomainService.paginateNotifications(cPage, SecurityUtil.getUser()).stream()
                 .map(notification -> {
