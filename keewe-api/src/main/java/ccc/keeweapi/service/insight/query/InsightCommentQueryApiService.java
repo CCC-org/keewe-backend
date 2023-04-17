@@ -58,6 +58,7 @@ public class InsightCommentQueryApiService {
     }
 
     @Transactional(readOnly = true)
+    @BlockFilter
     public List<ReplyResponse> getReplies(Long parentId, CursorPageable<Long> cPage) {
         return commentDomainService.getReplies(parentId, cPage).stream()
                 .map(commentAssembler::toReplyResponse)
