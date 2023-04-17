@@ -25,6 +25,9 @@ public class BlockFilterAspect {
 
     @Before(value = "@annotation(ccc.keeweapi.aop.annotations.BlockFilter) && args(insightId,..)")
     public void filterBlockedInsightWriter(Long insightId) {
+        if(insightId == null) {
+            return;
+        }
         validateWriterIsBlocked(insightId);
     }
 
@@ -35,6 +38,9 @@ public class BlockFilterAspect {
 
     @Before(value = "@annotation(ccc.keeweapi.aop.annotations.BlockFilter) && args(userId,..)")
     public void filterBlockedUserId(Long userId) {
+        if(userId == null) {
+            return;
+        }
         validateUserIsBlocked(userId);
     }
 
