@@ -28,7 +28,7 @@ public class InsightDrawerQueryApiService {
     }
 
     @Transactional(readOnly = true)
-    @BlockFilter
+    @BlockFilter(insightWriterFilter = false)
     public List<DrawerResponse> getDrawers(Long userId) {
         return drawerDomainService.findAllByUserId(userId).stream()
                 .map(insightAssembler::toDrawerResponse)

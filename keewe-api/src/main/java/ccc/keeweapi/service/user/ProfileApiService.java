@@ -69,7 +69,7 @@ public class ProfileApiService {
     }
 
     @Transactional(readOnly = true)
-    @BlockFilter
+    @BlockFilter(insightWriterFilter = false)
     public ProfileMyPageResponse getMyPageProfile(Long userId) {
         User targetUser = userDomainService.getUserByIdWithInterests(userId);
         Long requestUserId = SecurityUtil.getUserId();
