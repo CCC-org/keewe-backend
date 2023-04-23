@@ -9,6 +9,7 @@ import ccc.keeweapi.dto.insight.InsightDeleteResponse;
 import ccc.keeweapi.dto.insight.InsightGetForHomeResponse;
 import ccc.keeweapi.dto.insight.InsightGetResponse;
 import ccc.keeweapi.dto.insight.InsightMyPageResponse;
+import ccc.keeweapi.dto.insight.InsightStatisticsResponse;
 import ccc.keeweapi.service.insight.command.InsightCommandApiService;
 import ccc.keeweapi.service.insight.query.InsightQueryApiService;
 import ccc.keewecore.consts.KeeweConsts;
@@ -98,5 +99,10 @@ public class InsightController {
             @RequestParam(required = false) Long writerId
     ) {
         return ApiResponse.ok(insightQueryApiService.paginateInsightsOfChallenge(CursorPageable.of(cursor, limit), writerId));
+    }
+
+    @GetMapping("/{insightId}/statistics")
+    public ApiResponse<InsightStatisticsResponse> getStatistics(@PathVariable Long insightId) {
+        return ApiResponse.ok(insightQueryApiService.getStatistics(insightId));
     }
 }

@@ -1,5 +1,6 @@
 package ccc.keeweapi.aop;
 
+import ccc.keeweapi.aop.annotations.BlockFilter;
 import ccc.keeweapi.dto.BlockFilteringResponse;
 import ccc.keeweapi.dto.InsightIdBlockRequest;
 import ccc.keeweapi.dto.UserIdBlockRequest;
@@ -23,23 +24,35 @@ public class BlockFilterAspect {
     private final ProfileQueryDomainService profileQueryDomainService;
     private final InsightQueryDomainService insightQueryDomainService;
 
-    @Before(value = "@annotation(ccc.keeweapi.aop.annotations.BlockFilter) && args(insightId,..)")
-    public void filterBlockedInsightWriter(Long insightId) {
+    @Before(value = "@annotation(blockFilter) && args(insightId,..)")
+    public void filterBlockedInsightWriter(BlockFilter blockFilter, Long insightId) {
+        if(!blockFilter.insightWriterFilter()) {
+            return;
+        }
         validateWriterIsBlocked(insightId);
     }
 
-    @Before(value = "@annotation(ccc.keeweapi.aop.annotations.BlockFilter) && args(request,..)")
-    public void filterBlockedInsightWriter(InsightIdBlockRequest request) {
+    @Before(value = "@annotation(blockFilter) && args(request,..)")
+    public void filterBlockedInsightWriter(BlockFilter blockFilter, InsightIdBlockRequest request) {
+        if(!blockFilter.insightWriterFilter()) {
+            return;
+        }
         validateWriterIsBlocked(request.getInsightId());
     }
 
-    @Before(value = "@annotation(ccc.keeweapi.aop.annotations.BlockFilter) && args(userId,..)")
-    public void filterBlockedUserId(Long userId) {
+    @Before(value = "@annotation(blockFilter) && args(userId,..)")
+    public void filterBlockedUserId(BlockFilter blockFilter, Long userId) {
+        if(!blockFilter.userIdFilter()) {
+            return;
+        }
         validateUserIsBlocked(userId);
     }
 
-    @Before(value = "@annotation(ccc.keeweapi.aop.annotations.BlockFilter) && args(request,..)")
-    public void filterBlockedUserId(UserIdBlockRequest request) {
+    @Before(value = "@annotation(blockFilter) && args(request,..)")
+    public void filterBlockedUserId(BlockFilter blockFilter, UserIdBlockRequest request) {
+        if(!blockFilter.userIdFilter()) {
+            return;
+        }
         validateUserIsBlocked(request.getUserId());
     }
 

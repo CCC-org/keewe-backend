@@ -509,4 +509,34 @@ public class InsightControllerTest extends ApiDocumentationTest {
                         .build()
         )));
     }
+
+    @Test
+    @DisplayName("인사이트 통계 조회 API")
+    void get_insight_statistics() throws Exception {
+        when(insightQueryApiService.getStatistics(anyLong())).thenReturn(
+                InsightStatisticsResponse.of(1000L, 2000L, 3000L, 40L, 50000L)
+        );
+        ResultActions resultActions = mockMvc.perform(get("/api/v1/insight/{insightId}/statistics", 1L)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        resultActions.andDo(restDocs.document(resource(
+                ResourceSnippetParameters.builder()
+                        .description("인사이트 통계 조회 API 입니다.")
+                        .summary("인사이트 통계 조회 API")
+                        .requestHeaders(
+                                headerWithName("Authorization").description("유저의 JWT"))
+                        .responseFields(
+                                fieldWithPath("message").description("요청 결과 메세지"),
+                                fieldWithPath("code").description("결과 코드"),
+                                fieldWithPath("data.viewCount").description("인사이트의 조회 수"),
+                                fieldWithPath("data.reactionCount").description("인사이트의 리액션 수 총합"),
+                                fieldWithPath("data.commentCount").description("인사이트의 댓글 수"),
+                                fieldWithPath("data.bookmarkCount").description("인사이트의 북마크 수"),
+                                fieldWithPath("data.shareCount").description("인사이트의 공유 수"))
+                        .tag("Insight")
+                        .build()
+        )));
+    }
 }
