@@ -49,6 +49,8 @@ public enum KeeweRtnConsts {
     ERR452(KeeweRtnGrp.Validation, 452, "차단 내역을 찾을 수 없어요."),
     ERR453(KeeweRtnGrp.Validation, 453, "차단한 유저에 대해 요청을 할 수 없어요."),
 
+    ERR460(KeeweRtnGrp.Validation, 460, "인사이트의 작성자가 아니에요."),
+
     ERR471(KeeweRtnGrp.Validation, 471, "관련된 반응 통계를 찾을 수 없어요."),
 
     ERR480(KeeweRtnGrp.Validation, 480, "타이틀을 획득하지 않았어요."),

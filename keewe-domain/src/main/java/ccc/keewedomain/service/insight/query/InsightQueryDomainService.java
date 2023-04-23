@@ -221,5 +221,12 @@ public class InsightQueryDomainService {
                 reactionAggregationRepository.findDtoByInsightId(insightId)
         ));
     }
+
+    public void validateWriter(Long userId, Long insightId) {
+        Insight insight = this.getByIdOrElseThrow(insightId);
+        if(!insight.getWriter().getId().equals(userId)) {
+            throw new KeeweException(KeeweRtnConsts.ERR460);
+        }
+    }
 }
 

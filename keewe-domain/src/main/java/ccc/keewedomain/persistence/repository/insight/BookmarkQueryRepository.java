@@ -29,4 +29,11 @@ public class BookmarkQueryRepository {
                 .where(bookmark.insight.in(insights))
                 .fetchCount();
     }
+
+    public Long countBookmarkByInsightId(Long insightId) {
+        return queryFactory.select(bookmark.count())
+                .from(bookmark)
+                .where(bookmark.insight.id.eq(insightId))
+                .fetchFirst();
+    }
 }
