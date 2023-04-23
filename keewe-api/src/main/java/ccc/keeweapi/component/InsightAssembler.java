@@ -169,7 +169,8 @@ public class InsightAssembler {
             Long reactionCount,
             Long commentCount,
             Long bookmarkCount,
-            Long shareCount) {
+            Long shareCount
+    ) {
         return InsightStatisticsResponse.of(viewCount, reactionCount, commentCount, bookmarkCount, shareCount);
     }
 }

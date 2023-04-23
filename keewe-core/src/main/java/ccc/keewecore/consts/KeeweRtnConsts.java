@@ -43,12 +43,13 @@ public enum KeeweRtnConsts {
     ERR447(KeeweRtnGrp.Validation, 447, "인사이트 작성자만 삭제 가능해요."),
     ERR448(KeeweRtnGrp.Validation, 448, "댓글 작성자만 삭제 가능해요."),
     ERR449(KeeweRtnGrp.Validation, 449, "이미지 형식이 올바르지 않습니다."),
-    ERR460(KeeweRtnGrp.Validation, 460, "인사이트의 작성자가 아니에요."),
 
     ERR450(KeeweRtnGrp.Validation, 450, "이미 차단한 유저에요."),
     ERR451(KeeweRtnGrp.Validation, 451, "자신을 차단할 수 없어요."),
     ERR452(KeeweRtnGrp.Validation, 452, "차단 내역을 찾을 수 없어요."),
     ERR453(KeeweRtnGrp.Validation, 453, "차단한 유저에 대해 요청을 할 수 없어요."),
+
+    ERR460(KeeweRtnGrp.Validation, 460, "인사이트의 작성자가 아니에요."),
 
     ERR471(KeeweRtnGrp.Validation, 471, "관련된 반응 통계를 찾을 수 없어요."),
 
