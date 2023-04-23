@@ -29,4 +29,8 @@ public class BookmarkQueryDomainService {
     public Long countBookmark(List<Insight> insights) {
         return bookmarkQueryRepository.countBookmark(insights);
     }
+
+    public Long countBookmarkByInsightId(Long insightId) {
+        return bookmarkQueryRepository.countBookmarkByInsightId(insightId);
+    }
 }

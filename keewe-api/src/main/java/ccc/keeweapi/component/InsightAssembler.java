@@ -163,4 +163,13 @@ public class InsightAssembler {
     private boolean isAuthor(Insight insight) {
         return insight.getWriter().getId() == SecurityUtil.getUserId();
     }
+
+    public InsightStatisticsResponse toInsightStatisticsResponse(
+            Long viewCount,
+            Long reactionCount,
+            Long commentCount,
+            Long bookmarkCount,
+            Long shareCount) {
+        return InsightStatisticsResponse.of(viewCount, reactionCount, commentCount, bookmarkCount, shareCount);
+    }
 }
