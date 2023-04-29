@@ -16,6 +16,7 @@ import ccc.keeweapi.dto.challenge.ParticipatingChallengeResponse;
 import ccc.keeweapi.dto.challenge.ParticipationCheckResponse;
 import ccc.keeweapi.dto.challenge.ParticipationUpdateRequest;
 import ccc.keeweapi.dto.challenge.WeekProgressResponse;
+import ccc.keeweapi.utils.BlockFilterUtil;
 import ccc.keeweapi.utils.SecurityUtil;
 import ccc.keewecore.consts.KeeweRtnConsts;
 import ccc.keewecore.exception.KeeweException;
@@ -53,6 +54,7 @@ public class ChallengeApiService {
     private final InsightQueryDomainService insightQueryDomainService;
     private final ProfileQueryDomainService profileQueryDomainService;
     private final ChallengeAssembler challengeAssembler;
+    private final BlockFilterUtil blockFilterUtil;
 
     @Transactional
     public ChallengeCreateResponse createChallenge(ChallengeCreateRequest request) {
@@ -124,7 +126,6 @@ public class ChallengeApiService {
     }
 
     @Transactional(readOnly = true)
-    @BlockFilter
     public List<FriendResponse> paginateFriends(Long challengeId, Pageable pageable) {
         User user = SecurityUtil.getUser();
         Challenge challenge = challengeQueryDomainService.getByIdOrElseThrow(challengeId);
@@ -137,7 +138,7 @@ public class ChallengeApiService {
         Set<Long> followingIdSet = profileQueryDomainService.getFollowingTargetIdSet(SecurityUtil.getUser(), challengers);
         Map<Long, Long> insightCountPerParticipation = insightQueryDomainService.getInsightCountPerParticipation(participations);
 
-        return participations.stream()
+        List<FriendResponse> responses = participations.stream()
                 .filter(participation -> !participation.getChallenger().equals(user))
                 .map(participation -> challengeAssembler.toFriendResponse(
                         participation,
@@ -145,6 +146,7 @@ public class ChallengeApiService {
                         followingIdSet.contains(participation.getChallenger().getId()))
                 )
                 .collect(Collectors.toList());
+        return blockFilterUtil.filterUserInResponse(responses);
     }
 
     @Transactional(readOnly = true)
