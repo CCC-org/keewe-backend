@@ -1,6 +1,5 @@
 package ccc.keeweapi.service.challenge;
 
-import ccc.keeweapi.aop.annotations.BlockFilter;
 import ccc.keeweapi.component.ChallengeAssembler;
 import ccc.keeweapi.dto.challenge.ChallengeCreateRequest;
 import ccc.keeweapi.dto.challenge.ChallengeCreateResponse;

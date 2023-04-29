@@ -1,8 +1,11 @@
 package ccc.keeweapi.service.insight.command;
 
-import ccc.keeweapi.aop.annotations.BlockFilter;
 import ccc.keeweapi.component.InsightAssembler;
-import ccc.keeweapi.dto.insight.*;
+import ccc.keeweapi.dto.insight.BookmarkToggleResponse;
+import ccc.keeweapi.dto.insight.InsightCreateRequest;
+import ccc.keeweapi.dto.insight.InsightCreateResponse;
+import ccc.keeweapi.dto.insight.InsightDeleteResponse;
+import ccc.keeweapi.dto.insight.InsightViewIncrementResponse;
 import ccc.keeweapi.utils.BlockFilterUtil;
 import ccc.keeweapi.utils.annotations.TitleEventPublish;
 import ccc.keewecore.consts.TitleCategory;

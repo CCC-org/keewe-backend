@@ -1,6 +1,5 @@
 package ccc.keeweapi.service.insight.query;
 
-import ccc.keeweapi.aop.annotations.BlockFilter;
 import ccc.keeweapi.component.InsightAssembler;
 import ccc.keeweapi.component.ProfileAssembler;
 import ccc.keeweapi.dto.insight.ChallengeRecordResponse;
@@ -25,12 +24,13 @@ import ccc.keewedomain.service.insight.ReactionDomainService;
 import ccc.keewedomain.service.insight.query.BookmarkQueryDomainService;
 import ccc.keewedomain.service.insight.query.InsightQueryDomainService;
 import ccc.keewedomain.service.user.query.ProfileQueryDomainService;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor

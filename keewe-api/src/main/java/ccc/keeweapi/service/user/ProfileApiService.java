@@ -1,8 +1,5 @@
 package ccc.keeweapi.service.user;
 
-import static ccc.keewecore.consts.KeeweConsts.MY_PAGE_TITLE_LIMIT;
-
-import ccc.keeweapi.aop.annotations.BlockFilter;
 import ccc.keeweapi.component.ProfileAssembler;
 import ccc.keeweapi.dto.user.AllAchievedTitleResponse;
 import ccc.keeweapi.dto.user.BlockUserResponse;
@@ -30,15 +27,18 @@ import ccc.keewedomain.service.challenge.query.ChallengeParticipateQueryDomainSe
 import ccc.keewedomain.service.user.UserDomainService;
 import ccc.keewedomain.service.user.command.ProfileCommandDomainService;
 import ccc.keewedomain.service.user.query.ProfileQueryDomainService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
+
+import static ccc.keewecore.consts.KeeweConsts.MY_PAGE_TITLE_LIMIT;
 
 
 @Service
