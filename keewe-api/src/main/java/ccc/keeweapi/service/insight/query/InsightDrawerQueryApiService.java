@@ -1,8 +1,8 @@
 package ccc.keeweapi.service.insight.query;
 
-import ccc.keeweapi.aop.annotations.BlockFilter;
 import ccc.keeweapi.component.InsightAssembler;
 import ccc.keeweapi.dto.insight.DrawerResponse;
+import ccc.keeweapi.utils.BlockFilterUtil;
 import ccc.keeweapi.utils.SecurityUtil;
 import ccc.keewedomain.service.insight.DrawerDomainService;
 import java.util.List;
@@ -17,6 +17,7 @@ public class InsightDrawerQueryApiService {
 
     private final DrawerDomainService drawerDomainService;
     private final InsightAssembler insightAssembler;
+    private final BlockFilterUtil blockFilterUtil;
 
     @Transactional(readOnly = true)
     public List<DrawerResponse> getMyDrawers() {
@@ -28,8 +29,8 @@ public class InsightDrawerQueryApiService {
     }
 
     @Transactional(readOnly = true)
-    @BlockFilter(insightWriterFilter = false)
     public List<DrawerResponse> getDrawers(Long userId) {
+        blockFilterUtil.filterUserId(userId);
         return drawerDomainService.findAllByUserId(userId).stream()
                 .map(insightAssembler::toDrawerResponse)
                 .collect(Collectors.toList());

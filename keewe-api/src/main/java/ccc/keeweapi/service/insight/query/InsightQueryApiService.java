@@ -1,6 +1,5 @@
 package ccc.keeweapi.service.insight.query;
 
-import ccc.keeweapi.aop.annotations.BlockFilter;
 import ccc.keeweapi.component.InsightAssembler;
 import ccc.keeweapi.component.ProfileAssembler;
 import ccc.keeweapi.dto.insight.ChallengeRecordResponse;
@@ -9,6 +8,7 @@ import ccc.keeweapi.dto.insight.InsightGetForHomeResponse;
 import ccc.keeweapi.dto.insight.InsightGetResponse;
 import ccc.keeweapi.dto.insight.InsightMyPageResponse;
 import ccc.keeweapi.dto.insight.InsightStatisticsResponse;
+import ccc.keeweapi.utils.BlockFilterUtil;
 import ccc.keeweapi.utils.SecurityUtil;
 import ccc.keewecore.consts.KeeweRtnConsts;
 import ccc.keewecore.exception.KeeweException;
@@ -24,12 +24,13 @@ import ccc.keewedomain.service.insight.ReactionDomainService;
 import ccc.keewedomain.service.insight.query.BookmarkQueryDomainService;
 import ccc.keewedomain.service.insight.query.InsightQueryDomainService;
 import ccc.keewedomain.service.user.query.ProfileQueryDomainService;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -43,54 +44,56 @@ public class InsightQueryApiService {
     private final InsightAssembler insightAssembler;
     private final ProfileAssembler profileAssembler;
     private final ChallengeParticipateQueryDomainService challengeParticipateQueryDomainService;
+    private final BlockFilterUtil blockFilterUtil;
 
     @Transactional(readOnly = true)
-    @BlockFilter
     public InsightGetResponse getInsight(Long insightId) {
+        blockFilterUtil.filterInsightWriter(insightId);
         InsightGetDto insightGetDto = insightQueryDomainService.getInsight(insightAssembler.toInsightDetailDto(insightId));
         return insightAssembler.toInsightGetResponse(insightGetDto);
     }
 
     @Transactional(readOnly = true)
-    @BlockFilter
     public InsightAuthorAreaResponse getInsightAuthorAreaInfo(Long insightId) {
+        blockFilterUtil.filterInsightWriter(insightId);
         Insight insight = insightQueryDomainService.getByIdWithWriter(insightId);
         boolean isFollowing = profileQueryDomainService.isFollowing(profileAssembler.toFollowCheckDto(insight.getWriter().getId()));
         return insightAssembler.toInsightAuthorAreaResponse(insight, isFollowing);
     }
 
 
-    @BlockFilter
     public List<InsightGetForHomeResponse> getInsightsForHome(CursorPageable<Long> cPage, Boolean follow) {
-        return insightQueryDomainService.getInsightsForHome(SecurityUtil.getUser(), cPage, follow).stream()
+        List<InsightGetForHomeResponse> responses = insightQueryDomainService.getInsightsForHome(SecurityUtil.getUser(), cPage, follow).stream()
                 .map(insightAssembler::toInsightGetForHomeResponse)
                 .collect(Collectors.toList());
+        return blockFilterUtil.filterUserInResponse(responses);
     }
 
     // FIXME DTO 수정할 때 같이 네이밍 수정 필요
     @Transactional(readOnly = true)
-    @BlockFilter
     public List<InsightGetForHomeResponse> paginateInsightsOfChallenge(CursorPageable<Long> cPage, Long writerId) {
+        blockFilterUtil.filterUserId(writerId);
         User user = SecurityUtil.getUser();
         Challenge challenge = challengeParticipateQueryDomainService.findCurrentParticipationByUserId(user.getId())
                 .map(ChallengeParticipation::getChallenge)
                 .orElseThrow(() -> new KeeweException(KeeweRtnConsts.ERR432));
 
-        return insightQueryDomainService.getByChallenge(challenge, user, cPage, writerId).stream()
+        List<InsightGetForHomeResponse> responses = insightQueryDomainService.getByChallenge(challenge, user, cPage, writerId).stream()
                 .map(insightAssembler::toInsightGetForHomeResponse)
                 .collect(Collectors.toList());
+        return blockFilterUtil.filterUserInResponse(responses);
     }
 
     @Transactional(readOnly = true)
-    @BlockFilter
     public List<InsightGetForHomeResponse> getInsightForBookmark(CursorPageable<Long> cPage) {
-        return insightQueryDomainService.getInsightForBookmark(SecurityUtil.getUser(), cPage).stream()
+        List<InsightGetForHomeResponse> responses = insightQueryDomainService.getInsightForBookmark(SecurityUtil.getUser(), cPage).stream()
                 .map(insightAssembler::toInsightGetForHomeResponse)
                 .collect(Collectors.toList());
+        return blockFilterUtil.filterUserInResponse(responses);
     }
 
-    @BlockFilter
     public ChallengeRecordResponse getChallengeRecord(Long insightId) {
+        blockFilterUtil.filterInsightWriter(insightId);
         Insight insight = insightQueryDomainService.getByIdWithChallengeOrElseThrow(insightId);
         ChallengeParticipation participation = insight.getChallengeParticipation();
 
@@ -107,8 +110,8 @@ public class InsightQueryApiService {
     }
 
     @Transactional(readOnly = true)
-    @BlockFilter
     public List<InsightMyPageResponse> getInsightsForMyPage(Long userId, Long drawerId, CursorPageable<Long> cPage) {
+        blockFilterUtil.filterUserId(userId);
         return insightQueryDomainService.getInsightsForMyPage(SecurityUtil.getUser(), userId, drawerId, cPage).stream()
                 .map(insightAssembler::toInsightMyPageResponse)
                 .collect(Collectors.toList());
