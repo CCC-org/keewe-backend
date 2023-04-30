@@ -18,6 +18,7 @@ import ccc.keeweapi.service.notification.command.NotificationCommandApiService;
 import ccc.keeweapi.service.notification.query.NotificationQueryApiService;
 import ccc.keewedomain.persistence.domain.notification.enums.NotificationCategory;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
+import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -49,7 +50,7 @@ public class NotificationControllerTest extends ApiDocumentationTest {
     void testPaginateNotifications() throws Exception {
         when(notificationQueryApiService.paginateNotifications(any())).thenReturn(
             PaginateNotificationResponse.of(3L,
-                List.of(NotificationResponse.of(3L, "내 인사이트에 \n누군가 댓글 남김", "유승훈님이 댓글을 남겼어요.", NotificationCategory.COMMENT, "3", false)
+                List.of(NotificationResponse.of(3L, "내 인사이트에 \n누군가 댓글 남김", "유승훈님이 댓글을 남겼어요.", NotificationCategory.COMMENT, "3", false, LocalDateTime.now().toLocalDate().toString())
             )
         ));
 
@@ -78,7 +79,8 @@ public class NotificationControllerTest extends ApiDocumentationTest {
                                 fieldWithPath("data.notifications[].contents").description("알림 본문"),
                                 fieldWithPath("data.notifications[].category").description("알림 카테고리"),
                                 fieldWithPath("data.notifications[].referenceId").description("알림 참조 ID"),
-                                fieldWithPath("data.notifications[].read").description("알림 읽었는지 여부")
+                                fieldWithPath("data.notifications[].read").description("알림 읽었는지 여부"),
+                                fieldWithPath("data.notifications[].createdAt").description("알림 생성 시간")
                         )
                         .tag("Notification")
                         .build()
@@ -89,7 +91,7 @@ public class NotificationControllerTest extends ApiDocumentationTest {
     @DisplayName("알림 읽음 처리 API 테스트")
     void testMarkAsRead() throws Exception {
         when(notificationCommandApiService.markAsRead(anyLong())).thenReturn(
-               NotificationResponse.of(3L, "내 인사이트에 \n누군가 댓글 남김", "유승훈님이 댓글을 남겼어요.", NotificationCategory.COMMENT, "3", false)
+               NotificationResponse.of(3L, "내 인사이트에 \n누군가 댓글 남김", "유승훈님이 댓글을 남겼어요.", NotificationCategory.COMMENT, "3", false, LocalDateTime.now().toLocalDate().toString())
         );
 
         ResultActions resultActions = mockMvc.perform(patch("/api/v1/notification/{notificationId}/read", 3L)
@@ -111,7 +113,8 @@ public class NotificationControllerTest extends ApiDocumentationTest {
                                 fieldWithPath("data.contents").description("알림 본문"),
                                 fieldWithPath("data.category").description("알림 카테고리"),
                                 fieldWithPath("data.referenceId").description("알림 참조 ID"),
-                                fieldWithPath("data.read").description("알림 읽었는지 여부")
+                                fieldWithPath("data.read").description("알림 읽었는지 여부"),
+                                fieldWithPath("data.createdAt").description("알림 생성 시간")
                         )
                         .tag("Notification")
                         .build()

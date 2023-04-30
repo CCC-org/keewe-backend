@@ -26,12 +26,13 @@ public class FollowNotificationProcessor implements NotificationProcessor {
         User follower = userDomainService.getUserByIdOrElseThrow(Long.parseLong(followerId));
         NotificationContents contents = notification.getContents();
         return NotificationResponse.of(
-                notification.getId(),
-                contents.getTitle(), // note. 내 인사이트에 누군가 반응 남김
-                String.format(contents.getContents(), follower.getNickname()), // note. {UserName}님이 반응을 남겼어요.
-                contents.getCategory(),
-                followerId, // note. 클릭 시 프로필로 이동
-                notification.isRead()
+            notification.getId(),
+            contents.getTitle(), // note. 내 인사이트에 누군가 반응 남김
+            String.format(contents.getContents(), follower.getNickname()), // note. {UserName}님이 반응을 남겼어요.
+            contents.getCategory(),
+            followerId, // note. 클릭 시 프로필로 이동
+            notification.isRead(),
+            notification.getCreatedAt().toLocalDate().toString()
         );
     }
 }
