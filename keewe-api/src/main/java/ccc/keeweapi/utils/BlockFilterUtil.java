@@ -20,6 +20,7 @@ public class BlockFilterUtil {
     private final InsightQueryDomainService insightQueryDomainService;
 
     public void filterInsightWriter(Long insightId) {
+        if(insightId == null) return;
         Long writerId = insightQueryDomainService.getByIdWithWriter(insightId).getWriter().getId();
         validateUserIsBlocked(writerId);
     }
@@ -29,6 +30,7 @@ public class BlockFilterUtil {
     }
 
     public void filterUserId(Long userId) {
+        if(userId == null) return;
         validateUserIsBlocked(userId);
     }
 
