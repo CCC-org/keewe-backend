@@ -15,6 +15,7 @@ import ccc.keewedomain.service.challenge.query.ChallengeParticipateQueryDomainSe
 import ccc.keewedomain.service.challenge.query.ChallengeQueryDomainService;
 import ccc.keewedomain.service.insight.query.InsightQueryDomainService;
 import ccc.keewedomain.service.user.UserDomainService;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,6 +38,10 @@ public class ChallengeCommandDomainService {
         User writer = userDomainService.getUserByIdOrElseThrow(dto.getUserId());
         Challenge challenge = Challenge.of(writer, dto.getName(), dto.getInterest(), dto.getIntroduction());
         return challengeRepository.save(challenge);
+    }
+
+    public List<Challenge> saveAll(List<Challenge> challenges) {
+        return challengeRepository.saveAll(challenges);
     }
 
     public ChallengeParticipation participate(ChallengeParticipateDto dto) {

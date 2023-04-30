@@ -24,4 +24,8 @@ public class ChallengeQueryDomainService {
     public List<Challenge> paginate(CursorPageable<Long> cPage) {
         return challengeQueryRepository.paginate(cPage);
     }
+
+    public List<Challenge> paginateWithParticipation(CursorPageable<Long> cPage) {
+        return challengeQueryRepository.paginateWithParticipation(cPage);
+    }
 }

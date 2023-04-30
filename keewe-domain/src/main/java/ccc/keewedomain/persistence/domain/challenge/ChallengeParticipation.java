@@ -104,6 +104,10 @@ public class ChallengeParticipation extends BaseTimeEntity {
         this.status = ChallengeParticipationStatus.COMPLETED;
     }
 
+    public boolean isChallenging() {
+        return this.status == ChallengeParticipationStatus.CHALLENGING;
+    }
+
     private void initEndDate() {
         LocalDate createdDate = getCreatedAt().toLocalDate();
         LocalDate newEndDate = createdDate.minusDays(1).plusWeeks(duration);
