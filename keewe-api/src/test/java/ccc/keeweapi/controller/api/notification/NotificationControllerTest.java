@@ -79,7 +79,8 @@ public class NotificationControllerTest extends ApiDocumentationTest {
                                 fieldWithPath("data.notifications[].contents").description("알림 본문"),
                                 fieldWithPath("data.notifications[].category").description("알림 카테고리"),
                                 fieldWithPath("data.notifications[].referenceId").description("알림 참조 ID"),
-                                fieldWithPath("data.notifications[].read").description("알림 읽었는지 여부")
+                                fieldWithPath("data.notifications[].read").description("알림 읽었는지 여부"),
+                                fieldWithPath("data.notifications[].createdAt").description("알림 생성 시간")
                         )
                         .tag("Notification")
                         .build()
@@ -112,7 +113,8 @@ public class NotificationControllerTest extends ApiDocumentationTest {
                                 fieldWithPath("data.contents").description("알림 본문"),
                                 fieldWithPath("data.category").description("알림 카테고리"),
                                 fieldWithPath("data.referenceId").description("알림 참조 ID"),
-                                fieldWithPath("data.read").description("알림 읽었는지 여부")
+                                fieldWithPath("data.read").description("알림 읽었는지 여부"),
+                                fieldWithPath("data.notifications[].createdAt").description("알림 생성 시간")
                         )
                         .tag("Notification")
                         .build()
