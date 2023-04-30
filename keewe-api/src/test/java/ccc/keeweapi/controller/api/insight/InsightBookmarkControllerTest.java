@@ -9,7 +9,7 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWit
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import ccc.keeweapi.document.utils.ApiDocumentationTest;
-import ccc.keeweapi.dto.insight.BookmarkToggleResponse;
+import ccc.keeweapi.dto.insight.response.BookmarkToggleResponse;
 import ccc.keeweapi.service.insight.command.InsightCommandApiService;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import org.junit.jupiter.api.BeforeEach;

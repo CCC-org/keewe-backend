@@ -1,10 +1,10 @@
 package ccc.keeweapi.service.insight.query;
 
 import ccc.keeweapi.component.CommentAssembler;
-import ccc.keeweapi.dto.insight.CommentResponse;
-import ccc.keeweapi.dto.insight.InsightCommentCountResponse;
-import ccc.keeweapi.dto.insight.PreviewCommentResponse;
-import ccc.keeweapi.dto.insight.ReplyResponse;
+import ccc.keeweapi.dto.insight.response.CommentResponse;
+import ccc.keeweapi.dto.insight.response.InsightCommentCountResponse;
+import ccc.keeweapi.dto.insight.response.PreviewCommentResponse;
+import ccc.keeweapi.dto.insight.response.ReplyResponse;
 import ccc.keeweapi.utils.BlockFilterUtil;
 import ccc.keeweapi.utils.SecurityUtil;
 import ccc.keewedomain.persistence.domain.insight.Comment;

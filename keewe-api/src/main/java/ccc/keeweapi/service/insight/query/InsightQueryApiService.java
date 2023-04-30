@@ -2,12 +2,12 @@ package ccc.keeweapi.service.insight.query;
 
 import ccc.keeweapi.component.InsightAssembler;
 import ccc.keeweapi.component.ProfileAssembler;
-import ccc.keeweapi.dto.insight.ChallengeRecordResponse;
-import ccc.keeweapi.dto.insight.InsightAuthorAreaResponse;
-import ccc.keeweapi.dto.insight.InsightGetForHomeResponse;
-import ccc.keeweapi.dto.insight.InsightGetResponse;
-import ccc.keeweapi.dto.insight.InsightMyPageResponse;
-import ccc.keeweapi.dto.insight.InsightStatisticsResponse;
+import ccc.keeweapi.dto.insight.response.ChallengeRecordResponse;
+import ccc.keeweapi.dto.insight.response.InsightAuthorAreaResponse;
+import ccc.keeweapi.dto.insight.response.InsightGetForHomeResponse;
+import ccc.keeweapi.dto.insight.response.InsightGetResponse;
+import ccc.keeweapi.dto.insight.response.InsightMyPageResponse;
+import ccc.keeweapi.dto.insight.response.InsightStatisticsResponse;
 import ccc.keeweapi.utils.BlockFilterUtil;
 import ccc.keeweapi.utils.SecurityUtil;
 import ccc.keewecore.consts.KeeweRtnConsts;

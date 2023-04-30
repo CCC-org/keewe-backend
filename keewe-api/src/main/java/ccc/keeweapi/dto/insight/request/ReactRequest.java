@@ -1,4 +1,4 @@
-package ccc.keeweapi.dto.insight;
+package ccc.keeweapi.dto.insight.request;
 
 import ccc.keeweapi.dto.InsightIdBlockRequest;
 import ccc.keewedomain.persistence.domain.insight.enums.ReactionType;

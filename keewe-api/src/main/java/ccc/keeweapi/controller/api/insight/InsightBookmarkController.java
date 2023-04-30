@@ -1,7 +1,7 @@
 package ccc.keeweapi.controller.api.insight;
 
 import ccc.keeweapi.dto.ApiResponse;
-import ccc.keeweapi.dto.insight.BookmarkToggleResponse;
+import ccc.keeweapi.dto.insight.response.BookmarkToggleResponse;
 import ccc.keeweapi.service.insight.command.InsightCommandApiService;
 import ccc.keewecore.aop.annotations.FLogging;
 import lombok.RequiredArgsConstructor;

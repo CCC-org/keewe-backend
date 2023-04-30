@@ -1,4 +1,4 @@
-package ccc.keeweapi.dto.insight;
+package ccc.keeweapi.dto.insight.response;
 
 import ccc.keewedomain.persistence.domain.common.Link;
 import lombok.AccessLevel;

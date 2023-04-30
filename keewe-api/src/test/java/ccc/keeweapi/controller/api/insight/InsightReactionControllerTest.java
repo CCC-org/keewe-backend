@@ -9,7 +9,7 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWit
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import ccc.keeweapi.document.utils.ApiDocumentationTest;
-import ccc.keeweapi.dto.insight.ReactResponse;
+import ccc.keeweapi.dto.insight.response.ReactResponse;
 import ccc.keeweapi.service.insight.command.InsightReactionCommandApiService;
 import ccc.keeweapi.service.insight.query.InsightReactionQueryApiService;
 import ccc.keewedomain.persistence.domain.insight.enums.ReactionType;

@@ -1,4 +1,4 @@
-package ccc.keeweapi.dto.insight;
+package ccc.keeweapi.dto.insight.response;
 
 import ccc.keeweapi.dto.BlockFilteringResponse;
 import ccc.keewedomain.dto.insight.InsightWriterDto;

@@ -1,8 +1,8 @@
 package ccc.keeweapi.service.insight.command;
 
 import ccc.keeweapi.component.ReactionAssembler;
-import ccc.keeweapi.dto.insight.ReactRequest;
-import ccc.keeweapi.dto.insight.ReactResponse;
+import ccc.keeweapi.dto.insight.request.ReactRequest;
+import ccc.keeweapi.dto.insight.response.ReactResponse;
 import ccc.keeweapi.utils.BlockFilterUtil;
 import ccc.keewedomain.dto.insight.ReactionDto;
 import ccc.keewedomain.service.insight.ReactionDomainService;
