@@ -27,13 +27,13 @@ import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
 
-import static ccc.keewebatch.batch.ChallengeRecordCheckConfiguration.JOB_NAME;
+import static ccc.keewebatch.batch.ChallengeRecordChecker.JOB_NAME;
 
 @Configuration
 @RequiredArgsConstructor
 @Slf4j
 @ConditionalOnProperty(name ="job.name", havingValue = JOB_NAME)
-public class ChallengeRecordCheckConfiguration {
+public class ChallengeRecordChecker {
     private final JobBuilderFactory jobBuilderFactory;
     private final StepBuilderFactory stepBuilderFactory;
     private final EntityManagerFactory entityManagerFactory;
