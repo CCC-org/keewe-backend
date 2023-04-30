@@ -31,8 +31,7 @@ public class FollowNotificationProcessor implements NotificationProcessor {
                 String.format(contents.getContents(), follower.getNickname()), // note. {UserName}님이 반응을 남겼어요.
                 contents.getCategory(),
                 followerId, // note. 클릭 시 프로필로 이동
-                notification.isRead(),
-                notification.getCreatedAt().toLocalDate().toString()
+                notification.isRead()
         );
     }
 }
