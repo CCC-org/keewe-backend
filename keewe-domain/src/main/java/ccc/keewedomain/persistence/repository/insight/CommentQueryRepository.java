@@ -10,6 +10,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -151,5 +152,32 @@ public class CommentQueryRepository {
                 .from(comment)
                 .groupBy(comment.parent.id)
                 .where(comment.parent.in(parents));
+    }
+
+    public List<Long> findIdsByUserIds(Long insightId, Collection<Long> blockedUserIds) {
+        return queryFactory
+                .select(comment.id)
+                .from(comment)
+                .where(comment.insight.id.eq(insightId))
+                .where(comment.writer.id.in(blockedUserIds))
+                .fetch();
+    }
+
+    public Long countByParentIds(List<Long> blockedUserCommentIds) {
+        return queryFactory
+                .select(comment.count())
+                .from(comment)
+                .where(comment.parent.id.in(blockedUserCommentIds))
+                .fetchFirst();
+    }
+
+    public Long countRepliesByUserIds(Long insightId, Collection<Long> blockedUserIds) {
+        return queryFactory
+                .select(comment.count())
+                .from(comment)
+                .where(comment.insight.id.eq(insightId))
+                .where(comment.parent.id.isNotNull())
+                .where(comment.writer.id.in(blockedUserIds))
+                .fetchFirst();
     }
 }

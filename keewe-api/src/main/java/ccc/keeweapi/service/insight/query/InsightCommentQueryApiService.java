@@ -69,6 +69,8 @@ public class InsightCommentQueryApiService {
     }
 
     public InsightCommentCountResponse getCommentCount(Long insightId) {
-        return commentAssembler.toInsightCommentCountResponse(commentDomainService.countByInsightId(insightId));
+        blockFilterUtil.filterInsightWriter(insightId);
+        Long userId = SecurityUtil.getUserId();
+        return commentAssembler.toInsightCommentCountResponse(commentDomainService.countByInsightId(insightId, userId));
     }
 }

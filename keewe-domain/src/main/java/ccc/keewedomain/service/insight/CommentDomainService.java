@@ -12,6 +12,7 @@ import ccc.keewedomain.persistence.repository.insight.CommentRepository;
 import ccc.keewedomain.persistence.repository.utils.CursorPageable;
 import ccc.keewedomain.service.insight.query.InsightQueryDomainService;
 import ccc.keewedomain.service.user.UserDomainService;
+import ccc.keewedomain.service.user.query.ProfileQueryDomainService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -28,6 +30,7 @@ public class CommentDomainService {
     private final CommentQueryRepository commentQueryRepository;
     private final InsightQueryDomainService insightQueryDomainService;
     private final UserDomainService userDomainService;
+    private final ProfileQueryDomainService profileQueryDomainService;
 
     public Comment create(CommentCreateDto dto) {
         Insight insight = insightQueryDomainService.getByIdOrElseThrow(dto.getInsightId());
@@ -68,8 +71,20 @@ public class CommentDomainService {
         }
     }
 
-    public Long countByInsightId(Long insightId) {
-        return commentQueryRepository.countByInsightId(insightId);
+    public Long countByInsightId(Long insightId, Long userId) {
+        Long commentCount = commentQueryRepository.countByInsightId(insightId);
+        Set<Long> blockedUserIds = profileQueryDomainService.findBlockedUserIds(userId);
+        if(blockedUserIds.isEmpty()) {
+            return commentCount;
+        }
+        // 1. 차단한 유저의 댓글 제외 - 차단한 유저들이 작성한 댓글의 id 조회
+        List<Long> blockedUserCommentIds = commentQueryRepository.findIdsByUserIds(insightId, blockedUserIds);
+        // 2. 차단한 유저의 댓글에 달린 답글 제외 - 1에서 조회한 id가 parent인 댓글 개수 조회
+        Long replyOnBlockedCommentCount = commentQueryRepository.countByParentIds(blockedUserCommentIds);
+        // 3. 차단한 유저의 답글 수 조회 - 1, 2에서 중복으로 제거되는 개수 보완 목적
+        Long dupBlockedReplyCount = commentQueryRepository.countRepliesByUserIds(insightId, blockedUserIds);
+        // 4. 전체 개수에서 빼기
+        return commentCount - blockedUserCommentIds.size() - replyOnBlockedCommentCount + dupBlockedReplyCount;
     }
 
     public Map<Long, Long> getReplyNumbers(List<Comment> parents) {
