@@ -72,7 +72,6 @@ public class InsightQueryApiService {
     // FIXME DTO 수정할 때 같이 네이밍 수정 필요
     @Transactional(readOnly = true)
     public List<InsightGetForHomeResponse> paginateInsightsOfChallenge(CursorPageable<Long> cPage, Long writerId) {
-        blockFilterUtil.filterUserId(writerId);
         User user = SecurityUtil.getUser();
         Challenge challenge = challengeParticipateQueryDomainService.findCurrentParticipationByUserId(user.getId())
                 .map(ChallengeParticipation::getChallenge)
