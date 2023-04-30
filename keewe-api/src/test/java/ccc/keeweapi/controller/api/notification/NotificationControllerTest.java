@@ -114,7 +114,7 @@ public class NotificationControllerTest extends ApiDocumentationTest {
                                 fieldWithPath("data.category").description("알림 카테고리"),
                                 fieldWithPath("data.referenceId").description("알림 참조 ID"),
                                 fieldWithPath("data.read").description("알림 읽었는지 여부"),
-                                fieldWithPath("data.notifications[].createdAt").description("알림 생성 시간")
+                                fieldWithPath("data.createdAt").description("알림 생성 시간")
                         )
                         .tag("Notification")
                         .build()
