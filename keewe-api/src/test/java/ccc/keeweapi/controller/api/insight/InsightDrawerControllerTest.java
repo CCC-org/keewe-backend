@@ -13,8 +13,8 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWit
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import ccc.keeweapi.document.utils.ApiDocumentationTest;
-import ccc.keeweapi.dto.insight.DrawerCreateResponse;
-import ccc.keeweapi.dto.insight.DrawerResponse;
+import ccc.keeweapi.dto.insight.response.DrawerCreateResponse;
+import ccc.keeweapi.dto.insight.request.DrawerResponse;
 import ccc.keeweapi.service.insight.command.InsightDrawerCommandApiService;
 import ccc.keeweapi.service.insight.query.InsightDrawerQueryApiService;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;

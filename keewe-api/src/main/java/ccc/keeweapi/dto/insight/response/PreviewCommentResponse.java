@@ -1,23 +1,17 @@
-package ccc.keeweapi.dto.insight;
+package ccc.keeweapi.dto.insight.response;
 
 import ccc.keeweapi.dto.BlockFilteringResponse;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import java.util.List;
-
-
 @Getter
 @AllArgsConstructor(staticName = "of")
-public class CommentResponse implements BlockFilteringResponse {
-
+public class PreviewCommentResponse implements BlockFilteringResponse {
     private Long id;
     private CommentWriterResponse writer;
     private String content;
     private String createdAt;
-    private List<ReplyResponse> replies;
-    private Long totalReply;
 
     @Override
     @JsonIgnore

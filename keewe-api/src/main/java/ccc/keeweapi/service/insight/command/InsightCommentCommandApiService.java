@@ -1,9 +1,9 @@
 package ccc.keeweapi.service.insight.command;
 
 import ccc.keeweapi.component.InsightAssembler;
-import ccc.keeweapi.dto.insight.CommentCreateRequest;
-import ccc.keeweapi.dto.insight.CommentCreateResponse;
-import ccc.keeweapi.dto.insight.CommentDeleteResponse;
+import ccc.keeweapi.dto.insight.request.CommentCreateRequest;
+import ccc.keeweapi.dto.insight.response.CommentCreateResponse;
+import ccc.keeweapi.dto.insight.response.CommentDeleteResponse;
 import ccc.keewedomain.persistence.domain.insight.Comment;
 import ccc.keewedomain.persistence.domain.notification.Notification;
 import ccc.keewedomain.persistence.domain.notification.enums.NotificationContents;

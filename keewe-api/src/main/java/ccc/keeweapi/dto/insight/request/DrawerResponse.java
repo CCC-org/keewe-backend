@@ -1,4 +1,4 @@
-package ccc.keeweapi.dto.insight;
+package ccc.keeweapi.dto.insight.request;
 
 import lombok.AccessLevel;
 import lombok.Getter;

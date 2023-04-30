@@ -1,14 +1,14 @@
 package ccc.keeweapi.controller.api.insight;
 
 import ccc.keeweapi.dto.ApiResponse;
-import ccc.keeweapi.dto.insight.CommentCreateRequest;
-import ccc.keeweapi.dto.insight.CommentCreateResponse;
-import ccc.keeweapi.dto.insight.CommentDeleteResponse;
-import ccc.keeweapi.dto.insight.CommentResponse;
-import ccc.keeweapi.dto.insight.InsightCommentCountResponse;
-import ccc.keeweapi.dto.insight.PreviewCommentResponse;
-import ccc.keeweapi.dto.insight.ReplyResponse;
-import ccc.keeweapi.dto.insight.RepresentativeCommentsResponse;
+import ccc.keeweapi.dto.insight.request.CommentCreateRequest;
+import ccc.keeweapi.dto.insight.response.CommentCreateResponse;
+import ccc.keeweapi.dto.insight.response.CommentDeleteResponse;
+import ccc.keeweapi.dto.insight.response.CommentResponse;
+import ccc.keeweapi.dto.insight.response.InsightCommentCountResponse;
+import ccc.keeweapi.dto.insight.response.PreviewCommentResponse;
+import ccc.keeweapi.dto.insight.response.ReplyResponse;
+import ccc.keeweapi.dto.insight.response.RepresentativeCommentsResponse;
 import ccc.keeweapi.service.insight.command.InsightCommentCommandApiService;
 import ccc.keeweapi.service.insight.query.InsightCommentQueryApiService;
 import ccc.keewedomain.persistence.repository.utils.CursorPageable;

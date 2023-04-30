@@ -1,4 +1,4 @@
-package ccc.keeweapi.dto.insight;
+package ccc.keeweapi.dto.insight.request;
 
 import ccc.keeweapi.validator.annotations.GraphemeLength;
 import lombok.AccessLevel;

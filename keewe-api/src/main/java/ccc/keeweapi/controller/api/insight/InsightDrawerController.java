@@ -1,10 +1,10 @@
 package ccc.keeweapi.controller.api.insight;
 
 import ccc.keeweapi.dto.ApiResponse;
-import ccc.keeweapi.dto.insight.DrawerCreateRequest;
-import ccc.keeweapi.dto.insight.DrawerCreateResponse;
-import ccc.keeweapi.dto.insight.DrawerResponse;
-import ccc.keeweapi.dto.insight.DrawerUpdateRequest;
+import ccc.keeweapi.dto.insight.request.DrawerCreateRequest;
+import ccc.keeweapi.dto.insight.response.DrawerCreateResponse;
+import ccc.keeweapi.dto.insight.request.DrawerResponse;
+import ccc.keeweapi.dto.insight.request.DrawerUpdateRequest;
 import ccc.keeweapi.service.insight.command.InsightDrawerCommandApiService;
 import ccc.keeweapi.service.insight.query.InsightDrawerQueryApiService;
 import java.util.List;

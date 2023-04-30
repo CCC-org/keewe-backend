@@ -1,8 +1,8 @@
 package ccc.keeweapi.controller.api.insight;
 
 import ccc.keeweapi.dto.ApiResponse;
-import ccc.keeweapi.dto.insight.ReactRequest;
-import ccc.keeweapi.dto.insight.ReactResponse;
+import ccc.keeweapi.dto.insight.request.ReactRequest;
+import ccc.keeweapi.dto.insight.response.ReactResponse;
 import ccc.keeweapi.service.insight.command.InsightReactionCommandApiService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
