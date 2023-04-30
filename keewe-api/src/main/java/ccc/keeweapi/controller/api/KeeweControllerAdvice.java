@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 @RestControllerAdvice
 @Slf4j
@@ -59,6 +60,7 @@ public class KeeweControllerAdvice {
     }
 
     @ExceptionHandler(Exception.class)
+    @ResponseStatus(INTERNAL_SERVER_ERROR)
     public ApiResponse<?> handleException(HttpServletRequest request, Exception ex) {
         String message = String.format("request(%s), exception(%s)", request.getRequestURL(), ex.getMessage());
         log.error(message, ex);
