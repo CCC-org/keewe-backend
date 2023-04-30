@@ -30,7 +30,8 @@ public class CommentReplyNotificationProcessor implements NotificationProcessor 
             String.format(contents.getContents(), comment.getWriter().getNickname()), // note. {UserName}님이 답글을 남겼어요.
             contents.getCategory(),
             String.valueOf(comment.getInsight().getId()), // note. 클릭 시 인사이트로 이동
-            notification.isRead()
+            notification.isRead(),
+            notification.getCreatedAt().toLocalDate().toString()
         );
     }
 }

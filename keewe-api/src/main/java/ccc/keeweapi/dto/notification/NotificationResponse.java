@@ -13,4 +13,5 @@ public class NotificationResponse {
     private NotificationCategory category;
     private String referenceId;
     private Boolean read;
+    private String createdAt;
 }
