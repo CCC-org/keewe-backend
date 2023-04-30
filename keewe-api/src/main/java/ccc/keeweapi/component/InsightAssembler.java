@@ -47,6 +47,7 @@ public class InsightAssembler {
     public InsightUpdateDto toInsightUpdateDto(InsightUpdateRequest request) {
         return InsightUpdateDto.of(SecurityUtil.getUserId(), request.getInsightId(), request.getContents(), request.getLink());
     }
+
     public InsightUpdateResponse toInsightUpdateResponse(Insight insight) {
         return InsightUpdateResponse.of(insight.getId());
     }
