@@ -11,7 +11,13 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWit
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import ccc.keeweapi.document.utils.ApiDocumentationTest;
-import ccc.keeweapi.dto.insight.*;
+import ccc.keeweapi.dto.insight.response.CommentCreateResponse;
+import ccc.keeweapi.dto.insight.response.CommentDeleteResponse;
+import ccc.keeweapi.dto.insight.response.CommentResponse;
+import ccc.keeweapi.dto.insight.response.CommentWriterResponse;
+import ccc.keeweapi.dto.insight.response.InsightCommentCountResponse;
+import ccc.keeweapi.dto.insight.response.PreviewCommentResponse;
+import ccc.keeweapi.dto.insight.response.ReplyResponse;
 import ccc.keeweapi.service.insight.command.InsightCommentCommandApiService;
 import ccc.keeweapi.service.insight.query.InsightCommentQueryApiService;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;

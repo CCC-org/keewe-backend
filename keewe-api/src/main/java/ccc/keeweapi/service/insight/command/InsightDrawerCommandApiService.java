@@ -1,9 +1,9 @@
 package ccc.keeweapi.service.insight.command;
 
 import ccc.keeweapi.component.InsightAssembler;
-import ccc.keeweapi.dto.insight.DrawerCreateRequest;
-import ccc.keeweapi.dto.insight.DrawerCreateResponse;
-import ccc.keeweapi.dto.insight.DrawerUpdateRequest;
+import ccc.keeweapi.dto.insight.request.DrawerCreateRequest;
+import ccc.keeweapi.dto.insight.response.DrawerCreateResponse;
+import ccc.keeweapi.dto.insight.request.DrawerUpdateRequest;
 import ccc.keeweapi.utils.SecurityUtil;
 import ccc.keewedomain.persistence.domain.insight.Drawer;
 import ccc.keewedomain.persistence.domain.user.User;

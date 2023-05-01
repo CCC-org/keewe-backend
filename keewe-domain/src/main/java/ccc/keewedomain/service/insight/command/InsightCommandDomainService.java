@@ -10,6 +10,7 @@ import ccc.keewedomain.cache.repository.insight.CInsightViewRepository;
 import ccc.keewedomain.cache.repository.insight.CReactionCountRepository;
 import ccc.keewedomain.dto.insight.InsightCreateDto;
 import ccc.keewedomain.dto.insight.InsightDeleteDto;
+import ccc.keewedomain.dto.insight.InsightUpdateDto;
 import ccc.keewedomain.dto.insight.InsightViewIncrementDto;
 import ccc.keewedomain.persistence.domain.challenge.ChallengeParticipation;
 import ccc.keewedomain.persistence.domain.common.Link;
@@ -46,6 +47,7 @@ public class InsightCommandDomainService {
     private final CInsightViewRepository cInsightViewRepository;
     private final CReactionCountRepository cReactionCountRepository;
 
+    @Transactional
     public Insight create(InsightCreateDto dto) {
         User writer = userDomainService.getUserByIdOrElseThrow(dto.getWriterId());
         Drawer drawer = drawerDomainService.getDrawerIfOwner(dto.getDrawerId(), writer);
@@ -62,6 +64,16 @@ public class InsightCommandDomainService {
         return insight;
     }
 
+    @Transactional
+    public Insight update(InsightUpdateDto dto) {
+        Insight insight = insightQueryDomainService.getByIdOrElseThrow(dto.getInsightId());
+        Long writerId = insight.getWriter().getId();
+        assert writerId.equals(dto.getInsightId());
+        insight.update(dto.getContents(), Link.of(dto.getLink()));
+        return insightRepository.save(insight);
+    }
+
+    @Transactional
     public Long delete(InsightDeleteDto dto) {
         Long writerId = dto.getWriterId();
         Long insightId = dto.getInsightId();

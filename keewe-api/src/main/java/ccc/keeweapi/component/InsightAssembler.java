@@ -1,6 +1,24 @@
 package ccc.keeweapi.component;
 
-import ccc.keeweapi.dto.insight.*;
+import ccc.keeweapi.dto.insight.request.CommentCreateRequest;
+import ccc.keeweapi.dto.insight.request.DrawerCreateRequest;
+import ccc.keeweapi.dto.insight.request.DrawerResponse;
+import ccc.keeweapi.dto.insight.request.InsightCreateRequest;
+import ccc.keeweapi.dto.insight.request.InsightUpdateRequest;
+import ccc.keeweapi.dto.insight.response.BookmarkToggleResponse;
+import ccc.keeweapi.dto.insight.response.ChallengeRecordResponse;
+import ccc.keeweapi.dto.insight.response.CommentCreateResponse;
+import ccc.keeweapi.dto.insight.response.CommentDeleteResponse;
+import ccc.keeweapi.dto.insight.response.DrawerCreateResponse;
+import ccc.keeweapi.dto.insight.response.InsightAuthorAreaResponse;
+import ccc.keeweapi.dto.insight.response.InsightCreateResponse;
+import ccc.keeweapi.dto.insight.response.InsightGetForHomeResponse;
+import ccc.keeweapi.dto.insight.response.InsightGetResponse;
+import ccc.keeweapi.dto.insight.response.InsightMyPageResponse;
+import ccc.keeweapi.dto.insight.response.InsightStatisticsResponse;
+import ccc.keeweapi.dto.insight.response.InsightUpdateResponse;
+import ccc.keeweapi.dto.insight.response.InsightViewIncrementResponse;
+import ccc.keeweapi.dto.insight.response.ReactionAggregationResponse;
 import ccc.keeweapi.utils.SecurityUtil;
 import ccc.keewedomain.dto.insight.*;
 import ccc.keewedomain.persistence.domain.challenge.Challenge;
@@ -24,6 +42,14 @@ public class InsightAssembler {
                 request.getLink(),
                 request.isParticipation(),
                 request.getDrawerId());
+    }
+
+    public InsightUpdateDto toInsightUpdateDto(InsightUpdateRequest request) {
+        return InsightUpdateDto.of(SecurityUtil.getUserId(), request.getInsightId(), request.getContents(), request.getLink());
+    }
+
+    public InsightUpdateResponse toInsightUpdateResponse(Insight insight) {
+        return InsightUpdateResponse.of(insight.getId());
     }
 
     public InsightCreateResponse toInsightCreateResponse(Insight insight) {

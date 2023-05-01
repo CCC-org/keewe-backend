@@ -85,4 +85,9 @@ public class Insight extends BaseTimeEntity {
     public void removeDrawer() {
         this.drawer = null;
     }
+
+    public void update(String contents, Link link) {
+        this.contents = contents;
+        this.link = link;
+    }
 }

@@ -1,8 +1,8 @@
 package ccc.keeweapi.service.insight.query;
 
 import ccc.keeweapi.component.InsightAssembler;
-import ccc.keeweapi.dto.insight.DrawerResponse;
 import ccc.keeweapi.utils.BlockUtil;
+import ccc.keeweapi.dto.insight.request.DrawerResponse;
 import ccc.keeweapi.utils.SecurityUtil;
 import ccc.keewedomain.service.insight.DrawerDomainService;
 import java.util.List;

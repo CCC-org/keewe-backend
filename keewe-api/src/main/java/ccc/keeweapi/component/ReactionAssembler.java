@@ -1,7 +1,7 @@
 package ccc.keeweapi.component;
 
-import ccc.keeweapi.dto.insight.ReactRequest;
-import ccc.keeweapi.dto.insight.ReactResponse;
+import ccc.keeweapi.dto.insight.request.ReactRequest;
+import ccc.keeweapi.dto.insight.response.ReactResponse;
 import ccc.keeweapi.utils.SecurityUtil;
 import ccc.keewedomain.dto.insight.ReactionDto;
 import ccc.keewedomain.dto.insight.ReactionIncrementDto;

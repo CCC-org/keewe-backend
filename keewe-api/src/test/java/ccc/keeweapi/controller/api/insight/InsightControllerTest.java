@@ -11,7 +11,17 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWit
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import ccc.keeweapi.document.utils.ApiDocumentationTest;
-import ccc.keeweapi.dto.insight.*;
+import ccc.keeweapi.dto.insight.response.ChallengeRecordResponse;
+import ccc.keeweapi.dto.insight.response.InsightAuthorAreaResponse;
+import ccc.keeweapi.dto.insight.response.InsightCreateResponse;
+import ccc.keeweapi.dto.insight.response.InsightDeleteResponse;
+import ccc.keeweapi.dto.insight.response.InsightGetForHomeResponse;
+import ccc.keeweapi.dto.insight.response.InsightGetResponse;
+import ccc.keeweapi.dto.insight.response.InsightMyPageResponse;
+import ccc.keeweapi.dto.insight.response.InsightStatisticsResponse;
+import ccc.keeweapi.dto.insight.response.InsightUpdateResponse;
+import ccc.keeweapi.dto.insight.response.InsightViewIncrementResponse;
+import ccc.keeweapi.dto.insight.response.ReactionAggregationResponse;
 import ccc.keeweapi.service.insight.command.InsightCommandApiService;
 import ccc.keeweapi.service.insight.query.InsightQueryApiService;
 import ccc.keewedomain.dto.insight.InsightWriterDto;
@@ -86,6 +96,45 @@ public class InsightControllerTest extends ApiDocumentationTest {
                                 fieldWithPath("message").description("요청 결과 메세지"),
                                 fieldWithPath("code").description("결과 코드"),
                                 fieldWithPath("data.insightId").description("생성된 인사이트의 ID"))
+                        .tag("Insight")
+                        .build()
+        )));
+    }
+
+    @Test
+    @DisplayName("인사이트 수정 API")
+    void updateInsight() throws Exception {
+        String contents = "내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용";
+        String link = "https://tech.kakao.com/2022/03/17/2022-newkrew-onboarding-codereview/";
+
+        JSONObject insightUpdateRequest = new JSONObject();
+        insightUpdateRequest
+                .put("insightId", 3L)
+                .put("contents", contents)
+                .put("link", link);
+
+        when(insightCommandApiService.update(any())).thenReturn(InsightUpdateResponse.of(1L));
+
+        ResultActions resultActions = mockMvc.perform(patch("/api/v1/insight")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
+                        .content(insightUpdateRequest.toString())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        resultActions.andDo(restDocs.document(resource(
+                ResourceSnippetParameters.builder()
+                        .description("인사이트 수정 API 입니다.")
+                        .summary("인사이트 수정 API")
+                        .requestHeaders(
+                                headerWithName("Authorization").description("유저의 JWT"))
+                        .requestFields(
+                                fieldWithPath("insightId").description("인사이트 ID"),
+                                fieldWithPath("contents").description("인사이트의 내용. 최대 300자, 문자 제한 없음"),
+                                fieldWithPath("link").description("등록한 링크의 link. 최대 2000자"))
+                        .responseFields(
+                                fieldWithPath("message").description("요청 결과 메세지"),
+                                fieldWithPath("code").description("결과 코드"),
+                                fieldWithPath("data.insightId").description("수정된 인사이트의 ID"))
                         .tag("Insight")
                         .build()
         )));
