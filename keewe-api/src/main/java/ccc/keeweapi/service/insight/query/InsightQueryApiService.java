@@ -8,7 +8,7 @@ import ccc.keeweapi.dto.insight.InsightGetForHomeResponse;
 import ccc.keeweapi.dto.insight.InsightGetResponse;
 import ccc.keeweapi.dto.insight.InsightMyPageResponse;
 import ccc.keeweapi.dto.insight.InsightStatisticsResponse;
-import ccc.keeweapi.utils.BlockFilterUtil;
+import ccc.keeweapi.utils.BlockUtil;
 import ccc.keeweapi.utils.SecurityUtil;
 import ccc.keewecore.consts.KeeweRtnConsts;
 import ccc.keewecore.exception.KeeweException;
@@ -44,18 +44,18 @@ public class InsightQueryApiService {
     private final InsightAssembler insightAssembler;
     private final ProfileAssembler profileAssembler;
     private final ChallengeParticipateQueryDomainService challengeParticipateQueryDomainService;
-    private final BlockFilterUtil blockFilterUtil;
+    private final BlockUtil blockUtil;
 
     @Transactional(readOnly = true)
     public InsightGetResponse getInsight(Long insightId) {
-        blockFilterUtil.filterInsightWriter(insightId);
+        blockUtil.checkInsightWriter(insightId);
         InsightGetDto insightGetDto = insightQueryDomainService.getInsight(insightAssembler.toInsightDetailDto(insightId));
         return insightAssembler.toInsightGetResponse(insightGetDto);
     }
 
     @Transactional(readOnly = true)
     public InsightAuthorAreaResponse getInsightAuthorAreaInfo(Long insightId) {
-        blockFilterUtil.filterInsightWriter(insightId);
+        blockUtil.checkInsightWriter(insightId);
         Insight insight = insightQueryDomainService.getByIdWithWriter(insightId);
         boolean isFollowing = profileQueryDomainService.isFollowing(profileAssembler.toFollowCheckDto(insight.getWriter().getId()));
         return insightAssembler.toInsightAuthorAreaResponse(insight, isFollowing);
@@ -66,7 +66,7 @@ public class InsightQueryApiService {
         List<InsightGetForHomeResponse> responses = insightQueryDomainService.getInsightsForHome(SecurityUtil.getUser(), cPage, follow).stream()
                 .map(insightAssembler::toInsightGetForHomeResponse)
                 .collect(Collectors.toList());
-        return blockFilterUtil.filterUserInResponse(responses);
+        return blockUtil.filterUserInResponses(responses);
     }
 
     // FIXME DTO 수정할 때 같이 네이밍 수정 필요
@@ -80,7 +80,7 @@ public class InsightQueryApiService {
         List<InsightGetForHomeResponse> responses = insightQueryDomainService.getByChallenge(challenge, user, cPage, writerId).stream()
                 .map(insightAssembler::toInsightGetForHomeResponse)
                 .collect(Collectors.toList());
-        return blockFilterUtil.filterUserInResponse(responses);
+        return blockUtil.filterUserInResponses(responses);
     }
 
     @Transactional(readOnly = true)
@@ -88,11 +88,11 @@ public class InsightQueryApiService {
         List<InsightGetForHomeResponse> responses = insightQueryDomainService.getInsightForBookmark(SecurityUtil.getUser(), cPage).stream()
                 .map(insightAssembler::toInsightGetForHomeResponse)
                 .collect(Collectors.toList());
-        return blockFilterUtil.filterUserInResponse(responses);
+        return blockUtil.filterUserInResponses(responses);
     }
 
     public ChallengeRecordResponse getChallengeRecord(Long insightId) {
-        blockFilterUtil.filterInsightWriter(insightId);
+        blockUtil.checkInsightWriter(insightId);
         Insight insight = insightQueryDomainService.getByIdWithChallengeOrElseThrow(insightId);
         ChallengeParticipation participation = insight.getChallengeParticipation();
 
@@ -110,7 +110,7 @@ public class InsightQueryApiService {
 
     @Transactional(readOnly = true)
     public List<InsightMyPageResponse> getInsightsForMyPage(Long userId, Long drawerId, CursorPageable<Long> cPage) {
-        blockFilterUtil.filterUserId(userId);
+        blockUtil.checkUserId(userId);
         return insightQueryDomainService.getInsightsForMyPage(SecurityUtil.getUser(), userId, drawerId, cPage).stream()
                 .map(insightAssembler::toInsightMyPageResponse)
                 .collect(Collectors.toList());

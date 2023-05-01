@@ -6,7 +6,7 @@ import ccc.keeweapi.dto.insight.InsightCreateRequest;
 import ccc.keeweapi.dto.insight.InsightCreateResponse;
 import ccc.keeweapi.dto.insight.InsightDeleteResponse;
 import ccc.keeweapi.dto.insight.InsightViewIncrementResponse;
-import ccc.keeweapi.utils.BlockFilterUtil;
+import ccc.keeweapi.utils.BlockUtil;
 import ccc.keeweapi.utils.annotations.TitleEventPublish;
 import ccc.keewecore.consts.TitleCategory;
 import ccc.keewedomain.persistence.domain.insight.Insight;
@@ -23,7 +23,7 @@ public class InsightCommandApiService {
     private final BookmarkCommandDomainService bookmarkCommandDomainService;
     private final InsightCommandDomainService insightCommandDomainService;
     private final InsightAssembler insightAssembler;
-    private final BlockFilterUtil blockFilterUtil;
+    private final BlockUtil blockUtil;
 
     @Transactional
     @TitleEventPublish(titleCategory = TitleCategory.INSIGHT)
@@ -33,7 +33,7 @@ public class InsightCommandApiService {
     }
 
     public InsightViewIncrementResponse incrementViewCount(Long insightId) {
-        blockFilterUtil.filterInsightWriter(insightId);
+        blockUtil.checkInsightWriter(insightId);
         Long viewCount = insightCommandDomainService.incrementViewCount(insightAssembler.toInsightViewIncrementDto(insightId));
         return insightAssembler.toInsightViewIncrementResponse(viewCount);
     }

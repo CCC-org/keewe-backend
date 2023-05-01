@@ -15,33 +15,33 @@ import java.util.Set;
 
 @Component
 @RequiredArgsConstructor
-public class BlockFilterUtil {
+public class BlockUtil {
     private final ProfileQueryDomainService profileQueryDomainService;
     private final InsightQueryDomainService insightQueryDomainService;
 
-    public void filterInsightWriter(Long insightId) {
+    public void checkInsightWriter(Long insightId) {
         Long writerId = insightQueryDomainService.getByIdWithWriter(insightId).getWriter().getId();
         validateUserIsBlocked(writerId);
     }
 
-    public void filterInsightWriter(InsightIdBlockRequest request) {
-        filterInsightWriter(request.getInsightId());
+    public void checkInsightWriter(InsightIdBlockRequest request) {
+        checkInsightWriter(request.getInsightId());
     }
 
-    public void filterUserId(Long userId) {
+    public void checkUserId(Long userId) {
         validateUserIsBlocked(userId);
     }
 
-    public void filterUserId(UserIdBlockRequest request) {
+    public void checkUserId(UserIdBlockRequest request) {
         validateUserIsBlocked(request.getUserId());
     }
 
-    public BlockFilteringResponse filterUserInResponse(BlockFilteringResponse response) {
+    public BlockFilteringResponse checkUserInResponse(BlockFilteringResponse response) {
         validateUserIsBlocked(response.getUserId());
         return response;
     }
 
-    public <T extends BlockFilteringResponse> List<T> filterUserInResponse(List<T> responses) {
+    public <T extends BlockFilteringResponse> List<T> filterUserInResponses(List<T> responses) {
         if(responses == null || responses.isEmpty()) {
             return responses;
         }

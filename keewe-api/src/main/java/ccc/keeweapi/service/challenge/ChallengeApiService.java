@@ -15,7 +15,7 @@ import ccc.keeweapi.dto.challenge.ParticipatingChallengeResponse;
 import ccc.keeweapi.dto.challenge.ParticipationCheckResponse;
 import ccc.keeweapi.dto.challenge.ParticipationUpdateRequest;
 import ccc.keeweapi.dto.challenge.WeekProgressResponse;
-import ccc.keeweapi.utils.BlockFilterUtil;
+import ccc.keeweapi.utils.BlockUtil;
 import ccc.keeweapi.utils.SecurityUtil;
 import ccc.keewecore.consts.KeeweRtnConsts;
 import ccc.keewecore.exception.KeeweException;
@@ -53,7 +53,7 @@ public class ChallengeApiService {
     private final InsightQueryDomainService insightQueryDomainService;
     private final ProfileQueryDomainService profileQueryDomainService;
     private final ChallengeAssembler challengeAssembler;
-    private final BlockFilterUtil blockFilterUtil;
+    private final BlockUtil blockUtil;
 
     @Transactional
     public ChallengeCreateResponse createChallenge(ChallengeCreateRequest request) {
@@ -145,7 +145,7 @@ public class ChallengeApiService {
                         followingIdSet.contains(participation.getChallenger().getId()))
                 )
                 .collect(Collectors.toList());
-        return blockFilterUtil.filterUserInResponse(responses);
+        return blockUtil.filterUserInResponses(responses);
     }
 
     @Transactional(readOnly = true)
