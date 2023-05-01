@@ -2,13 +2,13 @@ package ccc.keeweapi.service.insight.query;
 
 import ccc.keeweapi.component.InsightAssembler;
 import ccc.keeweapi.component.ProfileAssembler;
-import ccc.keeweapi.utils.BlockedResourceManager;
 import ccc.keeweapi.dto.insight.response.ChallengeRecordResponse;
 import ccc.keeweapi.dto.insight.response.InsightAuthorAreaResponse;
 import ccc.keeweapi.dto.insight.response.InsightGetForHomeResponse;
 import ccc.keeweapi.dto.insight.response.InsightGetResponse;
 import ccc.keeweapi.dto.insight.response.InsightMyPageResponse;
 import ccc.keeweapi.dto.insight.response.InsightStatisticsResponse;
+import ccc.keeweapi.utils.BlockedResourceManager;
 import ccc.keeweapi.utils.SecurityUtil;
 import ccc.keewecore.consts.KeeweRtnConsts;
 import ccc.keewecore.exception.KeeweException;
@@ -19,9 +19,9 @@ import ccc.keewedomain.persistence.domain.insight.Insight;
 import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.persistence.repository.utils.CursorPageable;
 import ccc.keewedomain.service.challenge.query.ChallengeParticipateQueryDomainService;
-import ccc.keewedomain.service.insight.CommentDomainService;
 import ccc.keewedomain.service.insight.ReactionDomainService;
 import ccc.keewedomain.service.insight.query.BookmarkQueryDomainService;
+import ccc.keewedomain.service.insight.query.CommentQueryDomainService;
 import ccc.keewedomain.service.insight.query.InsightQueryDomainService;
 import ccc.keewedomain.service.user.query.ProfileQueryDomainService;
 import lombok.RequiredArgsConstructor;
@@ -38,7 +38,7 @@ public class InsightQueryApiService {
 
     private final InsightQueryDomainService insightQueryDomainService;
     private final ReactionDomainService reactionDomainService;
-    private final CommentDomainService commentDomainService;
+    private final CommentQueryDomainService commentQueryDomainService;
     private final BookmarkQueryDomainService bookmarkQueryDomainService;
     private final ProfileQueryDomainService profileQueryDomainService;
     private final InsightAssembler insightAssembler;
@@ -120,7 +120,7 @@ public class InsightQueryApiService {
         insightQueryDomainService.validateWriter(SecurityUtil.getUserId(), insightId);
         Long viewCount = insightQueryDomainService.getViewCount(insightId);
         Long reactionCount = reactionDomainService.getCurrentReactionAggregation(insightId).getAllReactionCount();
-        Long commentCount = commentDomainService.countByInsightId(insightId, SecurityUtil.getUserId());
+        Long commentCount = commentQueryDomainService.countByInsightId(insightId, SecurityUtil.getUserId());
         Long bookmarkCount = bookmarkQueryDomainService.countBookmarkByInsightId(insightId);
         Long shareCount = 0L; // FIXME 공유 카운팅 추가 시 변경 필요
         return insightAssembler.toInsightStatisticsResponse(viewCount, reactionCount, commentCount,bookmarkCount, shareCount);

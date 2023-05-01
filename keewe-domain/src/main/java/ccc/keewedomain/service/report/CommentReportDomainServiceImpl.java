@@ -7,16 +7,17 @@ import ccc.keewedomain.persistence.domain.insight.enums.ReportTarget;
 import ccc.keewedomain.persistence.domain.report.Report;
 import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.persistence.repository.report.ReportRepository;
-import ccc.keewedomain.service.insight.CommentDomainService;
+import ccc.keewedomain.service.insight.query.CommentQueryDomainService;
 import ccc.keewedomain.service.user.UserDomainService;
 import ccc.keeweinfra.service.notification.SlackNotiService;
 import ccc.keeweinfra.vo.Attachment;
 import ccc.keeweinfra.vo.Field;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Slf4j
 @Service
@@ -24,7 +25,7 @@ import org.springframework.stereotype.Service;
 public class CommentReportDomainServiceImpl implements ReportDomainService {
     private final UserDomainService userDomainService;
     private final SlackNotiService slackNotiService;
-    private final CommentDomainService commentDomainService;
+    private final CommentQueryDomainService commentQueryDomainService;
     private final ReportRepository reportRepository;
 
     @Value("${spring.config.activate.on-profile}")
@@ -33,7 +34,7 @@ public class CommentReportDomainServiceImpl implements ReportDomainService {
     @Override
     public Report save(ReportCreateDto reportCreateDto) {
         User reporter = userDomainService.getUserByIdOrElseThrow(reportCreateDto.getUserId());
-        Comment comment = commentDomainService.getByIdOrElseThrow(reportCreateDto.getTargetId());
+        Comment comment = commentQueryDomainService.getByIdOrElseThrow(reportCreateDto.getTargetId());
 
         Report report = Report.of(reporter,
                 reportCreateDto.getReportTarget(),
