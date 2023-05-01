@@ -1,6 +1,7 @@
 package ccc.keeweapi.service.insight.command;
 
 import ccc.keeweapi.component.InsightAssembler;
+import ccc.keeweapi.utils.BlockUtil;
 import ccc.keeweapi.dto.insight.request.InsightCreateRequest;
 import ccc.keeweapi.dto.insight.request.InsightUpdateRequest;
 import ccc.keeweapi.dto.insight.response.BookmarkToggleResponse;
@@ -8,7 +9,6 @@ import ccc.keeweapi.dto.insight.response.InsightCreateResponse;
 import ccc.keeweapi.dto.insight.response.InsightDeleteResponse;
 import ccc.keeweapi.dto.insight.response.InsightUpdateResponse;
 import ccc.keeweapi.dto.insight.response.InsightViewIncrementResponse;
-import ccc.keeweapi.utils.BlockFilterUtil;
 import ccc.keeweapi.utils.SecurityUtil;
 import ccc.keeweapi.utils.annotations.TitleEventPublish;
 import ccc.keewecore.consts.TitleCategory;
@@ -27,7 +27,7 @@ public class InsightCommandApiService {
     private final BookmarkCommandDomainService bookmarkCommandDomainService;
     private final InsightCommandDomainService insightCommandDomainService;
     private final InsightAssembler insightAssembler;
-    private final BlockFilterUtil blockFilterUtil;
+    private final BlockUtil blockUtil;
 
     @TitleEventPublish(titleCategory = TitleCategory.INSIGHT)
     public InsightCreateResponse create(InsightCreateRequest request) {
@@ -43,7 +43,7 @@ public class InsightCommandApiService {
     }
 
     public InsightViewIncrementResponse incrementViewCount(Long insightId) {
-        blockFilterUtil.filterInsightWriter(insightId);
+        blockUtil.checkInsightWriter(insightId);
         Long viewCount = insightCommandDomainService.incrementViewCount(insightAssembler.toInsightViewIncrementDto(insightId));
         return insightAssembler.toInsightViewIncrementResponse(viewCount);
     }

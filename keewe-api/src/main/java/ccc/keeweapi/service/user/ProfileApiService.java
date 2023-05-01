@@ -15,7 +15,7 @@ import ccc.keeweapi.dto.user.ProfileUpdateRequest;
 import ccc.keeweapi.dto.user.ProfileUpdateResponse;
 import ccc.keeweapi.dto.user.UnblockUserResponse;
 import ccc.keeweapi.dto.user.UploadProfilePhotoResponse;
-import ccc.keeweapi.utils.BlockFilterUtil;
+import ccc.keeweapi.utils.BlockUtil;
 import ccc.keeweapi.utils.SecurityUtil;
 import ccc.keewedomain.dto.user.FollowCheckDto;
 import ccc.keewedomain.persistence.domain.title.TitleAchievement;
@@ -49,7 +49,7 @@ public class ProfileApiService {
     private final ProfileAssembler profileAssembler;
     private final ProfileQueryDomainService profileQueryDomainService;
     private final ProfileCommandDomainService profileCommandDomainService;
-    private final BlockFilterUtil blockFilterUtil;
+    private final BlockUtil blockUtil;
 
     @Transactional
     public OnboardResponse onboard(OnboardRequest request) {
@@ -59,7 +59,7 @@ public class ProfileApiService {
 
     @Transactional
     public FollowToggleResponse toggleFollowership(Long userId) {
-        blockFilterUtil.filterUserId(userId);
+        blockUtil.checkUserId(userId);
         boolean following = profileCommandDomainService.toggleFollowership(profileAssembler.toFollowToggleDto(userId));
         return profileAssembler.toFollowToggleResponse(following);
     }
@@ -72,7 +72,7 @@ public class ProfileApiService {
 
     @Transactional(readOnly = true)
     public ProfileMyPageResponse getMyPageProfile(Long userId) {
-        blockFilterUtil.filterUserId(userId);
+        blockUtil.checkUserId(userId);
         User targetUser = userDomainService.getUserByIdWithInterests(userId);
         Long requestUserId = SecurityUtil.getUserId();
 
@@ -89,7 +89,7 @@ public class ProfileApiService {
 
     @Transactional(readOnly = true)
     public MyPageTitleResponse getMyPageTitles(Long userId) {
-        blockFilterUtil.filterUserId(userId);
+        blockUtil.checkUserId(userId);
         List<TitleAchievement> titleAchievements = profileQueryDomainService.getTitleAchievements(userId, MY_PAGE_TITLE_LIMIT);
         Long total = profileQueryDomainService.getAchievedTitleCount(userId);
 
@@ -98,7 +98,7 @@ public class ProfileApiService {
 
     @Transactional(readOnly = true)
     public AllAchievedTitleResponse getAllAchievedTitles(Long userId) {
-        blockFilterUtil.filterUserId(userId);
+        blockUtil.checkUserId(userId);
         List<TitleAchievement> titleAchievements = profileQueryDomainService.getTitleAchievements(userId, Integer.MAX_VALUE);
 
         return profileAssembler.toAllAchievedTitleResponse(SecurityUtil.getUser(), titleAchievements);
@@ -106,7 +106,7 @@ public class ProfileApiService {
 
     @Transactional(readOnly = true)
     public FollowUserListResponse getFollowers(Long userId, CursorPageable<LocalDateTime> cPage) {
-        blockFilterUtil.filterUserId(userId);
+        blockUtil.checkUserId(userId);
         List<Follow> follows = profileQueryDomainService.getFollowers(userId, cPage);
 
         return getFollowUser(follows, Follow::getFollower);
@@ -114,7 +114,7 @@ public class ProfileApiService {
 
     @Transactional(readOnly = true)
     public FollowUserListResponse getFollowees(Long userId, CursorPageable<LocalDateTime> cPage) {
-        blockFilterUtil.filterUserId(userId);
+        blockUtil.checkUserId(userId);
         List<Follow> follows = profileQueryDomainService.getFollowees(userId, cPage);
 
         return getFollowUser(follows, Follow::getFollowee);
