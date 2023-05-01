@@ -40,7 +40,7 @@ public class Challenge extends BaseTimeEntity {
     @Column(name = "deleted", nullable = false)
     private boolean deleted;
 
-    @OneToMany(mappedBy = "challenger", cascade = CascadeType.PERSIST, orphanRemoval = true)
+    @OneToMany(mappedBy = "challenge", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<ChallengeParticipation> participationList = new ArrayList<>();
 
     public static Challenge of(User writer, String name, String interest, String introduction) {
@@ -62,5 +62,15 @@ public class Challenge extends BaseTimeEntity {
                 duration);
         getParticipationList().add(participation);
         return participation;
+    }
+
+    public static Challenge delete(Challenge challenge) {
+        challenge.deleted = true;
+        return challenge;
+    }
+
+    public boolean isNoOneParticipated() {
+        return participationList.isEmpty() || participationList.stream()
+                .noneMatch(ChallengeParticipation::isChallenging);
     }
 }

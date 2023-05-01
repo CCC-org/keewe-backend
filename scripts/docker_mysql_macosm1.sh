@@ -10,4 +10,6 @@ docker run --name keewe-mysql \
     -d -p 3306:3306 \
     -v /private/keewe/mysql:/var/lib/mysql:rw \
     --user "1000:50" \
-    mysql:5.7
+    mysql:5.7 \
+    --character-set-server="utf8mb4" \
+    --collation-server="utf8mb4_unicode_ci"

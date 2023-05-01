@@ -72,4 +72,8 @@ public class ChallengeParticipateQueryDomainService {
     public List<ChallengeParticipation> paginateFinished(User challenger, CursorPageable<Long> cPage) {
         return challengeParticipationQueryRepository.paginateFinished(challenger, cPage);
     }
+
+    public List<ChallengeParticipation> paginateFinished(CursorPageable<Long> cPage, LocalDateTime startDateTime, LocalDateTime endDateTime) {
+        return challengeParticipationQueryRepository.paginateFinished(cPage, startDateTime, endDateTime);
+    }
 }
