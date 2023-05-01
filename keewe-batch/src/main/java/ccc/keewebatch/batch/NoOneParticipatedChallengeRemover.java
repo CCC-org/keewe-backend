@@ -102,7 +102,7 @@ public class NoOneParticipatedChallengeRemover {
                                 .collect(Collectors.toList());
                         challengeCommandDomainService.saveAll(deletedChallenges);
                         deletedCount += deletedChallenges.size();
-                        cursor = this.getNextCursor(challenges);
+                        cursor = this.getNextCursor(participations);
                     } while (cursor != null);
                     afterDeleteChallenge(startDateTime, endDateTime, deletedCount);
                     return RepeatStatus.FINISHED;
@@ -111,9 +111,9 @@ public class NoOneParticipatedChallengeRemover {
                 .build();
     }
 
-    private Long getNextCursor(List<Challenge> challenges) {
-        if(challenges.size() >= CHUCK_SIZE) {
-            return ListUtils.getLast(challenges).getId();
+    private Long getNextCursor(List<ChallengeParticipation> participations) {
+        if(participations.size() >= CHUCK_SIZE) {
+            return ListUtils.getLast(participations).getId();
         } else {
             return null;
         }
