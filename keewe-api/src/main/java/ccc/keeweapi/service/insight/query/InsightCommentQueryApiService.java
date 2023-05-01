@@ -1,7 +1,7 @@
 package ccc.keeweapi.service.insight.query;
 
 import ccc.keeweapi.component.CommentAssembler;
-import ccc.keeweapi.utils.BlockUtil;
+import ccc.keeweapi.utils.BlockedResourceManager;
 import ccc.keeweapi.dto.insight.response.CommentResponse;
 import ccc.keeweapi.dto.insight.response.InsightCommentCountResponse;
 import ccc.keeweapi.dto.insight.response.PreviewCommentResponse;
@@ -25,11 +25,11 @@ public class InsightCommentQueryApiService {
 
     private final CommentDomainService commentDomainService;
     private final CommentAssembler commentAssembler;
-    private final BlockUtil blockUtil;
+    private final BlockedResourceManager blockedResourceManager;
 
     @Transactional(readOnly = true)
     public List<PreviewCommentResponse> getPreviewComments(Long insightId) {
-        blockUtil.checkInsightWriter(insightId);
+        blockedResourceManager.validateAccessibleInsight(insightId);
         User user = SecurityUtil.getUser();
         List<Comment> comments = commentDomainService.getCommentsWithoutBlocked(insightId, CursorPageable.of(Long.MAX_VALUE, 3L), user.getId());
         commentDomainService.findLatestCommentByWriter(user, insightId)
@@ -42,12 +42,12 @@ public class InsightCommentQueryApiService {
                 .limit(3)
                 .map(commentAssembler::toPreviewCommentResponse)
                 .collect(Collectors.toList());
-        return blockUtil.filterUserInResponses(responses);
+        return blockedResourceManager.filterBlockedUsers(responses);
     }
 
     @Transactional(readOnly = true)
     public List<CommentResponse> getCommentsWithFirstReply(Long insightId, CursorPageable<Long> cPage) {
-        blockUtil.checkInsightWriter(insightId);
+        blockedResourceManager.validateAccessibleInsight(insightId);
         List<Comment> comments = commentDomainService.getComments(insightId, cPage);
         Map<Long, Comment> firstReplyPerParentId = commentDomainService.getFirstReplies(comments);
         Map<Long, Long> replyNumberPerParentId = commentDomainService.getReplyNumbers(comments);
@@ -59,7 +59,7 @@ public class InsightCommentQueryApiService {
                         replyNumberPerParentId.getOrDefault(comment.getId(), 0L)
                 ))
                 .collect(Collectors.toList());
-        return blockUtil.filterUserInResponses(responses);
+        return blockedResourceManager.filterBlockedUsers(responses);
     }
 
     @Transactional(readOnly = true)
@@ -67,11 +67,11 @@ public class InsightCommentQueryApiService {
         List<ReplyResponse> responses = commentDomainService.getReplies(parentId, cPage).stream()
                 .map(commentAssembler::toReplyResponse)
                 .collect(Collectors.toList());
-        return blockUtil.filterUserInResponses(responses);
+        return blockedResourceManager.filterBlockedUsers(responses);
     }
 
     public InsightCommentCountResponse getCommentCount(Long insightId) {
-        blockUtil.checkInsightWriter(insightId);
+        blockedResourceManager.validateAccessibleInsight(insightId);
         Long userId = SecurityUtil.getUserId();
         return commentAssembler.toInsightCommentCountResponse(commentDomainService.countByInsightId(insightId, userId));
     }

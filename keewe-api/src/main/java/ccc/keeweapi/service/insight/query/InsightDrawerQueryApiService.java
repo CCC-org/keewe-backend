@@ -1,7 +1,7 @@
 package ccc.keeweapi.service.insight.query;
 
 import ccc.keeweapi.component.InsightAssembler;
-import ccc.keeweapi.utils.BlockUtil;
+import ccc.keeweapi.utils.BlockedResourceManager;
 import ccc.keeweapi.dto.insight.request.DrawerResponse;
 import ccc.keeweapi.utils.SecurityUtil;
 import ccc.keewedomain.service.insight.DrawerDomainService;
@@ -17,7 +17,7 @@ public class InsightDrawerQueryApiService {
 
     private final DrawerDomainService drawerDomainService;
     private final InsightAssembler insightAssembler;
-    private final BlockUtil blockUtil;
+    private final BlockedResourceManager blockedResourceManager;
 
     @Transactional(readOnly = true)
     public List<DrawerResponse> getMyDrawers() {
@@ -30,7 +30,7 @@ public class InsightDrawerQueryApiService {
 
     @Transactional(readOnly = true)
     public List<DrawerResponse> getDrawers(Long userId) {
-        blockUtil.checkUserId(userId);
+        blockedResourceManager.validateAccessibleUser(userId);
         return drawerDomainService.findAllByUserId(userId).stream()
                 .map(insightAssembler::toDrawerResponse)
                 .collect(Collectors.toList());

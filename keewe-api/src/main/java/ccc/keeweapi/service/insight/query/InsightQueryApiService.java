@@ -2,7 +2,7 @@ package ccc.keeweapi.service.insight.query;
 
 import ccc.keeweapi.component.InsightAssembler;
 import ccc.keeweapi.component.ProfileAssembler;
-import ccc.keeweapi.utils.BlockUtil;
+import ccc.keeweapi.utils.BlockedResourceManager;
 import ccc.keeweapi.dto.insight.response.ChallengeRecordResponse;
 import ccc.keeweapi.dto.insight.response.InsightAuthorAreaResponse;
 import ccc.keeweapi.dto.insight.response.InsightGetForHomeResponse;
@@ -44,18 +44,18 @@ public class InsightQueryApiService {
     private final InsightAssembler insightAssembler;
     private final ProfileAssembler profileAssembler;
     private final ChallengeParticipateQueryDomainService challengeParticipateQueryDomainService;
-    private final BlockUtil blockUtil;
+    private final BlockedResourceManager blockedResourceManager;
 
     @Transactional(readOnly = true)
     public InsightGetResponse getInsight(Long insightId) {
-        blockUtil.checkInsightWriter(insightId);
+        blockedResourceManager.validateAccessibleInsight(insightId);
         InsightGetDto insightGetDto = insightQueryDomainService.getInsight(insightAssembler.toInsightDetailDto(insightId));
         return insightAssembler.toInsightGetResponse(insightGetDto);
     }
 
     @Transactional(readOnly = true)
     public InsightAuthorAreaResponse getInsightAuthorAreaInfo(Long insightId) {
-        blockUtil.checkInsightWriter(insightId);
+        blockedResourceManager.validateAccessibleInsight(insightId);
         Insight insight = insightQueryDomainService.getByIdWithWriter(insightId);
         boolean isFollowing = profileQueryDomainService.isFollowing(profileAssembler.toFollowCheckDto(insight.getWriter().getId()));
         return insightAssembler.toInsightAuthorAreaResponse(insight, isFollowing);
@@ -66,7 +66,7 @@ public class InsightQueryApiService {
         List<InsightGetForHomeResponse> responses = insightQueryDomainService.getInsightsForHome(SecurityUtil.getUser(), cPage, follow).stream()
                 .map(insightAssembler::toInsightGetForHomeResponse)
                 .collect(Collectors.toList());
-        return blockUtil.filterUserInResponses(responses);
+        return blockedResourceManager.filterBlockedUsers(responses);
     }
 
     // FIXME DTO 수정할 때 같이 네이밍 수정 필요
@@ -80,7 +80,7 @@ public class InsightQueryApiService {
         List<InsightGetForHomeResponse> responses = insightQueryDomainService.getByChallenge(challenge, user, cPage, writerId).stream()
                 .map(insightAssembler::toInsightGetForHomeResponse)
                 .collect(Collectors.toList());
-        return blockUtil.filterUserInResponses(responses);
+        return blockedResourceManager.filterBlockedUsers(responses);
     }
 
     @Transactional(readOnly = true)
@@ -88,11 +88,11 @@ public class InsightQueryApiService {
         List<InsightGetForHomeResponse> responses = insightQueryDomainService.getInsightForBookmark(SecurityUtil.getUser(), cPage).stream()
                 .map(insightAssembler::toInsightGetForHomeResponse)
                 .collect(Collectors.toList());
-        return blockUtil.filterUserInResponses(responses);
+        return blockedResourceManager.filterBlockedUsers(responses);
     }
 
     public ChallengeRecordResponse getChallengeRecord(Long insightId) {
-        blockUtil.checkInsightWriter(insightId);
+        blockedResourceManager.validateAccessibleInsight(insightId);
         Insight insight = insightQueryDomainService.getByIdWithChallengeOrElseThrow(insightId);
         ChallengeParticipation participation = insight.getChallengeParticipation();
 
@@ -110,7 +110,7 @@ public class InsightQueryApiService {
 
     @Transactional(readOnly = true)
     public List<InsightMyPageResponse> getInsightsForMyPage(Long userId, Long drawerId, CursorPageable<Long> cPage) {
-        blockUtil.checkUserId(userId);
+        blockedResourceManager.validateAccessibleUser(userId);
         return insightQueryDomainService.getInsightsForMyPage(SecurityUtil.getUser(), userId, drawerId, cPage).stream()
                 .map(insightAssembler::toInsightMyPageResponse)
                 .collect(Collectors.toList());
