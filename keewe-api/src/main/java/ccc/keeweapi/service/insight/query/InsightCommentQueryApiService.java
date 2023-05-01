@@ -8,6 +8,7 @@ import ccc.keeweapi.dto.insight.response.PreviewCommentResponse;
 import ccc.keeweapi.dto.insight.response.ReplyResponse;
 import ccc.keeweapi.utils.SecurityUtil;
 import ccc.keewedomain.persistence.domain.insight.Comment;
+import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.persistence.repository.utils.CursorPageable;
 import ccc.keewedomain.service.insight.CommentDomainService;
 import lombok.RequiredArgsConstructor;
@@ -29,8 +30,9 @@ public class InsightCommentQueryApiService {
     @Transactional(readOnly = true)
     public List<PreviewCommentResponse> getPreviewComments(Long insightId) {
         blockUtil.checkInsightWriter(insightId);
-        List<Comment> comments = commentDomainService.getComments(insightId, CursorPageable.of(Long.MAX_VALUE, 3L));
-        commentDomainService.findLatestCommentByWriter(SecurityUtil.getUser(), insightId)
+        User user = SecurityUtil.getUser();
+        List<Comment> comments = commentDomainService.getCommentsWithoutBlocked(insightId, CursorPageable.of(Long.MAX_VALUE, 3L), user.getId());
+        commentDomainService.findLatestCommentByWriter(user, insightId)
                 .ifPresent(myLatestComment -> {
                     comments.removeIf(comment -> comment.getId().equals(myLatestComment.getId()));
                     comments.add(0, myLatestComment);

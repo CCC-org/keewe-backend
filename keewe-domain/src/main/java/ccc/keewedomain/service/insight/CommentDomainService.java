@@ -95,6 +95,11 @@ public class CommentDomainService {
         return commentQueryRepository.findByInsightIdOrderByIdDesc(insightId, cPage);
     }
 
+    public List<Comment> getCommentsWithoutBlocked(Long insightId, CursorPageable<Long> cPage, Long userId) {
+        Set<Long> blockedUserIds = profileQueryDomainService.findBlockedUserIds(userId);
+        return commentQueryRepository.findByInsightIdOrderByIdDescWithoutBlocked(insightId, cPage, blockedUserIds);
+    }
+
     public Optional<Comment> findLatestCommentByWriter(User writer, Long insightId) {
         return commentQueryRepository.findLatestByWriterOrderById(writer, insightId);
     }
