@@ -48,10 +48,11 @@ public class InsightCommentQueryApiService {
 
     @Transactional(readOnly = true)
     public List<CommentResponse> getCommentsWithFirstReply(Long insightId, CursorPageable<Long> cPage) {
+        Long userId = SecurityUtil.getUserId();
         blockedResourceManager.validateAccessibleInsight(insightId);
         List<Comment> comments = commentQueryDomainService.getComments(insightId, cPage);
-        Map<Long, Comment> firstReplyPerParentId = commentQueryDomainService.getFirstReplies(comments);
-        Map<Long, Long> replyNumberPerParentId = commentQueryDomainService.getReplyNumbers(comments);
+        Map<Long, Comment> firstReplyPerParentId = commentQueryDomainService.getFirstReplies(comments, userId);
+        Map<Long, Long> replyNumberPerParentId = commentQueryDomainService.getReplyNumbers(comments, userId);
 
         List<CommentResponse> responses = comments.stream()
                 .map(comment -> commentAssembler.toCommentResponse(

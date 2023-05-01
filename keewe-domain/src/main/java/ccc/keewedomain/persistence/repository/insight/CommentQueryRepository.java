@@ -100,13 +100,13 @@ public class CommentQueryRepository {
     }
 
     //각 부모 댓글의 첫 답글들을 작성자와 함께 조회
-    public Map<Long, Comment> findFirstRepliesWithWriter(List<Comment> parents) {
+    public Map<Long, Comment> findFirstRepliesWithWriter(List<Comment> parents, Collection<Long> blockedUserIds) {
         return queryFactory.from(comment)
                 .innerJoin(comment.writer, user)
                 .fetchJoin()
                 .leftJoin(user.repTitle, title)
                 .fetchJoin()
-                .where(comment.id.in(findFirstReplyIds(parents)))
+                .where(comment.id.in(findFirstReplyIds(parents, blockedUserIds)))
                 .transform(GroupBy.groupBy(comment.parent.id).as(comment));
     }
 
@@ -123,11 +123,12 @@ public class CommentQueryRepository {
                 .fetch();
     }
 
-    public Map<Long, Long> getReplyNumbers(List<Comment> parents) {
+    public Map<Long, Long> getReplyNumbers(List<Comment> parents, Collection<Long> blockedUserIds) {
         return queryFactory
                 .from(comment)
                 .groupBy(comment.parent.id)
-                .where(comment.parent.in(parents))
+                .where(comment.parent.in(parents)
+                        .and(comment.writer.id.notIn(blockedUserIds)))
                 .transform(GroupBy.groupBy(comment.parent.id).as(comment.count()));
     }
 
@@ -159,11 +160,13 @@ public class CommentQueryRepository {
     }
 
     //각 부모 댓글의 첫 답글의 id 조회
-    private JPQLQuery<Long> findFirstReplyIds(List<Comment> parents) {
+    private JPQLQuery<Long> findFirstReplyIds(List<Comment> parents, Collection<Long> blockedUserIds) {
         return JPAExpressions.select(comment.id.max())
                 .from(comment)
                 .groupBy(comment.parent.id)
-                .where(comment.parent.in(parents));
+                .where(comment.parent.in(parents)
+                        .and(comment.writer.id.notIn(blockedUserIds))
+                );
     }
 
     public List<Long> findIdsByUserIds(Long insightId, Collection<Long> blockedUserIds) {

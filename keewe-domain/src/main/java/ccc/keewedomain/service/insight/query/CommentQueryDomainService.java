@@ -7,7 +7,6 @@ import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.persistence.repository.insight.CommentQueryRepository;
 import ccc.keewedomain.persistence.repository.insight.CommentRepository;
 import ccc.keewedomain.persistence.repository.utils.CursorPageable;
-import ccc.keewedomain.service.user.UserDomainService;
 import ccc.keewedomain.service.user.query.ProfileQueryDomainService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -49,8 +48,9 @@ public class CommentQueryDomainService {
         return commentCount - blockedUserCommentIds.size() - replyOnBlockedCommentCount + dupBlockedReplyCount;
     }
 
-    public Map<Long, Long> getReplyNumbers(List<Comment> parents) {
-        return commentQueryRepository.getReplyNumbers(parents);
+    public Map<Long, Long> getReplyNumbers(List<Comment> parents, Long userId) {
+        Set<Long> blockedUserIds = profileQueryDomainService.findBlockedUserIds(userId);
+        return commentQueryRepository.getReplyNumbers(parents, blockedUserIds);
     }
 
     public List<Comment> getComments(Long insightId, CursorPageable<Long> cPage) {
@@ -66,8 +66,9 @@ public class CommentQueryDomainService {
         return commentQueryRepository.findLatestByWriterOrderById(writer, insightId);
     }
 
-    public Map<Long, Comment> getFirstReplies(List<Comment> parents) {
-        return commentQueryRepository.findFirstRepliesWithWriter(parents);
+    public Map<Long, Comment> getFirstReplies(List<Comment> parents, Long userId) {
+        Set<Long> blockedUserIds = profileQueryDomainService.findBlockedUserIds(userId);
+        return commentQueryRepository.findFirstRepliesWithWriter(parents, blockedUserIds);
     }
 
     public List<Comment> getReplies(Long parentId, CursorPageable<Long> cPage) {
