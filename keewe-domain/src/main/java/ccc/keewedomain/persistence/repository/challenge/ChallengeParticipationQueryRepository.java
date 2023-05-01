@@ -117,4 +117,20 @@ public class ChallengeParticipationQueryRepository {
                 .limit(cPage.getLimit())
                 .fetch();
     }
+
+    public List<ChallengeParticipation> paginateFinished(CursorPageable<Long> cPage, LocalDateTime startDateTime, LocalDateTime endDateTime) {
+        return queryFactory.select(challengeParticipation)
+                .from(challengeParticipation)
+                .innerJoin(challengeParticipation.challenge, challenge)
+                .fetchJoin()
+                .where(challengeParticipation.status.ne(ChallengeParticipationStatus.CHALLENGING)
+                        .and(challengeParticipation.deleted.isFalse())
+                        .and(challengeParticipation.id.lt(cPage.getCursor()))
+                        .and(challengeParticipation.updatedAt.gt(startDateTime))
+                        .and(challengeParticipation.updatedAt.lt(endDateTime))
+                )
+                .orderBy(challengeParticipation.id.desc())
+                .limit(cPage.getLimit())
+                .fetch();
+    }
 }

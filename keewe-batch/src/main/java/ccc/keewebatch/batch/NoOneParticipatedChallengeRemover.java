@@ -2,9 +2,12 @@ package ccc.keewebatch.batch;
 
 import ccc.keewecore.utils.ListUtils;
 import ccc.keewedomain.persistence.domain.challenge.Challenge;
+import ccc.keewedomain.persistence.domain.challenge.ChallengeParticipation;
 import ccc.keewedomain.persistence.repository.utils.CursorPageable;
 import ccc.keewedomain.service.challenge.command.ChallengeCommandDomainService;
-import ccc.keewedomain.service.challenge.query.ChallengeQueryDomainService;
+import ccc.keewedomain.service.challenge.query.ChallengeParticipateQueryDomainService;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -17,9 +20,11 @@ import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.JobParametersIncrementer;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
+import org.springframework.batch.core.configuration.annotation.JobScope;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.batch.support.transaction.ResourcelessTransactionManager;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -29,7 +34,7 @@ import org.springframework.context.annotation.Configuration;
 public class NoOneParticipatedChallengeRemover {
     private final JobBuilderFactory jobBuilderFactory;
     private final StepBuilderFactory stepBuilderFactory;
-    private final ChallengeQueryDomainService challengeQueryDomainService;
+    private final ChallengeParticipateQueryDomainService challengeParticipateQueryDomainService;
     private final ChallengeCommandDomainService challengeCommandDomainService;
 
     // const zone
@@ -70,13 +75,27 @@ public class NoOneParticipatedChallengeRemover {
     }
 
     @Bean
-    public Step noOneParticipateChallengeRemoveStep() {
+    @JobScope
+    public Step noOneParticipateChallengeRemoveStep(
+            // note. 5분 주기로 실행. [startDateTimeString <= 현재시각 - 5분] , [endDateTimeString <= 현재시각]
+            @Value("#{jobParameters[startDateTimeString]}") String startDateTimeString,
+            @Value("#{jobParameters[endDateTimeString]}") String endDateTimeString
+    ) {
         return stepBuilderFactory.get("noOneParticipateChallengeRemoveStep")
                 .tasklet((contribution, chunkContext) -> {
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+                    LocalDateTime startDateTime = startDateTimeString != null ? LocalDateTime.parse(startDateTimeString, formatter) : LocalDateTime.now().minusMinutes(5);
+                    LocalDateTime endDateTime = endDateTimeString != null ? LocalDateTime.parse(endDateTimeString, formatter) : LocalDateTime.now();
                     Long cursor = Long.MAX_VALUE;
                     Long deletedCount = 0L;
                     do {
-                        List<Challenge> challenges = challengeQueryDomainService.paginateWithParticipation(CursorPageable.of(cursor, CHUCK_SIZE));
+                        List<ChallengeParticipation> participations = challengeParticipateQueryDomainService.paginateFinished(CursorPageable.of(cursor, CHUCK_SIZE), startDateTime, endDateTime);
+                        List<Challenge> challenges = participations.stream()
+                                .map(ChallengeParticipation::getChallenge)
+                                .filter(challenge -> !challenge.isDeleted()) // note. 이미 처리된 챌린지 SKIP
+                                .distinct()
+                                .collect(Collectors.toList());
+                        // 삭제 처리
                         List<Challenge> deletedChallenges = challenges.stream()
                                 .filter(Challenge::isNoOneParticipated)
                                 .map(Challenge::delete)
@@ -85,7 +104,7 @@ public class NoOneParticipatedChallengeRemover {
                         deletedCount += deletedChallenges.size();
                         cursor = this.getNextCursor(challenges);
                     } while (cursor != null);
-                    afterDeleteChallenge(deletedCount);
+                    afterDeleteChallenge(startDateTime, endDateTime, deletedCount);
                     return RepeatStatus.FINISHED;
                 })
                 .transactionManager(new ResourcelessTransactionManager())
@@ -100,8 +119,8 @@ public class NoOneParticipatedChallengeRemover {
         }
     }
 
-    private void afterDeleteChallenge(Long deletedCount) {
+    private void afterDeleteChallenge(LocalDateTime startDateTime, LocalDateTime endDateTime, Long deletedCount) {
         // TODO(호성): 삭제 결과 건 수 슬랙 메시지 발송
-        log.info("[NoOneParticipatedChallengeRemover] 총 ({})건 처리", deletedCount);
+        log.info("[NoOneParticipatedChallengeRemover] [({}) - ({})] 사이에 상태가 변화한 데이터 총 ({})건 처리", startDateTime, endDateTime, deletedCount);
     }
 }
