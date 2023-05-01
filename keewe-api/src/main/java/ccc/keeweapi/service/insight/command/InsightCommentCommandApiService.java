@@ -7,7 +7,7 @@ import ccc.keeweapi.dto.insight.response.CommentDeleteResponse;
 import ccc.keewedomain.persistence.domain.insight.Comment;
 import ccc.keewedomain.persistence.domain.notification.Notification;
 import ccc.keewedomain.persistence.domain.notification.enums.NotificationContents;
-import ccc.keewedomain.service.insight.CommentDomainService;
+import ccc.keewedomain.service.insight.command.CommentCommandDomainService;
 import ccc.keewedomain.service.notification.command.NotificationCommandDomainService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,13 +19,13 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class InsightCommentCommandApiService {
 
-    private final CommentDomainService commentDomainService;
+    private final CommentCommandDomainService commentCommandDomainService;
     private final InsightAssembler insightAssembler;
     private final NotificationCommandDomainService notificationCommandDomainService;
 
     @Transactional
     public CommentCreateResponse create(CommentCreateRequest request) {
-        Comment comment = commentDomainService.create(insightAssembler.toCommentCreateDto(request));
+        Comment comment = commentCommandDomainService.create(insightAssembler.toCommentCreateDto(request));
         afterLeaveComment(comment);
         return insightAssembler.toCommentCreateResponse(comment);
     }
@@ -33,7 +33,7 @@ public class InsightCommentCommandApiService {
     @Transactional
     public CommentDeleteResponse delete(Long commentId) {
         return insightAssembler.toCommentDeleteResponse(
-                commentDomainService.delete(insightAssembler.toCommentDeleteDto(commentId)));
+                commentCommandDomainService.delete(insightAssembler.toCommentDeleteDto(commentId)));
     }
 
     public void afterLeaveComment(Comment comment) {

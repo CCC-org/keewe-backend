@@ -1,7 +1,7 @@
 package ccc.keeweapi.service.insight.command;
 
 import ccc.keeweapi.component.InsightAssembler;
-import ccc.keeweapi.utils.BlockUtil;
+import ccc.keeweapi.utils.BlockedResourceManager;
 import ccc.keeweapi.dto.insight.request.InsightCreateRequest;
 import ccc.keeweapi.dto.insight.request.InsightUpdateRequest;
 import ccc.keeweapi.dto.insight.response.BookmarkToggleResponse;
@@ -27,7 +27,7 @@ public class InsightCommandApiService {
     private final BookmarkCommandDomainService bookmarkCommandDomainService;
     private final InsightCommandDomainService insightCommandDomainService;
     private final InsightAssembler insightAssembler;
-    private final BlockUtil blockUtil;
+    private final BlockedResourceManager blockedResourceManager;
 
     @TitleEventPublish(titleCategory = TitleCategory.INSIGHT)
     public InsightCreateResponse create(InsightCreateRequest request) {
@@ -43,7 +43,7 @@ public class InsightCommandApiService {
     }
 
     public InsightViewIncrementResponse incrementViewCount(Long insightId) {
-        blockUtil.checkInsightWriter(insightId);
+        blockedResourceManager.validateAccessibleInsight(insightId);
         Long viewCount = insightCommandDomainService.incrementViewCount(insightAssembler.toInsightViewIncrementDto(insightId));
         return insightAssembler.toInsightViewIncrementResponse(viewCount);
     }

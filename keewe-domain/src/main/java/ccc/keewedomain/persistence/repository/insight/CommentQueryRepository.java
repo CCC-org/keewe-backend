@@ -46,6 +46,27 @@ public class CommentQueryRepository {
                 .fetch();
     }
 
+    //최신순으로 limit 개의 댓글 조회 (답글X) - 차단된 유저의 댓글 제외
+    public List<Comment> findByInsightIdOrderByIdDescWithoutBlocked(Long insightId, CursorPageable<Long> cPage, Collection<Long> blockedUserIds) {
+
+        return queryFactory.select(comment)
+                .from(comment)
+                .innerJoin(comment.writer, user)
+                .fetchJoin()
+                .leftJoin(user.repTitle, title)
+                .fetchJoin()
+                .leftJoin(user.profilePhoto, profilePhoto)
+                .fetchJoin()
+                .where(comment.insight.id.eq(insightId)
+                        .and(comment.parent.isNull())
+                        .and(comment.id.lt(cPage.getCursor()))
+                        .and(comment.writer.id.notIn(blockedUserIds))
+                )
+                .orderBy(comment.id.desc())
+                .limit(cPage.getLimit())
+                .fetch();
+    }
+
     //답글이 많은 순서대로 limit 개의 댓글을 작성자와 함께 조회
     public List<Comment> findByReplyNumberDescWithUser(Long insightId, Long limit) {
 

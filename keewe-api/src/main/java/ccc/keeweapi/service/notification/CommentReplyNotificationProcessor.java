@@ -5,14 +5,14 @@ import ccc.keewedomain.persistence.domain.insight.Comment;
 import ccc.keewedomain.persistence.domain.notification.Notification;
 import ccc.keewedomain.persistence.domain.notification.enums.NotificationCategory;
 import ccc.keewedomain.persistence.domain.notification.enums.NotificationContents;
-import ccc.keewedomain.service.insight.CommentDomainService;
+import ccc.keewedomain.service.insight.query.CommentQueryDomainService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor
 @Component
 public class CommentReplyNotificationProcessor implements NotificationProcessor {
-    private final CommentDomainService commentDomainService;
+    private final CommentQueryDomainService commentQueryDomainService;
 
     @Override
     public NotificationCategory getCategory() {
@@ -22,7 +22,7 @@ public class CommentReplyNotificationProcessor implements NotificationProcessor 
     @Override
     public NotificationResponse process(Notification notification) {
         String commentReplyId = notification.getReferenceId();
-        Comment comment = commentDomainService.getByIdOrElseThrow(Long.parseLong(commentReplyId));
+        Comment comment = commentQueryDomainService.getByIdOrElseThrow(Long.parseLong(commentReplyId));
         NotificationContents contents = notification.getContents();
         return NotificationResponse.of(
             notification.getId(),
