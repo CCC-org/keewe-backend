@@ -34,6 +34,7 @@ public class InsightCommentQueryApiService {
         List<Comment> comments = commentDomainService.getCommentsWithoutBlocked(insightId, CursorPageable.of(Long.MAX_VALUE, 3L), user.getId());
         commentDomainService.findLatestCommentByWriter(user, insightId)
                 .ifPresent(myLatestComment -> {
+                    // note. 나의 최신 댓글이 기존의 리스트에서 존재하는 경우 제거. 나의 최신 댓글을 맨 앞에 추가.
                     comments.removeIf(comment -> comment.getId().equals(myLatestComment.getId()));
                     comments.add(0, myLatestComment);
                 });
