@@ -61,6 +61,7 @@ public class Challenge extends BaseTimeEntity {
                 insightPerWeek,
                 duration);
         getParticipationList().add(participation);
+        this.deleted = false;
         return participation;
     }
 
