@@ -25,6 +25,7 @@ import ccc.keewedomain.service.insight.query.CommentQueryDomainService;
 import ccc.keewedomain.service.insight.query.InsightQueryDomainService;
 import ccc.keewedomain.service.user.query.ProfileQueryDomainService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -84,8 +85,8 @@ public class InsightQueryApiService {
     }
 
     @Transactional(readOnly = true)
-    public List<InsightGetForHomeResponse> getInsightForBookmark(CursorPageable<Long> cPage) {
-        List<InsightGetForHomeResponse> responses = insightQueryDomainService.getInsightForBookmark(SecurityUtil.getUser(), cPage).stream()
+    public List<InsightGetForHomeResponse> getInsightForBookmark(Pageable pageable) {
+        List<InsightGetForHomeResponse> responses = insightQueryDomainService.getInsightForBookmark(SecurityUtil.getUser(), pageable).stream()
                 .map(insightAssembler::toInsightGetForHomeResponse)
                 .collect(Collectors.toList());
         return blockedResourceManager.filterBlockedUsers(responses);

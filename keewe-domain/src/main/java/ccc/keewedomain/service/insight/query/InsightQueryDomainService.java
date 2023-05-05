@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -109,8 +110,8 @@ public class InsightQueryDomainService {
     }
 
     @Transactional(readOnly = true)
-    public List<InsightGetForHomeDto> getInsightForBookmark(User user, CursorPageable<Long> cPage) {
-        List<Insight> insights = insightQueryRepository.findBookmarkedInsight(user, cPage);
+    public List<InsightGetForHomeDto> getInsightForBookmark(User user, Pageable pageable) {
+        List<Insight> insights = insightQueryRepository.findBookmarkedInsight(user, pageable);
         return insights.parallelStream().map(i ->
                 InsightGetForHomeDto.of(
                         i.getId(),

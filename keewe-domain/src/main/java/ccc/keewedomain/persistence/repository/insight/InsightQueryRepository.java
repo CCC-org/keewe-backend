@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -193,23 +194,17 @@ public class InsightQueryRepository {
                 .fetchFirst() != null;
     }
 
-    public List<Insight> findBookmarkedInsight(User user, CursorPageable<Long> cPage) {
+    public List<Insight> findBookmarkedInsight(User user, Pageable pageable) {
         return queryFactory
                 .select(insight)
                 .from(insight)
+                .innerJoin(bookmark).on(insight.id.eq(bookmark.insight.id))
                 .where(insight.deleted.isFalse())
-                .where(insight.in(findBookmarkedInsightId(user)))
-                .where(insight.id.lt(cPage.getCursor()))
-                .orderBy(insight.id.desc())
-                .limit(cPage.getLimit())
+                .where(bookmark.user.id.eq(user.getId()))
+                .orderBy(bookmark.createdAt.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
                 .fetch();
-    }
-
-    private JPQLQuery<Insight> findBookmarkedInsightId(User user) {
-        return queryFactory
-                .select(bookmark.insight)
-                .from(bookmark)
-                .where(bookmark.user.id.eq(user.getId()));
     }
 
     public List<Insight> findByChallenge(Challenge challenge, CursorPageable<Long> cPage, Long writerId) {
