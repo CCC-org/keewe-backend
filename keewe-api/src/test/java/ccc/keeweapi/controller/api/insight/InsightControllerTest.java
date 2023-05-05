@@ -451,8 +451,8 @@ public class InsightControllerTest extends ApiDocumentationTest {
     @DisplayName("북마크한 인사이트 조회 API")
     void get_insight_for_bookmark() throws Exception {
         Long insightId = 1L;
-        long cursor = Long.MAX_VALUE;
-        long limit = 10L;
+        long size = 0;
+        long page = 10L;
 
         when(insightQueryApiService.getInsightForBookmark(any())).thenReturn(List.of(InsightGetForHomeResponse.of(
                 insightId,
@@ -466,8 +466,8 @@ public class InsightControllerTest extends ApiDocumentationTest {
 
         ResultActions resultActions = mockMvc.perform(get("/api/v1/insight/bookmark", insightId)
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
-                        .param("cursor", Long.toString(cursor))
-                        .param("limit", Long.toString(limit)))
+                        .param("page", Long.toString(size))
+                        .param("size", Long.toString(page)))
                 .andExpect(status().isOk());
 
         resultActions.andDo(restDocs.document(resource(
@@ -477,8 +477,8 @@ public class InsightControllerTest extends ApiDocumentationTest {
                         .requestHeaders(
                                 headerWithName("Authorization").description("유저의 JWT"))
                         .requestParameters(
-                                parameterWithName("cursor").description("마지막으로 받은 인사이트 ID"),
-                                parameterWithName("limit").description("가져올 인사이트 개수"))
+                                parameterWithName("page").description("조회할 페이지"),
+                                parameterWithName("size").description("조회할 페이지의 크기"))
                         .responseFields(
                                 fieldWithPath("message").description("요청 결과 메세지"),
                                 fieldWithPath("code").description("결과 코드"),
