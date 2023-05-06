@@ -60,10 +60,6 @@ public class FollowQueryRepository {
 
     public List<Follow> findAllByUserIdOrderByCreatedAtDesc(Long userId, CursorPageable<LocalDateTime> cPage) {
         return queryFactory.selectFrom(follow)
-                .innerJoin(follow.followee, user)
-                .innerJoin(follow.follower, user)
-                .innerJoin(follow.follower.profilePhoto, profilePhoto)
-                .innerJoin(follow.followee.profilePhoto, profilePhoto)
                 .where(follow.follower.id.eq(userId)
                         .or(follow.followee.id.eq(userId)))
                 .where(follow.createdAt.lt(cPage.getCursor()))
