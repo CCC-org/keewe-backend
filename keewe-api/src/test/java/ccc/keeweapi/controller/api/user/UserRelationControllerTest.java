@@ -15,6 +15,8 @@ import ccc.keeweapi.document.utils.ApiDocumentationTest;
 import ccc.keeweapi.dto.user.FollowToggleResponse;
 import ccc.keeweapi.dto.user.FollowUserListResponse;
 import ccc.keeweapi.dto.user.FollowUserResponse;
+import ccc.keeweapi.dto.user.RelatedUserListResponse;
+import ccc.keeweapi.dto.user.RelatedUserResponse;
 import ccc.keeweapi.service.user.ProfileApiService;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import java.time.LocalDateTime;
@@ -159,5 +161,50 @@ public class UserRelationControllerTest extends ApiDocumentationTest {
                 fieldWithPath("data.users[].title").description("대표 타이틀 제목"),
                 fieldWithPath("data.users[].follow").description("팔로우 여부")
         );
+    }
+
+    @Test
+    @DisplayName("연관된 유저 목록 조회")
+    void get_related_users() throws Exception {
+        long limit = 10L;
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime cursor = now.minusDays(1);
+        List<RelatedUserResponse> relatedUserResponses = List.of(
+                RelatedUserResponse.of(1L, "hello", "www.api-keewe.com/images/128398681"),
+                RelatedUserResponse.of(2L, "world", "www.api-keewe.com/images/128398681")
+        );
+
+        RelatedUserListResponse response = RelatedUserListResponse.of(cursor.toString(), relatedUserResponses);
+
+        when(profileApiService.paginateRelatedUsers(any()))
+                .thenReturn(response);
+
+        ResultActions resultActions = mockMvc.perform(get("/api/v1/user/profile/related/my")
+                        .param("cursor", cursor.toString())
+                        .param("limit", Long.toString(limit))
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        resultActions.andDo(restDocs.document(resource(
+                ResourceSnippetParameters.builder()
+                        .description("연관된 유저 목록 조회 API 입니다")
+                        .summary("연관된 유저 목록 조회 API")
+                        .requestHeaders(
+                                headerWithName("Authorization").description("유저의 JWT"))
+                        .requestParameters(
+                                parameterWithName("cursor").description("페이징을 위한 커서 yyyy-MM-dd'T'hh:mm:ss.SSS"),
+                                parameterWithName("limit").description("한번에 조회할 개수"))
+                        .responseFields(
+                                fieldWithPath("message").description("요청 결과 메세지"),
+                                fieldWithPath("code").description("결과 코드"),
+                                fieldWithPath("data.nextCursor").description("다음 조회를 위한 커서. 없을 경우 null"),
+                                fieldWithPath("data.relatedUsers[].userId").description("유저의 ID"),
+                                fieldWithPath("data.relatedUsers[].nickname").description("유저의 닉네임"),
+                                fieldWithPath("data.relatedUsers[].imageURL").description("유저의 프로필 이미지 URL")
+                        )
+                        .tag("UserRelation")
+                        .build()
+        )));
     }
 }
