@@ -1,6 +1,7 @@
 package ccc.keeweapi.service.user;
 
 import ccc.keeweapi.component.ProfileAssembler;
+import ccc.keeweapi.dto.user.AccountResponse;
 import ccc.keeweapi.dto.user.AllAchievedTitleResponse;
 import ccc.keeweapi.dto.user.BlockUserResponse;
 import ccc.keeweapi.dto.user.FollowToggleResponse;
@@ -156,5 +157,10 @@ public class ProfileApiService {
     @Transactional(readOnly = true)
     public InterestsResponse getInterests() {
         return profileAssembler.toInterestsResponse(profileQueryDomainService.getInterests(SecurityUtil.getUser()));
+    }
+
+    public AccountResponse getAccount() {
+        User user = SecurityUtil.getUser();
+        return profileAssembler.toAccountResponse(user);
     }
 }

@@ -147,4 +147,8 @@ public class ProfileAssembler {
     public InterestsResponse toInterestsResponse(List<String> interests) {
         return InterestsResponse.of(interests);
     }
+
+    public AccountResponse toAccountResponse(User user) {
+        return AccountResponse.of(user.getVendorType().toString(), user.getIdentifier());
+    }
 }
