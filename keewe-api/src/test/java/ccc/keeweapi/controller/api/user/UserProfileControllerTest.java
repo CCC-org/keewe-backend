@@ -10,15 +10,18 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.multipart;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.snippet.Attributes.key;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import ccc.keeweapi.document.utils.ApiDocumentationTest;
+import ccc.keeweapi.dto.user.AccountResponse;
 import ccc.keeweapi.dto.user.InterestsResponse;
 import ccc.keeweapi.dto.user.OnboardResponse;
 import ccc.keeweapi.dto.user.ProfileMyPageResponse;
 import ccc.keeweapi.dto.user.ProfileUpdateResponse;
 import ccc.keeweapi.service.user.ProfileApiService;
 import ccc.keewedomain.persistence.domain.common.Interest;
+import ccc.keewedomain.persistence.domain.user.enums.VendorType;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.epages.restdocs.apispec.SimpleType;
 import java.util.List;
@@ -216,6 +219,33 @@ public class UserProfileControllerTest extends ApiDocumentationTest {
                                 fieldWithPath("message").description("요청 결과 메세지"),
                                 fieldWithPath("code").description("결과 코드"),
                                 fieldWithPath("data.interests").description("관심사 리스트"))
+                        .tag("UserProfile")
+                        .build()
+        )));
+    }
+
+    @Test
+    @DisplayName("연결된 계정 조회 API")
+    void get_related_account() throws Exception {
+        when(profileApiService.getAccount()).thenReturn(
+                AccountResponse.of(VendorType.NAVER.toString(), "helloworld@naver.com")
+        );
+
+        ResultActions resultActions = mockMvc.perform(get("/api/v1/user/profile/account")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT))
+                .andExpect(status().isOk());
+
+        resultActions.andDo(restDocs.document(resource(
+                ResourceSnippetParameters.builder()
+                        .description("연결된 계정 조회 API 입니다.")
+                        .summary("연결된 계정 조회 API")
+                        .requestHeaders(
+                                headerWithName("Authorization").description("유저의 JWT"))
+                        .responseFields(
+                                fieldWithPath("message").description("요청 결과 메세지"),
+                                fieldWithPath("code").description("결과 코드"),
+                                fieldWithPath("data.vendorType").description("OAuth vendor의 타입").type("ENUM").attributes(key("enumValues").value(VendorType.values())),
+                                fieldWithPath("data.identifier").description("유저의 식별자. 1순위 email, 2순위 vendorId"))
                         .tag("UserProfile")
                         .build()
         )));
