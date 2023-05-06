@@ -3,6 +3,7 @@ package ccc.keeweapi.controller.api.user;
 import ccc.keeweapi.dto.ApiResponse;
 import ccc.keeweapi.dto.user.FollowToggleResponse;
 import ccc.keeweapi.dto.user.FollowUserListResponse;
+import ccc.keeweapi.dto.user.RelatedUserListResponse;
 import ccc.keeweapi.service.user.ProfileApiService;
 import ccc.keewedomain.persistence.repository.utils.CursorPageable;
 import java.time.LocalDateTime;
@@ -43,5 +44,13 @@ public class UserRelationController {
             @RequestParam Long limit) {
         CursorPageable<LocalDateTime> cPage = CursorPageable.of(cursor, limit);
         return ApiResponse.ok(profileApiService.getFollowees(userId, cPage));
+    }
+
+    @GetMapping("/related/my")
+    public ApiResponse<RelatedUserListResponse> paginateRelatedUsers(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime cursor,
+            @RequestParam Long limit) {
+        CursorPageable<LocalDateTime> cPage = CursorPageable.of(cursor, limit);
+        return ApiResponse.ok(profileApiService.paginateRelatedUsers(cPage));
     }
 }

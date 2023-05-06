@@ -63,13 +63,13 @@ public class ProfileQueryDomainService {
     @Transactional(readOnly = true)
     public List<Follow> getFollowers(Long userId, CursorPageable<LocalDateTime> cPage) {
         User user = userDomainService.getUserByIdOrElseThrow(userId);
-        return userQueryRepository.findFollowersByUserCreatedAtDesc(user, cPage);
+        return followQueryRepository.findFollowersByUserCreatedAtDesc(user, cPage);
     }
 
     @Transactional(readOnly = true)
     public List<Follow> getFollowees(Long userId, CursorPageable<LocalDateTime> cPage) {
         User user = userDomainService.getUserByIdOrElseThrow(userId);
-        return userQueryRepository.findFolloweesByUserCreatedAtDesc(user, cPage);
+        return followQueryRepository.findFolloweesByUserCreatedAtDesc(user, cPage);
     }
 
     @Transactional(readOnly = true)
@@ -93,5 +93,10 @@ public class ProfileQueryDomainService {
         return userWithInterests.getInterests().stream()
                 .map(Interest::getName)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<Follow> getRelatedFollows(Long userId, CursorPageable<LocalDateTime> cPage) {
+        return followQueryRepository.findAllByUserIdOrderByCreatedAtDesc(userId, cPage);
     }
 }
