@@ -46,7 +46,7 @@ public class UserRelationController {
         return ApiResponse.ok(profileApiService.getFollowees(userId, cPage));
     }
 
-    @GetMapping("/related/my")
+    @GetMapping("/related")
     public ApiResponse<RelatedUserListResponse> paginateRelatedUsers(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime cursor,
             @RequestParam Long limit) {

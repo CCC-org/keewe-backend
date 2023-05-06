@@ -179,7 +179,7 @@ public class UserRelationControllerTest extends ApiDocumentationTest {
         when(profileApiService.paginateRelatedUsers(any()))
                 .thenReturn(response);
 
-        ResultActions resultActions = mockMvc.perform(get("/api/v1/user/profile/related/my")
+        ResultActions resultActions = mockMvc.perform(get("/api/v1/user/profile/related")
                         .param("cursor", cursor.toString())
                         .param("limit", Long.toString(limit))
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
