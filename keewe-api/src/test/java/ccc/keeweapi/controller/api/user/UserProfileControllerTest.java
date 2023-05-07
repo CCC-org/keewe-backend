@@ -228,7 +228,7 @@ public class UserProfileControllerTest extends ApiDocumentationTest {
     @DisplayName("연결된 계정 조회 API")
     void get_related_account() throws Exception {
         when(profileApiService.getAccount()).thenReturn(
-                AccountResponse.of(VendorType.NAVER.toString(), "helloworld@naver.com")
+                AccountResponse.of(VendorType.NAVER, "helloworld@naver.com")
         );
 
         ResultActions resultActions = mockMvc.perform(get("/api/v1/user/profile/account")

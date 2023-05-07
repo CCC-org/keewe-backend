@@ -149,6 +149,6 @@ public class ProfileAssembler {
     }
 
     public AccountResponse toAccountResponse(User user) {
-        return AccountResponse.of(user.getVendorType().toString(), user.getIdentifier());
+        return AccountResponse.of(user.getVendorType(), user.getIdentifier());
     }
 }
