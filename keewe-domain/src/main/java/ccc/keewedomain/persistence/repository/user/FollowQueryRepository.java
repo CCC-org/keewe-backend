@@ -25,16 +25,14 @@ public class FollowQueryRepository {
     private final JPAQueryFactory queryFactory;
 
     public List<Long> findFollowingTargetIds(User user, List<User> targets) {
-        return queryFactory
-                .select(follow.followee.id)
+        return queryFactory.select(follow.followee.id)
                 .from(follow)
                 .where(follow.follower.eq(user).and(follow.followee.in((targets))))
                 .fetch();
     }
 
     public List<Follow> findFollowersByUserCreatedAtDesc(User target, CursorPageable<LocalDateTime> cPage) {
-        return queryFactory
-                .select(follow)
+        return queryFactory.select(follow)
                 .from(follow)
                 .innerJoin(follow.follower, user)
                 .fetchJoin()
@@ -46,8 +44,7 @@ public class FollowQueryRepository {
     }
 
     public List<Follow> findFolloweesByUserCreatedAtDesc(User target, CursorPageable<LocalDateTime> cPage) {
-        return queryFactory
-                .select(follow)
+        return queryFactory.select(follow)
                 .from(follow)
                 .innerJoin(follow.followee, user)
                 .fetchJoin()
@@ -69,8 +66,7 @@ public class FollowQueryRepository {
     }
 
     private JPQLQuery<Long> findFolloweeIdsOrderByCreatedAtDesc(User target, CursorPageable<LocalDateTime> cPage) {
-        return JPAExpressions
-                .select(follow.followee.id)
+        return JPAExpressions.select(follow.followee.id)
                 .from(follow)
                 .where(follow.follower.eq(target), follow.createdAt.lt(cPage.getCursor()))
                 .orderBy(follow.createdAt.desc(), follow.followee.id.asc())
@@ -78,8 +74,7 @@ public class FollowQueryRepository {
     }
 
     private JPQLQuery<Long> findFollowerIdsOrderByCreatedAtDesc(User target, CursorPageable<LocalDateTime> cPage) {
-        return JPAExpressions
-                .select(follow.follower.id)
+        return JPAExpressions.select(follow.follower.id)
                 .from(follow)
                 .where(follow.followee.eq(target), follow.createdAt.lt(cPage.getCursor()))
                 .orderBy(follow.createdAt.desc(), follow.follower.id.asc())
