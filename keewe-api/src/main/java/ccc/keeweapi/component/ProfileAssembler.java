@@ -147,4 +147,16 @@ public class ProfileAssembler {
     public InterestsResponse toInterestsResponse(List<String> interests) {
         return InterestsResponse.of(interests);
     }
+
+    public InviteeResponse toRelatedUserResponse(User user) {
+        return InviteeResponse.of(user.getId(), user.getNickname(), user.getProfilePhotoURL());
+    }
+
+    public InviteeListResponse toInviteeListResponse(List<User> invitees, String nextCursor) {
+        List<InviteeResponse> inviteeResponse = invitees.stream()
+                .map(this::toRelatedUserResponse)
+                .collect(Collectors.toList());
+
+        return InviteeListResponse.of(nextCursor, inviteeResponse);
+    }
 }
