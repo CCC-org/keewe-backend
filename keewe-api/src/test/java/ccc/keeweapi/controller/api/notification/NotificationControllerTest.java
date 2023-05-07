@@ -14,6 +14,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import ccc.keeweapi.document.utils.ApiDocumentationTest;
 import ccc.keeweapi.dto.notification.NotificationResponse;
 import ccc.keeweapi.dto.notification.PaginateNotificationResponse;
+import ccc.keeweapi.dto.notification.UnreadNotificationExistenceResponse;
 import ccc.keeweapi.service.notification.command.NotificationCommandApiService;
 import ccc.keeweapi.service.notification.query.NotificationQueryApiService;
 import ccc.keewedomain.persistence.domain.notification.enums.NotificationCategory;
@@ -115,6 +116,32 @@ public class NotificationControllerTest extends ApiDocumentationTest {
                                 fieldWithPath("data.referenceId").description("알림 참조 ID"),
                                 fieldWithPath("data.read").description("알림 읽었는지 여부"),
                                 fieldWithPath("data.createdAt").description("알림 생성 시간")
+                        )
+                        .tag("Notification")
+                        .build()
+        )));
+    }
+
+    @Test
+    @DisplayName("미확인 알림 존재 체크 API 테스트")
+    void testCheckUnreadNotificationExistence() throws Exception {
+        when(notificationQueryApiService.isUnreadNotificationExist()).thenReturn(UnreadNotificationExistenceResponse.of(true));
+
+        ResultActions resultActions = mockMvc.perform(get("/api/v1/notification/unread-existence")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        resultActions.andDo(restDocs.document(resource(
+                ResourceSnippetParameters.builder()
+                        .description("미확인 알림 체크 API입니다.")
+                        .summary("미확인 알림 체크 API")
+                        .requestHeaders(
+                                headerWithName("Authorization").description("유저의 JWT"))
+                        .responseFields(
+                                fieldWithPath("message").description("요청 결과 메세지"),
+                                fieldWithPath("code").description("결과 코드"),
+                                fieldWithPath("data.exist").description("미확인 알림 존재 여부")
                         )
                         .tag("Notification")
                         .build()

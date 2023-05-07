@@ -1,7 +1,9 @@
 package ccc.keeweapi.service.notification.query;
 
+import ccc.keeweapi.component.NotificationAssembler;
 import ccc.keeweapi.dto.notification.NotificationResponse;
 import ccc.keeweapi.dto.notification.PaginateNotificationResponse;
+import ccc.keeweapi.dto.notification.UnreadNotificationExistenceResponse;
 import ccc.keeweapi.service.notification.NotificationProcessor;
 import ccc.keeweapi.utils.SecurityUtil;
 import ccc.keewecore.utils.ListUtils;
@@ -20,13 +22,16 @@ import javax.transaction.Transactional;
 @Slf4j
 public class NotificationQueryApiService {
     private final NotificationQueryDomainService notificationQueryDomainService;
+    private final NotificationAssembler notificationAssembler;
     private final Map<NotificationCategory, NotificationProcessor> notificationProcessors;
 
     public NotificationQueryApiService(
             NotificationQueryDomainService notificationQueryDomainService,
+            NotificationAssembler notificationAssembler,
             List<NotificationProcessor> notificationProcessors
     ) {
         this.notificationQueryDomainService = notificationQueryDomainService;
+        this.notificationAssembler = notificationAssembler;
         this.notificationProcessors = notificationProcessors.stream()
                 .collect(Collectors.toMap(NotificationProcessor::getCategory, notificationProcessor -> notificationProcessor));
     }
@@ -47,5 +52,10 @@ public class NotificationQueryApiService {
         } else {
             return PaginateNotificationResponse.of(null, notificationResponses);
         }
+    }
+
+    public UnreadNotificationExistenceResponse isUnreadNotificationExist() {
+        Boolean isUnreadNotificationExist = notificationQueryDomainService.isUnreadNotificationExist(SecurityUtil.getUser());
+        return notificationAssembler.toUnreadNotificationExistenceResponse(isUnreadNotificationExist);
     }
 }
