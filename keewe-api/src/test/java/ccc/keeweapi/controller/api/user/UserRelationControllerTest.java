@@ -15,6 +15,8 @@ import ccc.keeweapi.document.utils.ApiDocumentationTest;
 import ccc.keeweapi.dto.user.FollowToggleResponse;
 import ccc.keeweapi.dto.user.FollowUserListResponse;
 import ccc.keeweapi.dto.user.FollowUserResponse;
+import ccc.keeweapi.dto.user.InviteeListResponse;
+import ccc.keeweapi.dto.user.InviteeResponse;
 import ccc.keeweapi.service.user.ProfileApiService;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import java.time.LocalDateTime;
