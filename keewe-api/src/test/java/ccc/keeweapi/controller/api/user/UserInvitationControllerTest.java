@@ -55,7 +55,7 @@ public class UserInvitationControllerTest extends ApiDocumentationTest {
         when(profileApiService.paginateInvitees(any()))
                 .thenReturn(response);
 
-        ResultActions resultActions = mockMvc.perform(get("/api/v1/user/invitation/invitee")
+        ResultActions resultActions = mockMvc.perform(get("/api/v1/invitee")
                         .param("cursor", cursor.toString())
                         .param("limit", Long.toString(limit))
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)

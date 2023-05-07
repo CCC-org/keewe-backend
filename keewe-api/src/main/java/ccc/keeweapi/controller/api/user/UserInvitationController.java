@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.LocalDateTime;
 
 @RestController
-@RequestMapping("/api/v1/user/invitation")
+@RequestMapping("/api/v1/")
 @RequiredArgsConstructor
 public class UserInvitationController {
     private final ProfileApiService profileApiService;
