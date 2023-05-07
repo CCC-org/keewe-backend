@@ -28,7 +28,8 @@ public class NotificationQueryRepository {
     }
 
     public Boolean isUnreadNotificationExist(User user) {
-        return queryFactory.selectFrom(notification)
+        return queryFactory.selectOne()
+                .from(notification)
                 .where(notification.user.eq(user)
                         .and(notification.isRead.eq(false))
                 )
