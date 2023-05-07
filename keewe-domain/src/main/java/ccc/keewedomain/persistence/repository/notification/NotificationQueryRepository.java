@@ -26,4 +26,12 @@ public class NotificationQueryRepository {
                 .orderBy(notification.id.desc())
                 .fetch();
     }
+
+    public Boolean isUnreadNotificationExist(User user) {
+        return queryFactory.selectFrom(notification)
+                .where(notification.user.eq(user)
+                        .and(notification.isRead.eq(false))
+                )
+                .fetchFirst() != null;
+    }
 }
