@@ -175,7 +175,9 @@ public class ProfileApiService {
                 })
                 .distinct() // 양방향으로 팔로우 되어 있는 경우 중복 제거
                 .collect(Collectors.toList());
-        String nextCursor = !relatedFollows.isEmpty() ? relatedFollows.get(relatedFollows.size() - 1).getCreatedAt().toString() : null;
+        String nextCursor = !relatedFollows.isEmpty() && relatedUsers.size() == cPage.getLimit()
+                ? relatedFollows.get(relatedFollows.size() - 1).getCreatedAt().toString()
+                : null;
         return profileAssembler.toRelatedUserListResponse(relatedUsers, nextCursor);
     }
 }
