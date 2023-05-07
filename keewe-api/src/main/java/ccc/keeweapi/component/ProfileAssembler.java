@@ -159,4 +159,8 @@ public class ProfileAssembler {
 
         return InviteeListResponse.of(nextCursor, inviteeResponse);
     }
+
+    public AccountResponse toAccountResponse(User user) {
+        return AccountResponse.of(user.getVendorType(), user.getIdentifier());
+    }
 }

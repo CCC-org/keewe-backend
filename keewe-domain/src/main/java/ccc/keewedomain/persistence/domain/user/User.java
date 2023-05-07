@@ -159,7 +159,12 @@ public class User extends BaseTimeEntity {
     public Long getRepTitleId() {
         return repTitle == null ? null : repTitle.getId();
     }
-
+    public String getIdentifier() {
+        if (this.email.isEmpty()) {
+            return this.vendorId;
+        }
+        return this.email;
+    }
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
