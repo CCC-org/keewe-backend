@@ -7,8 +7,8 @@ import java.util.List;
 
 @Getter
 @AllArgsConstructor(staticName = "of")
-public class RelatedUserListResponse {
+public class InviteeListResponse {
     // 응답의 createdAt중 최소 값
     private String nextCursor;
-    private List<RelatedUserResponse> relatedUsers;
+    private List<InviteeResponse> invitees;
 }

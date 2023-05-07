@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor(staticName = "of")
-public class RelatedUserResponse {
+public class InviteeResponse {
     private Long userId;
     private String nickname;
     private String imageURL;

@@ -3,10 +3,8 @@ package ccc.keeweapi.controller.api.user;
 import ccc.keeweapi.dto.ApiResponse;
 import ccc.keeweapi.dto.user.FollowToggleResponse;
 import ccc.keeweapi.dto.user.FollowUserListResponse;
-import ccc.keeweapi.dto.user.RelatedUserListResponse;
 import ccc.keeweapi.service.user.ProfileApiService;
 import ccc.keewedomain.persistence.repository.utils.CursorPageable;
-import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +13,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/api/v1/user/profile")
@@ -44,13 +44,5 @@ public class UserRelationController {
             @RequestParam Long limit) {
         CursorPageable<LocalDateTime> cPage = CursorPageable.of(cursor, limit);
         return ApiResponse.ok(profileApiService.getFollowees(userId, cPage));
-    }
-
-    @GetMapping("/related")
-    public ApiResponse<RelatedUserListResponse> paginateRelatedUsers(
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime cursor,
-            @RequestParam Long limit) {
-        CursorPageable<LocalDateTime> cPage = CursorPageable.of(cursor, limit);
-        return ApiResponse.ok(profileApiService.paginateRelatedUsers(cPage));
     }
 }

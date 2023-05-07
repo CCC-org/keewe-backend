@@ -96,7 +96,7 @@ public class ProfileQueryDomainService {
     }
 
     @Transactional(readOnly = true)
-    public List<Follow> getRelatedFollows(Long userId, CursorPageable<LocalDateTime> cPage) {
+    public List<Follow> findRelatedFollows(Long userId, CursorPageable<LocalDateTime> cPage) {
         return followQueryRepository.findAllByUserIdOrderByCreatedAtDesc(userId, cPage);
     }
 }

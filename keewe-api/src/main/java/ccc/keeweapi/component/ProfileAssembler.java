@@ -148,15 +148,15 @@ public class ProfileAssembler {
         return InterestsResponse.of(interests);
     }
 
-    public RelatedUserResponse toRelatedUserResponse(User user) {
-        return RelatedUserResponse.of(user.getId(), user.getNickname(), user.getProfilePhotoURL());
+    public InviteeResponse toRelatedUserResponse(User user) {
+        return InviteeResponse.of(user.getId(), user.getNickname(), user.getProfilePhotoURL());
     }
 
-    public RelatedUserListResponse toRelatedUserListResponse(List<User> relatedUsers, String nextCursor) {
-        List<RelatedUserResponse> relatedUserResponses = relatedUsers.stream()
+    public InviteeListResponse toInviteeListResponse(List<User> invitees, String nextCursor) {
+        List<InviteeResponse> inviteeResponse = invitees.stream()
                 .map(this::toRelatedUserResponse)
                 .collect(Collectors.toList());
 
-        return RelatedUserListResponse.of(nextCursor, relatedUserResponses);
+        return InviteeListResponse.of(nextCursor, inviteeResponse);
     }
 }

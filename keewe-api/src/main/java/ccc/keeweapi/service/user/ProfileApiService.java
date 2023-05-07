@@ -13,8 +13,7 @@ import ccc.keeweapi.dto.user.OnboardResponse;
 import ccc.keeweapi.dto.user.ProfileMyPageResponse;
 import ccc.keeweapi.dto.user.ProfileUpdateRequest;
 import ccc.keeweapi.dto.user.ProfileUpdateResponse;
-import ccc.keeweapi.dto.user.RelatedUserListResponse;
-import ccc.keeweapi.dto.user.RelatedUserResponse;
+import ccc.keeweapi.dto.user.InviteeListResponse;
 import ccc.keeweapi.dto.user.UnblockUserResponse;
 import ccc.keeweapi.dto.user.UploadProfilePhotoResponse;
 import ccc.keeweapi.utils.BlockedResourceManager;
@@ -35,7 +34,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
@@ -162,10 +160,10 @@ public class ProfileApiService {
     }
 
     @Transactional(readOnly = true)
-    public RelatedUserListResponse paginateRelatedUsers(CursorPageable<LocalDateTime> cPage) {
+    public InviteeListResponse paginateInvitees(CursorPageable<LocalDateTime> cPage) {
         Long userId = SecurityUtil.getUserId();
-        List<Follow> relatedFollows = profileQueryDomainService.getRelatedFollows(userId, cPage);
-        List<User> relatedUsers = relatedFollows.stream()
+        List<Follow> relatedFollows = profileQueryDomainService.findRelatedFollows(userId, cPage);
+        List<User> invitees = relatedFollows.stream()
                 .map(follow -> {
                     if (follow.getFollower().getId().equals(userId)) { // follower가 나인 경우
                         return follow.getFollowee();
@@ -175,9 +173,9 @@ public class ProfileApiService {
                 })
                 .distinct() // 양방향으로 팔로우 되어 있는 경우 중복 제거
                 .collect(Collectors.toList());
-        String nextCursor = !relatedFollows.isEmpty() && relatedUsers.size() == cPage.getLimit()
+        String nextCursor = !relatedFollows.isEmpty() && invitees.size() == cPage.getLimit()
                 ? relatedFollows.get(relatedFollows.size() - 1).getCreatedAt().toString()
                 : null;
-        return profileAssembler.toRelatedUserListResponse(relatedUsers, nextCursor);
+        return profileAssembler.toInviteeListResponse(invitees, nextCursor);
     }
 }
