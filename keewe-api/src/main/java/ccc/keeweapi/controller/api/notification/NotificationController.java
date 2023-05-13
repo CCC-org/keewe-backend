@@ -5,6 +5,7 @@ import static ccc.keewecore.consts.KeeweConsts.LONG_MAX_STRING;
 import ccc.keeweapi.dto.ApiResponse;
 import ccc.keeweapi.dto.notification.NotificationResponse;
 import ccc.keeweapi.dto.notification.PaginateNotificationResponse;
+import ccc.keeweapi.dto.notification.UnreadNotificationExistenceResponse;
 import ccc.keeweapi.service.notification.command.NotificationCommandApiService;
 import ccc.keeweapi.service.notification.query.NotificationQueryApiService;
 import ccc.keewedomain.persistence.repository.utils.CursorPageable;
@@ -34,5 +35,10 @@ public class NotificationController {
     @PatchMapping("/{notificationId}/read")
     public ApiResponse<NotificationResponse> markAsReadToNotification(@PathVariable("notificationId") Long notificationId) {
         return ApiResponse.ok(notificationCommandApiService.markAsRead(notificationId));
+    }
+
+    @GetMapping("/unread-existence")
+    public ApiResponse<UnreadNotificationExistenceResponse> isUnreadNotificationExist() {
+        return ApiResponse.ok(notificationQueryApiService.isUnreadNotificationExist());
     }
 }

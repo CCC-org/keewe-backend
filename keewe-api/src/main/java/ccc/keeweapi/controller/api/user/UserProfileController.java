@@ -50,4 +50,9 @@ public class UserProfileController {
     public ApiResponse<InterestsResponse> getInterests() {
         return ApiResponse.ok(profileApiService.getInterests());
     }
+
+    @GetMapping("/account")
+    public ApiResponse<AccountResponse> getAccount() {
+        return ApiResponse.ok(profileApiService.getAccount());
+    }
 }

@@ -18,4 +18,8 @@ public class NotificationQueryDomainService {
     public List<Notification> paginateNotifications(CursorPageable<Long> cPage, User user) {
         return notificationQueryRepository.paginate(cPage, user);
     }
+
+    public Boolean isUnreadNotificationExist(User user) {
+        return notificationQueryRepository.isUnreadNotificationExist(user);
+    }
 }

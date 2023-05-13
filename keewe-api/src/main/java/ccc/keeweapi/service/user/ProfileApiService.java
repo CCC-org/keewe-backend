@@ -1,6 +1,7 @@
 package ccc.keeweapi.service.user;
 
 import ccc.keeweapi.component.ProfileAssembler;
+import ccc.keeweapi.dto.user.AccountResponse;
 import ccc.keeweapi.dto.user.AllAchievedTitleResponse;
 import ccc.keeweapi.dto.user.BlockUserResponse;
 import ccc.keeweapi.dto.user.FollowToggleResponse;
@@ -13,6 +14,7 @@ import ccc.keeweapi.dto.user.OnboardResponse;
 import ccc.keeweapi.dto.user.ProfileMyPageResponse;
 import ccc.keeweapi.dto.user.ProfileUpdateRequest;
 import ccc.keeweapi.dto.user.ProfileUpdateResponse;
+import ccc.keeweapi.dto.user.InviteeListResponse;
 import ccc.keeweapi.dto.user.UnblockUserResponse;
 import ccc.keeweapi.dto.user.UploadProfilePhotoResponse;
 import ccc.keeweapi.utils.BlockedResourceManager;
@@ -156,5 +158,30 @@ public class ProfileApiService {
     @Transactional(readOnly = true)
     public InterestsResponse getInterests() {
         return profileAssembler.toInterestsResponse(profileQueryDomainService.getInterests(SecurityUtil.getUser()));
+    }
+
+    @Transactional(readOnly = true)
+    public InviteeListResponse paginateInvitees(CursorPageable<LocalDateTime> cPage) {
+        Long userId = SecurityUtil.getUserId();
+        List<Follow> relatedFollows = profileQueryDomainService.findRelatedFollows(userId, cPage);
+        List<User> invitees = relatedFollows.stream()
+                .map(follow -> {
+                    if (follow.getFollower().getId().equals(userId)) { // follower가 나인 경우
+                        return follow.getFollowee();
+                    } else { // followee가 나인 경우
+                        return follow.getFollower();
+                    }
+                })
+                .distinct() // 양방향으로 팔로우 되어 있는 경우 중복 제거
+                .collect(Collectors.toList());
+        String nextCursor = !relatedFollows.isEmpty() && relatedFollows.size() == cPage.getLimit()
+                ? relatedFollows.get(relatedFollows.size() - 1).getCreatedAt().toString()
+                : null;
+        return profileAssembler.toInviteeListResponse(invitees, nextCursor);
+    }
+
+    public AccountResponse getAccount() {
+        User user = SecurityUtil.getUser();
+        return profileAssembler.toAccountResponse(user);
     }
 }
