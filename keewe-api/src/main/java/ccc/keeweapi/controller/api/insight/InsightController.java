@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -94,8 +95,8 @@ public class InsightController {
     }
 
     @GetMapping("/bookmark")
-    public ApiResponse<List<InsightGetForHomeResponse>> getBookmarkedInsight(Pageable pageable) {
-        return ApiResponse.ok(insightQueryApiService.getInsightForBookmark(pageable));
+    public ApiResponse<List<InsightGetForHomeResponse>> getBookmarkedInsight(CursorPageable<LocalDateTime> cPage) {
+        return ApiResponse.ok(insightQueryApiService.getInsightForBookmark(cPage));
     }
 
     @GetMapping("/challenge/my")

@@ -110,8 +110,8 @@ public class InsightQueryDomainService {
     }
 
     @Transactional(readOnly = true)
-    public List<InsightGetForHomeDto> getInsightForBookmark(User user, Pageable pageable) {
-        List<Insight> insights = insightQueryRepository.findBookmarkedInsight(user, pageable);
+    public List<InsightGetForHomeDto> getInsightForBookmark(User user, CursorPageable<LocalDateTime> cPage) {
+        List<Insight> insights = insightQueryRepository.findBookmarkedInsight(user, cPage);
         return insights.parallelStream().map(i ->
                 InsightGetForHomeDto.of(
                         i.getId(),

@@ -194,16 +194,16 @@ public class InsightQueryRepository {
                 .fetchFirst() != null;
     }
 
-    public List<Insight> findBookmarkedInsight(User user, Pageable pageable) {
+    public List<Insight> findBookmarkedInsight(User user, CursorPageable<LocalDateTime> cPage) {
         return queryFactory
                 .select(insight)
                 .from(insight)
                 .innerJoin(bookmark).on(insight.id.eq(bookmark.insight.id))
                 .where(insight.deleted.isFalse())
                 .where(bookmark.user.id.eq(user.getId()))
+                .where(bookmark.createdAt.lt(cPage.getCursor()))
                 .orderBy(bookmark.createdAt.desc())
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
+                .limit(cPage.getLimit())
                 .fetch();
     }
 

@@ -29,6 +29,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -85,8 +86,8 @@ public class InsightQueryApiService {
     }
 
     @Transactional(readOnly = true)
-    public List<InsightGetForHomeResponse> getInsightForBookmark(Pageable pageable) {
-        List<InsightGetForHomeResponse> responses = insightQueryDomainService.getInsightForBookmark(SecurityUtil.getUser(), pageable).stream()
+    public List<InsightGetForHomeResponse> getInsightForBookmark(CursorPageable<LocalDateTime> cPage) {
+        List<InsightGetForHomeResponse> responses = insightQueryDomainService.getInsightForBookmark(SecurityUtil.getUser(), cPage).stream()
                 .map(insightAssembler::toInsightGetForHomeResponse)
                 .collect(Collectors.toList());
         return blockedResourceManager.filterBlockedUsers(responses);

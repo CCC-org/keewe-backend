@@ -451,8 +451,7 @@ public class InsightControllerTest extends ApiDocumentationTest {
     @DisplayName("북마크한 인사이트 조회 API")
     void get_insight_for_bookmark() throws Exception {
         Long insightId = 1L;
-        long size = 0;
-        long page = 10L;
+        CursorPageable<LocalDateTime> cPage = CursorPageable.of(LocalDateTime.now(), 3L);
 
         when(insightQueryApiService.getInsightForBookmark(any())).thenReturn(List.of(InsightGetForHomeResponse.of(
                 insightId,
@@ -466,8 +465,8 @@ public class InsightControllerTest extends ApiDocumentationTest {
 
         ResultActions resultActions = mockMvc.perform(get("/api/v1/insight/bookmark", insightId)
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
-                        .param("page", Long.toString(size))
-                        .param("size", Long.toString(page)))
+                        .param("cursor", String.valueOf(cPage.getCursor()))
+                        .param("limit", String.valueOf(cPage.getLimit())))
                 .andExpect(status().isOk());
 
         resultActions.andDo(restDocs.document(resource(
@@ -477,8 +476,8 @@ public class InsightControllerTest extends ApiDocumentationTest {
                         .requestHeaders(
                                 headerWithName("Authorization").description("유저의 JWT"))
                         .requestParameters(
-                                parameterWithName("page").description("조회할 페이지"),
-                                parameterWithName("size").description("조회할 페이지의 크기"))
+                                parameterWithName("cursor").description("페이징을 위한 커서 yyyy-MM-dd'T'hh:mm:ss.SSS"),
+                                parameterWithName("limit").description("한번에 조회할 개수"))
                         .responseFields(
                                 fieldWithPath("message").description("요청 결과 메세지"),
                                 fieldWithPath("code").description("결과 코드"),
