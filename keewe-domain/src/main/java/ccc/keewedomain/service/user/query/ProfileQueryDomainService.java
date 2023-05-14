@@ -8,6 +8,7 @@ import ccc.keewedomain.persistence.domain.user.Follow;
 import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.persistence.domain.user.id.FollowId;
 import ccc.keewedomain.persistence.repository.user.BlockQueryRepository;
+import ccc.keewedomain.persistence.repository.user.FollowFromInsightQueryRepository;
 import ccc.keewedomain.persistence.repository.user.FollowQueryRepository;
 import ccc.keewedomain.persistence.repository.user.FollowRepository;
 import ccc.keewedomain.persistence.repository.user.TitleAchievedQueryRepository;
@@ -35,6 +36,7 @@ public class ProfileQueryDomainService {
     private final FollowQueryRepository followQueryRepository;
     private final UserQueryRepository userQueryRepository;
     private final BlockQueryRepository blockQueryRepository;
+    private final FollowFromInsightQueryRepository followFromInsightQueryRepository;
 
     public boolean isFollowing(FollowCheckDto followCheckDto) {
         return followRepository.existsById(FollowId.of(followCheckDto.getUserId(), followCheckDto.getTargetId()));
@@ -98,5 +100,9 @@ public class ProfileQueryDomainService {
     @Transactional(readOnly = true)
     public List<Follow> findRelatedFollows(Long userId, CursorPageable<LocalDateTime> cPage) {
         return followQueryRepository.findAllByUserIdOrderByCreatedAtDesc(userId, cPage);
+    }
+
+    public Long countFollowFromInsightByInsightId(Long insightId) {
+        return followFromInsightQueryRepository.countByInsightId(insightId);
     }
 }

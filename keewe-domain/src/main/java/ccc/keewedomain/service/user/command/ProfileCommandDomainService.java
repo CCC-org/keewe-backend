@@ -138,6 +138,7 @@ public class ProfileCommandDomainService {
 
     @Transactional
     public FollowFromInsight addFollowFromInsight(FollowFromInsightDto dto) {
+        insightQueryDomainService.validateWriter(dto.getFolloweeId(), dto.getInsightId());
         FollowFromInsightId id = FollowFromInsightId.of(dto.getFollowerId(), dto.getFolloweeId(), dto.getInsightId());
         if(followFromInsightRepository.existsById(id)) {
             log.info("[PCDS::addFollowFromInsight]followerId {} followeeId {} insightId {} already exists", dto.getFollowerId(), dto.getFolloweeId(), dto.getInsightId());
