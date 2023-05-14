@@ -53,6 +53,7 @@ public class UserRelationControllerTest extends ApiDocumentationTest {
         );
 
         ResultActions resultActions = mockMvc.perform(post("/api/v1/user/profile/follow/{userId}", 1L)
+                        .param("insightId", "1")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
@@ -61,6 +62,9 @@ public class UserRelationControllerTest extends ApiDocumentationTest {
                 ResourceSnippetParameters.builder()
                         .description("팔로잉 API 입니다.")
                         .summary("유저 팔로잉 API")
+                        .requestParameters(
+                                parameterWithName("insightId").description("팔로우를 누른 인사이트의 ID").optional()
+                        )
                         .requestHeaders(
                                 headerWithName("Authorization").description("유저의 JWT"))
                         .responseFields(
