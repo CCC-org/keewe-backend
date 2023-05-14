@@ -4,6 +4,7 @@ import ccc.keewecore.consts.KeeweConsts;
 import ccc.keewecore.consts.KeeweRtnConsts;
 import ccc.keewecore.exception.KeeweException;
 import ccc.keewedomain.dto.user.FollowCheckDto;
+import ccc.keewedomain.dto.user.FollowFromInsightDto;
 import ccc.keewedomain.dto.user.FollowToggleDto;
 import ccc.keewedomain.dto.user.OnboardDto;
 import ccc.keewedomain.dto.user.ProfileUpdateDto;
@@ -26,6 +27,7 @@ import ccc.keewedomain.service.notification.command.NotificationCommandDomainSer
 import ccc.keewedomain.service.user.UserDomainService;
 import ccc.keewedomain.service.user.query.ProfileQueryDomainService;
 import ccc.keeweinfra.service.image.StoreService;
+import ccc.keeweinfra.service.messagequeue.MQPublishService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -43,6 +45,7 @@ public class ProfileCommandDomainService {
     private final BlockRepository blockRepository;
     private final NotificationCommandDomainService notificationCommandDomainService;
     private final ProfileQueryDomainService profileQueryDomainService;
+    private final MQPublishService mqPublishService;
 
     public User onboard(OnboardDto dto) {
         User user = userDomainService.getUserByIdOrElseThrow(dto.getUserId());
@@ -50,7 +53,7 @@ public class ProfileCommandDomainService {
         return user;
     }
 
-    public boolean toggleFollowership(FollowToggleDto followDto) {
+    public boolean toggleFollowership(FollowToggleDto followDto, Long insightId) {
         followDto.validateSelfFollowing(followDto);
 
         User user = userDomainService.getUserByIdOrElseThrow(followDto.getUserId());
@@ -67,7 +70,7 @@ public class ProfileCommandDomainService {
                         () -> {
                             log.info("[PDS::toggleFollowership] Not Found Relation followee {}, follower {}", user.getId(), target.getId());
                             Follow relation = Follow.makeRelation(user, target);
-                            afterFollowing(followRepository.save(relation));
+                            afterFollowing(followRepository.save(relation), insightId);
                         }
                 );
         return profileQueryDomainService.isFollowing(FollowCheckDto.of(user.getId(), target.getId()));
@@ -157,7 +160,7 @@ public class ProfileCommandDomainService {
         }
     }
 
-    private void afterFollowing(Follow follow) {
+    private void afterFollowing(Follow follow, Long insightId) {
         try {
             Notification notification = Notification.of(
                     follow.getFollowee(),
@@ -165,9 +168,22 @@ public class ProfileCommandDomainService {
                     String.valueOf(follow.getFollower().getId()) // note. 클릭 시 팔로우 한 사람의 프로필로 이동 대비
             );
             notificationCommandDomainService.save(notification);
+            if(insightId != null) {
+                log.info("이벤트 발행");
+                publishFollowFromInsightEvent(FollowFromInsightDto.of(
+                        follow.getFollower().getId(),
+                        follow.getFollowee().getId(),
+                        insightId)
+                );
+            }
+
         } catch (Throwable t) {
             log.warn("[PDS::afterFollowing] 팔로우 후 작업 실패 - 팔로우하는사람({}), 팔로우당하는사람({})", follow.getFollower().getId(), follow.getFollowee().getId(), t);
         }
+    }
+
+    private void publishFollowFromInsightEvent(FollowFromInsightDto dto) {
+        mqPublishService.publish(KeeweConsts.FOLLOW_FROM_INSIGHT_EXCHANGE, dto);
     }
 
     private TitleAchievement getTitleAchievementById(Long userId, Long titleId) {

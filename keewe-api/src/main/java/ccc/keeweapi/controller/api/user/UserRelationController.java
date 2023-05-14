@@ -27,7 +27,7 @@ public class UserRelationController {
     public ApiResponse<FollowToggleResponse> toggleFollowership(
             @PathVariable Long targetId,
             @RequestParam(required = false) Long insightId) {
-        return ApiResponse.ok(profileApiService.toggleFollowership(targetId));
+        return ApiResponse.ok(profileApiService.toggleFollowership(targetId, insightId));
     }
 
     @GetMapping("/follower/{userId}")

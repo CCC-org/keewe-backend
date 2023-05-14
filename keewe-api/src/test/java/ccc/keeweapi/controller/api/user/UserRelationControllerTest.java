@@ -48,7 +48,7 @@ public class UserRelationControllerTest extends ApiDocumentationTest {
     @Test
     @DisplayName("팔로잉")
     void following_test() throws Exception {
-        when(profileApiService.toggleFollowership(anyLong())).thenReturn(
+        when(profileApiService.toggleFollowership(anyLong(), anyLong())).thenReturn(
                 FollowToggleResponse.of(true)
         );
 

@@ -7,6 +7,7 @@ import ccc.keeweapi.dto.user.BlockUserResponse;
 import ccc.keeweapi.dto.user.FollowToggleResponse;
 import ccc.keeweapi.dto.user.FollowUserListResponse;
 import ccc.keeweapi.dto.user.InterestsResponse;
+import ccc.keeweapi.dto.user.InviteeListResponse;
 import ccc.keeweapi.dto.user.MyBlockUserListResponse;
 import ccc.keeweapi.dto.user.MyPageTitleResponse;
 import ccc.keeweapi.dto.user.OnboardRequest;
@@ -14,7 +15,6 @@ import ccc.keeweapi.dto.user.OnboardResponse;
 import ccc.keeweapi.dto.user.ProfileMyPageResponse;
 import ccc.keeweapi.dto.user.ProfileUpdateRequest;
 import ccc.keeweapi.dto.user.ProfileUpdateResponse;
-import ccc.keeweapi.dto.user.InviteeListResponse;
 import ccc.keeweapi.dto.user.UnblockUserResponse;
 import ccc.keeweapi.dto.user.UploadProfilePhotoResponse;
 import ccc.keeweapi.utils.BlockedResourceManager;
@@ -52,7 +52,6 @@ public class ProfileApiService {
     private final ProfileQueryDomainService profileQueryDomainService;
     private final ProfileCommandDomainService profileCommandDomainService;
     private final BlockedResourceManager blockedResourceManager;
-
     @Transactional
     public OnboardResponse onboard(OnboardRequest request) {
         User user = profileCommandDomainService.onboard(profileAssembler.toOnboardDto(request));
@@ -60,9 +59,9 @@ public class ProfileApiService {
     }
 
     @Transactional
-    public FollowToggleResponse toggleFollowership(Long userId) {
+    public FollowToggleResponse toggleFollowership(Long userId, Long insightId) {
         blockedResourceManager.validateAccessibleUser(userId);
-        boolean following = profileCommandDomainService.toggleFollowership(profileAssembler.toFollowToggleDto(userId));
+        boolean following = profileCommandDomainService.toggleFollowership(profileAssembler.toFollowToggleDto(userId), insightId);
         return profileAssembler.toFollowToggleResponse(following);
     }
 

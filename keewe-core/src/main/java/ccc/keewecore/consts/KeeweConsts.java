@@ -10,6 +10,8 @@ public class KeeweConsts {
     public static final String INSIGHT_VIEW_QUEUE = "INSIGHT-VIEW-QUEUE";
     public static final String INSIGHT_REACT_EXCHANGE = "INSIGHT-REACT-EXCHANGE";
     public static final String INSIGHT_REACT_QUEUE = "INSIGHT-REACT-QUEUE";
+    public static final String FOLLOW_FROM_INSIGHT_EXCHANGE = "FOLLOW_FROM_INSIGHT_EXCHANGE";
+    public static final String FOLLOW_FROM_INSIGHT_QUEUE = "FOLLOW_FROM_INSIGHT_QUEUE";
 
     public static final String INSIGHT_VIEW_HASH_KEY = "insight-view";
     public static final String REACTION_COUNT_HASH_KEY = "reaction-count";
