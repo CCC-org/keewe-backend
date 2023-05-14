@@ -17,6 +17,7 @@ import ccc.keeweapi.service.insight.query.InsightQueryApiService;
 import ccc.keewecore.consts.KeeweConsts;
 import ccc.keewedomain.persistence.repository.utils.CursorPageable;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -28,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -93,11 +95,8 @@ public class InsightController {
     }
 
     @GetMapping("/bookmark")
-    public ApiResponse<List<InsightGetForHomeResponse>> getBookmarkedInsight(
-            @RequestParam(required = false, defaultValue = KeeweConsts.LONG_MAX_STRING) Long cursor,
-            @RequestParam Long limit
-    ) {
-        return ApiResponse.ok(insightQueryApiService.getInsightForBookmark(CursorPageable.of(cursor, limit)));
+    public ApiResponse<List<InsightGetForHomeResponse>> getBookmarkedInsight(CursorPageable<LocalDateTime> cPage) {
+        return ApiResponse.ok(insightQueryApiService.getInsightForBookmark(cPage));
     }
 
     @GetMapping("/challenge/my")
