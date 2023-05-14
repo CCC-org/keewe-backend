@@ -16,13 +16,17 @@ import ccc.keewedomain.persistence.domain.title.TitleAchievement;
 import ccc.keewedomain.persistence.domain.title.id.TitleAchievementId;
 import ccc.keewedomain.persistence.domain.user.Block;
 import ccc.keewedomain.persistence.domain.user.Follow;
+import ccc.keewedomain.persistence.domain.user.FollowFromInsight;
 import ccc.keewedomain.persistence.domain.user.ProfilePhoto;
 import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.persistence.domain.user.id.BlockId;
+import ccc.keewedomain.persistence.domain.user.id.FollowFromInsightId;
 import ccc.keewedomain.persistence.domain.user.id.FollowId;
 import ccc.keewedomain.persistence.repository.user.BlockRepository;
+import ccc.keewedomain.persistence.repository.user.FollowFromInsightRepository;
 import ccc.keewedomain.persistence.repository.user.FollowRepository;
 import ccc.keewedomain.persistence.repository.user.TitleAchievementRepository;
+import ccc.keewedomain.service.insight.query.InsightQueryDomainService;
 import ccc.keewedomain.service.notification.command.NotificationCommandDomainService;
 import ccc.keewedomain.service.user.UserDomainService;
 import ccc.keewedomain.service.user.query.ProfileQueryDomainService;
@@ -46,6 +50,8 @@ public class ProfileCommandDomainService {
     private final NotificationCommandDomainService notificationCommandDomainService;
     private final ProfileQueryDomainService profileQueryDomainService;
     private final MQPublishService mqPublishService;
+    private final FollowFromInsightRepository followFromInsightRepository;
+    private final InsightQueryDomainService insightQueryDomainService;
 
     public User onboard(OnboardDto dto) {
         User user = userDomainService.getUserByIdOrElseThrow(dto.getUserId());
@@ -128,6 +134,21 @@ public class ProfileCommandDomainService {
                 );
         log.info("[PDS::unblockUser] user {}, blockedUser {}", userId, blockedUserId);
         return blockedUserId;
+    }
+
+    @Transactional
+    public FollowFromInsight addFollowFromInsight(FollowFromInsightDto dto) {
+        FollowFromInsightId id = FollowFromInsightId.of(dto.getFollowerId(), dto.getFolloweeId(), dto.getInsightId());
+        if(followFromInsightRepository.existsById(id)) {
+            log.info("[PCDS::addFollowFromInsight]followerId {} followeeId {} insightId {} already exists", dto.getFollowerId(), dto.getFolloweeId(), dto.getInsightId());
+            return null;
+        }
+
+        return followFromInsightRepository.save(FollowFromInsight.of(
+                userDomainService.getUserByIdOrElseThrow(dto.getFollowerId()),
+                userDomainService.getUserByIdOrElseThrow(dto.getFolloweeId()),
+                insightQueryDomainService.getByIdOrElseThrow(dto.getInsightId())
+        ));
     }
 
     private void removeRelation(User user, User blockedUser) {
