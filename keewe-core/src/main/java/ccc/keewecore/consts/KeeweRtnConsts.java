@@ -8,12 +8,14 @@ import lombok.Getter;
 public enum KeeweRtnConsts {
     NRM000(KeeweRtnGrp.Success, 200, "성공"),
 
+    ERR400(KeeweRtnGrp.Validation, 400, "유효하지 않은 값이에요."),
+
     ERR401(KeeweRtnGrp.Auth, 401, "토큰이 유효하지 않아요."),
     ERR402(KeeweRtnGrp.Auth, 402, "토큰이 만료됐어요."),
     ERR403(KeeweRtnGrp.Auth, 403, "토큰이 누락됐어요."),
     ERR404(KeeweRtnGrp.Auth, 404, "권한이 없는 유저입니다."),
 
-    ERR400(KeeweRtnGrp.Validation, 400, "유효하지 않은 값이에요."),
+    ERR405(KeeweRtnGrp.Validation, 405, "Not found"),
 
     ERR411(KeeweRtnGrp.Validation, 411, "유저를 찾을 수 없어요."),
     ERR412(KeeweRtnGrp.Validation, 412, "유저가 이메일 제공에 동의를 하지 않았어요."),
