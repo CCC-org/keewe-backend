@@ -4,6 +4,7 @@ import ccc.keewecore.consts.KeeweConsts;
 import ccc.keewecore.consts.KeeweRtnConsts;
 import ccc.keewecore.exception.KeeweException;
 import ccc.keewedomain.dto.user.FollowCheckDto;
+import ccc.keewedomain.dto.user.FollowFromInsightCreateDto;
 import ccc.keewedomain.dto.user.FollowToggleDto;
 import ccc.keewedomain.dto.user.OnboardDto;
 import ccc.keewedomain.dto.user.ProfileUpdateDto;
@@ -137,19 +138,19 @@ public class ProfileCommandDomainService {
     }
 
     @Transactional
-    public FollowFromInsight addFollowFromInsight(FollowFromInsightEvent event) {
-        insightQueryDomainService.validateWriter(event.getFolloweeId(), event.getInsightId());
-        FollowFromInsightId id = FollowFromInsightId.of(event.getFollowerId(), event.getFolloweeId(), event.getInsightId());
+    public FollowFromInsight addFollowFromInsight(FollowFromInsightCreateDto dto) {
+        insightQueryDomainService.validateWriter(dto.getFolloweeId(), dto.getInsightId());
+        FollowFromInsightId id = FollowFromInsightId.of(dto.getFollowerId(), dto.getFolloweeId(), dto.getInsightId());
         if(followFromInsightRepository.existsById(id)) {
             log.info("[PCDS::addFollowFromInsight] Follow history already exists - followerId({}), followeeId({}), insightId({})",
-                    event.getFollowerId(), event.getFolloweeId(), event.getInsightId());
+                    dto.getFollowerId(), dto.getFolloweeId(), dto.getInsightId());
             return null;
         }
 
         FollowFromInsight followFromInsight = FollowFromInsight.of(
-                userDomainService.getUserByIdOrElseThrow(event.getFollowerId()),
-                userDomainService.getUserByIdOrElseThrow(event.getFolloweeId()),
-                insightQueryDomainService.getByIdOrElseThrow(event.getInsightId())
+                userDomainService.getUserByIdOrElseThrow(dto.getFollowerId()),
+                userDomainService.getUserByIdOrElseThrow(dto.getFolloweeId()),
+                insightQueryDomainService.getByIdOrElseThrow(dto.getInsightId())
         );
         return followFromInsightRepository.save(followFromInsight);
     }

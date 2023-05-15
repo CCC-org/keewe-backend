@@ -1,6 +1,7 @@
 package ccc.keewestatistics.listener;
 
 import ccc.keewecore.consts.KeeweConsts;
+import ccc.keewedomain.dto.user.FollowFromInsightCreateDto;
 import ccc.keewedomain.event.user.FollowFromInsightEvent;
 import ccc.keewedomain.service.user.command.ProfileCommandDomainService;
 import com.rabbitmq.client.Channel;
@@ -24,7 +25,8 @@ public class FollowFromInsightListener {
         log.info("[FFIL::onMessage] FollowFromInsight event consuming insightId {} followerId {} followeeId {}",
                 event.getInsightId(), event.getFollowerId(), event.getFolloweeId());
         try {
-            profileCommandDomainService.addFollowFromInsight(event);
+            FollowFromInsightCreateDto dto = FollowFromInsightCreateDto.of(event.getFollowerId(), event.getFolloweeId(), event.getInsightId());
+            profileCommandDomainService.addFollowFromInsight(dto);
             channel.basicAck(tag, true);
         } catch (Throwable t) {
             log.error(t.getMessage(), t);
