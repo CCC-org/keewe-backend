@@ -25,10 +25,12 @@ public class FollowFromInsight {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "follower_id")
     private User follower;
+
     @Id
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "followee_id")
     private User followee;
+
     @Id
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "insight_id")

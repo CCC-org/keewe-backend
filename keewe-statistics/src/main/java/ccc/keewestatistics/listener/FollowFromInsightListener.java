@@ -22,12 +22,13 @@ public class FollowFromInsightListener {
 
     @RabbitListener(queues = KeeweConsts.FOLLOW_FROM_INSIGHT_QUEUE, ackMode = "MANUAL")
     public void onMessage(FollowFromInsightDto dto, Channel channel, @Header(AmqpHeaders.DELIVERY_TAG) long tag) throws IOException {
-        log.info("[FFIL::onMessage] insightId {} followerId {} followeeId {}", dto.getInsightId(), dto.getFollowerId(), dto.getFolloweeId());
+        log.info("[FFIL::onMessage] FollowFromInsight event consuming insightId {} followerId {} followeeId {}",
+                dto.getInsightId(), dto.getFollowerId(), dto.getFolloweeId());
         try {
             profileCommandDomainService.addFollowFromInsight(dto);
             channel.basicAck(tag, true);
         } catch (Throwable t) {
-            log.error(t.getMessage());
+            log.error(t.getMessage(), t);
             channel.basicNack(tag, false, false);
         }
     }

@@ -14,10 +14,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/insight")
 @RequiredArgsConstructor
 public class InsightStatisticsController {
-        private final InsightStatisticsQueryApiService insightStatisticsQueryApiService;
+    private final InsightStatisticsQueryApiService insightStatisticsQueryApiService;
 
-        @GetMapping("/{insightId}/statistics/follow")
-        public ApiResponse<FollowFromInsightCountResponse> countFollowFromInsight(@PathVariable Long insightId) {
-                return ApiResponse.ok(insightStatisticsQueryApiService.countFollowFromInsight(insightId));
-        }
+    @GetMapping("/{insightId}/statistics/follow")
+    public ApiResponse<FollowFromInsightCountResponse> countFollowFromInsight(@PathVariable Long insightId) {
+        return ApiResponse.ok(insightStatisticsQueryApiService.countFollowFromInsight(insightId));
+    }
 }

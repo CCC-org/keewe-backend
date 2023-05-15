@@ -141,15 +141,17 @@ public class ProfileCommandDomainService {
         insightQueryDomainService.validateWriter(dto.getFolloweeId(), dto.getInsightId());
         FollowFromInsightId id = FollowFromInsightId.of(dto.getFollowerId(), dto.getFolloweeId(), dto.getInsightId());
         if(followFromInsightRepository.existsById(id)) {
-            log.info("[PCDS::addFollowFromInsight]followerId {} followeeId {} insightId {} already exists", dto.getFollowerId(), dto.getFolloweeId(), dto.getInsightId());
+            log.info("[PCDS::addFollowFromInsight] Follow history already exists - followerId({}), followeeId({}), insightId({})",
+                    dto.getFollowerId(), dto.getFolloweeId(), dto.getInsightId());
             return null;
         }
 
-        return followFromInsightRepository.save(FollowFromInsight.of(
+        FollowFromInsight followFromInsight = FollowFromInsight.of(
                 userDomainService.getUserByIdOrElseThrow(dto.getFollowerId()),
                 userDomainService.getUserByIdOrElseThrow(dto.getFolloweeId()),
                 insightQueryDomainService.getByIdOrElseThrow(dto.getInsightId())
-        ));
+        );
+        return followFromInsightRepository.save(followFromInsight);
     }
 
     private void removeRelation(User user, User blockedUser) {
@@ -191,12 +193,11 @@ public class ProfileCommandDomainService {
             );
             notificationCommandDomainService.save(notification);
             if(insightId != null) {
-                log.info("이벤트 발행");
+                log.info("[PDS::afterFollowing] ");
                 publishFollowFromInsightEvent(FollowFromInsightDto.of(
                         follow.getFollower().getId(),
                         follow.getFollowee().getId(),
-                        insightId)
-                );
+                        insightId));
             }
 
         } catch (Throwable t) {
