@@ -1,8 +1,7 @@
 package ccc.keewestatistics.listener;
 
 import ccc.keewecore.consts.KeeweConsts;
-import ccc.keewedomain.dto.user.FollowFromInsightDto;
-import ccc.keewedomain.persistence.domain.user.FollowFromInsight;
+import ccc.keewedomain.event.user.FollowFromInsightEvent;
 import ccc.keewedomain.service.user.command.ProfileCommandDomainService;
 import com.rabbitmq.client.Channel;
 import lombok.RequiredArgsConstructor;
@@ -21,11 +20,11 @@ public class FollowFromInsightListener {
     private final ProfileCommandDomainService profileCommandDomainService;
 
     @RabbitListener(queues = KeeweConsts.FOLLOW_FROM_INSIGHT_QUEUE, ackMode = "MANUAL")
-    public void onMessage(FollowFromInsightDto dto, Channel channel, @Header(AmqpHeaders.DELIVERY_TAG) long tag) throws IOException {
+    public void onMessage(FollowFromInsightEvent event, Channel channel, @Header(AmqpHeaders.DELIVERY_TAG) long tag) throws IOException {
         log.info("[FFIL::onMessage] FollowFromInsight event consuming insightId {} followerId {} followeeId {}",
-                dto.getInsightId(), dto.getFollowerId(), dto.getFolloweeId());
+                event.getInsightId(), event.getFollowerId(), event.getFolloweeId());
         try {
-            profileCommandDomainService.addFollowFromInsight(dto);
+            profileCommandDomainService.addFollowFromInsight(event);
             channel.basicAck(tag, true);
         } catch (Throwable t) {
             log.error(t.getMessage(), t);

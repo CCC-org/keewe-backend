@@ -4,11 +4,11 @@ import ccc.keewecore.consts.KeeweConsts;
 import ccc.keewecore.consts.KeeweRtnConsts;
 import ccc.keewecore.exception.KeeweException;
 import ccc.keewedomain.dto.user.FollowCheckDto;
-import ccc.keewedomain.dto.user.FollowFromInsightDto;
 import ccc.keewedomain.dto.user.FollowToggleDto;
 import ccc.keewedomain.dto.user.OnboardDto;
 import ccc.keewedomain.dto.user.ProfileUpdateDto;
 import ccc.keewedomain.dto.user.UploadProfilePhotoDto;
+import ccc.keewedomain.event.user.FollowFromInsightEvent;
 import ccc.keewedomain.persistence.domain.notification.Notification;
 import ccc.keewedomain.persistence.domain.notification.enums.NotificationContents;
 import ccc.keewedomain.persistence.domain.title.Title;
@@ -137,19 +137,19 @@ public class ProfileCommandDomainService {
     }
 
     @Transactional
-    public FollowFromInsight addFollowFromInsight(FollowFromInsightDto dto) {
-        insightQueryDomainService.validateWriter(dto.getFolloweeId(), dto.getInsightId());
-        FollowFromInsightId id = FollowFromInsightId.of(dto.getFollowerId(), dto.getFolloweeId(), dto.getInsightId());
+    public FollowFromInsight addFollowFromInsight(FollowFromInsightEvent event) {
+        insightQueryDomainService.validateWriter(event.getFolloweeId(), event.getInsightId());
+        FollowFromInsightId id = FollowFromInsightId.of(event.getFollowerId(), event.getFolloweeId(), event.getInsightId());
         if(followFromInsightRepository.existsById(id)) {
             log.info("[PCDS::addFollowFromInsight] Follow history already exists - followerId({}), followeeId({}), insightId({})",
-                    dto.getFollowerId(), dto.getFolloweeId(), dto.getInsightId());
+                    event.getFollowerId(), event.getFolloweeId(), event.getInsightId());
             return null;
         }
 
         FollowFromInsight followFromInsight = FollowFromInsight.of(
-                userDomainService.getUserByIdOrElseThrow(dto.getFollowerId()),
-                userDomainService.getUserByIdOrElseThrow(dto.getFolloweeId()),
-                insightQueryDomainService.getByIdOrElseThrow(dto.getInsightId())
+                userDomainService.getUserByIdOrElseThrow(event.getFollowerId()),
+                userDomainService.getUserByIdOrElseThrow(event.getFolloweeId()),
+                insightQueryDomainService.getByIdOrElseThrow(event.getInsightId())
         );
         return followFromInsightRepository.save(followFromInsight);
     }
@@ -194,7 +194,7 @@ public class ProfileCommandDomainService {
             notificationCommandDomainService.save(notification);
             if(insightId != null) {
                 log.info("[PDS::afterFollowing] ");
-                publishFollowFromInsightEvent(FollowFromInsightDto.of(
+                publishFollowFromInsightEvent(FollowFromInsightEvent.of(
                         follow.getFollower().getId(),
                         follow.getFollowee().getId(),
                         insightId));
@@ -205,8 +205,8 @@ public class ProfileCommandDomainService {
         }
     }
 
-    private void publishFollowFromInsightEvent(FollowFromInsightDto dto) {
-        mqPublishService.publish(KeeweConsts.FOLLOW_FROM_INSIGHT_EXCHANGE, dto);
+    private void publishFollowFromInsightEvent(FollowFromInsightEvent event) {
+        mqPublishService.publish(KeeweConsts.FOLLOW_FROM_INSIGHT_EXCHANGE, event);
     }
 
     private TitleAchievement getTitleAchievementById(Long userId, Long titleId) {
