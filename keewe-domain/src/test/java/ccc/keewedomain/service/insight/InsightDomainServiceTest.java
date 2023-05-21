@@ -199,7 +199,7 @@ public class InsightDomainServiceTest {
         assertThat(noOne).isEqualTo(0);
 
         // user(other) follows user
-        profileDomainService.toggleFollowership(FollowToggleDto.of(other.getId(), user.getId()));
+        profileDomainService.toggleFollowership(FollowToggleDto.of(other.getId(), user.getId()), 1L);
         int followUser = insightQueryDomainService.getInsightsForHome(other, CursorPageable.of(Long.MAX_VALUE, 10L), follow).size();
         assertThat(followUser).isEqualTo(1);
     }

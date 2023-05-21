@@ -5,6 +5,7 @@ import ccc.keewecore.consts.KeeweRtnConsts;
 import ccc.keewecore.exception.KeeweException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.FieldError;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @RestControllerAdvice
 @Slf4j
@@ -65,6 +67,12 @@ public class KeeweControllerAdvice {
         String message = String.format("request(%s), exception(%s)", request.getRequestURL(), ex.getMessage());
         log.error(message, ex);
         return ApiResponse.failure(KeeweRtnConsts.ERR999, KeeweRtnConsts.ERR999.getDescription());
+    }
+
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    @ResponseStatus(NOT_FOUND)
+    public ApiResponse<?> handleHttpRequestMethodNotSupportedException() {
+        return ApiResponse.failure(KeeweRtnConsts.ERR405);
     }
 
     private String fieldErrorMessage(FieldError fieldError) {

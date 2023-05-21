@@ -24,8 +24,10 @@ public class UserRelationController {
     private final ProfileApiService profileApiService;
 
     @PostMapping("/follow/{targetId}")
-    public ApiResponse<FollowToggleResponse> toggleFollowership(@PathVariable Long targetId) {
-        return ApiResponse.ok(profileApiService.toggleFollowership(targetId));
+    public ApiResponse<FollowToggleResponse> toggleFollowership(
+            @PathVariable Long targetId,
+            @RequestParam(required = false) Long insightId) {
+        return ApiResponse.ok(profileApiService.toggleFollowership(targetId, insightId));
     }
 
     @GetMapping("/follower/{userId}")
