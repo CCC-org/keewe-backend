@@ -18,6 +18,7 @@ import ccc.keewedomain.persistence.domain.title.QTitle;
 import ccc.keewedomain.persistence.domain.user.QUser;
 import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.persistence.repository.utils.CursorPageable;
+import com.querydsl.core.Tuple;
 import com.querydsl.core.group.GroupBy;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
@@ -28,6 +29,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
@@ -194,9 +197,9 @@ public class InsightQueryRepository {
                 .fetchFirst() != null;
     }
 
-    public List<Insight> findBookmarkedInsight(User user, CursorPageable<LocalDateTime> cPage) {
-        return queryFactory
-                .select(insight)
+    public Map<Insight, LocalDateTime> findBookmarkedInsight(User user, CursorPageable<LocalDateTime> cPage) {
+        List<Tuple> result = queryFactory
+                .select(insight, bookmark.createdAt)
                 .from(insight)
                 .innerJoin(bookmark).on(insight.id.eq(bookmark.insight.id))
                 .where(insight.deleted.isFalse())
@@ -205,6 +208,12 @@ public class InsightQueryRepository {
                 .orderBy(bookmark.createdAt.desc())
                 .limit(cPage.getLimit())
                 .fetch();
+
+        return result.stream().collect(Collectors.toMap(
+                tuple -> tuple.get(0, Insight.class),
+                tuple -> tuple.get(1, LocalDateTime.class),
+                (oldValue, newValue) -> oldValue
+        ));
     }
 
     public List<Insight> findByChallenge(Challenge challenge, CursorPageable<Long> cPage, Long writerId) {

@@ -2,12 +2,7 @@ package ccc.keeweapi.service.insight.query;
 
 import ccc.keeweapi.component.InsightAssembler;
 import ccc.keeweapi.component.ProfileAssembler;
-import ccc.keeweapi.dto.insight.response.ChallengeRecordResponse;
-import ccc.keeweapi.dto.insight.response.InsightAuthorAreaResponse;
-import ccc.keeweapi.dto.insight.response.InsightGetForHomeResponse;
-import ccc.keeweapi.dto.insight.response.InsightGetResponse;
-import ccc.keeweapi.dto.insight.response.InsightMyPageResponse;
-import ccc.keeweapi.dto.insight.response.InsightStatisticsResponse;
+import ccc.keeweapi.dto.insight.response.*;
 import ccc.keeweapi.utils.BlockedResourceManager;
 import ccc.keeweapi.utils.SecurityUtil;
 import ccc.keewecore.consts.KeeweRtnConsts;
@@ -25,7 +20,6 @@ import ccc.keewedomain.service.insight.query.CommentQueryDomainService;
 import ccc.keewedomain.service.insight.query.InsightQueryDomainService;
 import ccc.keewedomain.service.user.query.ProfileQueryDomainService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -86,9 +80,9 @@ public class InsightQueryApiService {
     }
 
     @Transactional(readOnly = true)
-    public List<InsightGetForHomeResponse> getInsightForBookmark(CursorPageable<LocalDateTime> cPage) {
-        List<InsightGetForHomeResponse> responses = insightQueryDomainService.getInsightForBookmark(SecurityUtil.getUser(), cPage).stream()
-                .map(insightAssembler::toInsightGetForHomeResponse)
+    public List<InsightGetForBookmarkedResponse> getInsightForBookmark(CursorPageable<LocalDateTime> cPage) {
+        List<InsightGetForBookmarkedResponse> responses = insightQueryDomainService.getInsightForBookmark(SecurityUtil.getUser(), cPage).stream()
+                .map(insightAssembler::toInsightGetForBookmarkedResponse)
                 .collect(Collectors.toList());
         return blockedResourceManager.filterBlockedUsers(responses);
     }

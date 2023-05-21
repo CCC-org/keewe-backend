@@ -2,22 +2,15 @@ package ccc.keeweapi.controller.api.insight;
 
 import ccc.keeweapi.dto.ApiResponse;
 import ccc.keeweapi.dto.insight.request.InsightUpdateRequest;
-import ccc.keeweapi.dto.insight.response.ChallengeRecordResponse;
-import ccc.keeweapi.dto.insight.response.InsightAuthorAreaResponse;
+import ccc.keeweapi.dto.insight.response.*;
 import ccc.keeweapi.dto.insight.request.InsightCreateRequest;
-import ccc.keeweapi.dto.insight.response.InsightCreateResponse;
-import ccc.keeweapi.dto.insight.response.InsightDeleteResponse;
-import ccc.keeweapi.dto.insight.response.InsightGetForHomeResponse;
-import ccc.keeweapi.dto.insight.response.InsightGetResponse;
-import ccc.keeweapi.dto.insight.response.InsightMyPageResponse;
-import ccc.keeweapi.dto.insight.response.InsightStatisticsResponse;
-import ccc.keeweapi.dto.insight.response.InsightUpdateResponse;
 import ccc.keeweapi.service.insight.command.InsightCommandApiService;
 import ccc.keeweapi.service.insight.query.InsightQueryApiService;
 import ccc.keewecore.consts.KeeweConsts;
 import ccc.keewedomain.persistence.repository.utils.CursorPageable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -95,7 +88,10 @@ public class InsightController {
     }
 
     @GetMapping("/bookmark")
-    public ApiResponse<List<InsightGetForHomeResponse>> getBookmarkedInsight(CursorPageable<LocalDateTime> cPage) {
+    public ApiResponse<List<InsightGetForBookmarkedResponse>> getBookmarkedInsight(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime cursor,
+            @RequestParam Long limit) {
+        CursorPageable<LocalDateTime> cPage = CursorPageable.of(cursor, limit);
         return ApiResponse.ok(insightQueryApiService.getInsightForBookmark(cPage));
     }
 

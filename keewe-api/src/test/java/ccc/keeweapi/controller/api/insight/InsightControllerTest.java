@@ -11,17 +11,7 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWit
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import ccc.keeweapi.document.utils.ApiDocumentationTest;
-import ccc.keeweapi.dto.insight.response.ChallengeRecordResponse;
-import ccc.keeweapi.dto.insight.response.InsightAuthorAreaResponse;
-import ccc.keeweapi.dto.insight.response.InsightCreateResponse;
-import ccc.keeweapi.dto.insight.response.InsightDeleteResponse;
-import ccc.keeweapi.dto.insight.response.InsightGetForHomeResponse;
-import ccc.keeweapi.dto.insight.response.InsightGetResponse;
-import ccc.keeweapi.dto.insight.response.InsightMyPageResponse;
-import ccc.keeweapi.dto.insight.response.InsightStatisticsResponse;
-import ccc.keeweapi.dto.insight.response.InsightUpdateResponse;
-import ccc.keeweapi.dto.insight.response.InsightViewIncrementResponse;
-import ccc.keeweapi.dto.insight.response.ReactionAggregationResponse;
+import ccc.keeweapi.dto.insight.response.*;
 import ccc.keeweapi.service.insight.command.InsightCommandApiService;
 import ccc.keeweapi.service.insight.query.InsightQueryApiService;
 import ccc.keewedomain.dto.insight.InsightWriterDto;
@@ -453,13 +443,14 @@ public class InsightControllerTest extends ApiDocumentationTest {
         Long insightId = 1L;
         CursorPageable<LocalDateTime> cPage = CursorPageable.of(LocalDateTime.now(), 3L);
 
-        when(insightQueryApiService.getInsightForBookmark(any())).thenReturn(List.of(InsightGetForHomeResponse.of(
+        when(insightQueryApiService.getInsightForBookmark(any())).thenReturn(List.of(InsightGetForBookmarkedResponse.of(
                 insightId,
                 "인사이트 내용입니다. 즐거운 개발 되세요!",
                 true,
                 Link.of("www.keewe.com"),
                 ReactionAggregationResponse.of(1L, 2L, 3L, 4L, 5L, 6L),
                 LocalDateTime.now().toString(),
+                LocalDateTime.now().minusDays(3).toString(),
                 InsightWriterDto.of(1L, "nickname", "title", "image")
         )));
 
@@ -492,6 +483,7 @@ public class InsightControllerTest extends ApiDocumentationTest {
                                 fieldWithPath("data[].reaction.fire").description("인사이트 불 반응 수"),
                                 fieldWithPath("data[].reaction.eyes").description("인사이트 눈 반응 수"),
                                 fieldWithPath("data[].createdAt").description("인사이트 생성 시간"),
+                                fieldWithPath("data[].bookmarkedAt").description("인사이트 북마크 시간"),
                                 fieldWithPath("data[].writer.writerId").description("인사이트 저자 ID"),
                                 fieldWithPath("data[].writer.nickname").description("인사이트 저자 닉네임"),
                                 fieldWithPath("data[].writer.title").description("인사이트 저자 타이틀"),
