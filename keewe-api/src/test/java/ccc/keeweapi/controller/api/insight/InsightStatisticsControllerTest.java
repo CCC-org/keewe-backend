@@ -2,6 +2,7 @@ package ccc.keeweapi.controller.api.insight;
 
 import ccc.keeweapi.document.utils.ApiDocumentationTest;
 import ccc.keeweapi.dto.user.FollowFromInsightCountResponse;
+import ccc.keeweapi.service.insight.command.InsightStatisticsCommandApiService;
 import ccc.keeweapi.service.insight.query.InsightStatisticsQueryApiService;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,6 +20,7 @@ import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithNam
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -28,6 +30,9 @@ public class InsightStatisticsControllerTest extends ApiDocumentationTest {
 
     @Mock
     InsightStatisticsQueryApiService insightStatisticsQueryApiService;
+
+    @Mock
+    InsightStatisticsCommandApiService insightStatisticsCommandApiService;
 
     @BeforeEach
     public void setup(RestDocumentationContextProvider provider) {
@@ -48,7 +53,7 @@ public class InsightStatisticsControllerTest extends ApiDocumentationTest {
         resultActions.andDo(restDocs.document(resource(
                 ResourceSnippetParameters.builder()
                         .description("인사이트를 통한 팔로우 수 API 입니다.")
-                        .summary("인사이트를 통한 팔로우 수 API API")
+                        .summary("인사이트를 통한 팔로우 수 API")
                         .requestHeaders(
                                 headerWithName("Authorization").description("유저의 JWT"))
                         .pathParameters(
@@ -57,6 +62,32 @@ public class InsightStatisticsControllerTest extends ApiDocumentationTest {
                                 fieldWithPath("message").description("요청 결과 메세지"),
                                 fieldWithPath("code").description("결과 코드"),
                                 fieldWithPath("data.count").description("인사이트를 통한 팔로우 count"))
+                        .tag("InsightStatistics")
+                        .build()
+        )));
+    }
+
+    @Test
+    @DisplayName("인사이트를 통한 프로필 방문 기록 API")
+    void record_profile_visit_from_insight() throws Exception {
+        Long insightId = 1L;
+
+        ResultActions resultActions = mockMvc.perform(post("/api/v1/insight/{insightId}/statistics/profile-visit", insightId)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT))
+                .andExpect(status().isOk());
+
+        resultActions.andDo(restDocs.document(resource(
+                ResourceSnippetParameters.builder()
+                        .description("인사이트를 통한 프로필 방문 기록 API 입니다.")
+                        .summary("인사이트를 통한 프로필 방문 기록 API")
+                        .requestHeaders(
+                                headerWithName("Authorization").description("유저의 JWT"))
+                        .pathParameters(
+                                parameterWithName("insightId").description("인사이트 ID"))
+                        .responseFields(
+                                fieldWithPath("message").description("요청 결과 메세지"),
+                                fieldWithPath("code").description("결과 코드"),
+                                fieldWithPath("data").description("비어 있음"))
                         .tag("InsightStatistics")
                         .build()
         )));
