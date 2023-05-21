@@ -163,4 +163,8 @@ public class ProfileAssembler {
     public AccountResponse toAccountResponse(User user) {
         return AccountResponse.of(user.getVendorType(), user.getIdentifier());
     }
+
+    public FollowFromInsightCountResponse toFollowFromInsightCountResponse(Long followFromInsightCount) {
+        return FollowFromInsightCountResponse.of(followFromInsightCount);
+    }
 }

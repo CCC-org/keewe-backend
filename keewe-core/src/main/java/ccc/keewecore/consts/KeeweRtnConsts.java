@@ -8,12 +8,14 @@ import lombok.Getter;
 public enum KeeweRtnConsts {
     NRM000(KeeweRtnGrp.Success, 200, "성공"),
 
+    ERR400(KeeweRtnGrp.Validation, 400, "유효하지 않은 값이에요."),
+
     ERR401(KeeweRtnGrp.Auth, 401, "토큰이 유효하지 않아요."),
     ERR402(KeeweRtnGrp.Auth, 402, "토큰이 만료됐어요."),
     ERR403(KeeweRtnGrp.Auth, 403, "토큰이 누락됐어요."),
     ERR404(KeeweRtnGrp.Auth, 404, "권한이 없는 유저입니다."),
 
-    ERR400(KeeweRtnGrp.Validation, 400, "유효하지 않은 값이에요."),
+    ERR405(KeeweRtnGrp.Validation, 405, "지원하지 않는 HTTP Method에요."),
 
     ERR411(KeeweRtnGrp.Validation, 411, "유저를 찾을 수 없어요."),
     ERR412(KeeweRtnGrp.Validation, 412, "유저가 이메일 제공에 동의를 하지 않았어요."),
@@ -26,6 +28,7 @@ public enum KeeweRtnConsts {
     ERR425(KeeweRtnGrp.Validation, 425, "도메인과 링크 타입이 일치하지 않습니다."),
     ERR426(KeeweRtnGrp.Validation, 426, "소셜 링크의 개수가 초과됐어요."),
     ERR427(KeeweRtnGrp.Validation, 427, "온보딩이 완료된 유저에요."),
+    ERR428(KeeweRtnGrp.Validation, 428, "인사이트를 통한 팔로우 기록이 이미 존재해요."),
 
     ERR430(KeeweRtnGrp.Validation, 430, "챌린지를 찾을 수 없어요."),
     ERR431(KeeweRtnGrp.Validation, 431, "이미 챌린지에 참여중이에요."),

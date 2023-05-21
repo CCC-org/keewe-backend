@@ -32,6 +32,7 @@ subprojects {
 		implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.2'
 		implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.2'
 		implementation 'org.springframework.boot:spring-boot-starter-aop'
+		implementation 'net.logstash.logback:logstash-logback-encoder:6.3'
 
 		testCompileOnly 'org.projectlombok:lombok'
 		testAnnotationProcessor 'org.projectlombok:lombok'
@@ -183,7 +184,6 @@ project(':keewe-api') {
 		implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
 		implementation group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
 		implementation 'org.springframework.boot:spring-boot-starter-validation'
-		implementation 'net.logstash.logback:logstash-logback-encoder:6.3'
 		testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
 		testImplementation 'com.epages:restdocs-api-spec-mockmvc:0.16.2'
 		testImplementation 'org.springframework.security:spring-security-test'

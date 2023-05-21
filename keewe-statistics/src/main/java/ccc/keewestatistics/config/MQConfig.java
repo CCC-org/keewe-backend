@@ -43,4 +43,18 @@ public class MQConfig {
         return QueueBuilder.durable(KeeweConsts.TITLE_STAT_QUEUE).build();
     }
 
+    @Bean
+    Queue followFromInsightQueue() {
+        return QueueBuilder.durable(KeeweConsts.FOLLOW_FROM_INSIGHT_QUEUE).build();
+    }
+
+    @Bean
+    Exchange followFromInsightExchange() {
+        return ExchangeBuilder.directExchange(KeeweConsts.FOLLOW_FROM_INSIGHT_EXCHANGE).build();
+    }
+
+    @Bean
+    Binding followFromInsightBinding(Queue followFromInsightQueue, Exchange followFromInsightExchange) {
+        return BindingBuilder.bind(followFromInsightQueue).to(followFromInsightExchange).with(KeeweConsts.DEFAULT_ROUTING_KEY).noargs();
+    }
 }
