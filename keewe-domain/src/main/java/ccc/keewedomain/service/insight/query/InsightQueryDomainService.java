@@ -5,12 +5,7 @@ import ccc.keewecore.exception.KeeweException;
 import ccc.keewedomain.cache.domain.insight.CInsightView;
 import ccc.keewedomain.cache.repository.insight.CInsightViewRepository;
 import ccc.keewedomain.cache.repository.insight.CReactionCountRepository;
-import ccc.keewedomain.dto.insight.InsightDetailDto;
-import ccc.keewedomain.dto.insight.InsightGetDto;
-import ccc.keewedomain.dto.insight.InsightGetForHomeDto;
-import ccc.keewedomain.dto.insight.InsightMyPageDto;
-import ccc.keewedomain.dto.insight.InsightWriterDto;
-import ccc.keewedomain.dto.insight.ReactionAggregationGetDto;
+import ccc.keewedomain.dto.insight.*;
 import ccc.keewedomain.persistence.domain.challenge.Challenge;
 import ccc.keewedomain.persistence.domain.challenge.ChallengeParticipation;
 import ccc.keewedomain.persistence.domain.insight.Insight;
@@ -110,21 +105,22 @@ public class InsightQueryDomainService {
     }
 
     @Transactional(readOnly = true)
-    public List<InsightGetForHomeDto> getInsightForBookmark(User user, CursorPageable<LocalDateTime> cPage) {
-        List<Insight> insights = insightQueryRepository.findBookmarkedInsight(user, cPage);
-        return insights.parallelStream().map(i ->
-                InsightGetForHomeDto.of(
-                        i.getId(),
-                        i.getContents(),
+    public List<InsightGetForBookmarkedDto> getInsightForBookmark(User user, CursorPageable<LocalDateTime> cPage) {
+        Map<Insight, LocalDateTime> insights = insightQueryRepository.findBookmarkedInsight(user, cPage);
+        return insights.entrySet().parallelStream().map(i ->
+                InsightGetForBookmarkedDto.of(
+                        i.getKey().getId(),
+                        i.getKey().getContents(),
                         true,
-                        i.getLink(),
-                        this.getCurrentReactionAggregation(i.getId()),
-                        i.getCreatedAt(),
+                        i.getKey().getLink(),
+                        this.getCurrentReactionAggregation(i.getKey().getId()),
+                        i.getKey().getCreatedAt(),
+                        i.getValue(),
                         InsightWriterDto.of(
-                                i.getWriter().getId(),
-                                i.getWriter().getNickname(),
-                                i.getWriter().getRepTitleName(),
-                                i.getWriter().getProfilePhotoURL()
+                                i.getKey().getWriter().getId(),
+                                i.getKey().getWriter().getNickname(),
+                                i.getKey().getWriter().getRepTitleName(),
+                                i.getKey().getWriter().getProfilePhotoURL()
                         )
                 )
         ).collect(Collectors.toList());
