@@ -144,7 +144,7 @@ public class ProfileCommandDomainService {
         if(followFromInsightRepository.existsById(id)) {
             log.info("[PCDS::addFollowFromInsight] Follow history already exists - followerId({}), followeeId({}), insightId({})",
                     dto.getFollowerId(), dto.getFolloweeId(), dto.getInsightId());
-            return null;
+            throw new KeeweException(KeeweRtnConsts.ERR428);
         }
 
         FollowFromInsight followFromInsight = FollowFromInsight.of(
@@ -194,11 +194,14 @@ public class ProfileCommandDomainService {
             );
             notificationCommandDomainService.save(notification);
             if(insightId != null) {
-                log.info("[PDS::afterFollowing] ");
-                publishFollowFromInsightEvent(FollowFromInsightEvent.of(
+                log.info("[PDS::afterFollowing] publish FollowFromInsightEvent - insightId ({}), followerId ({}), followeeId ({})",
+                        follow.getFollower().getId(), follow.getFollowee().getId(), insightId);
+                FollowFromInsightEvent followFromInsightEvent = FollowFromInsightEvent.of(
                         follow.getFollower().getId(),
                         follow.getFollowee().getId(),
-                        insightId));
+                        insightId
+                );
+                publishFollowFromInsightEvent(followFromInsightEvent);
             }
 
         } catch (Throwable t) {

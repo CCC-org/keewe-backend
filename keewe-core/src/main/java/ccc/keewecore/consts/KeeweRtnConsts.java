@@ -28,6 +28,7 @@ public enum KeeweRtnConsts {
     ERR425(KeeweRtnGrp.Validation, 425, "도메인과 링크 타입이 일치하지 않습니다."),
     ERR426(KeeweRtnGrp.Validation, 426, "소셜 링크의 개수가 초과됐어요."),
     ERR427(KeeweRtnGrp.Validation, 427, "온보딩이 완료된 유저에요."),
+    ERR428(KeeweRtnGrp.Validation, 428, "인사이트를 통한 팔로우 기록이 이미 존재해요."),
 
     ERR430(KeeweRtnGrp.Validation, 430, "챌린지를 찾을 수 없어요."),
     ERR431(KeeweRtnGrp.Validation, 431, "이미 챌린지에 참여중이에요."),
