@@ -7,10 +7,8 @@ import ccc.keewedomain.persistence.domain.user.enums.VendorType;
 import ccc.keewedomain.dto.user.UserSignUpDto;
 import ccc.keewedomain.persistence.repository.user.UserQueryRepository;
 import ccc.keewedomain.persistence.repository.user.UserRepository;
-import ccc.keeweinfra.dto.GoogleProfileResponse;
-import ccc.keeweinfra.dto.KakaoProfileResponse;
-import ccc.keeweinfra.dto.NaverProfileResponse;
-import ccc.keeweinfra.dto.OauthResponse;
+import ccc.keeweinfra.dto.*;
+import ccc.keeweinfra.service.oauth.AppleInfraService;
 import ccc.keeweinfra.service.oauth.GoogleInfraService;
 import ccc.keeweinfra.service.oauth.KakaoInfraService;
 import ccc.keeweinfra.service.oauth.NaverInfraService;
@@ -29,6 +27,7 @@ public class UserDomainService {
     private final KakaoInfraService kakaoInfraService;
     private final NaverInfraService naverInfraService;
     private final GoogleInfraService googleInfraService;
+    private final AppleInfraService appleInfraService;
 
     public <T extends OauthResponse> T getOauthProfile(String code, VendorType vendorType) {
         switch (vendorType) {
@@ -38,6 +37,8 @@ public class UserDomainService {
                 return (T) getNaverProfile(code);
             case GOOGLE:
                 return (T) getGoogleProfile(code);
+            case APPLE:
+                return (T) getAppleProfile(code);
             default:
                 throw new KeeweException(KeeweRtnConsts.ERR504);
         }
@@ -86,4 +87,12 @@ public class UserDomainService {
         }
     }
 
+    private AppleProfileResponse getAppleProfile(String code) {
+        try {
+            return appleInfraService.getAppleAccount(appleInfraService.getIdToken(code));
+        } catch (Exception e) {
+            log.error("[getAppleProfile] fail {}", e.getMessage());
+            throw new KeeweException(KeeweRtnConsts.ERR510);
+        }
+    }
 }
