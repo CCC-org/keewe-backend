@@ -5,6 +5,7 @@ import ccc.keewecore.consts.KeeweRtnConsts;
 import ccc.keewecore.exception.KeeweException;
 import ccc.keewedomain.dto.user.FollowFromInsightCreateDto;
 import ccc.keewedomain.event.user.FollowFromInsightEvent;
+import ccc.keewedomain.service.insight.command.InsightStatisticsCommandDomainService;
 import ccc.keewedomain.service.user.command.ProfileCommandDomainService;
 import com.rabbitmq.client.Channel;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class FollowFromInsightListener {
     private final ProfileCommandDomainService profileCommandDomainService;
+    private final InsightStatisticsCommandDomainService insightStatisticsCommandDomainService;
 
     @RabbitListener(queues = KeeweConsts.FOLLOW_FROM_INSIGHT_QUEUE, ackMode = "MANUAL")
     public void onMessage(FollowFromInsightEvent event, Channel channel, @Header(AmqpHeaders.DELIVERY_TAG) long tag) throws IOException {
@@ -28,7 +30,7 @@ public class FollowFromInsightListener {
                 event.getInsightId(), event.getFollowerId(), event.getFolloweeId());
         try {
             FollowFromInsightCreateDto dto = FollowFromInsightCreateDto.of(event.getFollowerId(), event.getFolloweeId(), event.getInsightId());
-            profileCommandDomainService.addFollowFromInsight(dto);
+            insightStatisticsCommandDomainService.addFollowFromInsight(dto);
             channel.basicAck(tag, true);
         } catch (KeeweException keeweException) {
             if(keeweException.getKeeweRtnConsts() == KeeweRtnConsts.ERR428) {

@@ -1,4 +1,4 @@
-package ccc.keewedomain.persistence.repository.user;
+package ccc.keewedomain.persistence.repository.insight;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
