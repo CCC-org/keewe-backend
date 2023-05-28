@@ -50,7 +50,7 @@ public class InsightStatisticsCommandDomainService {
     }
 
     @Transactional
-    public FollowFromInsight addFollowFromInsight(FollowFromInsightCreateDto dto) {
+    public FollowFromInsight createFollowFromInsight(FollowFromInsightCreateDto dto) {
         insightQueryDomainService.validateWriter(dto.getFolloweeId(), dto.getInsightId());
         FollowFromInsightId id = FollowFromInsightId.of(dto.getFollowerId(), dto.getFolloweeId(), dto.getInsightId());
         if(followFromInsightRepository.existsById(id)) {

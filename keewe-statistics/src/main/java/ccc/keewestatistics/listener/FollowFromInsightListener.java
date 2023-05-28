@@ -30,7 +30,7 @@ public class FollowFromInsightListener {
                 event.getInsightId(), event.getFollowerId(), event.getFolloweeId());
         try {
             FollowFromInsightCreateDto dto = FollowFromInsightCreateDto.of(event.getFollowerId(), event.getFolloweeId(), event.getInsightId());
-            insightStatisticsCommandDomainService.addFollowFromInsight(dto);
+            insightStatisticsCommandDomainService.createFollowFromInsight(dto);
             channel.basicAck(tag, true);
         } catch (KeeweException keeweException) {
             if(keeweException.getKeeweRtnConsts() == KeeweRtnConsts.ERR428) {
