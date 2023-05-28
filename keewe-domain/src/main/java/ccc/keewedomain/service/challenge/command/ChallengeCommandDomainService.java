@@ -10,6 +10,7 @@ import ccc.keewedomain.dto.challenge.ParticipationUpdateDto;
 import ccc.keewedomain.persistence.domain.challenge.Challenge;
 import ccc.keewedomain.persistence.domain.challenge.ChallengeParticipation;
 import ccc.keewedomain.persistence.domain.user.User;
+import ccc.keewedomain.persistence.repository.challenge.ChallengeParticipationRepository;
 import ccc.keewedomain.persistence.repository.challenge.ChallengeRepository;
 import ccc.keewedomain.service.challenge.query.ChallengeParticipateQueryDomainService;
 import ccc.keewedomain.service.challenge.query.ChallengeQueryDomainService;
@@ -19,15 +20,18 @@ import java.time.LocalDateTime;
 import java.time.Period;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class ChallengeCommandDomainService {
 
     private final ChallengeRepository challengeRepository;
+    private final ChallengeParticipationRepository challengeParticipationRepository;
     private final ChallengeQueryDomainService challengeQueryDomainService;
     private final ChallengeParticipateQueryDomainService challengeParticipateQueryDomainService;
     private final UserDomainService userDomainService;
@@ -54,7 +58,11 @@ public class ChallengeCommandDomainService {
             Assert.isTrue(!challenger.isDeleted(), "탈퇴한 사용자는 챌린지에 참여할 수 없어요.");
             this.exitCurrentChallengeIfExist(challenger);
             Challenge challenge = challengeQueryDomainService.getByIdOrElseThrow(dto.getChallengeId());
-            return challenge.participate(challenger, dto.getMyTopic(), dto.getInsightPerWeek(), dto.getDuration());
+            ChallengeParticipation participate = challenge.participate(challenger, dto.getMyTopic(), dto.getInsightPerWeek(), dto.getDuration());
+            challengeRepository.save(challenge);
+            challengeParticipationRepository.save(participate);
+            log.info("[ChallengeCommandDomainService] 챌린지 참여 완료 - userId({}), challengeId({})", challenger.getId(), challenge.getId());
+            return participate;
         });
     }
 
