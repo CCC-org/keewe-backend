@@ -19,6 +19,7 @@ import ccc.keeweapi.dto.user.UnblockUserResponse;
 import ccc.keeweapi.dto.user.UploadProfilePhotoResponse;
 import ccc.keeweapi.utils.BlockedResourceManager;
 import ccc.keeweapi.utils.SecurityUtil;
+import ccc.keewecore.utils.ListUtils;
 import ccc.keewedomain.dto.user.FollowCheckDto;
 import ccc.keewedomain.persistence.domain.title.TitleAchievement;
 import ccc.keewedomain.persistence.domain.user.Block;
@@ -52,6 +53,7 @@ public class ProfileApiService {
     private final ProfileQueryDomainService profileQueryDomainService;
     private final ProfileCommandDomainService profileCommandDomainService;
     private final BlockedResourceManager blockedResourceManager;
+
     @Transactional
     public OnboardResponse onboard(OnboardRequest request) {
         User user = profileCommandDomainService.onboard(profileAssembler.toOnboardDto(request));
@@ -173,8 +175,8 @@ public class ProfileApiService {
                 })
                 .distinct() // 양방향으로 팔로우 되어 있는 경우 중복 제거
                 .collect(Collectors.toList());
-        String nextCursor = !relatedFollows.isEmpty() && relatedFollows.size() == cPage.getLimit()
-                ? relatedFollows.get(relatedFollows.size() - 1).getCreatedAt().toString()
+        String nextCursor = relatedFollows.size() == cPage.getLimit()
+                ? ListUtils.getLast(relatedFollows).getCreatedAt().toString()
                 : null;
         return profileAssembler.toInviteeListResponse(invitees, nextCursor);
     }

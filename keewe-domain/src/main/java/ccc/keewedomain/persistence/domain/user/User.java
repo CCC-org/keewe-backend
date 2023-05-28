@@ -9,6 +9,8 @@ import ccc.keewedomain.persistence.domain.title.Title;
 import ccc.keewedomain.persistence.domain.user.enums.Privacy;
 import ccc.keewedomain.persistence.domain.user.enums.UserStatus;
 import ccc.keewedomain.persistence.domain.user.enums.VendorType;
+import java.util.Collections;
+import java.util.UUID;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -77,13 +79,6 @@ public class User extends BaseTimeEntity {
     @CollectionTable(name = "favorite_interests", joinColumns = @JoinColumn(name = "user_id"))
     private List<Interest> interests = new ArrayList<>();
 
-    //FIXME
-//    @Column(name = "role")
-//    @ElementCollection
-//    @Enumerated(EnumType.STRING)
-//    private List<UserRole> role; // ~~~/profile/{닉네임}
-
-
     @OneToMany(mappedBy = "follower", fetch = LAZY)
     private List<Follow> followers = new ArrayList<>(); // 내가 팔로우하는 사람들
 
@@ -128,6 +123,10 @@ public class User extends BaseTimeEntity {
         }
     }
 
+    public boolean isActive() {
+        return this.status == UserStatus.ACTIVE;
+    }
+
     public void setProfilePhoto(ProfilePhoto profilePhoto) {
         this.profilePhoto = profilePhoto;
     }
@@ -135,8 +134,12 @@ public class User extends BaseTimeEntity {
     public void updateProfile(String nickname, Set<String> interests, Title repTitle, String introduction) {
         this.nickname = nickname;
         this.interests = interests.stream().map(Interest::of).collect(Collectors.toList());
-        this.repTitle = repTitle;
         this.introduction = introduction;
+        this.updateRepTitle(repTitle);
+    }
+
+    public void updateRepTitle(Title repTitle) {
+        this.repTitle = repTitle;
     }
 
     public void deleteProfilePhoto() {
@@ -156,21 +159,36 @@ public class User extends BaseTimeEntity {
     public String getRepTitleName() {
         return repTitle == null ? "" : repTitle.getName();
     }
+
     public Long getRepTitleId() {
         return repTitle == null ? null : repTitle.getId();
     }
+
     public String getIdentifier() {
         if (this.email.isEmpty()) {
             return this.vendorId;
         }
         return this.email;
     }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
         return id.equals(user.id);
+    }
+
+    public void withdraw() {
+        this.deleted = true;
+        this.status = UserStatus.INACTIVE;
+        this.email = "";
+        this.nickname = "탈퇴한 회원";
+        this.introduction = "";
+        this.deleteProfilePhoto();
+        this.interests = Collections.emptyList();
+        this.repTitle = null;
+        this.vendorId = "WITHDRAW:".concat(UUID.randomUUID().toString());
     }
 }
 

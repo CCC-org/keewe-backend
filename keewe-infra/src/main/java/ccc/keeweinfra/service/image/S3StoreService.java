@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.imgscalr.Scalr;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
@@ -61,6 +62,9 @@ public class S3StoreService implements StoreService {
 
     @Override
     public void delete(String url) {
+        if (!StringUtils.hasText(url)) {
+            return;
+        }
         amazonS3.deleteObject(bucket, urlToKey(url));
     }
 
