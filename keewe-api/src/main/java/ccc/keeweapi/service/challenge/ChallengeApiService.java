@@ -45,7 +45,6 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 @Slf4j
 public class ChallengeApiService {
 
@@ -110,6 +109,7 @@ public class ChallengeApiService {
                 .orElse(null);
     }
 
+    @Transactional(readOnly = true)
     public ChallengeDetailResponse getChallengeDetail(Long challengeId) {
         Challenge challenge = challengeQueryDomainService.getByIdOrElseThrow(challengeId);
         Long insightCount = insightQueryDomainService.getInsightCountByChallenge(challenge, null);
@@ -146,6 +146,7 @@ public class ChallengeApiService {
         return challengeAssembler.toChallengerCountResponse(challengeParticipateQueryDomainService.countParticipatingUser(challenge));
     }
 
+    @Transactional(readOnly = true)
     public ParticipatingChallengeDetailResponse getMyChallengeDetail() {
         Challenge challenge = challengeParticipateQueryDomainService.findCurrentParticipationByUserId(SecurityUtil.getUserId())
                 .map(ChallengeParticipation::getChallenge)
@@ -153,6 +154,7 @@ public class ChallengeApiService {
         return challengeAssembler.toParticipatingChallengeDetailResponse(challenge);
     }
 
+    @Transactional(readOnly = true)
     public ChallengeInsightNumberResponse countInsightOfChallenge(Long writerId) {
         Long insightNumber = challengeParticipateQueryDomainService.findCurrentParticipationByUserId(SecurityUtil.getUserId())
                 .map(participation -> insightQueryDomainService.getInsightCountByChallenge(participation.getChallenge(), writerId))
