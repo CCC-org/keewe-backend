@@ -55,11 +55,12 @@ public class Challenge extends BaseTimeEntity {
 
     public ChallengeParticipation participate(User challenger, String myTopic, int insightPerWeek, int duration) {
         ChallengeParticipation participation = ChallengeParticipation.of(
-                challenger,
-                this,
-                myTopic,
-                insightPerWeek,
-                duration);
+            challenger,
+            this,
+            myTopic,
+            insightPerWeek,
+            duration
+        );
         getParticipationList().add(participation);
         this.deleted = false;
         return participation;
