@@ -1,6 +1,7 @@
 package ccc.keeweapi.controller.api.insight;
 
 import ccc.keeweapi.dto.ApiResponse;
+import ccc.keeweapi.dto.insight.response.ProfileVisitFromInsightCountResponse;
 import ccc.keeweapi.dto.user.FollowFromInsightCountResponse;
 import ccc.keeweapi.service.insight.command.InsightStatisticsCommandApiService;
 import ccc.keeweapi.service.insight.query.InsightStatisticsQueryApiService;
@@ -27,5 +28,10 @@ public class InsightStatisticsController {
     public ApiResponse<Void> publishProfileVisitFromInsightEvent(@PathVariable Long insightId) {
         insightStatisticsCommandApiService.publishProfileVisitFromInsightEvent(insightId);
         return ApiResponse.ok();
+    }
+
+    @GetMapping("/{insightId}/statistics/profile-visit")
+    public ApiResponse<ProfileVisitFromInsightCountResponse> countProfileVisitFromInsight(@PathVariable Long insightId) {
+        return ApiResponse.ok(insightStatisticsQueryApiService.countProfileVisitFromInsight(insightId));
     }
 }

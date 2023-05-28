@@ -1,5 +1,6 @@
 package ccc.keeweapi.component;
 
+import ccc.keeweapi.dto.insight.response.ProfileVisitFromInsightCountResponse;
 import ccc.keeweapi.dto.user.*;
 import ccc.keeweapi.utils.SecurityUtil;
 import ccc.keewedomain.dto.user.*;
@@ -166,5 +167,9 @@ public class ProfileAssembler {
 
     public FollowFromInsightCountResponse toFollowFromInsightCountResponse(Long followFromInsightCount) {
         return FollowFromInsightCountResponse.of(followFromInsightCount);
+    }
+
+    public ProfileVisitFromInsightCountResponse toProfileVisitFromInsightCountResponse(Long profileVisitFromInsightCount) {
+        return ProfileVisitFromInsightCountResponse.of(profileVisitFromInsightCount);
     }
 }
