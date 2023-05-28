@@ -4,7 +4,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
-import static ccc.keewedomain.persistence.domain.user.QFollowFromInsight.followFromInsight;
+import static ccc.keewedomain.persistence.domain.insight.QFollowFromInsight.followFromInsight;
 
 @Repository
 @RequiredArgsConstructor
