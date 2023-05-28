@@ -10,6 +10,7 @@ import ccc.keewedomain.persistence.domain.title.TitleAchievement;
 import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.persistence.repository.user.TitleAchievementRepository;
 import ccc.keewedomain.persistence.repository.user.TitleRepository;
+import ccc.keewedomain.persistence.repository.user.UserRepository;
 import ccc.keewedomain.service.user.UserDomainService;
 import ccc.keeweinfra.service.messagequeue.MQPublishService;
 import org.springframework.amqp.core.Message;
@@ -24,30 +25,40 @@ public abstract class AbstractTitleAcquireProcessor {
     private final MQPublishService mqPublishService;
     private final TitleAchievementRepository titleAchievementRepository;
     private final UserDomainService userDomainService;
+    private final UserRepository userRepository;
     private final TitleRepository titleRepository;
 
     protected AbstractTitleAcquireProcessor(
         MQPublishService mqPublishService,
         TitleAchievementRepository titleAchievementRepository,
         UserDomainService userDomainService,
+        UserRepository userRepository,
         TitleRepository titleRepository
     ) {
         this.mqPublishService = mqPublishService;
         this.titleAchievementRepository = titleAchievementRepository;
         this.userDomainService = userDomainService;
+        this.userRepository = userRepository;
         this.titleRepository = titleRepository;
     }
 
     @Transactional
     public void aggregateStat(KeeweTitleHeader header) {
         // 타이틀 획득 조건 충족 체크
-        judgeTitleAcquire(header).ifPresent(titleId -> {
+        this.judgeTitleAcquire(header).ifPresent(titleId -> {
             // 타이틀 조회
             Title title = titleRepository.findById(titleId).orElseThrow();
 
             // 타이틀 획득 정보 저장
             User user = userDomainService.getUserByIdOrElseThrow(Long.valueOf(header.getUserId()));
             titleAchievementRepository.save(TitleAchievement.of(user, title));
+            Long titleAchievementCount = titleAchievementRepository.countByUser(user);
+
+            // 최초 타이틀은 대표 타이틀로 설정
+            if (titleAchievementCount <= 1) {
+                user.updateRepTitle(title);
+                userRepository.save(user);
+            }
 
             // 타이틀 획득 이벤트 발행
             TitleEvent event = TitleEvent.of(title.getCategory(), title.getName(),title.getIntroduction(), LocalDateTime.now());
