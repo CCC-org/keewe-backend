@@ -61,6 +61,8 @@ public enum KeeweRtnConsts {
     ERR482(KeeweRtnGrp.Validation, 482, "리액션을 찾을 수 없어요."),
     ERR483(KeeweRtnGrp.Validation, 483, "알림을 찾을 수 없어요."),
 
+    ERR490(KeeweRtnGrp.Validation, 490, "이미 인사이트를 통한 프로필 방문 기록이 존재해요."),
+
     ERR501(KeeweRtnGrp.System, 501, "카카오 회원가입 중 내부 오류가 발생했어요."),
     ERR502(KeeweRtnGrp.System, 502, "네이버 회원가입 중 내부 오류가 발생했어요."),
     ERR503(KeeweRtnGrp.System, 503, "네이버 회원가입 중 state가 일치하지 않아요"),
