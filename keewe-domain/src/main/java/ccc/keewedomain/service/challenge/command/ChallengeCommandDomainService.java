@@ -89,6 +89,10 @@ public class ChallengeCommandDomainService {
 
     @Transactional
     public void exitCurrentChallengeIfExist(User challenger) {
-        challengeParticipateQueryDomainService.findCurrentChallengeParticipation(challenger).ifPresent(ChallengeParticipation::cancel);
+        challengeParticipateQueryDomainService.findCurrentChallengeParticipation(challenger)
+            .ifPresent(participate -> {
+                participate.cancel();
+                challengeParticipationRepository.save(participate);
+            });
     }
 }
