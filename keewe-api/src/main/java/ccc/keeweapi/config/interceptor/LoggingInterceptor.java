@@ -18,6 +18,12 @@ public class LoggingInterceptor implements HandlerInterceptor {
         MDC.put("trace_id", UUID.randomUUID().toString());
         try {
             MDC.put("user_id", SecurityUtil.getUserId().toString());
+            if (request.getQueryString() != null) {
+                MDC.put("query", request.getQueryString());
+            }
+            if (request.getRequestURL() != null) {
+                MDC.put("request", request.getRequestURL().toString());
+            }
         } catch (Exception ex) {
             return true;
         }

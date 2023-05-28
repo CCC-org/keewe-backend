@@ -136,6 +136,11 @@ public class ProfileCommandDomainService {
 
 
 
+    @Transactional
+    public void removeAllRelationsBy(User user) {
+        followRepository.deleteByFollowerIdOrFolloweeId(user);
+    }
+
     private void removeRelation(User user, User blockedUser) {
         followRepository.deleteByIdIfExists(FollowId.of(user.getId(), blockedUser.getId()));
         followRepository.deleteByIdIfExists(FollowId.of(blockedUser.getId(), user.getId()));

@@ -63,7 +63,6 @@ public class ChallengeApiService {
         return challengeAssembler.toChallengeCreateResponse(challenge, participation);
     }
 
-    @Transactional
     public ChallengeParticipationResponse participate(ChallengeParticipateRequest request) {
         ChallengeParticipation participation = challengeCommandDomainService
                 .participate(challengeAssembler.toChallengeParticipateDto(request));
@@ -115,15 +114,6 @@ public class ChallengeApiService {
         return challengeAssembler.toChallengeDetailResponse(challenge, insightCount);
     }
 
-    private List<String> datesOfWeek(LocalDate startDate) {
-        List<String> dates = new ArrayList<>(7);
-        for (int i = 0; i < 7; i++) {
-            dates.add(startDate.plusDays(i).toString());
-        }
-
-        return dates;
-    }
-
     @Transactional(readOnly = true)
     public List<FriendResponse> paginateFriends(Long challengeId, Pageable pageable) {
         User user = SecurityUtil.getUser();
@@ -168,9 +158,16 @@ public class ChallengeApiService {
         return challengeAssembler.toChallengeInsightNumberResponse(insightNumber);
     }
 
-    @Transactional
     public void updateParticipation(ParticipationUpdateRequest request) {
         ParticipationUpdateDto dto = challengeAssembler.toParticipationUpdateDto(SecurityUtil.getUserId(), request);
         challengeCommandDomainService.updateParticipation(dto);
+    }
+
+    private List<String> datesOfWeek(LocalDate startDate) {
+        List<String> dates = new ArrayList<>(7);
+        for (int i = 0; i < 7; i++) {
+            dates.add(startDate.plusDays(i).toString());
+        }
+        return dates;
     }
 }

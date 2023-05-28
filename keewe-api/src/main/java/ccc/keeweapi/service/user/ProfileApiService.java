@@ -19,6 +19,7 @@ import ccc.keeweapi.dto.user.UnblockUserResponse;
 import ccc.keeweapi.dto.user.UploadProfilePhotoResponse;
 import ccc.keeweapi.utils.BlockedResourceManager;
 import ccc.keeweapi.utils.SecurityUtil;
+import ccc.keewecore.utils.ListUtils;
 import ccc.keewedomain.dto.user.FollowCheckDto;
 import ccc.keewedomain.persistence.domain.title.TitleAchievement;
 import ccc.keewedomain.persistence.domain.user.Block;
@@ -84,18 +85,12 @@ public class ProfileApiService {
         Long followerCount = profileQueryDomainService.getFollowerCount(targetUser);
         Long followingCount = profileQueryDomainService.getFollowingCount(targetUser);
 
-        String challengeName = challengeParticipateQueryDomainService.findCurrentParticipationByUserId(requestUserId)
+        String challengeName = challengeParticipateQueryDomainService.findCurrentParticipationByUserId(userId)
                 .map(challengeParticipation -> challengeParticipation.getChallenge().getName())
                 .orElse(null);
 
         afterGetMyProfile(userId, insightId);
         return profileAssembler.toProfileMyPageResponse(targetUser, isFollowing, followerCount, followingCount, challengeName);
-    }
-
-    private void afterGetMyProfile(Long userId, Long insightId) {
-        if(insightId != null) {
-            insightStatisticsCommandDomainService.publishProfileVisitFromInsightEvent(userId, insightId);
-        }
     }
 
     @Transactional(readOnly = true)
@@ -183,8 +178,8 @@ public class ProfileApiService {
                 })
                 .distinct() // 양방향으로 팔로우 되어 있는 경우 중복 제거
                 .collect(Collectors.toList());
-        String nextCursor = !relatedFollows.isEmpty() && relatedFollows.size() == cPage.getLimit()
-                ? relatedFollows.get(relatedFollows.size() - 1).getCreatedAt().toString()
+        String nextCursor = relatedFollows.size() == cPage.getLimit()
+                ? ListUtils.getLast(relatedFollows).getCreatedAt().toString()
                 : null;
         return profileAssembler.toInviteeListResponse(invitees, nextCursor);
     }
@@ -192,5 +187,11 @@ public class ProfileApiService {
     public AccountResponse getAccount() {
         User user = SecurityUtil.getUser();
         return profileAssembler.toAccountResponse(user);
+    }
+
+    private void afterGetMyProfile(Long userId, Long insightId) {
+        if(insightId != null) {
+            insightStatisticsCommandDomainService.publishProfileVisitFromInsightEvent(userId, insightId);
+        }
     }
 }

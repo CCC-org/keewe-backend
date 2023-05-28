@@ -19,19 +19,16 @@ public class UserSignUpController {
 
     @GetMapping("/kakao")
     public ApiResponse<?> signUpWithKakao(@RequestParam String code) {
-        log.info("[Kakao Signup] code {}", code);
         return ApiResponse.ok(userService.signupWithOauth(code, VendorType.KAKAO));
     }
 
     @GetMapping("/naver")
     public ApiResponse<?> signUpWithNaver(@RequestParam String code, @RequestParam String state) {
-        log.info("[Naver Signup] code {}, state {}", code, state);
         return ApiResponse.ok(userService.signupWithOauth(code, VendorType.NAVER));
     }
 
     @GetMapping("/google")
     public ApiResponse<?> signUpWithGoogle(@RequestParam String code) {
-        log.info("[Google Signup] code {}", code);
         return ApiResponse.ok(userService.signupWithOauth(code, VendorType.GOOGLE));
     }
 
@@ -39,5 +36,11 @@ public class UserSignUpController {
     @LocalOnlyApi
     public ApiResponse<?> getToken(@PathVariable Long userId) {
         return ApiResponse.ok(userService.getToken(userId));
+    }
+
+    @PutMapping("/withdraw")
+    public ApiResponse<Void> withdraw() {
+        userService.withdraw();
+        return ApiResponse.ok();
     }
 }
