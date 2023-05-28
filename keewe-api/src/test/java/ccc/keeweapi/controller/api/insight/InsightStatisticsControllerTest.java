@@ -3,7 +3,6 @@ package ccc.keeweapi.controller.api.insight;
 import ccc.keeweapi.document.utils.ApiDocumentationTest;
 import ccc.keeweapi.dto.insight.response.ProfileVisitFromInsightCountResponse;
 import ccc.keeweapi.dto.user.FollowFromInsightCountResponse;
-import ccc.keeweapi.service.insight.command.InsightStatisticsCommandApiService;
 import ccc.keeweapi.service.insight.query.InsightStatisticsQueryApiService;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,7 +11,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.test.web.servlet.ResultActions;
 
@@ -22,7 +20,6 @@ import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -32,9 +29,6 @@ public class InsightStatisticsControllerTest extends ApiDocumentationTest {
 
     @Mock
     InsightStatisticsQueryApiService insightStatisticsQueryApiService;
-
-    @Mock
-    InsightStatisticsCommandApiService insightStatisticsCommandApiService;
 
     @BeforeEach
     public void setup(RestDocumentationContextProvider provider) {
