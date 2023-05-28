@@ -100,7 +100,7 @@ public class UserProfileControllerTest extends ApiDocumentationTest {
     @Test
     @DisplayName("마이페이지 프로필 조회 테스트")
     void my_page_profile() throws Exception {
-        when(profileApiService.getMyPageProfile(anyLong())).thenReturn(
+        when(profileApiService.getMyPageProfile(anyLong(), anyLong())).thenReturn(
                 ProfileMyPageResponse.of(
                         "닉네임",
                         "www.api-keewe.com/images/128398681",
@@ -115,6 +115,7 @@ public class UserProfileControllerTest extends ApiDocumentationTest {
         );
 
         ResultActions resultActions = mockMvc.perform(get("/api/v1/user/profile/{targetId}", 1L)
+                        .param("insightId", "1")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
@@ -128,6 +129,9 @@ public class UserProfileControllerTest extends ApiDocumentationTest {
                         )
                         .requestHeaders(
                                 headerWithName("Authorization").description("유저의 JWT"))
+                        .requestParameters(
+                                parameterWithName("insightId").description("이전에 조회한 insightId").optional()
+                        )
                         .responseFields(
                                 fieldWithPath("message").description("요청 결과 메세지"),
                                 fieldWithPath("code").description("결과 코드"),

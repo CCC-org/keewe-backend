@@ -36,8 +36,10 @@ public class UserProfileController {
     }
 
     @GetMapping("/{targetId}")
-    public ApiResponse<ProfileMyPageResponse> getMyPageProfile(@PathVariable Long targetId) {
-        return ApiResponse.ok(profileApiService.getMyPageProfile(targetId));
+    public ApiResponse<ProfileMyPageResponse> getMyPageProfile(
+            @PathVariable Long targetId,
+            @RequestParam(required = false) Long insightId) {
+        return ApiResponse.ok(profileApiService.getMyPageProfile(targetId, insightId));
     }
 
     @PatchMapping
