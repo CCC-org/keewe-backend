@@ -63,7 +63,7 @@ public class UserDomainService {
         try {
             return kakaoInfraService.getKakaoAccount(kakaoInfraService.getAccessToken(code));
         } catch (Exception e) {
-            log.error("[getKakaoProfile] fail {}", e.getMessage());
+            log.error("[UserDomainService] 카카오 프로필 조회 실패 - message({})", e.getMessage(), e);
             throw new KeeweException(KeeweRtnConsts.ERR501);
         }
     }
@@ -72,7 +72,7 @@ public class UserDomainService {
         try {
             return naverInfraService.getNaverAccount(naverInfraService.getAccessToken(code));
         } catch (Exception e) {
-            log.error("[getNaverProfile] fail {}", e.getMessage());
+            log.error("[UserDomainService] 네이버 프로필 조회 실패 - message({})", e.getMessage(), e);
             throw new KeeweException(KeeweRtnConsts.ERR502);
         }
     }
@@ -81,7 +81,7 @@ public class UserDomainService {
         try {
             return googleInfraService.getGoogleAccount(googleInfraService.getAccessToken(code));
         } catch (Exception e) {
-            log.error("[getGoogleProfile] fail {}", e.getMessage());
+            log.error("[UserDomainService] 구글 프로필 조회 실패 - message({})", e.getMessage(), e);
             throw new KeeweException(KeeweRtnConsts.ERR505);
         }
     }

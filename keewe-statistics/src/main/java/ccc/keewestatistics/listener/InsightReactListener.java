@@ -22,7 +22,7 @@ public class InsightReactListener {
     @RabbitListener(queues = KeeweConsts.INSIGHT_REACT_QUEUE, ackMode = "MANUAL")
     public void onMessage(ReactionIncrementDto dto, Channel channel, @Header(AmqpHeaders.DELIVERY_TAG) long tag) throws IOException {
         try {
-            log.info("[IRL::onMessage] insightId {}", dto.getInsightId());
+            log.info("[InsightReactListener] 리액션 증가 이벤트 - insightId({})", dto.getInsightId());
             reactionDomainService.applyReact(dto);
             channel.basicAck(tag, false);
         } catch (Throwable t) {

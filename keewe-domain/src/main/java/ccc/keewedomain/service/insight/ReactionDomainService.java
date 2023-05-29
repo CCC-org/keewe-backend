@@ -48,7 +48,7 @@ public class ReactionDomainService {
     public ReactionDto react(ReactionIncrementDto dto) {
         ReactionAggregationGetDto reactionAggregation = getCurrentReactionAggregation(dto.getInsightId());
 
-        log.info("[RDS::react] React message pub. id={}", dto.getInsightId());
+        log.info("[ReactionDomainService] 인사이트 리액션 이벤트 생성 - insightId({})", dto.getInsightId());
         mqPublishService.publish(KeeweConsts.INSIGHT_REACT_EXCHANGE, dto);
         ReactionType type = dto.getReactionType();
         return ReactionDto.of(dto.getInsightId(), type, reactionAggregation.getByType(type) + 1L);
@@ -68,7 +68,7 @@ public class ReactionDomainService {
         if (reactionCount <= 1) {
             afterReaction(insight, reaction);
         }
-        log.info("[RDS::applyReact] insightId({}), count({})", insight.getId(), reactionAggregation.getCount());
+        log.info("[ReactionDomainService] 인사이트 리액션 증가 - insightId({}), currentCount({})", dto.getInsightId(), reactionAggregation.getCount());
         return reactionAggregation.getCount();
     }
 

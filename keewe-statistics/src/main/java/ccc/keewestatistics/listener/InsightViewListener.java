@@ -22,8 +22,7 @@ public class InsightViewListener {
     public void onMessage(Message message, Channel channel, @Header(AmqpHeaders.DELIVERY_TAG) long tag) throws IOException {
         try {
             Long insightId = Long.parseLong(new String(message.getBody()));
-
-            log.info("[IVL::onMessage] insightId {}", insightId);
+            log.info("[InsightViewListener] 인사이트 조회 이벤트 - insightId({})", insightId);
             insightCommandDomainService.incrementViewCount(insightId);
             channel.basicAck(tag, false);
         } catch (Throwable t) {
