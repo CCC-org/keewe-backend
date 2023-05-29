@@ -7,8 +7,8 @@ import ccc.keewedomain.persistence.domain.user.Block;
 import ccc.keewedomain.persistence.domain.user.Follow;
 import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.persistence.domain.user.id.FollowId;
+import ccc.keewedomain.persistence.repository.insight.FollowFromInsightQueryRepository;
 import ccc.keewedomain.persistence.repository.user.BlockQueryRepository;
-import ccc.keewedomain.persistence.repository.user.FollowFromInsightQueryRepository;
 import ccc.keewedomain.persistence.repository.user.FollowQueryRepository;
 import ccc.keewedomain.persistence.repository.user.FollowRepository;
 import ccc.keewedomain.persistence.repository.user.TitleAchievedQueryRepository;
@@ -16,14 +16,15 @@ import ccc.keewedomain.persistence.repository.user.TitleAchievementRepository;
 import ccc.keewedomain.persistence.repository.user.UserQueryRepository;
 import ccc.keewedomain.persistence.repository.utils.CursorPageable;
 import ccc.keewedomain.service.user.UserDomainService;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -100,9 +101,5 @@ public class ProfileQueryDomainService {
     @Transactional(readOnly = true)
     public List<Follow> findRelatedFollows(Long userId, CursorPageable<LocalDateTime> cPage) {
         return followQueryRepository.findAllByUserIdOrderByCreatedAtDesc(userId, cPage);
-    }
-
-    public Long countFollowFromInsightByInsightId(Long insightId) {
-        return followFromInsightQueryRepository.countByInsightId(insightId);
     }
 }

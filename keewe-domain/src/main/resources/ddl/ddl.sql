@@ -281,3 +281,11 @@ CREATE TABLE IF NOT EXISTS `follow_from_insight`
 
     PRIMARY KEY (insight_id, follower_id, followee_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS `profile_visit_from_insight`
+(
+    insight_id  BIGINT NOT NULL,
+    user_id BIGINT NOT NULL,
+
+    PRIMARY KEY (insight_id, user_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

@@ -4,7 +4,6 @@ import ccc.keewecore.consts.KeeweConsts;
 import ccc.keewecore.consts.KeeweRtnConsts;
 import ccc.keewecore.exception.KeeweException;
 import ccc.keewedomain.dto.user.FollowCheckDto;
-import ccc.keewedomain.dto.user.FollowFromInsightCreateDto;
 import ccc.keewedomain.dto.user.FollowToggleDto;
 import ccc.keewedomain.dto.user.OnboardDto;
 import ccc.keewedomain.dto.user.ProfileUpdateDto;
@@ -17,14 +16,12 @@ import ccc.keewedomain.persistence.domain.title.TitleAchievement;
 import ccc.keewedomain.persistence.domain.title.id.TitleAchievementId;
 import ccc.keewedomain.persistence.domain.user.Block;
 import ccc.keewedomain.persistence.domain.user.Follow;
-import ccc.keewedomain.persistence.domain.user.FollowFromInsight;
 import ccc.keewedomain.persistence.domain.user.ProfilePhoto;
 import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.persistence.domain.user.id.BlockId;
-import ccc.keewedomain.persistence.domain.user.id.FollowFromInsightId;
 import ccc.keewedomain.persistence.domain.user.id.FollowId;
+import ccc.keewedomain.persistence.repository.insight.FollowFromInsightRepository;
 import ccc.keewedomain.persistence.repository.user.BlockRepository;
-import ccc.keewedomain.persistence.repository.user.FollowFromInsightRepository;
 import ccc.keewedomain.persistence.repository.user.FollowRepository;
 import ccc.keewedomain.persistence.repository.user.TitleAchievementRepository;
 import ccc.keewedomain.service.insight.query.InsightQueryDomainService;
@@ -137,23 +134,7 @@ public class ProfileCommandDomainService {
         return blockedUserId;
     }
 
-    @Transactional
-    public FollowFromInsight addFollowFromInsight(FollowFromInsightCreateDto dto) {
-        insightQueryDomainService.validateWriter(dto.getFolloweeId(), dto.getInsightId());
-        FollowFromInsightId id = FollowFromInsightId.of(dto.getFollowerId(), dto.getFolloweeId(), dto.getInsightId());
-        if(followFromInsightRepository.existsById(id)) {
-            log.info("[PCDS::addFollowFromInsight] Follow history already exists - followerId({}), followeeId({}), insightId({})",
-                    dto.getFollowerId(), dto.getFolloweeId(), dto.getInsightId());
-            throw new KeeweException(KeeweRtnConsts.ERR428);
-        }
 
-        FollowFromInsight followFromInsight = FollowFromInsight.of(
-                userDomainService.getUserByIdOrElseThrow(dto.getFollowerId()),
-                userDomainService.getUserByIdOrElseThrow(dto.getFolloweeId()),
-                insightQueryDomainService.getByIdOrElseThrow(dto.getInsightId())
-        );
-        return followFromInsightRepository.save(followFromInsight);
-    }
 
     @Transactional
     public void removeAllRelationsBy(User user) {

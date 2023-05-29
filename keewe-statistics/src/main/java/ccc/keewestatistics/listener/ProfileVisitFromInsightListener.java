@@ -3,10 +3,8 @@ package ccc.keewestatistics.listener;
 import ccc.keewecore.consts.KeeweConsts;
 import ccc.keewecore.consts.KeeweRtnConsts;
 import ccc.keewecore.exception.KeeweException;
-import ccc.keewedomain.dto.user.FollowFromInsightCreateDto;
-import ccc.keewedomain.event.user.FollowFromInsightEvent;
+import ccc.keewedomain.event.insight.ProfileVisitFromInsightEvent;
 import ccc.keewedomain.service.insight.command.InsightStatisticsCommandDomainService;
-import ccc.keewedomain.service.user.command.ProfileCommandDomainService;
 import com.rabbitmq.client.Channel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,23 +15,20 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
-@Slf4j
 @Component
 @RequiredArgsConstructor
-public class FollowFromInsightListener {
-    private final ProfileCommandDomainService profileCommandDomainService;
+@Slf4j
+public class ProfileVisitFromInsightListener {
     private final InsightStatisticsCommandDomainService insightStatisticsCommandDomainService;
 
-    @RabbitListener(queues = KeeweConsts.FOLLOW_FROM_INSIGHT_QUEUE, ackMode = "MANUAL")
-    public void onMessage(FollowFromInsightEvent event, Channel channel, @Header(AmqpHeaders.DELIVERY_TAG) long tag) throws IOException {
-        log.info("[FFIL::onMessage] FollowFromInsight event consuming - insightId ({}), followerId ({}), followeeId ({})",
-                event.getInsightId(), event.getFollowerId(), event.getFolloweeId());
+    @RabbitListener(queues = KeeweConsts.PROFILE_VISIT_FROM_INSIGHT_QUEUE, ackMode = "MANUAL")
+    public void onMessage(ProfileVisitFromInsightEvent event, Channel channel, @Header(AmqpHeaders.DELIVERY_TAG) long tag) throws IOException {
+        log.info("[PVFIL::onMessage] ProfileVisitFromInsight event consuming - insightId ({}), userId ({})",
+                event.getInsightId(), event.getUserId());
         try {
-            FollowFromInsightCreateDto dto = FollowFromInsightCreateDto.of(event.getFollowerId(), event.getFolloweeId(), event.getInsightId());
-            insightStatisticsCommandDomainService.createFollowFromInsight(dto);
-            channel.basicAck(tag, true);
+            insightStatisticsCommandDomainService.createProfileVisitFromInsight(event.getInsightId(), event.getUserId());
         } catch (KeeweException keeweException) {
-            if(keeweException.getKeeweRtnConsts() == KeeweRtnConsts.ERR428) {
+            if(keeweException.getKeeweRtnConsts() == KeeweRtnConsts.ERR490) {
                 channel.basicAck(tag, true);
                 return;
             }

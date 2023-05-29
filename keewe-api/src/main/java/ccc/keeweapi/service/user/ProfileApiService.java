@@ -27,6 +27,7 @@ import ccc.keewedomain.persistence.domain.user.Follow;
 import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.persistence.repository.utils.CursorPageable;
 import ccc.keewedomain.service.challenge.query.ChallengeParticipateQueryDomainService;
+import ccc.keewedomain.service.insight.command.InsightStatisticsCommandDomainService;
 import ccc.keewedomain.service.user.UserDomainService;
 import ccc.keewedomain.service.user.command.ProfileCommandDomainService;
 import ccc.keewedomain.service.user.query.ProfileQueryDomainService;
@@ -53,6 +54,7 @@ public class ProfileApiService {
     private final ProfileQueryDomainService profileQueryDomainService;
     private final ProfileCommandDomainService profileCommandDomainService;
     private final BlockedResourceManager blockedResourceManager;
+    private final InsightStatisticsCommandDomainService insightStatisticsCommandDomainService;
 
     @Transactional
     public OnboardResponse onboard(OnboardRequest request) {
@@ -74,7 +76,7 @@ public class ProfileApiService {
     }
 
     @Transactional(readOnly = true)
-    public ProfileMyPageResponse getMyPageProfile(Long userId) {
+    public ProfileMyPageResponse getMyPageProfile(Long userId, Long insightId) {
         blockedResourceManager.validateAccessibleUser(userId);
         User targetUser = userDomainService.getUserByIdWithInterests(userId);
         Long requestUserId = SecurityUtil.getUserId();
@@ -87,6 +89,7 @@ public class ProfileApiService {
                 .map(challengeParticipation -> challengeParticipation.getChallenge().getName())
                 .orElse(null);
 
+        afterGetMyProfile(userId, insightId);
         return profileAssembler.toProfileMyPageResponse(targetUser, isFollowing, followerCount, followingCount, challengeName);
     }
 
@@ -184,5 +187,11 @@ public class ProfileApiService {
     public AccountResponse getAccount() {
         User user = SecurityUtil.getUser();
         return profileAssembler.toAccountResponse(user);
+    }
+
+    private void afterGetMyProfile(Long userId, Long insightId) {
+        if(insightId != null) {
+            insightStatisticsCommandDomainService.publishProfileVisitFromInsightEvent(userId, insightId);
+        }
     }
 }
