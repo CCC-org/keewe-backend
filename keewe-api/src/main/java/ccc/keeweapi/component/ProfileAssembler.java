@@ -4,6 +4,7 @@ import ccc.keeweapi.dto.insight.response.ProfileVisitFromInsightCountResponse;
 import ccc.keeweapi.dto.user.*;
 import ccc.keeweapi.utils.SecurityUtil;
 import ccc.keewedomain.dto.user.*;
+import ccc.keewedomain.persistence.domain.challenge.Challenge;
 import ccc.keewedomain.persistence.domain.common.Interest;
 import ccc.keewedomain.persistence.domain.title.Title;
 import ccc.keewedomain.persistence.domain.title.TitleAchievement;
@@ -49,7 +50,9 @@ public class ProfileAssembler {
         );
     }
 
-    public ProfileMyPageResponse toProfileMyPageResponse(User user, Boolean isFollowing, Long followerCount, Long followingCount, String challengeName) {
+    public ProfileMyPageResponse toProfileMyPageResponse(User user, Boolean isFollowing, Long followerCount, Long followingCount, Challenge challenge) {
+        Long challengeId = challenge != null ? challenge.getId() : null;
+        String challengeName = challenge != null ? challenge.getName() : null;
         return ProfileMyPageResponse.of(
                 user.getNickname(),
                 user.getProfilePhotoURL(),
@@ -61,7 +64,8 @@ public class ProfileAssembler {
                 isFollowing,
                 followerCount,
                 followingCount,
-                challengeName
+                challengeName,
+                challengeId
         );
     }
 
