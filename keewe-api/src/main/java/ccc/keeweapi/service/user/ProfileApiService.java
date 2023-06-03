@@ -21,6 +21,8 @@ import ccc.keeweapi.utils.BlockedResourceManager;
 import ccc.keeweapi.utils.SecurityUtil;
 import ccc.keewecore.utils.ListUtils;
 import ccc.keewedomain.dto.user.FollowCheckDto;
+import ccc.keewedomain.persistence.domain.challenge.Challenge;
+import ccc.keewedomain.persistence.domain.challenge.ChallengeParticipation;
 import ccc.keewedomain.persistence.domain.title.TitleAchievement;
 import ccc.keewedomain.persistence.domain.user.Block;
 import ccc.keewedomain.persistence.domain.user.Follow;
@@ -85,12 +87,12 @@ public class ProfileApiService {
         Long followerCount = profileQueryDomainService.getFollowerCount(targetUser);
         Long followingCount = profileQueryDomainService.getFollowingCount(targetUser);
 
-        String challengeName = challengeParticipateQueryDomainService.findCurrentParticipationByUserId(userId)
-                .map(challengeParticipation -> challengeParticipation.getChallenge().getName())
+        Challenge challenge = challengeParticipateQueryDomainService.findCurrentParticipationByUserId(userId)
+                .map(ChallengeParticipation::getChallenge)
                 .orElse(null);
 
         afterGetMyProfile(userId, insightId);
-        return profileAssembler.toProfileMyPageResponse(targetUser, isFollowing, followerCount, followingCount, challengeName);
+        return profileAssembler.toProfileMyPageResponse(targetUser, isFollowing, followerCount, followingCount, challenge);
     }
 
     @Transactional(readOnly = true)

@@ -67,7 +67,6 @@ public class UserProfileControllerTest extends ApiDocumentationTest {
         onboardRequest
                 .put("nickname", nickname)
                 .put("interests", jsonArray);
-        System.out.println("onboardRequest.toString() = " + onboardRequest.toString());
         when(profileApiService.onboard(any())).thenReturn(
                 OnboardResponse.of(userId, nickname, interests.stream().map(Interest::of).collect(Collectors.toList())));
 
@@ -110,7 +109,8 @@ public class UserProfileControllerTest extends ApiDocumentationTest {
                         false,
                         342L,
                         55231L,
-                        "출근하기"
+                        "출근하기",
+                        1L
                 )
         );
 
@@ -143,7 +143,8 @@ public class UserProfileControllerTest extends ApiDocumentationTest {
                                 fieldWithPath("data.follow").description("팔로잉 여부 (true: 팔로잉 상태, false: 언팔로잉 상태)"),
                                 fieldWithPath("data.followerCount").description("팔로워 수"),
                                 fieldWithPath("data.followingCount").description("팔로우 하는 수"),
-                                fieldWithPath("data.challengeName").description("진행중인 챌린지 이름"))
+                                fieldWithPath("data.challengeName").description("진행중인 챌린지 이름"),
+                                fieldWithPath("data.challengeId").description("진행중인 챌린지 ID"))
                         .tag("UserProfile")
                         .build()
         )));
