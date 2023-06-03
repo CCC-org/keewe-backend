@@ -4,5 +4,6 @@ public enum VendorType {
     KAKAO,
     NAVER,
     GOOGLE,
-    APPLE
+    APPLE,
+    VIRTUAL,
 }

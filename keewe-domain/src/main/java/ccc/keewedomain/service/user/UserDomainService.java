@@ -11,6 +11,7 @@ import ccc.keeweinfra.dto.GoogleProfileResponse;
 import ccc.keeweinfra.dto.KakaoProfileResponse;
 import ccc.keeweinfra.dto.NaverProfileResponse;
 import ccc.keeweinfra.dto.OauthResponse;
+import ccc.keeweinfra.dto.VirtualProfileResponse;
 import ccc.keeweinfra.service.oauth.GoogleInfraService;
 import ccc.keeweinfra.service.oauth.KakaoInfraService;
 import ccc.keeweinfra.service.oauth.NaverInfraService;
@@ -38,6 +39,8 @@ public class UserDomainService {
                 return (T) getNaverProfile(code);
             case GOOGLE:
                 return (T) getGoogleProfile(code);
+            case VIRTUAL:
+                return (T) getVirtualProfile(code);
             default:
                 throw new KeeweException(KeeweRtnConsts.ERR504);
         }
@@ -86,4 +89,7 @@ public class UserDomainService {
         }
     }
 
+    private VirtualProfileResponse getVirtualProfile(String code) {
+        return new VirtualProfileResponse();
+    }
 }

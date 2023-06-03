@@ -39,7 +39,6 @@ public class UserApiService {
     private final ProfileCommandDomainService profileCommandDomainService;
     private final ChallengeCommandDomainService challengeCommandDomainService;
 
-    @Transactional
     @FLogging
     public <T extends OauthResponse> UserSignUpResponse signupWithOauth(String code, VendorType vendorType) {
         T account = userDomainService.getOauthProfile(code, vendorType);
@@ -56,7 +55,7 @@ public class UserApiService {
                 , KeeweStringUtils.getOrDefault(account.getEmail(), "")
         );
 
-        afterTheFirstSignUp(user);
+        this.afterTheFirstSignUp(user);
         log.info("[UAS::signupWithOauth] 회원가입 완료 - email({})", account.getEmail());
         return userAssembler.toUserSignUpResponse(user, false, getToken(user.getId()));
     }
