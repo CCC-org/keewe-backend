@@ -223,7 +223,7 @@ public class InsightQueryRepository {
                 .innerJoin(insight.challengeParticipation, challengeParticipation)
                 .innerJoin(insight.writer, user)
                 .fetchJoin()
-                .innerJoin(user.profilePhoto, profilePhoto)
+                .leftJoin(user.profilePhoto, profilePhoto)
                 .fetchJoin()
                 .where(insight.challengeParticipation.challenge.eq(challenge)
                         .and(insight.id.lt(cPage.getCursor()))
