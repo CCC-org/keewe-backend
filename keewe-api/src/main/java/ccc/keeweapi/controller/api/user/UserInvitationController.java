@@ -2,6 +2,7 @@ package ccc.keeweapi.controller.api.user;
 
 import ccc.keeweapi.dto.ApiResponse;
 import ccc.keeweapi.dto.user.InviteeListResponse;
+import ccc.keeweapi.dto.user.InviteeSearchResponse;
 import ccc.keeweapi.service.user.ProfileApiService;
 import ccc.keewedomain.persistence.repository.utils.CursorPageable;
 import lombok.RequiredArgsConstructor;
@@ -25,5 +26,15 @@ public class UserInvitationController {
             @RequestParam Long limit) {
         CursorPageable<LocalDateTime> cPage = CursorPageable.of(cursor, limit);
         return ApiResponse.ok(profileApiService.paginateInvitees(cPage));
+    }
+
+    @GetMapping("/invitee/search")
+    public ApiResponse<InviteeSearchResponse> searchInvitees(
+            @RequestParam String searchWord,
+            @RequestParam(required = false) String cursor,
+            @RequestParam Long limit
+    ) {
+        CursorPageable<String> cPage = CursorPageable.of(cursor, limit);
+        return ApiResponse.ok(profileApiService.searchInvitees(searchWord, cPage));
     }
 }

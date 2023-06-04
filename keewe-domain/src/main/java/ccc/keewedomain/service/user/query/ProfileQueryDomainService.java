@@ -7,13 +7,11 @@ import ccc.keewedomain.persistence.domain.user.Block;
 import ccc.keewedomain.persistence.domain.user.Follow;
 import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.persistence.domain.user.id.FollowId;
-import ccc.keewedomain.persistence.repository.insight.FollowFromInsightQueryRepository;
 import ccc.keewedomain.persistence.repository.user.BlockQueryRepository;
 import ccc.keewedomain.persistence.repository.user.FollowQueryRepository;
 import ccc.keewedomain.persistence.repository.user.FollowRepository;
 import ccc.keewedomain.persistence.repository.user.TitleAchievedQueryRepository;
 import ccc.keewedomain.persistence.repository.user.TitleAchievementRepository;
-import ccc.keewedomain.persistence.repository.user.UserQueryRepository;
 import ccc.keewedomain.persistence.repository.utils.CursorPageable;
 import ccc.keewedomain.service.user.UserDomainService;
 import lombok.RequiredArgsConstructor;
@@ -35,9 +33,7 @@ public class ProfileQueryDomainService {
     private final TitleAchievementRepository titleAchievementRepository;
     private final TitleAchievedQueryRepository titleAchievedQueryRepository;
     private final FollowQueryRepository followQueryRepository;
-    private final UserQueryRepository userQueryRepository;
     private final BlockQueryRepository blockQueryRepository;
-    private final FollowFromInsightQueryRepository followFromInsightQueryRepository;
 
     public boolean isFollowing(FollowCheckDto followCheckDto) {
         return followRepository.existsById(FollowId.of(followCheckDto.getUserId(), followCheckDto.getTargetId()));
@@ -101,5 +97,10 @@ public class ProfileQueryDomainService {
     @Transactional(readOnly = true)
     public List<Follow> findRelatedFollows(Long userId, CursorPageable<LocalDateTime> cPage) {
         return followQueryRepository.findAllByUserIdOrderByCreatedAtDesc(userId, cPage);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Follow> searchRelatedUsers(Long userId, String searchWord, CursorPageable<String> cPage) {
+        return followQueryRepository.findByUserIdAndStartsWithNickname(userId, searchWord, cPage);
     }
 }

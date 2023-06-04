@@ -3,6 +3,7 @@ package ccc.keewedomain.persistence.repository.user;
 import ccc.keewedomain.persistence.domain.user.Follow;
 import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.persistence.repository.utils.CursorPageable;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -11,11 +12,9 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
 
 import static ccc.keewedomain.persistence.domain.title.QTitle.title;
 import static ccc.keewedomain.persistence.domain.user.QFollow.follow;
-import static ccc.keewedomain.persistence.domain.user.QProfilePhoto.profilePhoto;
 import static ccc.keewedomain.persistence.domain.user.QUser.user;
 
 @Repository
@@ -63,6 +62,26 @@ public class FollowQueryRepository {
                 .orderBy(follow.createdAt.desc())
                 .limit(cPage.getLimit())
                 .fetch();
+    }
+
+    public List<Follow> findByUserIdAndStartsWithNickname(Long userId, String word, CursorPageable<String> cPage) {
+        return queryFactory.selectFrom(follow)
+                .innerJoin(follow.follower, user)
+                .fetchJoin()
+                .innerJoin(follow.followee, user)
+                .fetchJoin()
+                .where(follow.follower.id.eq(userId)
+                        .or(follow.followee.id.eq(userId)))
+                .where(user.nickname.startsWith(word)
+                        .and(nicknameGt(cPage.getCursor())))
+                .orderBy(user.nickname.asc())
+                .limit(cPage.getLimit())
+                .fetch();
+    }
+
+    // note. cursor가 null인 경우 조건을 추가하지 않음
+    private BooleanExpression nicknameGt(String nickname) {
+        return nickname != null ? user.nickname.gt(nickname) : null;
     }
 
     private JPQLQuery<Long> findFolloweeIdsOrderByCreatedAtDesc(User target, CursorPageable<LocalDateTime> cPage) {
