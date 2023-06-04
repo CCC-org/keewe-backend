@@ -19,13 +19,17 @@ import ccc.keeweapi.dto.user.UnblockUserResponse;
 import ccc.keeweapi.dto.user.UploadProfilePhotoResponse;
 import ccc.keeweapi.utils.BlockedResourceManager;
 import ccc.keeweapi.utils.SecurityUtil;
+import ccc.keewecore.utils.ListUtils;
 import ccc.keewedomain.dto.user.FollowCheckDto;
+import ccc.keewedomain.persistence.domain.challenge.Challenge;
+import ccc.keewedomain.persistence.domain.challenge.ChallengeParticipation;
 import ccc.keewedomain.persistence.domain.title.TitleAchievement;
 import ccc.keewedomain.persistence.domain.user.Block;
 import ccc.keewedomain.persistence.domain.user.Follow;
 import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.persistence.repository.utils.CursorPageable;
 import ccc.keewedomain.service.challenge.query.ChallengeParticipateQueryDomainService;
+import ccc.keewedomain.service.insight.command.InsightStatisticsCommandDomainService;
 import ccc.keewedomain.service.user.UserDomainService;
 import ccc.keewedomain.service.user.command.ProfileCommandDomainService;
 import ccc.keewedomain.service.user.query.ProfileQueryDomainService;
@@ -52,6 +56,8 @@ public class ProfileApiService {
     private final ProfileQueryDomainService profileQueryDomainService;
     private final ProfileCommandDomainService profileCommandDomainService;
     private final BlockedResourceManager blockedResourceManager;
+    private final InsightStatisticsCommandDomainService insightStatisticsCommandDomainService;
+
     @Transactional
     public OnboardResponse onboard(OnboardRequest request) {
         User user = profileCommandDomainService.onboard(profileAssembler.toOnboardDto(request));
@@ -72,20 +78,21 @@ public class ProfileApiService {
     }
 
     @Transactional(readOnly = true)
-    public ProfileMyPageResponse getMyPageProfile(Long userId) {
+    public ProfileMyPageResponse getMyPageProfile(Long userId, Long insightId) {
         blockedResourceManager.validateAccessibleUser(userId);
         User targetUser = userDomainService.getUserByIdWithInterests(userId);
         Long requestUserId = SecurityUtil.getUserId();
 
-        boolean isFollowing = profileQueryDomainService.isFollowing(FollowCheckDto.of(userId, requestUserId));
+        boolean isFollowing = profileQueryDomainService.isFollowing(FollowCheckDto.of(requestUserId, targetUser.getId()));
         Long followerCount = profileQueryDomainService.getFollowerCount(targetUser);
         Long followingCount = profileQueryDomainService.getFollowingCount(targetUser);
 
-        String challengeName = challengeParticipateQueryDomainService.findCurrentParticipationByUserId(userId)
-                .map(challengeParticipation -> challengeParticipation.getChallenge().getName())
+        Challenge challenge = challengeParticipateQueryDomainService.findCurrentParticipationByUserId(userId)
+                .map(ChallengeParticipation::getChallenge)
                 .orElse(null);
 
-        return profileAssembler.toProfileMyPageResponse(targetUser, isFollowing, followerCount, followingCount, challengeName);
+        afterGetMyProfile(userId, insightId);
+        return profileAssembler.toProfileMyPageResponse(targetUser, isFollowing, followerCount, followingCount, challenge);
     }
 
     @Transactional(readOnly = true)
@@ -173,8 +180,8 @@ public class ProfileApiService {
                 })
                 .distinct() // 양방향으로 팔로우 되어 있는 경우 중복 제거
                 .collect(Collectors.toList());
-        String nextCursor = !relatedFollows.isEmpty() && relatedFollows.size() == cPage.getLimit()
-                ? relatedFollows.get(relatedFollows.size() - 1).getCreatedAt().toString()
+        String nextCursor = relatedFollows.size() == cPage.getLimit()
+                ? ListUtils.getLast(relatedFollows).getCreatedAt().toString()
                 : null;
         return profileAssembler.toInviteeListResponse(invitees, nextCursor);
     }
@@ -182,5 +189,11 @@ public class ProfileApiService {
     public AccountResponse getAccount() {
         User user = SecurityUtil.getUser();
         return profileAssembler.toAccountResponse(user);
+    }
+
+    private void afterGetMyProfile(Long userId, Long insightId) {
+        if(insightId != null) {
+            insightStatisticsCommandDomainService.publishProfileVisitFromInsightEvent(userId, insightId);
+        }
     }
 }

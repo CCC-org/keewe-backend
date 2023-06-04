@@ -3,6 +3,7 @@ package ccc.keeweapi.service.user;
 import ccc.keeweapi.component.UserAssembler;
 import ccc.keeweapi.config.security.jwt.JwtUtils;
 import ccc.keeweapi.dto.user.UserSignUpResponse;
+import ccc.keeweapi.utils.SecurityUtil;
 import ccc.keewecore.aop.annotations.FLogging;
 import ccc.keewecore.consts.KeeweConsts;
 import ccc.keewecore.consts.TitleCategory;
@@ -10,7 +11,10 @@ import ccc.keewecore.utils.KeeweStringUtils;
 import ccc.keewecore.utils.KeeweTitleHeader;
 import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.persistence.domain.user.enums.VendorType;
+import ccc.keewedomain.service.challenge.command.ChallengeCommandDomainService;
 import ccc.keewedomain.service.user.UserDomainService;
+import ccc.keewedomain.service.user.command.ProfileCommandDomainService;
+import ccc.keewedomain.service.user.command.UserCommandDomainService;
 import ccc.keeweinfra.dto.OauthResponse;
 import ccc.keeweinfra.service.messagequeue.MQPublishService;
 import java.util.List;
@@ -28,17 +32,20 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class UserApiService {
     private final UserDomainService userDomainService;
+    private final UserCommandDomainService userCommandDomainService;
     private final UserAssembler userAssembler;
     private final JwtUtils jwtUtils;
     private final MQPublishService mqPublishService;
+    private final ProfileCommandDomainService profileCommandDomainService;
+    private final ChallengeCommandDomainService challengeCommandDomainService;
 
-    @Transactional
     @FLogging
     public <T extends OauthResponse> UserSignUpResponse signupWithOauth(String code, VendorType vendorType) {
         T account = userDomainService.getOauthProfile(code, vendorType);
-        log.info("[UAS::signUp] account {}", account.toString());
+
         Optional<User> userOps = userDomainService.getUserByVendorIdAndVendorType(account.getId(), vendorType);
         if(userOps.isPresent()) {
+            log.info("[UAS::signupWithOauth] 로그인 완료 - email({})", account.getEmail());
             return userAssembler.toUserSignUpResponse(userOps.get(), true, getToken(userOps.get().getId()));
         }
 
@@ -48,12 +55,21 @@ public class UserApiService {
                 , KeeweStringUtils.getOrDefault(account.getEmail(), "")
         );
 
-        afterTheFirstSignUp(user);
+        this.afterTheFirstSignUp(user);
+        log.info("[UAS::signupWithOauth] 회원가입 완료 - email({})", account.getEmail());
         return userAssembler.toUserSignUpResponse(user, false, getToken(user.getId()));
     }
 
     public String getToken(Long userId) {
         return jwtUtils.createToken(userId, List.of());
+    }
+
+    @Transactional
+    public void withdraw() {
+        User user = userCommandDomainService.withdraw(SecurityUtil.getUserId());
+        profileCommandDomainService.removeAllRelationsBy(user);
+        challengeCommandDomainService.exitCurrentChallengeIfExist(user);
+        log.info("[UAS::withdraw] 회원 탈퇴 완료 - userId({})", user.getId());
     }
 
     private User signUpWithOauth(String vendorId, VendorType vendorType, String email) {

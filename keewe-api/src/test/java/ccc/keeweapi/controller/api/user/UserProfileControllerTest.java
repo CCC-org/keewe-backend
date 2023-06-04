@@ -67,7 +67,6 @@ public class UserProfileControllerTest extends ApiDocumentationTest {
         onboardRequest
                 .put("nickname", nickname)
                 .put("interests", jsonArray);
-        System.out.println("onboardRequest.toString() = " + onboardRequest.toString());
         when(profileApiService.onboard(any())).thenReturn(
                 OnboardResponse.of(userId, nickname, interests.stream().map(Interest::of).collect(Collectors.toList())));
 
@@ -100,7 +99,7 @@ public class UserProfileControllerTest extends ApiDocumentationTest {
     @Test
     @DisplayName("마이페이지 프로필 조회 테스트")
     void my_page_profile() throws Exception {
-        when(profileApiService.getMyPageProfile(anyLong())).thenReturn(
+        when(profileApiService.getMyPageProfile(anyLong(), anyLong())).thenReturn(
                 ProfileMyPageResponse.of(
                         "닉네임",
                         "www.api-keewe.com/images/128398681",
@@ -110,11 +109,13 @@ public class UserProfileControllerTest extends ApiDocumentationTest {
                         false,
                         342L,
                         55231L,
-                        "출근하기"
+                        "출근하기",
+                        1L
                 )
         );
 
         ResultActions resultActions = mockMvc.perform(get("/api/v1/user/profile/{targetId}", 1L)
+                        .param("insightId", "1")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
@@ -128,6 +129,9 @@ public class UserProfileControllerTest extends ApiDocumentationTest {
                         )
                         .requestHeaders(
                                 headerWithName("Authorization").description("유저의 JWT"))
+                        .requestParameters(
+                                parameterWithName("insightId").description("이전에 조회한 insightId").optional()
+                        )
                         .responseFields(
                                 fieldWithPath("message").description("요청 결과 메세지"),
                                 fieldWithPath("code").description("결과 코드"),
@@ -139,7 +143,8 @@ public class UserProfileControllerTest extends ApiDocumentationTest {
                                 fieldWithPath("data.follow").description("팔로잉 여부 (true: 팔로잉 상태, false: 언팔로잉 상태)"),
                                 fieldWithPath("data.followerCount").description("팔로워 수"),
                                 fieldWithPath("data.followingCount").description("팔로우 하는 수"),
-                                fieldWithPath("data.challengeName").description("진행중인 챌린지 이름"))
+                                fieldWithPath("data.challengeName").description("진행중인 챌린지 이름"),
+                                fieldWithPath("data.challengeId").description("진행중인 챌린지 ID"))
                         .tag("UserProfile")
                         .build()
         )));

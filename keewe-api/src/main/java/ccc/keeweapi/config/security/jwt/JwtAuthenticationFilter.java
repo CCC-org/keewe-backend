@@ -39,9 +39,8 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
             if(!StringUtils.hasText(jwt))
                 throw new KeeweAuthException(KeeweRtnConsts.ERR403);
 
-            if(jwtUtils.validateTokenOrElseThrow(jwt)) {
+            if (jwtUtils.validateTokenOrElseThrow(jwt)) {
                 SecurityContextHolder.getContext().setAuthentication(jwtUtils.getAuthentication(jwt));
-                log.info("[doFilterInternal] requestURI = {}, query = {}", request.getRequestURL(), request.getQueryString());
                 chain.doFilter(request, response);
             } else {
                 throw new KeeweAuthException(KeeweRtnConsts.ERR401);

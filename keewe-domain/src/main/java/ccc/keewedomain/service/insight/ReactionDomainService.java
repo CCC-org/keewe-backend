@@ -5,12 +5,12 @@ import ccc.keewecore.consts.KeeweRtnConsts;
 import ccc.keewecore.exception.KeeweException;
 import ccc.keewedomain.cache.domain.insight.CReactionCount;
 import ccc.keewedomain.cache.repository.insight.CReactionCountRepository;
-import ccc.keewedomain.persistence.domain.insight.ReactionAggregation;
 import ccc.keewedomain.dto.insight.ReactionAggregationGetDto;
 import ccc.keewedomain.dto.insight.ReactionDto;
 import ccc.keewedomain.dto.insight.ReactionIncrementDto;
 import ccc.keewedomain.persistence.domain.insight.Insight;
 import ccc.keewedomain.persistence.domain.insight.Reaction;
+import ccc.keewedomain.persistence.domain.insight.ReactionAggregation;
 import ccc.keewedomain.persistence.domain.insight.enums.ReactionType;
 import ccc.keewedomain.persistence.domain.insight.id.ReactionAggregationId;
 import ccc.keewedomain.persistence.domain.notification.Notification;
@@ -27,6 +27,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
 @Slf4j
 @Service
@@ -48,7 +49,7 @@ public class ReactionDomainService {
     public ReactionDto react(ReactionIncrementDto dto) {
         ReactionAggregationGetDto reactionAggregation = getCurrentReactionAggregation(dto.getInsightId());
 
-        log.info("[RDS::react] React message pub. id={}", dto.getInsightId());
+        log.info("[ReactionDomainService] 인사이트 리액션 이벤트 생성 - insightId({})", dto.getInsightId());
         mqPublishService.publish(KeeweConsts.INSIGHT_REACT_EXCHANGE, dto);
         ReactionType type = dto.getReactionType();
         return ReactionDto.of(dto.getInsightId(), type, reactionAggregation.getByType(type) + 1L);
@@ -68,7 +69,7 @@ public class ReactionDomainService {
         if (reactionCount <= 1) {
             afterReaction(insight, reaction);
         }
-        log.info("[RDS::applyReact] insightId({}), count({})", insight.getId(), reactionAggregation.getCount());
+        log.info("[ReactionDomainService] 인사이트 리액션 증가 - insightId({}), currentCount({})", dto.getInsightId(), reactionAggregation.getCount());
         return reactionAggregation.getCount();
     }
 
@@ -101,8 +102,12 @@ public class ReactionDomainService {
 
     private void afterReaction(Insight insight, Reaction reaction) {
         try {
-            Notification notification = Notification.of(insight.getWriter(), NotificationContents.반응, String.valueOf(reaction.getId()));
-            notificationCommandDomainService.save(notification);
+            Long insightWriterId = insight.getWriter().getId();
+            Long reactorId = reaction.getReactor().getId();
+            if (!ObjectUtils.nullSafeEquals(insightWriterId, reactorId)) {
+                Notification notification = Notification.of(insight.getWriter(), NotificationContents.반응, String.valueOf(reaction.getId()));
+                notificationCommandDomainService.save(notification);
+            }
         } catch (Throwable t) {
             log.warn("[RDS::afterReaction] 리액션 후 작업 실패 - reactorId({}), insightId({})", reaction.getReactor().getId(), insight.getId(), t);
         }

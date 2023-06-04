@@ -18,4 +18,5 @@ public class ProfileMyPageResponse {
     private Long followerCount;
     private Long followingCount;
     private String challengeName;
+    private Long challengeId;
 }

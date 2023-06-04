@@ -9,14 +9,18 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.put;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -166,6 +170,29 @@ public class UserSignupControllerTest extends ApiDocumentationTest {
                                         fieldWithPath("data.userId").description("생성된 유저 ID"),
                                         fieldWithPath("data.alreadySignedUp").description("기존 회원가입 여부"),
                                         fieldWithPath("data.accessToken").description("발급된 유저의 JWT"))
+                                .tag("UserSignUp")
+                                .build()
+                )));
+    }
+
+    @DisplayName("회원탈퇴")
+    void withdraw() throws Exception {
+        doNothing().when(userApiService).withdraw();
+
+        mockMvc.perform(put("/api/v1/user/withdraw")
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
+                    .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(status().isOk())
+                .andDo(restDocs.document(resource(
+                        ResourceSnippetParameters.builder()
+                                .description("회원탈퇴 API")
+                                .summary("회원탈퇴 API 입니다.")
+                                .responseFields(
+                                        fieldWithPath("message").description("요청 결과 메세지"),
+                                        fieldWithPath("code").description("결과 코드"),
+                                        fieldWithPath("data").description("null")
+                                )
                                 .tag("UserSignUp")
                                 .build()
                 )));

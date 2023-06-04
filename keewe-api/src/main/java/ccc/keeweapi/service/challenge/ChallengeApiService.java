@@ -29,6 +29,7 @@ import ccc.keewedomain.service.challenge.query.ChallengeQueryDomainService;
 import ccc.keewedomain.service.insight.query.InsightQueryDomainService;
 import ccc.keewedomain.service.user.query.ProfileQueryDomainService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,7 +45,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
+@Slf4j
 public class ChallengeApiService {
 
     private final ChallengeParticipateQueryDomainService challengeParticipateQueryDomainService;
@@ -63,7 +64,6 @@ public class ChallengeApiService {
         return challengeAssembler.toChallengeCreateResponse(challenge, participation);
     }
 
-    @Transactional
     public ChallengeParticipationResponse participate(ChallengeParticipateRequest request) {
         ChallengeParticipation participation = challengeCommandDomainService
                 .participate(challengeAssembler.toChallengeParticipateDto(request));
@@ -109,19 +109,11 @@ public class ChallengeApiService {
                 .orElse(null);
     }
 
+    @Transactional(readOnly = true)
     public ChallengeDetailResponse getChallengeDetail(Long challengeId) {
         Challenge challenge = challengeQueryDomainService.getByIdOrElseThrow(challengeId);
         Long insightCount = insightQueryDomainService.getInsightCountByChallenge(challenge, null);
         return challengeAssembler.toChallengeDetailResponse(challenge, insightCount);
-    }
-
-    private List<String> datesOfWeek(LocalDate startDate) {
-        List<String> dates = new ArrayList<>(7);
-        for (int i = 0; i < 7; i++) {
-            dates.add(startDate.plusDays(i).toString());
-        }
-
-        return dates;
     }
 
     @Transactional(readOnly = true)
@@ -154,6 +146,7 @@ public class ChallengeApiService {
         return challengeAssembler.toChallengerCountResponse(challengeParticipateQueryDomainService.countParticipatingUser(challenge));
     }
 
+    @Transactional(readOnly = true)
     public ParticipatingChallengeDetailResponse getMyChallengeDetail() {
         Challenge challenge = challengeParticipateQueryDomainService.findCurrentParticipationByUserId(SecurityUtil.getUserId())
                 .map(ChallengeParticipation::getChallenge)
@@ -161,6 +154,7 @@ public class ChallengeApiService {
         return challengeAssembler.toParticipatingChallengeDetailResponse(challenge);
     }
 
+    @Transactional(readOnly = true)
     public ChallengeInsightNumberResponse countInsightOfChallenge(Long writerId) {
         Long insightNumber = challengeParticipateQueryDomainService.findCurrentParticipationByUserId(SecurityUtil.getUserId())
                 .map(participation -> insightQueryDomainService.getInsightCountByChallenge(participation.getChallenge(), writerId))
@@ -168,9 +162,16 @@ public class ChallengeApiService {
         return challengeAssembler.toChallengeInsightNumberResponse(insightNumber);
     }
 
-    @Transactional
     public void updateParticipation(ParticipationUpdateRequest request) {
         ParticipationUpdateDto dto = challengeAssembler.toParticipationUpdateDto(SecurityUtil.getUserId(), request);
         challengeCommandDomainService.updateParticipation(dto);
+    }
+
+    private List<String> datesOfWeek(LocalDate startDate) {
+        List<String> dates = new ArrayList<>(7);
+        for (int i = 0; i < 7; i++) {
+            dates.add(startDate.plusDays(i).toString());
+        }
+        return dates;
     }
 }

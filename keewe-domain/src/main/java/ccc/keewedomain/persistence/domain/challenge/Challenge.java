@@ -40,7 +40,7 @@ public class Challenge extends BaseTimeEntity {
     @Column(name = "deleted", nullable = false)
     private boolean deleted;
 
-    @OneToMany(mappedBy = "challenge", cascade = CascadeType.PERSIST, orphanRemoval = true)
+    @OneToMany(mappedBy = "challenge", orphanRemoval = true)
     private List<ChallengeParticipation> participationList = new ArrayList<>();
 
     public static Challenge of(User writer, String name, String interest, String introduction) {
@@ -55,11 +55,12 @@ public class Challenge extends BaseTimeEntity {
 
     public ChallengeParticipation participate(User challenger, String myTopic, int insightPerWeek, int duration) {
         ChallengeParticipation participation = ChallengeParticipation.of(
-                challenger,
-                this,
-                myTopic,
-                insightPerWeek,
-                duration);
+            challenger,
+            this,
+            myTopic,
+            insightPerWeek,
+            duration
+        );
         getParticipationList().add(participation);
         this.deleted = false;
         return participation;

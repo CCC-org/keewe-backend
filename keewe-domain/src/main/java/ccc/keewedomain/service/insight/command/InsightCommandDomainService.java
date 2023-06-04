@@ -94,7 +94,7 @@ public class InsightCommandDomainService {
         // 캐시 생성부터. 생성과 조회수 + 1이 역전될수있음
         Long viewCount = insightQueryDomainService.getViewCount(dto.getInsightId());
 
-        log.info("[IDS::incrementViewCount] Cache Curr view {}", viewCount);
+        log.info("[InsightCommandDomainService] 인사이트 조회수 증가 이벤트 생성 - insightId({}), cacheViewCount({})", dto.getInsightId(), viewCount);
         mqPublishService.publish(KeeweConsts.INSIGHT_VIEW_EXCHANGE, String.valueOf(dto.getInsightId()));
 
         return viewCount;
@@ -103,7 +103,6 @@ public class InsightCommandDomainService {
     @Transactional
     public Long incrementViewCount(Long insightId) {
         Insight insight = insightRepository.findByIdWithLockOrElseThrow(insightId);
-        log.info("[IDS::incrementViewCount] DB Curr view {}, Next view {}", insight.getView(), insight.getView() + 1);
         return incrementViewCount(insight);
     }
 
@@ -123,7 +122,7 @@ public class InsightCommandDomainService {
         );
 
         cInsightViewRepository.save(cInsightView);
-        log.info("[IDS::incrementViewCount] DB view {}, Cache view {}", insight.getView(), cInsightView.getViewCount());
+        log.info("[InsightCommandDomainService] 인사이트 조회수 증가 처리 - insightId({}), dbViewCount({}), cacheViewCount({})", insight.getId(), insight.getView(), cInsightView.getViewCount());
         return viewCount;
     }
 }

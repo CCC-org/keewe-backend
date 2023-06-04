@@ -6,6 +6,7 @@ import ccc.keewedomain.cache.repository.insight.CInsightAggregationRepository;
 import ccc.keewedomain.persistence.domain.title.enums.InsightTitle;
 import ccc.keewedomain.persistence.repository.user.TitleAchievementRepository;
 import ccc.keewedomain.persistence.repository.user.TitleRepository;
+import ccc.keewedomain.persistence.repository.user.UserRepository;
 import ccc.keewedomain.service.user.UserDomainService;
 import ccc.keeweinfra.service.messagequeue.MQPublishService;
 import java.util.Arrays;
@@ -22,10 +23,11 @@ public class InsightTitleAcquireProcessor extends AbstractTitleAcquireProcessor 
         MQPublishService mqPublishService,
         CInsightAggregationRepository insightAggregationRepository,
         TitleAchievementRepository titleAchievementRepository,
-        TitleRepository titleRepository,
-        UserDomainService userDomainService
+        UserDomainService userDomainService,
+        UserRepository userRepository,
+        TitleRepository titleRepository
     ) {
-        super(mqPublishService, titleAchievementRepository, userDomainService, titleRepository);
+        super(mqPublishService, titleAchievementRepository, userDomainService, userRepository, titleRepository);
         this.insightAggregationRepository = insightAggregationRepository;
     }
 

@@ -1,7 +1,7 @@
-package ccc.keewedomain.persistence.domain.user;
+package ccc.keewedomain.persistence.domain.insight;
 
-import ccc.keewedomain.persistence.domain.insight.Insight;
-import ccc.keewedomain.persistence.domain.user.id.FollowFromInsightId;
+import ccc.keewedomain.persistence.domain.insight.id.FollowFromInsightId;
+import ccc.keewedomain.persistence.domain.user.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
