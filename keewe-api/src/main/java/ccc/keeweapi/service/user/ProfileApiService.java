@@ -8,6 +8,7 @@ import ccc.keeweapi.dto.user.FollowToggleResponse;
 import ccc.keeweapi.dto.user.FollowUserListResponse;
 import ccc.keeweapi.dto.user.InterestsResponse;
 import ccc.keeweapi.dto.user.InviteeListResponse;
+import ccc.keeweapi.dto.user.InviteeSearchResponse;
 import ccc.keeweapi.dto.user.MyBlockUserListResponse;
 import ccc.keeweapi.dto.user.MyPageTitleResponse;
 import ccc.keeweapi.dto.user.OnboardRequest;
@@ -21,6 +22,7 @@ import ccc.keeweapi.utils.BlockedResourceManager;
 import ccc.keeweapi.utils.SecurityUtil;
 import ccc.keewecore.utils.ListUtils;
 import ccc.keewedomain.dto.user.FollowCheckDto;
+import ccc.keewedomain.persistence.repository.user.cursor.InviteeSearchCursor;
 import ccc.keewedomain.persistence.domain.challenge.Challenge;
 import ccc.keewedomain.persistence.domain.challenge.ChallengeParticipation;
 import ccc.keewedomain.persistence.domain.title.TitleAchievement;
@@ -170,20 +172,23 @@ public class ProfileApiService {
     public InviteeListResponse paginateInvitees(CursorPageable<LocalDateTime> cPage) {
         Long userId = SecurityUtil.getUserId();
         List<Follow> relatedFollows = profileQueryDomainService.findRelatedFollows(userId, cPage);
-        List<User> invitees = relatedFollows.stream()
-                .map(follow -> {
-                    if (follow.getFollower().getId().equals(userId)) { // follower가 나인 경우
-                        return follow.getFollowee();
-                    } else { // followee가 나인 경우
-                        return follow.getFollower();
-                    }
-                })
-                .distinct() // 양방향으로 팔로우 되어 있는 경우 중복 제거
-                .collect(Collectors.toList());
+        List<User> invitees = getInvitees(userId, relatedFollows);
         String nextCursor = relatedFollows.size() == cPage.getLimit()
                 ? ListUtils.getLast(relatedFollows).getCreatedAt().toString()
                 : null;
         return profileAssembler.toInviteeListResponse(invitees, nextCursor);
+    }
+
+    @Transactional(readOnly = true)
+    public InviteeSearchResponse searchInvitees(String searchWord, CursorPageable<InviteeSearchCursor> cPage) {
+        Long userId = SecurityUtil.getUserId();
+        List<Follow> searchedFollows = profileQueryDomainService.searchRelatedUsers(userId, searchWord, cPage);
+        List<User> invitees = getInvitees(userId, searchedFollows);
+        User lastInvitee = ListUtils.getLast(invitees);
+        InviteeSearchCursor nextCursor = searchedFollows.size() == cPage.getLimit()
+                ? InviteeSearchCursor.of(lastInvitee.getNickname(), lastInvitee.getId())
+                : null;
+        return profileAssembler.toInviteeSearchResponse(invitees, nextCursor != null ? nextCursor.toString() : null);
     }
 
     public AccountResponse getAccount() {
@@ -195,5 +200,18 @@ public class ProfileApiService {
         if(insightId != null) {
             insightStatisticsCommandDomainService.publishProfileVisitFromInsightEvent(userId, insightId);
         }
+    }
+
+    private static List<User> getInvitees(Long userId, List<Follow> searchedFollows) {
+        return searchedFollows.stream()
+                .map(follow -> {
+                    if (follow.getFollower().getId().equals(userId)) { // follower가 나인 경우
+                        return follow.getFollowee();
+                    } else { // followee가 나인 경우
+                        return follow.getFollower();
+                    }
+                })
+                .distinct() // 양방향으로 팔로우 되어 있는 경우 중복 제거
+                .collect(Collectors.toList());
     }
 }
