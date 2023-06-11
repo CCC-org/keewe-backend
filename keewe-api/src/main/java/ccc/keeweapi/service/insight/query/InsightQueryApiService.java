@@ -80,7 +80,6 @@ public class InsightQueryApiService {
         return blockedResourceManager.filterBlockedUsers(responses);
     }
 
-    @Transactional(readOnly = true)
     public List<InsightGetForBookmarkedResponse> getInsightForBookmark(CursorPageable<LocalDateTime> cPage) {
         List<InsightGetForBookmarkedResponse> responses = insightQueryDomainService.getInsightForBookmark(SecurityUtil.getUser(), cPage).stream()
                 .map(insightAssembler::toInsightGetForBookmarkedResponse)

@@ -5,7 +5,13 @@ import ccc.keewecore.exception.KeeweException;
 import ccc.keewedomain.cache.domain.insight.CInsightView;
 import ccc.keewedomain.cache.repository.insight.CInsightViewRepository;
 import ccc.keewedomain.cache.repository.insight.CReactionCountRepository;
-import ccc.keewedomain.dto.insight.*;
+import ccc.keewedomain.dto.insight.InsightDetailDto;
+import ccc.keewedomain.dto.insight.InsightGetDto;
+import ccc.keewedomain.dto.insight.InsightGetForBookmarkedDto;
+import ccc.keewedomain.dto.insight.InsightGetForHomeDto;
+import ccc.keewedomain.dto.insight.InsightMyPageDto;
+import ccc.keewedomain.dto.insight.InsightWriterDto;
+import ccc.keewedomain.dto.insight.ReactionAggregationGetDto;
 import ccc.keewedomain.persistence.domain.challenge.Challenge;
 import ccc.keewedomain.persistence.domain.challenge.ChallengeParticipation;
 import ccc.keewedomain.persistence.domain.insight.Insight;
@@ -15,6 +21,7 @@ import ccc.keewedomain.persistence.repository.insight.InsightQueryRepository;
 import ccc.keewedomain.persistence.repository.insight.InsightRepository;
 import ccc.keewedomain.persistence.repository.insight.ReactionAggregationRepository;
 import ccc.keewedomain.persistence.repository.utils.CursorPageable;
+import com.mysema.commons.lang.Pair;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -22,7 +29,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -107,13 +113,15 @@ public class InsightQueryDomainService {
     @Transactional(readOnly = true)
     public List<InsightGetForBookmarkedDto> getInsightForBookmark(User user, CursorPageable<LocalDateTime> cPage) {
         Map<Insight, LocalDateTime> insights = insightQueryRepository.findBookmarkedInsight(user, cPage);
-        return insights.entrySet().parallelStream().map(i ->
+        List<Long> insightIds = insights.keySet().stream().map(Insight::getId).collect(Collectors.toList());
+        Map<Long, ReactionAggregationGetDto> reactionInfo = this.queryReactionAggregationInfo(insightIds);
+        return insights.entrySet().stream().map(i ->
                 InsightGetForBookmarkedDto.of(
                         i.getKey().getId(),
                         i.getKey().getContents(),
                         true,
                         i.getKey().getLink(),
-                        this.getCurrentReactionAggregation(i.getKey().getId()),
+                        reactionInfo.get(i.getKey().getId()),
                         i.getKey().getCreatedAt(),
                         i.getValue(),
                         InsightWriterDto.of(
@@ -211,6 +219,15 @@ public class InsightQueryDomainService {
     @Transactional(readOnly = true)
     public List<Insight> findAllByUserIdAndDrawerId(Long userId, Long drawerId) {
         return insightQueryRepository.findAllByUserIdAndDrawerId(userId, drawerId);
+    }
+
+    // note. <InsightId, ReactionAggregationGetDto>
+    private Map<Long, ReactionAggregationGetDto> queryReactionAggregationInfo(List<Long> insightIds) {
+        return insightIds.parallelStream()
+                .map(insightId -> {
+                    ReactionAggregationGetDto dto = this.getCurrentReactionAggregation(insightId);
+                    return Pair.of(insightId, dto);
+                }).collect(Collectors.toMap(Pair::getFirst, Pair::getSecond));
     }
 
     private ReactionAggregationGetDto getCurrentReactionAggregation(Long insightId) {
