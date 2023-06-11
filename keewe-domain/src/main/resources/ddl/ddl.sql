@@ -181,7 +181,7 @@ CREATE TABLE IF NOT EXISTS `reaction`
     updated_at          DATETIME(6) NOT NULL,
 
     FOREIGN KEY (insight_id) REFERENCES `insight`(insight_id),
-    FOREIGN KEY (reaction_id) REFERENCES `user`(user_id),
+    FOREIGN KEY (reactor_id) REFERENCES `user`(user_id),
     PRIMARY KEY (reaction_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
