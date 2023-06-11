@@ -14,7 +14,6 @@ import static ccc.keewedomain.persistence.domain.user.QUser.user;
 import ccc.keewedomain.persistence.domain.challenge.Challenge;
 import ccc.keewedomain.persistence.domain.challenge.ChallengeParticipation;
 import ccc.keewedomain.persistence.domain.insight.Insight;
-import ccc.keewedomain.persistence.domain.title.QTitle;
 import ccc.keewedomain.persistence.domain.user.QUser;
 import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.persistence.repository.utils.CursorPageable;
@@ -26,13 +25,12 @@ import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.LocalDateTime;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -209,11 +207,13 @@ public class InsightQueryRepository {
                 .limit(cPage.getLimit())
                 .fetch();
 
-        return result.stream().collect(Collectors.toMap(
-                tuple -> tuple.get(0, Insight.class),
-                tuple -> tuple.get(1, LocalDateTime.class),
-                (oldValue, newValue) -> oldValue
-        ));
+        return result.stream()
+                .collect(Collectors.toMap(
+                        tuple -> tuple.get(0, Insight.class),
+                        tuple -> tuple.get(1, LocalDateTime.class),
+                        (oldValue, newValue) -> oldValue,
+                        LinkedHashMap::new // note. LinkedHashMap 사용하여 순서 보장
+                ));
     }
 
     public List<Insight> findByChallenge(Challenge challenge, CursorPageable<Long> cPage, Long writerId) {
