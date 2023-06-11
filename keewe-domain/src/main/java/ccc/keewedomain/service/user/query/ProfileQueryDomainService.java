@@ -1,6 +1,7 @@
 package ccc.keewedomain.service.user.query;
 
 import ccc.keewedomain.dto.user.FollowCheckDto;
+import ccc.keewedomain.persistence.repository.user.cursor.InviteeSearchCursor;
 import ccc.keewedomain.persistence.domain.common.Interest;
 import ccc.keewedomain.persistence.domain.title.TitleAchievement;
 import ccc.keewedomain.persistence.domain.user.Block;
@@ -100,7 +101,7 @@ public class ProfileQueryDomainService {
     }
 
     @Transactional(readOnly = true)
-    public List<Follow> searchRelatedUsers(Long userId, String searchWord, CursorPageable<String> cPage) {
+    public List<Follow> searchRelatedUsers(Long userId, String searchWord, CursorPageable<InviteeSearchCursor> cPage) {
         return followQueryRepository.findByUserIdAndStartsWithNickname(userId, searchWord, cPage);
     }
 }

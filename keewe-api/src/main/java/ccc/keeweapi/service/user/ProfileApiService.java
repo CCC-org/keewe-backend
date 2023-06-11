@@ -22,6 +22,7 @@ import ccc.keeweapi.utils.BlockedResourceManager;
 import ccc.keeweapi.utils.SecurityUtil;
 import ccc.keewecore.utils.ListUtils;
 import ccc.keewedomain.dto.user.FollowCheckDto;
+import ccc.keewedomain.persistence.repository.user.cursor.InviteeSearchCursor;
 import ccc.keewedomain.persistence.domain.challenge.Challenge;
 import ccc.keewedomain.persistence.domain.challenge.ChallengeParticipation;
 import ccc.keewedomain.persistence.domain.title.TitleAchievement;
@@ -179,14 +180,15 @@ public class ProfileApiService {
     }
 
     @Transactional(readOnly = true)
-    public InviteeSearchResponse searchInvitees(String searchWord, CursorPageable<String> cPage) {
+    public InviteeSearchResponse searchInvitees(String searchWord, CursorPageable<InviteeSearchCursor> cPage) {
         Long userId = SecurityUtil.getUserId();
         List<Follow> searchedFollows = profileQueryDomainService.searchRelatedUsers(userId, searchWord, cPage);
         List<User> invitees = getInvitees(userId, searchedFollows);
-        String nextCursor = searchedFollows.size() == cPage.getLimit()
-                ? ListUtils.getLast(invitees).getNickname()
+        User lastInvitee = ListUtils.getLast(invitees);
+        InviteeSearchCursor nextCursor = searchedFollows.size() == cPage.getLimit()
+                ? InviteeSearchCursor.of(lastInvitee.getNickname(), lastInvitee.getId())
                 : null;
-        return profileAssembler.toInviteeSearchResponse(invitees, nextCursor);
+        return profileAssembler.toInviteeSearchResponse(invitees, nextCursor != null ? nextCursor.toString() : null);
     }
 
     public AccountResponse getAccount() {

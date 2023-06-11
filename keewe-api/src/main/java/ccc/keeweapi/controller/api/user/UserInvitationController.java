@@ -4,6 +4,7 @@ import ccc.keeweapi.dto.ApiResponse;
 import ccc.keeweapi.dto.user.InviteeListResponse;
 import ccc.keeweapi.dto.user.InviteeSearchResponse;
 import ccc.keeweapi.service.user.ProfileApiService;
+import ccc.keewedomain.persistence.repository.user.cursor.InviteeSearchCursor;
 import ccc.keewedomain.persistence.repository.utils.CursorPageable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -34,7 +35,7 @@ public class UserInvitationController {
             @RequestParam(required = false) String cursor,
             @RequestParam Long limit
     ) {
-        CursorPageable<String> cPage = CursorPageable.of(cursor, limit);
+        CursorPageable<InviteeSearchCursor> cPage = CursorPageable.of(InviteeSearchCursor.from(cursor), limit);
         return ApiResponse.ok(profileApiService.searchInvitees(searchWord, cPage));
     }
 }

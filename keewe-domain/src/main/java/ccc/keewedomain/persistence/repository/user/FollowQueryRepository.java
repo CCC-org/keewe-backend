@@ -1,5 +1,6 @@
 package ccc.keewedomain.persistence.repository.user;
 
+import ccc.keewedomain.persistence.repository.user.cursor.InviteeSearchCursor;
 import ccc.keewedomain.persistence.domain.user.Follow;
 import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.persistence.repository.utils.CursorPageable;
@@ -64,7 +65,7 @@ public class FollowQueryRepository {
                 .fetch();
     }
 
-    public List<Follow> findByUserIdAndStartsWithNickname(Long userId, String word, CursorPageable<String> cPage) {
+    public List<Follow> findByUserIdAndStartsWithNickname(Long userId, String word, CursorPageable<InviteeSearchCursor> cPage) {
         return queryFactory.selectFrom(follow)
                 .innerJoin(follow.follower, user)
                 .fetchJoin()
@@ -73,10 +74,15 @@ public class FollowQueryRepository {
                 .where(follow.follower.id.eq(userId)
                         .or(follow.followee.id.eq(userId)))
                 .where(user.nickname.startsWith(word)
-                        .and(nicknameGt(cPage.getCursor())))
-                .orderBy(user.nickname.asc())
+                        .and(nicknameGt(cPage.getCursor().getNickname()))
+                        .and(userIdGt(cPage.getCursor().getUserId())))
+                .orderBy(user.nickname.asc(), user.id.asc())
                 .limit(cPage.getLimit())
                 .fetch();
+    }
+
+    private BooleanExpression userIdGt(Long userId) {
+        return userId != null ? user.id.gt(userId) : null;
     }
 
     // note. cursor가 null인 경우 조건을 추가하지 않음
