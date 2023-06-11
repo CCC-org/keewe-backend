@@ -89,7 +89,7 @@ public class UserInvitationControllerTest extends ApiDocumentationTest {
     @DisplayName("초대 유저 닉네임 검색 API")
     void search_related_users() throws Exception {
         long limit = 10L;
-        String cursor = "닉네임";
+        String cursor = "닉네임:1";
         String searchWord = "닉네";
         List<InviteeResponse> inviteeResponse = List.of(
                 InviteeResponse.of(1L, "hello", "www.api-keewe.com/images/128398681"),
