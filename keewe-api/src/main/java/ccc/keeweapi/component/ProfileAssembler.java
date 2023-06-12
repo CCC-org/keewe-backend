@@ -183,4 +183,8 @@ public class ProfileAssembler {
                 .collect(Collectors.toList());
         return InviteeSearchResponse.of(nextCursor, inviteeResponse);
     }
+
+    public InviteeSearchResponse toInviteeSearchResponse(List<User> invitees) {
+        return this.toInviteeSearchResponse(invitees, null);
+    }
 }
