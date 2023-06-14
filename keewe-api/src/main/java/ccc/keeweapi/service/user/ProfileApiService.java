@@ -184,6 +184,16 @@ public class ProfileApiService {
         Long userId = SecurityUtil.getUserId();
         List<Follow> searchedFollows = profileQueryDomainService.searchRelatedUsers(userId, searchWord, cPage);
         List<User> invitees = getInvitees(userId, searchedFollows);
+        invitees.sort((user1, user2) -> {
+            int nicknameCompareResult = user1.getNickname().compareTo(user2.getNickname());
+            if (nicknameCompareResult != 0) {
+                return nicknameCompareResult;
+            }
+            if (user1.getId() < user2.getId()) {
+                return -1;
+            }
+            return 1;
+        });
         if (searchedFollows.size() == cPage.getLimit()) {
             User last = ListUtils.getLast(invitees);
             InviteeSearchCursor cursor = InviteeSearchCursor.of(last.getNickname(), last.getId());
