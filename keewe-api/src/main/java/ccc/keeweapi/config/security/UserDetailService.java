@@ -1,5 +1,8 @@
 package ccc.keeweapi.config.security;
 
+import ccc.keeweapi.exception.KeeweAuthException;
+import ccc.keewecore.consts.KeeweRtnConsts;
+import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.service.user.UserDomainService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,7 +17,10 @@ public class UserDetailService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
-        return new UserPrincipal(userDomainService.getUserByIdOrElseThrow(Long.parseLong(userId)));
+        User user = userDomainService.getUserByIdOrElseThrow(Long.parseLong(userId));
+        if (user.isDeleted()) {
+            throw new KeeweAuthException(KeeweRtnConsts.ERR402);
+        }
+        return new UserPrincipal(user);
     }
-
 }
