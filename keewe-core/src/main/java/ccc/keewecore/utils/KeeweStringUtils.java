@@ -39,4 +39,12 @@ public final class KeeweStringUtils {
     public static String getOrDefault(String origin, String dft) {
         return !StringUtils.hasText(origin) ? dft : origin;
     }
+
+    // note. inclusive maximumSize
+    public static String take(String value, int maximumSize) {
+        if (value.length() > maximumSize) {
+            return value.substring(0, maximumSize);
+        }
+        return value;
+    }
 }
