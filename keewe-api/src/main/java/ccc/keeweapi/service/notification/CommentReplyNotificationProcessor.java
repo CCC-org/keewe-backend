@@ -26,7 +26,7 @@ public class CommentReplyNotificationProcessor implements NotificationProcessor 
         Comment comment = commentQueryDomainService.getByIdOrElseThrow(Long.parseLong(commentReplyId));
         NotificationContents contents = notification.getContents();
         String commentContents = comment.getContent();
-        String notificationTitle = KeeweStringUtils.take(commentContents, 12);
+        String notificationTitle = KeeweStringUtils.getOrWithEllipsis(commentContents, 20);
         return NotificationResponse.of(
             notification.getId(),
             notificationTitle,

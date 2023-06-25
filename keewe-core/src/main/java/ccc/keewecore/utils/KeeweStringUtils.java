@@ -41,10 +41,10 @@ public final class KeeweStringUtils {
     }
 
     // note. inclusive maximumSize
-    public static String take(String value, int maximumSize) {
+    public static String getOrWithEllipsis(String value, int maximumSize) {
         if (value.length() > maximumSize) {
-            return value.substring(0, maximumSize);
+            return "\"" + value.substring(0, maximumSize).concat("...") + "\"";
         }
-        return value;
+        return "\"" + value + "\"";
     }
 }

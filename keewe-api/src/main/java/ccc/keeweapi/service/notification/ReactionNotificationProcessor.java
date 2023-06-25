@@ -29,7 +29,7 @@ public class ReactionNotificationProcessor implements NotificationProcessor {
         User user = reaction.getReactor();
         NotificationContents contents = notification.getContents();
         String insightContents = reaction.getInsight().getContents();
-        String notificationTitle = KeeweStringUtils.take(insightContents, 12);
+        String notificationTitle = KeeweStringUtils.getOrWithEllipsis(insightContents, 20);
         return NotificationResponse.of(
             notification.getId(),
             notificationTitle, // note. 인사이트 본문
