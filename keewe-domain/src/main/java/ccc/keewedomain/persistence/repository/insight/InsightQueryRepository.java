@@ -230,6 +230,7 @@ public class InsightQueryRepository {
                         .and(writerIdEq(writerId))
                 )
                 .orderBy(insight.id.desc())
+                .limit(cPage.getLimit())
                 .fetch();
     }
 
