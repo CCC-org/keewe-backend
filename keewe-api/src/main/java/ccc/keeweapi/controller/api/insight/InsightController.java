@@ -28,7 +28,6 @@ import java.util.List;
 @RequestMapping("/api/v1/insight")
 @RequiredArgsConstructor
 public class InsightController {
-
     private final InsightQueryApiService insightQueryApiService;
     private final InsightCommandApiService insightCommandApiService;
 
@@ -43,7 +42,7 @@ public class InsightController {
     }
 
     @PostMapping("/view/{insightId}")
-    public ApiResponse incrementViewCount(@PathVariable Long insightId) {
+    public ApiResponse<InsightViewIncrementResponse> incrementViewCount(@PathVariable Long insightId) {
         return ApiResponse.ok(insightCommandApiService.incrementViewCount(insightId));
     }
 

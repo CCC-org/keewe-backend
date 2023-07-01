@@ -44,11 +44,13 @@ public class InsightQueryDomainService {
     private final ReactionAggregationRepository reactionAggregationRepository;
 
     public InsightGetDto getInsight(InsightDetailDto detailDto) {
-        Insight entity = getByIdOrElseThrow(detailDto.getInsightId());
+        Insight insight = this.getByIdOrElseThrow(detailDto.getInsightId());
+        if (insight.isDeleted()) {
+            throw new KeeweException(KeeweRtnConsts.ERR484);
+        }
         ReactionAggregationGetDto reactionAggregationGetDto = this.getCurrentReactionAggregation(detailDto.getInsightId());
         BookmarkId bookmarkId = BookmarkId.of(detailDto.getUserId(), detailDto.getInsightId());
-
-        return InsightGetDto.of(detailDto.getInsightId(), entity.getContents(), entity.getLink(), reactionAggregationGetDto, bookmarkQueryDomainService.isBookmark(bookmarkId));
+        return InsightGetDto.of(detailDto.getInsightId(), insight.getContents(), insight.getLink(), reactionAggregationGetDto, bookmarkQueryDomainService.isBookmark(bookmarkId));
     }
 
     @Transactional(readOnly = true)

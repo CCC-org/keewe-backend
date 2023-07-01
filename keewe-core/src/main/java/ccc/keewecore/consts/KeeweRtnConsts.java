@@ -60,6 +60,7 @@ public enum KeeweRtnConsts {
     ERR481(KeeweRtnGrp.Validation, 481, "댓글을 찾을 수 없어요."),
     ERR482(KeeweRtnGrp.Validation, 482, "리액션을 찾을 수 없어요."),
     ERR483(KeeweRtnGrp.Validation, 483, "알림을 찾을 수 없어요."),
+    ERR484(KeeweRtnGrp.Validation, 484, "인사이트가 삭제되었어요."),
 
     ERR490(KeeweRtnGrp.Validation, 490, "이미 인사이트를 통한 프로필 방문 기록이 존재해요."),
 
