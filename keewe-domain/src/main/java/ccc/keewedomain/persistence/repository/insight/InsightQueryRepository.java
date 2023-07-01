@@ -10,7 +10,6 @@ import static ccc.keewedomain.persistence.domain.title.QTitle.title;
 import static ccc.keewedomain.persistence.domain.user.QFollow.follow;
 import static ccc.keewedomain.persistence.domain.user.QProfilePhoto.profilePhoto;
 import static ccc.keewedomain.persistence.domain.user.QUser.user;
-
 import ccc.keewedomain.persistence.domain.challenge.Challenge;
 import ccc.keewedomain.persistence.domain.challenge.ChallengeParticipation;
 import ccc.keewedomain.persistence.domain.insight.Insight;
@@ -99,8 +98,7 @@ public class InsightQueryRepository {
     }
 
     private JPQLQuery<Long> findFolloweesId(User user) {
-        return JPAExpressions
-                .select(follow.followee.id)
+        return JPAExpressions.select(follow.followee.id)
                 .from(follow)
                 .where(follow.follower.id.eq(user.getId()));
     }
@@ -116,8 +114,7 @@ public class InsightQueryRepository {
     }
 
     public Optional<Insight> findByIdWithParticipationAndChallenge(Long insightId) {
-        return Optional.ofNullable(queryFactory
-                .select(insight)
+        return Optional.ofNullable(queryFactory.select(insight)
                 .from(insight)
                 .leftJoin(insight.challengeParticipation, challengeParticipation)
                 .fetchJoin()
@@ -127,10 +124,9 @@ public class InsightQueryRepository {
                 .fetchOne());
     }
 
-    // countByValidTrueAndIdBefore
+    // note. 참여중인 챌린지에 기록한 인사이트 수 조회
     public Long countValidByIdBeforeAndParticipation(ChallengeParticipation participation, Long insightId) {
-        return queryFactory
-                .select(insight.count())
+        return queryFactory.select(insight.count())
                 .from(insight)
                 .where(insight.challengeParticipation.eq(participation)
                         .and(insight.valid.isTrue())
@@ -139,13 +135,14 @@ public class InsightQueryRepository {
                 .fetchFirst();
     }
 
+    // note. 서랍에 속한 인사이트 조회
     public List<Insight> findAllByUserIdAndDrawerId(Long userId, Long drawerId, CursorPageable<Long> cPage) {
-        return queryFactory
-                .select(insight)
+        return queryFactory.select(insight)
                 .from(insight)
                 .where(insight.writer.id.eq(userId)
                         .and(insight.id.lt(cPage.getCursor()))
                         .and(drawerIdEq(drawerId))
+                        .and(insight.deleted.isFalse())
                 )
                 .orderBy(insight.id.desc())
                 .limit(cPage.getLimit())
@@ -153,8 +150,7 @@ public class InsightQueryRepository {
     }
 
     public List<Insight> findAllByUserIdAndDrawerId(Long userId, Long drawerId) {
-        return queryFactory
-                .select(insight)
+        return queryFactory.select(insight)
                 .from(insight)
                 .where(insight.writer.id.eq(userId)
                         .and(insight.drawer.id.eq(drawerId))
@@ -163,8 +159,7 @@ public class InsightQueryRepository {
     }
 
     public Map<Long, Long> countPerChallenge(List<Challenge> challenges) {
-        return queryFactory
-                .from(insight)
+        return queryFactory.from(insight)
                 .innerJoin(insight.challengeParticipation, challengeParticipation)
                 .innerJoin(challengeParticipation.challenge, challenge)
                 .where(challenge.in(challenges))
@@ -180,13 +175,13 @@ public class InsightQueryRepository {
                 .innerJoin(challengeParticipation.challenge, challenge)
                 .where(challenge.eq(target)
                         .and(writerIdEq(writerId))
+                        .and(insight.deleted.isFalse())
                 )
                 .fetchFirst();
     }
 
     public boolean existByWriterAndCreatedAtBetweenAndValidTrue(User writer, LocalDateTime startDate, LocalDateTime endDate) {
-        return queryFactory
-                .selectOne()
+        return queryFactory.selectOne()
                 .from(insight)
                 .where(insight.writer.eq(writer))
                 .where(insight.createdAt.between(startDate, endDate))
@@ -196,8 +191,7 @@ public class InsightQueryRepository {
     }
 
     public Map<Insight, LocalDateTime> findBookmarkedInsight(User user, CursorPageable<LocalDateTime> cPage) {
-        List<Tuple> result = queryFactory
-                .select(insight, bookmark.createdAt)
+        List<Tuple> result = queryFactory.select(insight, bookmark.createdAt)
                 .from(insight)
                 .innerJoin(bookmark).on(insight.id.eq(bookmark.insight.id))
                 .where(insight.deleted.isFalse())
@@ -217,8 +211,7 @@ public class InsightQueryRepository {
     }
 
     public List<Insight> findByChallenge(Challenge challenge, CursorPageable<Long> cPage, Long writerId) {
-        return queryFactory
-                .select(insight)
+        return queryFactory.select(insight)
                 .from(insight)
                 .innerJoin(insight.challengeParticipation, challengeParticipation)
                 .innerJoin(insight.writer, user)
@@ -228,6 +221,7 @@ public class InsightQueryRepository {
                 .where(insight.challengeParticipation.challenge.eq(challenge)
                         .and(insight.id.lt(cPage.getCursor()))
                         .and(writerIdEq(writerId))
+                        .and(insight.deleted.isFalse())
                 )
                 .orderBy(insight.id.desc())
                 .limit(cPage.getLimit())
