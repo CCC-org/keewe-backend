@@ -162,7 +162,9 @@ public class InsightQueryRepository {
         return queryFactory.from(insight)
                 .innerJoin(insight.challengeParticipation, challengeParticipation)
                 .innerJoin(challengeParticipation.challenge, challenge)
-                .where(challenge.in(challenges))
+                .where(challenge.in(challenges)
+                        .and(insight.deleted.isFalse())
+                )
                 .groupBy(challenge.id)
                 .transform(GroupBy.groupBy(challenge.id).as(insight.count()));
     }
