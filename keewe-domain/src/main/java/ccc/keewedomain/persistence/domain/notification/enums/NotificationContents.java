@@ -37,7 +37,7 @@ public enum NotificationContents {
     반응(NotificationCategory.REACTION, "내 인사이트에\n누군가 반응 남김", "%s님이 반응을 남겼어요."),
 
     // follow
-    팔로우(NotificationCategory.FOLLOW, "타이틀 획득!", "%s님이 나를 팔로우 했어요."),
+    팔로우(NotificationCategory.FOLLOW, "%s", "%s님이 나를 팔로우 했어요."),
 
     // comment
     댓글(NotificationCategory.COMMENT, "내 인사이트에 누군가 댓글 남김", "%s님이 댓글을 남겼어요."),

@@ -27,7 +27,7 @@ public class FollowNotificationProcessor implements NotificationProcessor {
         NotificationContents contents = notification.getContents();
         return NotificationResponse.of(
             notification.getId(),
-            contents.getTitle(), // note. 내 인사이트에 누군가 반응 남김
+            follower.getNickname(), // note. {UserName}
             String.format(contents.getContents(), follower.getNickname()), // note. {UserName}님이 반응을 남겼어요.
             contents.getCategory(),
             followerId, // note. 클릭 시 프로필로 이동
