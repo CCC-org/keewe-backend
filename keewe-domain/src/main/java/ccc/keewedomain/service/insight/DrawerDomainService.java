@@ -34,7 +34,7 @@ public class DrawerDomainService {
     }
 
     public List<Drawer> findAllByUserId(Long userId) {
-        return drawerRepository.findAllByUserIdAndDeletedFalse(userId);
+        return drawerRepository.findAllByUserIdAndDeletedFalseOrderByCreatedAtDesc(userId);
     }
 
     public Optional<Drawer> findById(Long id) {

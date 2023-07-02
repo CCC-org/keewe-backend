@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public interface DrawerRepository extends JpaRepository<Drawer, Long>, DrawerQueryRepository {
     Optional<Drawer> findByIdAndDeletedFalse(Long id);
-    List<Drawer> findAllByUserIdAndDeletedFalse(Long userId);
+    List<Drawer> findAllByUserIdAndDeletedFalseOrderByCreatedAtDesc(Long userId);
 
     default Drawer findByIdOrElseThrow(Long id) {
         return findByIdAndDeletedFalse(id).orElseThrow(() -> new KeeweException(KeeweRtnConsts.ERR440));
