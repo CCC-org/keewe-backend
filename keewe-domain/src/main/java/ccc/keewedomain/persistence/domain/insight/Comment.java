@@ -60,7 +60,7 @@ public class Comment extends BaseTimeEntity {
 
     public String getContent() {
         if (deleted) {
-            if(Objects.isNull(parent)){
+            if(Objects.isNull(parent)) {
                 return "삭제된 댓글이에요.";
             }
             else {
