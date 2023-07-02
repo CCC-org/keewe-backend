@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor(staticName = "of")
-public class DeletedUserReplyResponse implements ReplyResponse {
+public class WithdrawnUserReplyResponse implements ReplyResponse {
     private Long id;
     private Long parentId;
     private String content;
