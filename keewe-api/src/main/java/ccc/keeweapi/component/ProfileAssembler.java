@@ -176,4 +176,15 @@ public class ProfileAssembler {
     public ProfileVisitFromInsightCountResponse toProfileVisitFromInsightCountResponse(Long profileVisitFromInsightCount) {
         return ProfileVisitFromInsightCountResponse.of(profileVisitFromInsightCount);
     }
+
+    public InviteeSearchResponse toInviteeSearchResponse(List<User> invitees, String nextCursor) {
+        List<InviteeResponse> inviteeResponse = invitees.stream()
+                .map(this::toRelatedUserResponse)
+                .collect(Collectors.toList());
+        return InviteeSearchResponse.of(nextCursor, inviteeResponse);
+    }
+
+    public InviteeSearchResponse toInviteeSearchResponse(List<User> invitees) {
+        return this.toInviteeSearchResponse(invitees, null);
+    }
 }

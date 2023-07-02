@@ -39,4 +39,13 @@ public final class KeeweStringUtils {
     public static String getOrDefault(String origin, String dft) {
         return !StringUtils.hasText(origin) ? dft : origin;
     }
+
+    // note. inclusive maximumSize
+    public static String getOrWithEllipsis(String value, int maximumSize) {
+        String valueWithoutNewLine = value.replace("\n", " ");
+        if (valueWithoutNewLine.length() > maximumSize) {
+            return "\"" + valueWithoutNewLine.substring(0, maximumSize).concat("...") + "\"";
+        }
+        return "\"" + valueWithoutNewLine + "\"";
+    }
 }

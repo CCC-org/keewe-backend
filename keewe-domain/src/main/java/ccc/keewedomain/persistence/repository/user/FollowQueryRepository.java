@@ -1,8 +1,11 @@
 package ccc.keewedomain.persistence.repository.user;
 
+import ccc.keewedomain.persistence.domain.user.QUser;
+import ccc.keewedomain.persistence.repository.user.cursor.InviteeSearchCursor;
 import ccc.keewedomain.persistence.domain.user.Follow;
 import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.persistence.repository.utils.CursorPageable;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -11,11 +14,9 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
 
 import static ccc.keewedomain.persistence.domain.title.QTitle.title;
 import static ccc.keewedomain.persistence.domain.user.QFollow.follow;
-import static ccc.keewedomain.persistence.domain.user.QProfilePhoto.profilePhoto;
 import static ccc.keewedomain.persistence.domain.user.QUser.user;
 
 @Repository
@@ -63,6 +64,32 @@ public class FollowQueryRepository {
                 .orderBy(follow.createdAt.desc())
                 .limit(cPage.getLimit())
                 .fetch();
+    }
+
+    public List<Follow> findByUserIdAndStartsWithNickname(Long userId, String word, CursorPageable<InviteeSearchCursor> cPage) {
+        QUser user1 = new QUser("user1");
+        QUser user2 = new QUser("user2");
+        return queryFactory.selectFrom(follow)
+                .innerJoin(follow.follower, user1)
+                .fetchJoin()
+                .innerJoin(follow.followee, user2)
+                .fetchJoin()
+                .where(follow.follower.id.eq(userId)
+                        .or(follow.followee.id.eq(userId)))
+                .where(user1.nickname.startsWith(word).or(user2.nickname.startsWith(word)))
+                .where(nicknameGt(cPage.getCursor().getNickname()))
+                .where(userIdGt(cPage.getCursor().getUserId()))
+                .limit(cPage.getLimit())
+                .fetch();
+    }
+
+    private BooleanExpression userIdGt(Long userId) {
+        return userId != null ? user.id.gt(userId) : null;
+    }
+
+    // note. cursor가 null인 경우 조건을 추가하지 않음
+    private BooleanExpression nicknameGt(String nickname) {
+        return nickname != null ? user.nickname.gt(nickname) : null;
     }
 
     private JPQLQuery<Long> findFolloweeIdsOrderByCreatedAtDesc(User target, CursorPageable<LocalDateTime> cPage) {

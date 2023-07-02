@@ -1,6 +1,7 @@
 package ccc.keeweapi.service.notification;
 
 import ccc.keeweapi.dto.notification.NotificationResponse;
+import ccc.keewecore.utils.KeeweStringUtils;
 import ccc.keewedomain.persistence.domain.insight.Reaction;
 import ccc.keewedomain.persistence.domain.notification.Notification;
 import ccc.keewedomain.persistence.domain.notification.enums.NotificationCategory;
@@ -27,9 +28,11 @@ public class ReactionNotificationProcessor implements NotificationProcessor {
         Reaction reaction = reactionDomainService.getByIdOrElseThrow(Long.parseLong(reactionId));
         User user = reaction.getReactor();
         NotificationContents contents = notification.getContents();
+        String insightContents = reaction.getInsight().getContents();
+        String notificationTitle = KeeweStringUtils.getOrWithEllipsis(insightContents, 20);
         return NotificationResponse.of(
             notification.getId(),
-            contents.getTitle(), // note. 내 인사이트에 누군가 반응 남김
+            notificationTitle, // note. 인사이트 본문
             String.format(contents.getContents(), user.getNickname()), // note. {UserName}님이 반응을 남겼어요.
             contents.getCategory(),
             String.valueOf(reaction.getInsight().getId()), // note. 클릭 시 인사이트로 이동
