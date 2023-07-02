@@ -5,12 +5,12 @@ import ccc.keeweapi.dto.insight.response.CommentResponse;
 import ccc.keeweapi.dto.insight.response.CommentWriterResponse;
 import ccc.keeweapi.dto.insight.response.PreviewCommentResponse;
 import ccc.keeweapi.dto.insight.response.WithdrawnUserCommentResponse;
-import ccc.keeweapi.dto.insight.response.DeletedUserReplyResponse;
 import ccc.keeweapi.dto.insight.response.InsightCommentCountResponse;
 import ccc.keeweapi.dto.insight.response.ActiveUserPreviewCommentResponse;
 import ccc.keeweapi.dto.insight.response.ActiveUserReplyResponse;
 import ccc.keeweapi.dto.insight.response.ReplyResponse;
 import ccc.keeweapi.dto.insight.response.WithdrawnUserPreviewCommentResponse;
+import ccc.keeweapi.dto.insight.response.WithdrawnUserReplyResponse;
 import ccc.keewedomain.persistence.domain.insight.Comment;
 import ccc.keewedomain.persistence.domain.user.User;
 import org.springframework.stereotype.Component;
@@ -74,7 +74,7 @@ public class CommentAssembler {
 
     public ReplyResponse toReplyResponse(Comment reply) {
         if (reply.getWriter().isDeleted()) {
-            return DeletedUserReplyResponse.of(
+            return WithdrawnUserReplyResponse.of(
                     reply.getId(),
                     reply.getParent().getId(),
                     reply.getContent(),
