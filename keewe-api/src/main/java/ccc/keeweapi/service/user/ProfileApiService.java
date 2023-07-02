@@ -22,13 +22,13 @@ import ccc.keeweapi.utils.BlockedResourceManager;
 import ccc.keeweapi.utils.SecurityUtil;
 import ccc.keewecore.utils.ListUtils;
 import ccc.keewedomain.dto.user.FollowCheckDto;
-import ccc.keewedomain.persistence.repository.user.cursor.InviteeSearchCursor;
 import ccc.keewedomain.persistence.domain.challenge.Challenge;
 import ccc.keewedomain.persistence.domain.challenge.ChallengeParticipation;
 import ccc.keewedomain.persistence.domain.title.TitleAchievement;
 import ccc.keewedomain.persistence.domain.user.Block;
 import ccc.keewedomain.persistence.domain.user.Follow;
 import ccc.keewedomain.persistence.domain.user.User;
+import ccc.keewedomain.persistence.repository.user.cursor.InviteeSearchCursor;
 import ccc.keewedomain.persistence.repository.utils.CursorPageable;
 import ccc.keewedomain.service.challenge.query.ChallengeParticipateQueryDomainService;
 import ccc.keewedomain.service.insight.command.InsightStatisticsCommandDomainService;
@@ -213,7 +213,14 @@ public class ProfileApiService {
         }
     }
 
-    private static List<User> getInvitees(Long userId, List<Follow> searchedFollows) {
+    private List<User> getInvitees(Long userId, List<Follow> searchedFollows) {
+        ChallengeParticipation challengeParticipation = challengeParticipateQueryDomainService.getCurrentParticipationByUserId(userId);
+        Challenge challenge = challengeParticipation.getChallenge();
+        // note. 챌린지에 참여중인 유저는 검색 결과 필터링
+        List<Long> challengingUserIds = challenge.getParticipationList()
+                .stream()
+                .map(it -> it.getChallenger().getId())
+                .collect(Collectors.toList());
         return searchedFollows.stream()
                 .map(follow -> {
                     if (follow.getFollower().getId().equals(userId)) { // follower가 나인 경우
@@ -222,6 +229,7 @@ public class ProfileApiService {
                         return follow.getFollower();
                     }
                 })
+                .filter(user -> !challengingUserIds.contains(user.getId()))
                 .distinct() // 양방향으로 팔로우 되어 있는 경우 중복 제거
                 .collect(Collectors.toList());
     }
