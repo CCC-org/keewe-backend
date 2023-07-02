@@ -10,7 +10,7 @@ import java.util.List;
 @AllArgsConstructor(staticName = "of")
 public class RepresentativeCommentsResponse {
     private Long total;
-    private List<CommentResponse> comments;
+    private List<ActiveUserCommentResponse> comments;
 
     public static RepresentativeCommentsResponse dummy() {
         return RepresentativeCommentsResponse.of(0L, List.of());

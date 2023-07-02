@@ -41,7 +41,7 @@ public class InsightCommentQueryApiService {
 
         List<PreviewCommentResponse> responses = comments.stream()
                 .limit(3)
-                .map(commentAssembler::toPreviewCommentResponse)
+                .map(commentAssembler::toPreviewCommentResponseInterface)
                 .collect(Collectors.toList());
         return blockedResourceManager.filterBlockedUsers(responses);
     }

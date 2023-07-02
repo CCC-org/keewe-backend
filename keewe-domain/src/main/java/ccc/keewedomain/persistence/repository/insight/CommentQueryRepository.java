@@ -119,7 +119,7 @@ public class CommentQueryRepository {
                 .leftJoin(user.repTitle, title)
                 .fetchJoin()
                 .where(comment.id.in(findIdByParentIdAndCursorDesc(parentId, cPage)))
-                .orderBy(comment.id.desc())
+                .orderBy(comment.id.asc())
                 .fetch();
     }
 
