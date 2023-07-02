@@ -46,4 +46,3 @@ keewe-domain/src/main/resources/application-domain.yml
 keewe-core/src/main/resources/application-core.yml
 /gpg-ownertrust.txt
 /gpg-secret.key
-keewe-domain/src/main/resources/AuthKey_WZLPFW566W.p8
