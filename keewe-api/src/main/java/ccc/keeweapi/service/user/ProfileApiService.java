@@ -230,6 +230,7 @@ public class ProfileApiService {
                     }
                 })
                 .filter(user -> !challengingUserIds.contains(user.getId()))
+                .filter(user -> !user.isDeleted())
                 .distinct() // 양방향으로 팔로우 되어 있는 경우 중복 제거
                 .collect(Collectors.toList());
     }
