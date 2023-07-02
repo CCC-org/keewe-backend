@@ -1,9 +1,13 @@
 package ccc.keeweapi.component;
 
+import ccc.keeweapi.dto.insight.response.ActiveUserCommentResponse;
 import ccc.keeweapi.dto.insight.response.CommentResponse;
 import ccc.keeweapi.dto.insight.response.CommentWriterResponse;
+import ccc.keeweapi.dto.insight.response.DeletedUserCommentResponse;
+import ccc.keeweapi.dto.insight.response.DeletedUserReplyResponse;
 import ccc.keeweapi.dto.insight.response.InsightCommentCountResponse;
 import ccc.keeweapi.dto.insight.response.PreviewCommentResponse;
+import ccc.keeweapi.dto.insight.response.ActiveUserReplyResponse;
 import ccc.keeweapi.dto.insight.response.ReplyResponse;
 import ccc.keewedomain.persistence.domain.insight.Comment;
 import ccc.keewedomain.persistence.domain.user.User;
@@ -25,9 +29,8 @@ public class CommentAssembler {
         );
     }
 
-    public CommentResponse toCommentResponse(Comment comment, List<Comment> replies, Long replyNumber) {
-
-        return CommentResponse.of(
+    public ActiveUserCommentResponse toCommentResponse(Comment comment, List<Comment> replies, Long replyNumber) {
+        return ActiveUserCommentResponse.of(
                 comment.getId(),
                 toCommentWriterResponse(comment.getWriter()),
                 comment.getContent(),
@@ -38,6 +41,9 @@ public class CommentAssembler {
     }
 
     public CommentResponse toCommentResponse(Comment comment, Comment reply, Long replyNumber) {
+        if (comment.getWriter().isDeleted()) {
+            return toDeletedUserCommentResponse(comment, reply, replyNumber);
+        }
         return toCommentResponse(comment, Objects.nonNull(reply) ? List.of(reply) : List.of(), replyNumber);
     }
 
@@ -50,7 +56,16 @@ public class CommentAssembler {
     }
 
     public ReplyResponse toReplyResponse(Comment reply) {
-        return ReplyResponse.of(
+        if (reply.getWriter().isDeleted()) {
+            return DeletedUserReplyResponse.of(
+                    reply.getId(),
+                    reply.getParent().getId(),
+                    "답글의 작성자를 찾을 수 없어요.",
+                    reply.getCreatedAt().toString()
+            );
+        }
+
+        return ActiveUserReplyResponse.of(
                 toCommentWriterResponse(reply.getWriter()),
                 reply.getId(),
                 reply.getParent().getId(),
@@ -61,5 +76,16 @@ public class CommentAssembler {
 
     public InsightCommentCountResponse toInsightCommentCountResponse(Long commentCount) {
         return InsightCommentCountResponse.of(commentCount);
+    }
+
+    public DeletedUserCommentResponse toDeletedUserCommentResponse(Comment comment, Comment reply, Long replyNumber) {
+        List<Comment> replies = Objects.nonNull(reply) ? List.of(reply) : List.of();
+        return DeletedUserCommentResponse.of(
+                comment.getId(),
+                "댓글 작성자가 존재하지 않아요.",
+                comment.getCreatedAt().toString(),
+                replies.stream().map(this::toReplyResponse).collect(Collectors.toList()),
+                replyNumber
+        );
     }
 }
