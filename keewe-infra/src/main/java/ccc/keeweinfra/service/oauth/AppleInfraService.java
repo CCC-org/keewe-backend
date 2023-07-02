@@ -48,11 +48,11 @@ public class AppleInfraService {
     private PrivateKey privateKey;
 
     @PostConstruct
-    public void loadPrivateKey() {
+    private void loadPrivateKey() {
         try {
             privateKey = createPrivateKey();
         } catch (IOException e) {
-            throw new IllegalStateException("애플 key 파일이 없습니다.");
+            throw new IllegalStateException("애플 pem key에 문제가 있습니다.");
         }
     }
 
