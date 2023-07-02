@@ -3,12 +3,14 @@ package ccc.keeweapi.component;
 import ccc.keeweapi.dto.insight.response.ActiveUserCommentResponse;
 import ccc.keeweapi.dto.insight.response.CommentResponse;
 import ccc.keeweapi.dto.insight.response.CommentWriterResponse;
+import ccc.keeweapi.dto.insight.response.PreviewCommentResponse;
 import ccc.keeweapi.dto.insight.response.WithdrawnUserCommentResponse;
 import ccc.keeweapi.dto.insight.response.DeletedUserReplyResponse;
 import ccc.keeweapi.dto.insight.response.InsightCommentCountResponse;
-import ccc.keeweapi.dto.insight.response.PreviewCommentResponse;
+import ccc.keeweapi.dto.insight.response.ActiveUserPreviewCommentResponse;
 import ccc.keeweapi.dto.insight.response.ActiveUserReplyResponse;
 import ccc.keeweapi.dto.insight.response.ReplyResponse;
+import ccc.keeweapi.dto.insight.response.WithdrawnUserPreviewCommentResponse;
 import ccc.keewedomain.persistence.domain.insight.Comment;
 import ccc.keewedomain.persistence.domain.user.User;
 import org.springframework.stereotype.Component;
@@ -20,10 +22,25 @@ import java.util.stream.Collectors;
 @Component
 public class CommentAssembler {
 
-    public PreviewCommentResponse toPreviewCommentResponse(Comment comment) {
-        return PreviewCommentResponse.of(
+    public PreviewCommentResponse toPreviewCommentResponseInterface(Comment comment) {
+        if (comment.isDeleted()) {
+            return toWithdrawnUserPreviewCommentResponse(comment);
+        }
+        return toActiveUserPreviewCommentResponse(comment);
+    }
+
+    public ActiveUserPreviewCommentResponse toActiveUserPreviewCommentResponse(Comment comment) {
+        return ActiveUserPreviewCommentResponse.of(
                 comment.getId(),
                 toCommentWriterResponse(comment.getWriter()),
+                comment.getContent(),
+                comment.getCreatedAt().toString()
+        );
+    }
+
+    public WithdrawnUserPreviewCommentResponse toWithdrawnUserPreviewCommentResponse(Comment comment) {
+        return WithdrawnUserPreviewCommentResponse.of(
+                comment.getId(),
                 comment.getContent(),
                 comment.getCreatedAt().toString()
         );
@@ -41,7 +58,7 @@ public class CommentAssembler {
     }
 
     public CommentResponse toCommentResponse(Comment comment, Comment reply, Long replyNumber) {
-        if (comment.getWriter().isDeleted()) {
+        if (comment.isDeleted()) {
             return toWithdrawnUserCommentResponse(comment, reply, replyNumber);
         }
         return toActiveUserCommentResponse(comment, Objects.nonNull(reply) ? List.of(reply) : List.of(), replyNumber);
@@ -60,7 +77,7 @@ public class CommentAssembler {
             return DeletedUserReplyResponse.of(
                     reply.getId(),
                     reply.getParent().getId(),
-                    "답글의 작성자를 찾을 수 없어요.",
+                    reply.getContent(),
                     reply.getCreatedAt().toString()
             );
         }
@@ -82,7 +99,7 @@ public class CommentAssembler {
         List<Comment> replies = Objects.nonNull(reply) ? List.of(reply) : List.of();
         return WithdrawnUserCommentResponse.of(
                 comment.getId(),
-                "댓글 작성자가 존재하지 않아요.",
+                comment.getContent(),
                 comment.getCreatedAt().toString(),
                 replies.stream().map(this::toReplyResponse).collect(Collectors.toList()),
                 replyNumber

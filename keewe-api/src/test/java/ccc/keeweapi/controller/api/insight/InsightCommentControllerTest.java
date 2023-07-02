@@ -16,8 +16,9 @@ import ccc.keeweapi.dto.insight.response.CommentDeleteResponse;
 import ccc.keeweapi.dto.insight.response.ActiveUserCommentResponse;
 import ccc.keeweapi.dto.insight.response.CommentWriterResponse;
 import ccc.keeweapi.dto.insight.response.InsightCommentCountResponse;
-import ccc.keeweapi.dto.insight.response.PreviewCommentResponse;
+import ccc.keeweapi.dto.insight.response.ActiveUserPreviewCommentResponse;
 import ccc.keeweapi.dto.insight.response.ActiveUserReplyResponse;
+import ccc.keeweapi.dto.insight.response.PreviewCommentResponse;
 import ccc.keeweapi.service.insight.command.InsightCommentCommandApiService;
 import ccc.keeweapi.service.insight.query.InsightCommentQueryApiService;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
@@ -133,9 +134,9 @@ public class InsightCommentControllerTest extends ApiDocumentationTest {
         String now = LocalDateTime.now().toString();
 
         List<PreviewCommentResponse> response = List.of(
-                PreviewCommentResponse.of(1L, writer1, "댓글1 내용", now),
-                PreviewCommentResponse.of(2L, writer2, "댓글2 내용", now),
-                PreviewCommentResponse.of(3L, writer1, "댓글3 내용", now)
+                ActiveUserPreviewCommentResponse.of(1L, writer1, "댓글1 내용", now),
+                ActiveUserPreviewCommentResponse.of(2L, writer2, "댓글2 내용", now),
+                ActiveUserPreviewCommentResponse.of(3L, writer1, "댓글3 내용", now)
         );
 
         when(insightCommentQueryApiService.getPreviewComments(insightId)).thenReturn(response);
