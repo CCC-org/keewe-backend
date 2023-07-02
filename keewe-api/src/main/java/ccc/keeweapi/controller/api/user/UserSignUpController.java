@@ -1,6 +1,7 @@
 package ccc.keeweapi.controller.api.user;
 
 import ccc.keeweapi.dto.ApiResponse;
+import ccc.keeweapi.dto.user.AppleSignUpRequest;
 import ccc.keeweapi.service.user.UserApiService;
 import ccc.keewecore.aop.annotations.LocalOnlyApi;
 import ccc.keewedomain.persistence.domain.user.enums.VendorType;
@@ -36,6 +37,12 @@ public class UserSignUpController {
     @GetMapping("/google")
     public ApiResponse<?> signUpWithGoogle(@RequestParam String code) {
         return ApiResponse.ok(userService.signupWithOauth(code, VendorType.GOOGLE));
+    }
+
+    @GetMapping("/apple")
+    public ApiResponse<?> signUpWithApple(@RequestParam String code) {
+        log.info("[Apple Signup] code {}", code);
+        return ApiResponse.ok(userService.signupWithOauth(code, VendorType.APPLE));
     }
 
     @GetMapping("/force-signup/{userId}")
