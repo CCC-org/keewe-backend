@@ -1,15 +1,5 @@
 package ccc.keewedomain.persistence.repository.insight;
 
-import static ccc.keewedomain.persistence.domain.challenge.QChallenge.challenge;
-import static ccc.keewedomain.persistence.domain.challenge.QChallengeParticipation.challengeParticipation;
-import static ccc.keewedomain.persistence.domain.common.QInterest.interest;
-import static ccc.keewedomain.persistence.domain.insight.QBookmark.bookmark;
-import static ccc.keewedomain.persistence.domain.insight.QComment.comment;
-import static ccc.keewedomain.persistence.domain.insight.QInsight.insight;
-import static ccc.keewedomain.persistence.domain.title.QTitle.title;
-import static ccc.keewedomain.persistence.domain.user.QFollow.follow;
-import static ccc.keewedomain.persistence.domain.user.QProfilePhoto.profilePhoto;
-import static ccc.keewedomain.persistence.domain.user.QUser.user;
 import ccc.keewedomain.persistence.domain.challenge.Challenge;
 import ccc.keewedomain.persistence.domain.challenge.ChallengeParticipation;
 import ccc.keewedomain.persistence.domain.insight.Insight;
@@ -23,19 +13,38 @@ import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Repository;
+
 import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Repository;
+import static ccc.keewedomain.persistence.domain.challenge.QChallenge.challenge;
+import static ccc.keewedomain.persistence.domain.challenge.QChallengeParticipation.challengeParticipation;
+import static ccc.keewedomain.persistence.domain.common.QInterest.interest;
+import static ccc.keewedomain.persistence.domain.insight.QBookmark.bookmark;
+import static ccc.keewedomain.persistence.domain.insight.QComment.comment;
+import static ccc.keewedomain.persistence.domain.insight.QInsight.insight;
+import static ccc.keewedomain.persistence.domain.title.QTitle.title;
+import static ccc.keewedomain.persistence.domain.user.QFollow.follow;
+import static ccc.keewedomain.persistence.domain.user.QProfilePhoto.profilePhoto;
+import static ccc.keewedomain.persistence.domain.user.QUser.user;
 
 @Repository
 @RequiredArgsConstructor
 public class InsightQueryRepository {
     private final JPAQueryFactory queryFactory;
+
+    public List<Insight> findAllByWriterId(Long writerId) {
+        return queryFactory.select(insight)
+                .from(insight)
+                .where(insight.writer.id.eq(writerId)
+                        .and(insight.deleted.isFalse()))
+                .fetch();
+    }
 
     public Insight findByIdWithWriter(Long insightId) {
         return queryFactory.select(insight)
@@ -46,7 +55,6 @@ public class InsightQueryRepository {
                 .leftJoin(user.interests, interest)
                 .fetchJoin()
                 .fetchOne();
-
     }
 
     public List<Insight> findAllValidByParticipation(ChallengeParticipation participation) {

@@ -12,19 +12,20 @@ import ccc.keewecore.utils.KeeweTitleHeader;
 import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.persistence.domain.user.enums.VendorType;
 import ccc.keewedomain.service.challenge.command.ChallengeCommandDomainService;
+import ccc.keewedomain.service.insight.command.InsightCommandDomainService;
 import ccc.keewedomain.service.user.UserDomainService;
 import ccc.keewedomain.service.user.command.ProfileCommandDomainService;
 import ccc.keewedomain.service.user.command.UserCommandDomainService;
 import ccc.keeweinfra.dto.OauthResponse;
 import ccc.keeweinfra.service.messagequeue.MQPublishService;
-import java.util.List;
-import java.util.Optional;
-import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageBuilder;
 import org.springframework.stereotype.Service;
+import javax.transaction.Transactional;
+import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -38,6 +39,7 @@ public class UserApiService {
     private final MQPublishService mqPublishService;
     private final ProfileCommandDomainService profileCommandDomainService;
     private final ChallengeCommandDomainService challengeCommandDomainService;
+    private final InsightCommandDomainService insightCommandDomainService;
 
     @FLogging
     public <T extends OauthResponse> UserSignUpResponse signupWithOauth(String code, VendorType vendorType) {
@@ -67,6 +69,7 @@ public class UserApiService {
     @Transactional
     public void withdraw() {
         User user = userCommandDomainService.withdraw(SecurityUtil.getUserId());
+        insightCommandDomainService.deleteAll(user.getId());
         profileCommandDomainService.removeAllRelationsBy(user);
         challengeCommandDomainService.exitCurrentChallengeIfExist(user);
         log.info("[UAS::withdraw] 회원 탈퇴 완료 - userId({})", user.getId());

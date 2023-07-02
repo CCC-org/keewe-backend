@@ -54,6 +54,11 @@ public class InsightQueryDomainService {
     }
 
     @Transactional(readOnly = true)
+    public List<Insight> getAllInsightsByWriterId(Long writerId) {
+        return insightQueryRepository.findAllByWriterId(writerId);
+    }
+
+    @Transactional(readOnly = true)
     public List<InsightGetForHomeDto> getInsightsForHome(User user, CursorPageable<Long> cPage, Boolean follow) {
         List<Insight> forHome = insightQueryRepository.findAllForHome(user, cPage, follow);
         Map<Long, Boolean> bookmarkPresence = bookmarkQueryDomainService.getBookmarkPresenceMap(user, forHome);

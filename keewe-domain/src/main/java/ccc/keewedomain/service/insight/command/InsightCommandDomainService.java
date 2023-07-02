@@ -27,7 +27,10 @@ import ccc.keewedomain.service.insight.query.InsightQueryDomainService;
 import ccc.keewedomain.service.user.UserDomainService;
 import ccc.keeweinfra.service.messagequeue.MQPublishService;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -88,6 +91,13 @@ public class InsightCommandDomainService {
 
         insight.delete();
         return insightId;
+    }
+
+    @Transactional
+    public void deleteAll(Long writerId) {
+        List<Insight> insights = insightQueryDomainService.getAllInsightsByWriterId(writerId);
+        insights.forEach(Insight::delete);
+        insightRepository.saveAll(insights);
     }
 
     public Long incrementViewCount(InsightViewIncrementDto dto) {
