@@ -17,6 +17,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
 
+import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -47,15 +48,18 @@ public class AppleInfraService {
     @Value("${apple.apple-key-path}")
     private String appleKeyIdPath;
 
-    public String getIdToken(String code) {
+    private PrivateKey privateKey;
 
-        PrivateKey privateKey;
+    @PostConstruct
+    public void loadPrivateKey() {
         try {
             privateKey = createPrivateKey();
         } catch (IOException e) {
             throw new IllegalStateException("애플 key 파일이 없습니다.");
         }
+    }
 
+    public String getIdToken(String code) {
         String clientSecret = createClientSecret(privateKey);
         return appleAuthApi.getAccessToken(code, appleKey, clientSecret, KeeweConsts.AUTH_CODE).getIdToken();
     }
