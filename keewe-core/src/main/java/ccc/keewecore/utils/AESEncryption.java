@@ -1,4 +1,4 @@
-package ccc.keewedomain.common.encryption;
+package ccc.keewecore.utils;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;

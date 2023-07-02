@@ -1,6 +1,6 @@
 package ccc.keewedomain.persistence.converter;
 
-import ccc.keewedomain.common.encryption.AESEncryption;
+import ccc.keewecore.utils.AESEncryption;
 import lombok.RequiredArgsConstructor;
 
 import javax.persistence.AttributeConverter;
