@@ -20,6 +20,8 @@ import ccc.keeweapi.dto.user.UnblockUserResponse;
 import ccc.keeweapi.dto.user.UploadProfilePhotoResponse;
 import ccc.keeweapi.utils.BlockedResourceManager;
 import ccc.keeweapi.utils.SecurityUtil;
+import ccc.keewecore.consts.KeeweRtnConsts;
+import ccc.keewecore.exception.KeeweException;
 import ccc.keewecore.utils.ListUtils;
 import ccc.keewedomain.dto.user.FollowCheckDto;
 import ccc.keewedomain.persistence.domain.challenge.Challenge;
@@ -83,6 +85,9 @@ public class ProfileApiService {
     public ProfileMyPageResponse getMyPageProfile(Long userId, Long insightId) {
         blockedResourceManager.validateAccessibleUser(userId);
         User targetUser = userDomainService.getUserByIdWithInterests(userId);
+        if (targetUser.isDeleted()) {
+            throw new KeeweException(KeeweRtnConsts.ERR429);
+        }
         Long requestUserId = SecurityUtil.getUserId();
 
         boolean isFollowing = profileQueryDomainService.isFollowing(FollowCheckDto.of(requestUserId, targetUser.getId()));

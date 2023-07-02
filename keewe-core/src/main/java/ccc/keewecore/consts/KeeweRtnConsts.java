@@ -29,6 +29,7 @@ public enum KeeweRtnConsts {
     ERR426(KeeweRtnGrp.Validation, 426, "소셜 링크의 개수가 초과됐어요."),
     ERR427(KeeweRtnGrp.Validation, 427, "온보딩이 완료된 유저에요."),
     ERR428(KeeweRtnGrp.Validation, 428, "인사이트를 통한 팔로우 기록이 이미 존재해요."),
+    ERR429(KeeweRtnGrp.Validation, 429, "존재하지 않는 유저예요."),
 
     ERR430(KeeweRtnGrp.Validation, 430, "챌린지를 찾을 수 없어요."),
     ERR431(KeeweRtnGrp.Validation, 431, "이미 챌린지에 참여중이에요."),
@@ -60,7 +61,7 @@ public enum KeeweRtnConsts {
     ERR481(KeeweRtnGrp.Validation, 481, "댓글을 찾을 수 없어요."),
     ERR482(KeeweRtnGrp.Validation, 482, "리액션을 찾을 수 없어요."),
     ERR483(KeeweRtnGrp.Validation, 483, "알림을 찾을 수 없어요."),
-    ERR484(KeeweRtnGrp.Validation, 484, "인사이트가 삭제되었어요."),
+    ERR484(KeeweRtnGrp.Validation, 484, "존재하지 않는 글이에요."),
 
     ERR490(KeeweRtnGrp.Validation, 490, "이미 인사이트를 통한 프로필 방문 기록이 존재해요."),
 
