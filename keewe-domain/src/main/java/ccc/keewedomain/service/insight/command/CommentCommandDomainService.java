@@ -7,14 +7,13 @@ import ccc.keewedomain.dto.insight.CommentDeleteDto;
 import ccc.keewedomain.persistence.domain.insight.Comment;
 import ccc.keewedomain.persistence.domain.insight.Insight;
 import ccc.keewedomain.persistence.domain.user.User;
-import ccc.keewedomain.persistence.repository.insight.CommentQueryRepository;
 import ccc.keewedomain.persistence.repository.insight.CommentRepository;
 import ccc.keewedomain.service.insight.query.CommentQueryDomainService;
 import ccc.keewedomain.service.insight.query.InsightQueryDomainService;
 import ccc.keewedomain.service.user.UserDomainService;
-import ccc.keewedomain.service.user.query.ProfileQueryDomainService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -27,6 +26,7 @@ public class CommentCommandDomainService {
     private final UserDomainService userDomainService;
     private final CommentQueryDomainService commentQueryDomainService;
 
+    @Transactional
     public Comment create(CommentCreateDto dto) {
         Insight insight = insightQueryDomainService.getByIdOrElseThrow(dto.getInsightId());
         User writer = userDomainService.getUserByIdOrElseThrow(dto.getWriterId());
@@ -39,6 +39,7 @@ public class CommentCommandDomainService {
         return commentRepository.save(comment);
     }
 
+    @Transactional
     public Long delete(CommentDeleteDto dto) {
         Comment comment = commentRepository.findById(dto.getCommentId()).orElseThrow(() -> {
             throw new KeeweException(KeeweRtnConsts.ERR442);
@@ -49,6 +50,12 @@ public class CommentCommandDomainService {
 
         comment.delete();
         return comment.getId();
+    }
+
+    @Transactional
+    public void deleteAll(User writer) {
+        commentRepository.findAllByWriter(writer)
+                .forEach(Comment::delete);
     }
 
     private void validateHasNoParent(Comment comment) {

@@ -12,6 +12,7 @@ import ccc.keewecore.utils.KeeweTitleHeader;
 import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.persistence.domain.user.enums.VendorType;
 import ccc.keewedomain.service.challenge.command.ChallengeCommandDomainService;
+import ccc.keewedomain.service.insight.command.CommentCommandDomainService;
 import ccc.keewedomain.service.insight.command.InsightCommandDomainService;
 import ccc.keewedomain.service.user.UserDomainService;
 import ccc.keewedomain.service.user.command.ProfileCommandDomainService;
@@ -40,6 +41,7 @@ public class UserApiService {
     private final ProfileCommandDomainService profileCommandDomainService;
     private final ChallengeCommandDomainService challengeCommandDomainService;
     private final InsightCommandDomainService insightCommandDomainService;
+    private final CommentCommandDomainService commentCommandDomainService;
 
     @FLogging
     public <T extends OauthResponse> UserSignUpResponse signupWithOauth(String code, VendorType vendorType) {
@@ -72,6 +74,7 @@ public class UserApiService {
         insightCommandDomainService.deleteAll(user.getId());
         profileCommandDomainService.removeAllRelationsBy(user);
         challengeCommandDomainService.exitCurrentChallengeIfExist(user);
+        commentCommandDomainService.deleteAll(user);
         log.info("[UAS::withdraw] 회원 탈퇴 완료 - userId({})", user.getId());
     }
 
