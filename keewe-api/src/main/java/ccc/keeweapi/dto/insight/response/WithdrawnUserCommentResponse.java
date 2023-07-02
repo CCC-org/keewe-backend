@@ -8,7 +8,7 @@ import java.util.List;
 
 @Getter
 @AllArgsConstructor(staticName = "of")
-public class DeletedUserCommentResponse implements CommentResponse {
+public class WithdrawnUserCommentResponse implements CommentResponse {
     private Long id;
     private String content;
     private String createdAt;

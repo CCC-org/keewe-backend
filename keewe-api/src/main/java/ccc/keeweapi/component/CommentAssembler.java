@@ -3,7 +3,7 @@ package ccc.keeweapi.component;
 import ccc.keeweapi.dto.insight.response.ActiveUserCommentResponse;
 import ccc.keeweapi.dto.insight.response.CommentResponse;
 import ccc.keeweapi.dto.insight.response.CommentWriterResponse;
-import ccc.keeweapi.dto.insight.response.DeletedUserCommentResponse;
+import ccc.keeweapi.dto.insight.response.WithdrawnUserCommentResponse;
 import ccc.keeweapi.dto.insight.response.DeletedUserReplyResponse;
 import ccc.keeweapi.dto.insight.response.InsightCommentCountResponse;
 import ccc.keeweapi.dto.insight.response.PreviewCommentResponse;
@@ -29,7 +29,7 @@ public class CommentAssembler {
         );
     }
 
-    public ActiveUserCommentResponse toCommentResponse(Comment comment, List<Comment> replies, Long replyNumber) {
+    public ActiveUserCommentResponse toActiveUserCommentResponse(Comment comment, List<Comment> replies, Long replyNumber) {
         return ActiveUserCommentResponse.of(
                 comment.getId(),
                 toCommentWriterResponse(comment.getWriter()),
@@ -42,9 +42,9 @@ public class CommentAssembler {
 
     public CommentResponse toCommentResponse(Comment comment, Comment reply, Long replyNumber) {
         if (comment.getWriter().isDeleted()) {
-            return toDeletedUserCommentResponse(comment, reply, replyNumber);
+            return toWithdrawnUserCommentResponse(comment, reply, replyNumber);
         }
-        return toCommentResponse(comment, Objects.nonNull(reply) ? List.of(reply) : List.of(), replyNumber);
+        return toActiveUserCommentResponse(comment, Objects.nonNull(reply) ? List.of(reply) : List.of(), replyNumber);
     }
 
     public CommentWriterResponse toCommentWriterResponse(User writer) {
@@ -78,9 +78,9 @@ public class CommentAssembler {
         return InsightCommentCountResponse.of(commentCount);
     }
 
-    public DeletedUserCommentResponse toDeletedUserCommentResponse(Comment comment, Comment reply, Long replyNumber) {
+    public WithdrawnUserCommentResponse toWithdrawnUserCommentResponse(Comment comment, Comment reply, Long replyNumber) {
         List<Comment> replies = Objects.nonNull(reply) ? List.of(reply) : List.of();
-        return DeletedUserCommentResponse.of(
+        return WithdrawnUserCommentResponse.of(
                 comment.getId(),
                 "댓글 작성자가 존재하지 않아요.",
                 comment.getCreatedAt().toString(),
