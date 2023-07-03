@@ -13,6 +13,6 @@ public class CommentCreateRequest {
 
     private Long parentId;
 
-    @GraphemeLength(min = 1, max = 140)
+    @GraphemeLength(min = 1, max = 2000)
     private String content;
 }
