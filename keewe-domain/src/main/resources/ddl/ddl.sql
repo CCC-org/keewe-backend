@@ -207,7 +207,7 @@ CREATE TABLE IF NOT EXISTS `comment`
     insight_id          BIGINT          NOT NULL,
     writer_id           BIGINT          NOT NULL,
     parent_comment_id   BIGINT,
-    content             VARCHAR(140)    NOT NULL,
+    content             VARCHAR(2000)   NOT NULL,
     deleted             BIT             NOT NULL,
     created_at          DATETIME(6)     NOT NULL,
     updated_at          DATETIME(6)     NOT NULL,
