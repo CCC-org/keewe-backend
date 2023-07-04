@@ -32,7 +32,7 @@ public class InsightAssembler {
     }
 
     public InsightUpdateDto toInsightUpdateDto(InsightUpdateRequest request) {
-        return InsightUpdateDto.of(SecurityUtil.getUserId(), request.getInsightId(), request.getContents(), request.getLink());
+        return InsightUpdateDto.of(SecurityUtil.getUserId(), request.getInsightId(), request.getContents(), request.getLink(), request.getDrawerId());
     }
 
     public InsightUpdateResponse toInsightUpdateResponse(Insight insight) {
@@ -82,7 +82,9 @@ public class InsightAssembler {
                 dto.getContents(),
                 dto.getLink(),
                 toReactionAggregationResponse(dto.getReaction()),
-                dto.isBookmark()
+                dto.isBookmark(),
+                dto.getDrawerId(),
+                dto.getDrawerName()
         );
     }
 

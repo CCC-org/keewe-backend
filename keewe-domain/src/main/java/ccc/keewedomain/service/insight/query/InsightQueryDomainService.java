@@ -50,7 +50,9 @@ public class InsightQueryDomainService {
         }
         ReactionAggregationGetDto reactionAggregationGetDto = this.getCurrentReactionAggregation(detailDto.getInsightId());
         BookmarkId bookmarkId = BookmarkId.of(detailDto.getUserId(), detailDto.getInsightId());
-        return InsightGetDto.of(detailDto.getInsightId(), insight.getContents(), insight.getLink(), reactionAggregationGetDto, bookmarkQueryDomainService.isBookmark(bookmarkId));
+        Long drawerId = insight.getDrawer() != null ? insight.getDrawer().getId() : null;
+        String drawerName = drawerId != null ? insight.getDrawer().getName() : "선택안함";
+        return InsightGetDto.of(detailDto.getInsightId(), insight.getContents(), insight.getLink(), reactionAggregationGetDto, bookmarkQueryDomainService.isBookmark(bookmarkId), drawerId, drawerName);
     }
 
     @Transactional(readOnly = true)

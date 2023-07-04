@@ -101,6 +101,7 @@ public class InsightControllerTest extends ApiDocumentationTest {
         insightUpdateRequest
                 .put("insightId", 3L)
                 .put("contents", contents)
+                .put("drawerId", 1L)
                 .put("link", link);
 
         when(insightCommandApiService.update(any())).thenReturn(InsightUpdateResponse.of(1L));
@@ -119,6 +120,7 @@ public class InsightControllerTest extends ApiDocumentationTest {
                                 headerWithName("Authorization").description("유저의 JWT"))
                         .requestFields(
                                 fieldWithPath("insightId").description("인사이트 ID"),
+                                fieldWithPath("drawerId").description("인사이트를 넣을 서랍 ID").optional(),
                                 fieldWithPath("contents").description("인사이트의 내용. 최대 300자, 문자 제한 없음"),
                                 fieldWithPath("link").description("등록한 링크의 link. 최대 2000자"))
                         .responseFields(
@@ -140,7 +142,9 @@ public class InsightControllerTest extends ApiDocumentationTest {
                 "인사이트 내용입니다. 즐거운 개발 되세요!",
                 Link.of("www.keewe.com"),
                 ReactionAggregationResponse.of(1L, 2L, 3L, 4L, 5L, 6L),
-                true
+                true,
+                1L,
+                "소리없는 아우성"
                 )
         );
 
@@ -166,6 +170,8 @@ public class InsightControllerTest extends ApiDocumentationTest {
                                 fieldWithPath("data.reaction.surprise").description("인사이트 놀람 반응 수"),
                                 fieldWithPath("data.reaction.fire").description("인사이트 불 반응 수"),
                                 fieldWithPath("data.reaction.eyes").description("인사이트 눈 반응 수"),
+                                fieldWithPath("data.drawerId").description("인사이트가 속한 서랍 ID"),
+                                fieldWithPath("data.drawerName").description("인사이트가 속한 서랍 이름"),
                                 fieldWithPath("data.bookmark").description("인사이트 북마크 여부"))
                         .tag("Insight")
                         .build()

@@ -15,4 +15,6 @@ public class InsightGetResponse {
     private Link link;
     private ReactionAggregationResponse reaction;
     private boolean isBookmark;
+    private Long drawerId;
+    private String drawerName;
 }

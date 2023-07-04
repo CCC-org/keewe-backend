@@ -12,4 +12,6 @@ public class InsightGetDto {
     private Link link;
     private ReactionAggregationGetDto reaction;
     private boolean isBookmark;
+    private Long drawerId;
+    private String drawerName;
 }
