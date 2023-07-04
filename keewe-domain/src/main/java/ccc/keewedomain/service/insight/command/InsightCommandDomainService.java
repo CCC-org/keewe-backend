@@ -71,8 +71,9 @@ public class InsightCommandDomainService {
     public Insight update(InsightUpdateDto dto) {
         Insight insight = insightQueryDomainService.getByIdOrElseThrow(dto.getInsightId());
         Long writerId = insight.getWriter().getId();
+        Drawer drawer = drawerDomainService.getDrawerIfOwner(dto.getDrawerId(), insight.getWriter());
         assert writerId.equals(dto.getInsightId());
-        insight.update(dto.getContents(), Link.of(dto.getLink()));
+        insight.update(dto.getContents(), Link.of(dto.getLink()), drawer);
         return insightRepository.save(insight);
     }
 

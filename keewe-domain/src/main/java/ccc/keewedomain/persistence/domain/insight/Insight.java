@@ -86,8 +86,12 @@ public class Insight extends BaseTimeEntity {
         this.drawer = null;
     }
 
-    public void update(String contents, Link link) {
+    public void update(String contents, Link link, Drawer drawer) {
         this.contents = contents;
         this.link = link;
+        this.drawer = drawer;
+        if (drawer != null) {
+            drawer.getInsights().add(this);
+        }
     }
 }

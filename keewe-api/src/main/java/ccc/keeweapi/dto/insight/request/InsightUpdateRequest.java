@@ -18,4 +18,6 @@ public class InsightUpdateRequest {
 
     @Size(min = 1, max = 2000)
     private String link;
+
+    private Long drawerId;
 }

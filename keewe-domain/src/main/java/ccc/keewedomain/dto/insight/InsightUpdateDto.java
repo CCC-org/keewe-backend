@@ -11,13 +11,15 @@ public class InsightUpdateDto {
     private Long insightId;
     private String contents;
     private String link;
+    private Long drawerId;
 
-    public static InsightUpdateDto of(Long userId, Long insightId, String contents, String link) {
+    public static InsightUpdateDto of(Long userId, Long insightId, String contents, String link, Long drawerId) {
         InsightUpdateDto dto = new InsightUpdateDto();
         dto.userId = userId;
         dto.insightId = insightId;
         dto.contents = contents;
         dto.link = link;
+        dto.drawerId = drawerId;
         return dto;
     }
 }
