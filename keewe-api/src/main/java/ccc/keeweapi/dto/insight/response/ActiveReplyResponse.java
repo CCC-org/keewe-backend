@@ -6,9 +6,11 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor(staticName = "of")
-public class ActiveUserPreviewCommentResponse implements PreviewCommentResponse {
-    private Long id;
+public class ActiveReplyResponse implements ReplyResponse {
+
     private CommentWriterResponse writer;
+    private Long id;
+    private Long parentId;
     private String content;
     private String createdAt;
 

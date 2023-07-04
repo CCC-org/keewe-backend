@@ -13,11 +13,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import ccc.keeweapi.document.utils.ApiDocumentationTest;
 import ccc.keeweapi.dto.insight.response.CommentCreateResponse;
 import ccc.keeweapi.dto.insight.response.CommentDeleteResponse;
-import ccc.keeweapi.dto.insight.response.ActiveUserCommentResponse;
+import ccc.keeweapi.dto.insight.response.ActiveCommentResponse;
 import ccc.keeweapi.dto.insight.response.CommentWriterResponse;
 import ccc.keeweapi.dto.insight.response.InsightCommentCountResponse;
-import ccc.keeweapi.dto.insight.response.ActiveUserPreviewCommentResponse;
-import ccc.keeweapi.dto.insight.response.ActiveUserReplyResponse;
+import ccc.keeweapi.dto.insight.response.ActivePreviewCommentResponse;
+import ccc.keeweapi.dto.insight.response.ActiveReplyResponse;
 import ccc.keeweapi.dto.insight.response.PreviewCommentResponse;
 import ccc.keeweapi.service.insight.command.InsightCommentCommandApiService;
 import ccc.keeweapi.service.insight.query.InsightCommentQueryApiService;
@@ -134,9 +134,9 @@ public class InsightCommentControllerTest extends ApiDocumentationTest {
         String now = LocalDateTime.now().toString();
 
         List<PreviewCommentResponse> response = List.of(
-                ActiveUserPreviewCommentResponse.of(1L, writer1, "댓글1 내용", now),
-                ActiveUserPreviewCommentResponse.of(2L, writer2, "댓글2 내용", now),
-                ActiveUserPreviewCommentResponse.of(3L, writer1, "댓글3 내용", now)
+                ActivePreviewCommentResponse.of(1L, writer1, "댓글1 내용", now),
+                ActivePreviewCommentResponse.of(2L, writer2, "댓글2 내용", now),
+                ActivePreviewCommentResponse.of(3L, writer1, "댓글3 내용", now)
         );
 
         when(insightCommentQueryApiService.getPreviewComments(insightId)).thenReturn(response);
@@ -179,10 +179,10 @@ public class InsightCommentControllerTest extends ApiDocumentationTest {
         long limit = 2L;
         String now = LocalDateTime.now().toString();
 
-        ActiveUserReplyResponse reply1 = ActiveUserReplyResponse.of(writer2, 3L, 1L, "답글1 내용", now);
-        ActiveUserReplyResponse reply2 = ActiveUserReplyResponse.of(writer2, 4L, 1L, "답글2 내용", now);
-        ActiveUserCommentResponse comment1 = ActiveUserCommentResponse.of(1L, writer1, "댓글의 내용1", now, List.of(reply1), totalReply);
-        ActiveUserCommentResponse comment2 = ActiveUserCommentResponse.of(2L, writer1, "댓글의 내용2", now, List.of(reply2), totalReply);
+        ActiveReplyResponse reply1 = ActiveReplyResponse.of(writer2, 3L, 1L, "답글1 내용", now);
+        ActiveReplyResponse reply2 = ActiveReplyResponse.of(writer2, 4L, 1L, "답글2 내용", now);
+        ActiveCommentResponse comment1 = ActiveCommentResponse.of(1L, writer1, "댓글의 내용1", now, List.of(reply1), totalReply);
+        ActiveCommentResponse comment2 = ActiveCommentResponse.of(2L, writer1, "댓글의 내용2", now, List.of(reply2), totalReply);
 
         when(insightCommentQueryApiService.getCommentsWithFirstReply(any(), any())).thenReturn(List.of(comment1, comment2));
 
@@ -238,8 +238,8 @@ public class InsightCommentControllerTest extends ApiDocumentationTest {
         long limit = 2L;
         String now = LocalDateTime.now().toString();
 
-        ActiveUserReplyResponse reply1 = ActiveUserReplyResponse.of(writer1, 2L, parentId, "답글1 내용", now);
-        ActiveUserReplyResponse reply2 = ActiveUserReplyResponse.of(writer2, 3L, parentId, "답글2 내용", now);
+        ActiveReplyResponse reply1 = ActiveReplyResponse.of(writer1, 2L, parentId, "답글1 내용", now);
+        ActiveReplyResponse reply2 = ActiveReplyResponse.of(writer2, 3L, parentId, "답글2 내용", now);
 
         when(insightCommentQueryApiService.getReplies(any(), any())).thenReturn(List.of(reply1, reply2));
 

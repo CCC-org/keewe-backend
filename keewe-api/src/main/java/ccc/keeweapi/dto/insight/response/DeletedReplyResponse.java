@@ -6,9 +6,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor(staticName = "of")
-public class ActiveUserReplyResponse implements ReplyResponse {
-
-    private CommentWriterResponse writer;
+public class DeletedReplyResponse implements ReplyResponse {
     private Long id;
     private Long parentId;
     private String content;
@@ -17,6 +15,6 @@ public class ActiveUserReplyResponse implements ReplyResponse {
     @Override
     @JsonIgnore
     public Long getUserId() {
-        return writer.getId();
+        return Long.MIN_VALUE;
     }
 }

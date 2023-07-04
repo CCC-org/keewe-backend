@@ -6,13 +6,10 @@ import lombok.Getter;
 
 import java.util.List;
 
-
 @Getter
 @AllArgsConstructor(staticName = "of")
-public class ActiveUserCommentResponse implements CommentResponse {
-
+public class DeletedCommentResponse implements CommentResponse {
     private Long id;
-    private CommentWriterResponse writer;
     private String content;
     private String createdAt;
     private List<ReplyResponse> replies;
@@ -21,6 +18,6 @@ public class ActiveUserCommentResponse implements CommentResponse {
     @Override
     @JsonIgnore
     public Long getUserId() {
-        return writer.getId();
+        return Long.MIN_VALUE;
     }
 }

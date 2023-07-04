@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor(staticName = "of")
-public class WithdrawnUserPreviewCommentResponse implements PreviewCommentResponse {
+public class DeletedPreviewCommentResponse implements PreviewCommentResponse {
     private Long id;
     private String content;
     private String createdAt;
