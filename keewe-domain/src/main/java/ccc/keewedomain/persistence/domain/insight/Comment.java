@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static javax.persistence.FetchType.LAZY;
 
@@ -59,8 +60,14 @@ public class Comment extends BaseTimeEntity {
 
     public String getContent() {
         if (deleted) {
-            return "삭제된 댓글입니다.";
+            if(Objects.isNull(parent)) {
+                return "삭제된 댓글이에요.";
+            }
+            else {
+                return "삭제된 답글이에요.";
+            }
         }
+
         return content;
     }
 }
