@@ -7,7 +7,7 @@ import ccc.keewedomain.persistence.repository.user.TitleRepository;
 import ccc.keewedomain.persistence.repository.user.UserRepository;
 import ccc.keewedomain.service.user.UserDomainService;
 import ccc.keeweinfra.service.messagequeue.MQPublishService;
-import java.util.Optional;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -30,8 +30,8 @@ public class SignUpTitleAcquireProcessor extends AbstractTitleAcquireProcessor {
     }
 
     @Override
-    protected Optional<Long> judgeTitleAcquire(KeeweTitleHeader header) {
+    protected List<Long> judgeTitleAcquire(KeeweTitleHeader header) {
         // note. 회원가입 이벤트는 항상 최초에만 발행중
-        return Optional.of(1000L);
+        return List.of(1000L);
     }
 }

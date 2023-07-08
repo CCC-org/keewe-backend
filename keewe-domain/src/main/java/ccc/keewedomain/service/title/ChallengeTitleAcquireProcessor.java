@@ -2,46 +2,50 @@ package ccc.keewedomain.service.title;
 
 import ccc.keewecore.consts.TitleCategory;
 import ccc.keewecore.utils.KeeweTitleHeader;
-import ccc.keewedomain.persistence.domain.user.User;
-import ccc.keewedomain.persistence.repository.user.FollowQueryRepository;
 import ccc.keewedomain.persistence.repository.user.TitleAchievementRepository;
 import ccc.keewedomain.persistence.repository.user.TitleRepository;
 import ccc.keewedomain.persistence.repository.user.UserRepository;
+import ccc.keewedomain.service.challenge.query.ChallengeParticipateQueryDomainService;
+import ccc.keewedomain.service.challenge.query.ChallengeQueryDomainService;
 import ccc.keewedomain.service.user.UserDomainService;
 import ccc.keeweinfra.service.messagequeue.MQPublishService;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
-@Slf4j
-public class FollowingTitleAcquireProcessor extends AbstractTitleAcquireProcessor {
-    private final UserDomainService userDomainService;
-    private final FollowQueryRepository followQueryRepository;
+public class ChallengeTitleAcquireProcessor extends AbstractTitleAcquireProcessor {
+    private final ChallengeQueryDomainService challengeQueryDomainService;
 
-    protected FollowingTitleAcquireProcessor(
+    protected ChallengeTitleAcquireProcessor(
             MQPublishService mqPublishService,
             TitleAchievementRepository titleAchievementRepository,
             UserDomainService userDomainService,
             UserRepository userRepository,
             TitleRepository titleRepository,
-            FollowQueryRepository followQueryRepository
+            ChallengeQueryDomainService challengeQueryDomainService,
+            ChallengeParticipateQueryDomainService challengeParticipateQueryDomainService
     ) {
         super(mqPublishService, titleAchievementRepository, userDomainService, userRepository, titleRepository);
-        this.userDomainService = userDomainService;
-        this.followQueryRepository = followQueryRepository;
+        this.challengeQueryDomainService = challengeQueryDomainService;
     }
 
     @Override
     public TitleCategory getProcessableCategory() {
-        return TitleCategory.FOLLOWING;
+        return TitleCategory.CHALLENGE;
     }
 
     @Override
     protected List<Long> judgeTitleAcquire(KeeweTitleHeader header) {
-        Long userId = Long.valueOf(header.getUserId());
-        User user = userDomainService.getUserByIdOrElseThrow(userId);
-        Long followeeCount = followQueryRepository.countFollowersBy(user);
-        return followeeCount >= 40 ? List.of(3003L) : List.of();
+        Long challengeCount = challengeQueryDomainService.countByUserId(Long.valueOf(header.getUserId()));
+        List<Long> titles = new ArrayList<>();
+        if (challengeCount >= 1L) {
+            titles.add(5000L);
+        }
+        if (challengeCount >= 2L) {
+            titles.add(5003L);
+        }
+        return titles;
     }
 }

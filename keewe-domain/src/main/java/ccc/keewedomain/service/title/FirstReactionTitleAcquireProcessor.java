@@ -12,8 +12,7 @@ import ccc.keewedomain.service.user.UserDomainService;
 import ccc.keeweinfra.service.messagequeue.MQPublishService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-
-import java.util.Optional;
+import java.util.List;
 
 @Component
 @Slf4j
@@ -33,14 +32,14 @@ public class FirstReactionTitleAcquireProcessor extends AbstractTitleAcquireProc
     }
 
     @Override
-    protected Optional<Long> judgeTitleAcquire(KeeweTitleHeader header) {
+    protected List<Long> judgeTitleAcquire(KeeweTitleHeader header) {
         Long userId = Long.valueOf(header.getUserId());
         boolean acquire = !cFirstReactionAggregationRepository.existsById(userId);
         if (!acquire)
-            return Optional.empty();
+            return List.of();
 
         cFirstReactionAggregationRepository.save(CFirstReaction.of(userId));
-        return Optional.of(ReactionTitle.리엑션_최초.getId());
+        return List.of(ReactionTitle.리엑션_최초.getId());
     }
 
     @Override

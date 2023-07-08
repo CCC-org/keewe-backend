@@ -20,7 +20,6 @@ import ccc.keewedomain.persistence.repository.user.TitleAchievementRepository;
 import ccc.keewedomain.service.user.UserDomainService;
 import ccc.keewedomain.service.user.query.ProfileQueryDomainService;
 import ccc.keeweinfra.service.image.StoreService;
-import ccc.keeweinfra.service.messagequeue.MQPublishService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
@@ -38,7 +37,6 @@ public class ProfileCommandDomainService {
     private final TitleAchievementRepository titleAchievementRepository;
     private final BlockRepository blockRepository;
     private final ProfileQueryDomainService profileQueryDomainService;
-    private final MQPublishService mqPublishService;
     private final ApplicationEventPublisher eventPublisher;
 
     public User onboard(OnboardDto dto) {

@@ -19,7 +19,7 @@ import org.springframework.amqp.core.MessageBuilder;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
+import java.util.List;
 
 @Slf4j
 public abstract class AbstractTitleAcquireProcessor {
@@ -46,10 +46,10 @@ public abstract class AbstractTitleAcquireProcessor {
     @Transactional
     public void aggregateStat(KeeweTitleHeader header) {
         // 타이틀 획득 조건 충족 체크
-        this.judgeTitleAcquire(header).ifPresent(titleId -> {
+        User user = userDomainService.getUserByIdOrElseThrow(Long.valueOf(header.getUserId()));
+        this.judgeTitleAcquire(header).forEach(titleId -> {
             // 타이틀 조회
             Title title = titleRepository.findById(titleId).orElseThrow();
-            User user = userDomainService.getUserByIdOrElseThrow(Long.valueOf(header.getUserId()));
 
             // 이미 획득했으면 drop.
             Long titleArchivementCount = titleAchievementRepository.countByTitleAndUser(title, user);
@@ -78,5 +78,5 @@ public abstract class AbstractTitleAcquireProcessor {
     public abstract TitleCategory getProcessableCategory();
 
     // 통계 정보 집계, 타이틀 획득 기준 충족 시 타이틀 ID 반환
-    protected abstract Optional<Long> judgeTitleAcquire(KeeweTitleHeader header);
+    protected abstract List<Long> judgeTitleAcquire(KeeweTitleHeader header);
 }

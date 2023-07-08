@@ -20,6 +20,7 @@ import ccc.keeweapi.utils.SecurityUtil;
 import ccc.keewecore.consts.KeeweRtnConsts;
 import ccc.keewecore.exception.KeeweException;
 import ccc.keewedomain.dto.challenge.ParticipationUpdateDto;
+import ccc.keewedomain.event.challenge.ChallengeCreateEvent;
 import ccc.keewedomain.persistence.domain.challenge.Challenge;
 import ccc.keewedomain.persistence.domain.challenge.ChallengeParticipation;
 import ccc.keewedomain.persistence.domain.user.User;
@@ -30,10 +31,10 @@ import ccc.keewedomain.service.insight.query.InsightQueryDomainService;
 import ccc.keewedomain.service.user.query.ProfileQueryDomainService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -41,7 +42,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-
 
 @Service
 @RequiredArgsConstructor
@@ -55,12 +55,15 @@ public class ChallengeApiService {
     private final ProfileQueryDomainService profileQueryDomainService;
     private final ChallengeAssembler challengeAssembler;
     private final BlockedResourceManager blockedResourceManager;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
     public ChallengeCreateResponse createChallenge(ChallengeCreateRequest request) {
         Challenge challenge = challengeCommandDomainService.save(challengeAssembler.toChallengeCreateDto(request));
         ChallengeParticipation participation = challengeCommandDomainService
                 .participate(challengeAssembler.toChallengeParticipateDto(request.getParticipate(), challenge.getId()));
+        ChallengeCreateEvent event = ChallengeCreateEvent.of(SecurityUtil.getUserId(), challenge.getId());
+        eventPublisher.publishEvent(event);
         return challengeAssembler.toChallengeCreateResponse(challenge, participation);
     }
 

@@ -10,12 +10,12 @@ import ccc.keewedomain.persistence.repository.user.TitleRepository;
 import ccc.keewedomain.persistence.repository.user.UserRepository;
 import ccc.keewedomain.service.user.UserDomainService;
 import ccc.keeweinfra.service.messagequeue.MQPublishService;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.Optional;
+import java.util.List;
+import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
@@ -43,7 +43,7 @@ public class FolloweeTitleAcquireProcessor extends AbstractTitleAcquireProcessor
     }
 
     @Override
-    protected Optional<Long> judgeTitleAcquire(KeeweTitleHeader header) {
+    protected List<Long> judgeTitleAcquire(KeeweTitleHeader header) {
         // 팔로워를 얻은 사람
         Long userId = Long.valueOf(header.getUserId());
         User user = userDomainService.getUserByIdOrElseThrow(userId);
@@ -51,8 +51,7 @@ public class FolloweeTitleAcquireProcessor extends AbstractTitleAcquireProcessor
         return Arrays.stream(FollowingTitle.values())
                 .sorted(Comparator.comparingLong(FollowingTitle::getStandard).reversed())
                 .filter(it -> it.getStandard() <= followerCount)
-                .limit(1)
-                .findFirst()
-                .map(FollowingTitle::getId);
+                .map(FollowingTitle::getId)
+                .collect(Collectors.toList());
     }
 }
