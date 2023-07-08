@@ -8,5 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface TitleAchievementRepository extends JpaRepository<TitleAchievement, TitleAchievementId> {
     Long countByUser(User user);
-    Long countByTitle(Title title);
+    Long countByTitleAndUser(Title title, User user);
 }

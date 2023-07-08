@@ -49,15 +49,15 @@ public abstract class AbstractTitleAcquireProcessor {
         this.judgeTitleAcquire(header).ifPresent(titleId -> {
             // 타이틀 조회
             Title title = titleRepository.findById(titleId).orElseThrow();
+            User user = userDomainService.getUserByIdOrElseThrow(Long.valueOf(header.getUserId()));
 
             // 이미 획득했으면 drop.
-            Long titleArchivementCount = titleAchievementRepository.countByTitle(title);
+            Long titleArchivementCount = titleAchievementRepository.countByTitleAndUser(title, user);
             if (titleArchivementCount >= 1) {
                 return;
             }
 
             // 타이틀 획득 정보 저장
-            User user = userDomainService.getUserByIdOrElseThrow(Long.valueOf(header.getUserId()));
             titleAchievementRepository.save(TitleAchievement.of(user, title));
             log.info("[TitleAcquireProcessor] 타이틀 획득 - titleId({}), userId({})", titleId, header.getUserId());
             Long titleAchievementCount = titleAchievementRepository.countByUser(user);
