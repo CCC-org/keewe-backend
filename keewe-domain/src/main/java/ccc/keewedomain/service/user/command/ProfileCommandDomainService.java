@@ -3,7 +3,6 @@ package ccc.keewedomain.service.user.command;
 import ccc.keewecore.consts.KeeweConsts;
 import ccc.keewecore.consts.KeeweRtnConsts;
 import ccc.keewecore.exception.KeeweException;
-import ccc.keewecore.utils.KeeweTransactionManager;
 import ccc.keewedomain.dto.user.*;
 import ccc.keewedomain.event.follow.FollowCreateEvent;
 import ccc.keewedomain.persistence.domain.title.Title;
@@ -40,8 +39,7 @@ public class ProfileCommandDomainService {
     private final BlockRepository blockRepository;
     private final ProfileQueryDomainService profileQueryDomainService;
     private final MQPublishService mqPublishService;
-    private final KeeweTransactionManager transactionManager;
-    private final ApplicationEventPublisher applicationEventPublisher;
+    private final ApplicationEventPublisher eventPublisher;
 
     public User onboard(OnboardDto dto) {
         User user = userDomainService.getUserByIdOrElseThrow(dto.getUserId());
@@ -49,30 +47,28 @@ public class ProfileCommandDomainService {
         return user;
     }
 
+    @Transactional
     public boolean toggleFollowership(FollowToggleDto followDto, Long insightId) {
         followDto.validateSelfFollowing(followDto);
         FollowId followId = FollowId.of(followDto.getUserId(), followDto.getTargetId());
-        boolean isFollowing = transactionManager.withTransaction(() -> {
-            User user = userDomainService.getUserByIdOrElseThrow(followDto.getUserId());
-            User target = userDomainService.getUserByIdOrElseThrow(followDto.getTargetId());
-            followRepository.findById(followId)
-                    .ifPresentOrElse(
-                            follow -> {
-                                log.info("[PDS::toggleFollowership] 팔로우 관계 삭제 - user({}), target({})", user.getId(), target.getId());
-                                follow.removeRelation(user, target);
-                                followRepository.delete(follow);
-                            },
-                            () -> {
-                                log.info("[PDS::toggleFollowership] 팔로우 관계 생성 - user({}), target({})", user.getId(), target.getId());
-                                Follow relation = Follow.makeRelation(user, target);
-                                followRepository.save(relation);
-                                FollowCreateEvent event = FollowCreateEvent.of(user.getId(), target.getId(), insightId);
-                                applicationEventPublisher.publishEvent(event);
-                            }
-                    );
-            return profileQueryDomainService.isFollowing(FollowCheckDto.of(user.getId(), target.getId()));
-        });
-        return isFollowing;
+        User user = userDomainService.getUserByIdOrElseThrow(followDto.getUserId());
+        User target = userDomainService.getUserByIdOrElseThrow(followDto.getTargetId());
+        followRepository.findById(followId)
+            .ifPresentOrElse(
+                    follow -> {
+                        log.info("[PDS::toggleFollowership] 팔로우 관계 삭제 - user({}), target({})", user.getId(), target.getId());
+                        follow.removeRelation(user, target);
+                        followRepository.delete(follow);
+                    },
+                    () -> {
+                        log.info("[PDS::toggleFollowership] 팔로우 관계 생성 - user({}), target({})", user.getId(), target.getId());
+                        Follow relation = Follow.makeRelation(user, target);
+                        followRepository.save(relation);
+                        FollowCreateEvent event = FollowCreateEvent.of(user.getId(), target.getId(), insightId);
+                        eventPublisher.publishEvent(event);
+                    }
+            );
+        return profileQueryDomainService.isFollowing(FollowCheckDto.of(user.getId(), target.getId()));
     }
 
     public String uploadProfilePhoto(UploadProfilePhotoDto uploadProfilePhotoDto) {

@@ -54,6 +54,7 @@ subprojects {
 		useJUnitPlatform()
 		exclude 'ccc/keewecore/**'
 		exclude 'ccc/keewedomain/**'
+		exclude 'ccc/keeweevent/**'
 	}
 
 }
