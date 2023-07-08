@@ -3,6 +3,8 @@ package ccc.keewecore.consts;
 public enum TitleCategory {
     SIGNUP,
     INSIGHT,
+    FOLLOWING,
+    FOLLOWEE,
     FOLLOW,
     REACTION,
     CHALLENGE,

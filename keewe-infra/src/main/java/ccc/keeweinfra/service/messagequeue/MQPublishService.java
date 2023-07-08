@@ -4,6 +4,7 @@ import ccc.keewecore.consts.KeeweConsts;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Message;
+import org.springframework.amqp.core.MessageBuilder;
 import org.springframework.amqp.core.MessagePostProcessor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
@@ -23,4 +24,8 @@ public class MQPublishService {
         rabbitTemplate.convertAndSend(exchange, queueName, message, messagePostProcessor);
     }
 
+    public void publishWithEmptyMessage(String exchange, String queueName, MessagePostProcessor messagePostProcessor) {
+        Message emptyMessage = MessageBuilder.withBody(new byte[0]).build();
+        rabbitTemplate.convertAndSend(exchange, queueName, emptyMessage, messagePostProcessor);
+    }
 }

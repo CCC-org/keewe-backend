@@ -68,7 +68,6 @@ public class ProfileApiService {
         return profileAssembler.toOnboardResponse(user);
     }
 
-    @Transactional
     public FollowToggleResponse toggleFollowership(Long userId, Long insightId) {
         blockedResourceManager.validateAccessibleUser(userId);
         boolean following = profileCommandDomainService.toggleFollowership(profileAssembler.toFollowToggleDto(userId), insightId);

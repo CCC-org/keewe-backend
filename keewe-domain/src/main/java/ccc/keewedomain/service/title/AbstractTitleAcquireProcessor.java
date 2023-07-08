@@ -13,6 +13,7 @@ import ccc.keewedomain.persistence.repository.user.TitleRepository;
 import ccc.keewedomain.persistence.repository.user.UserRepository;
 import ccc.keewedomain.service.user.UserDomainService;
 import ccc.keeweinfra.service.messagequeue.MQPublishService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageBuilder;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-
+@Slf4j
 public abstract class AbstractTitleAcquireProcessor {
     private final MQPublishService mqPublishService;
     private final TitleAchievementRepository titleAchievementRepository;
@@ -49,9 +50,16 @@ public abstract class AbstractTitleAcquireProcessor {
             // 타이틀 조회
             Title title = titleRepository.findById(titleId).orElseThrow();
 
+            // 이미 획득했으면 drop.
+            Long titleArchivementCount = titleAchievementRepository.countByTitle(title);
+            if (titleArchivementCount >= 1) {
+                return;
+            }
+
             // 타이틀 획득 정보 저장
             User user = userDomainService.getUserByIdOrElseThrow(Long.valueOf(header.getUserId()));
             titleAchievementRepository.save(TitleAchievement.of(user, title));
+            log.info("[TitleAcquireProcessor] 타이틀 획득 - titleId({}), userId({})", titleId, header.getUserId());
             Long titleAchievementCount = titleAchievementRepository.countByUser(user);
 
             // 최초 타이틀은 대표 타이틀로 설정

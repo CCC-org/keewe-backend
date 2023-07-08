@@ -2,12 +2,11 @@ package ccc.keewedomain.service.user.command;
 
 import ccc.keewecore.consts.KeeweConsts;
 import ccc.keewecore.consts.KeeweRtnConsts;
+import ccc.keewecore.consts.TitleCategory;
 import ccc.keewecore.exception.KeeweException;
-import ccc.keewedomain.dto.user.FollowCheckDto;
-import ccc.keewedomain.dto.user.FollowToggleDto;
-import ccc.keewedomain.dto.user.OnboardDto;
-import ccc.keewedomain.dto.user.ProfileUpdateDto;
-import ccc.keewedomain.dto.user.UploadProfilePhotoDto;
+import ccc.keewecore.utils.KeeweTitleHeader;
+import ccc.keewecore.utils.KeeweTransactionManager;
+import ccc.keewedomain.dto.user.*;
 import ccc.keewedomain.event.user.FollowFromInsightEvent;
 import ccc.keewedomain.persistence.domain.notification.Notification;
 import ccc.keewedomain.persistence.domain.notification.enums.NotificationContents;
@@ -20,11 +19,9 @@ import ccc.keewedomain.persistence.domain.user.ProfilePhoto;
 import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.persistence.domain.user.id.BlockId;
 import ccc.keewedomain.persistence.domain.user.id.FollowId;
-import ccc.keewedomain.persistence.repository.insight.FollowFromInsightRepository;
 import ccc.keewedomain.persistence.repository.user.BlockRepository;
 import ccc.keewedomain.persistence.repository.user.FollowRepository;
 import ccc.keewedomain.persistence.repository.user.TitleAchievementRepository;
-import ccc.keewedomain.service.insight.query.InsightQueryDomainService;
 import ccc.keewedomain.service.notification.command.NotificationCommandDomainService;
 import ccc.keewedomain.service.user.UserDomainService;
 import ccc.keewedomain.service.user.query.ProfileQueryDomainService;
@@ -48,8 +45,7 @@ public class ProfileCommandDomainService {
     private final NotificationCommandDomainService notificationCommandDomainService;
     private final ProfileQueryDomainService profileQueryDomainService;
     private final MQPublishService mqPublishService;
-    private final FollowFromInsightRepository followFromInsightRepository;
-    private final InsightQueryDomainService insightQueryDomainService;
+    private final KeeweTransactionManager transactionManager;
 
     public User onboard(OnboardDto dto) {
         User user = userDomainService.getUserByIdOrElseThrow(dto.getUserId());
@@ -59,25 +55,30 @@ public class ProfileCommandDomainService {
 
     public boolean toggleFollowership(FollowToggleDto followDto, Long insightId) {
         followDto.validateSelfFollowing(followDto);
-
-        User user = userDomainService.getUserByIdOrElseThrow(followDto.getUserId());
-        User target = userDomainService.getUserByIdOrElseThrow(followDto.getTargetId());
-
-        FollowId followId = FollowId.of(user.getId(), target.getId());
-        followRepository.findById(followId)
-                .ifPresentOrElse(
-                        follow -> {
-                            log.info("[PDS::toggleFollowership] Found Relation followee {}, follower {}", user.getId(), target.getId());
-                            follow.removeRelation(user, target);
-                            followRepository.delete(follow);
-                        },
-                        () -> {
-                            log.info("[PDS::toggleFollowership] Not Found Relation followee {}, follower {}", user.getId(), target.getId());
-                            Follow relation = Follow.makeRelation(user, target);
-                            afterFollowing(followRepository.save(relation), insightId);
-                        }
-                );
-        return profileQueryDomainService.isFollowing(FollowCheckDto.of(user.getId(), target.getId()));
+        FollowId followId = FollowId.of(followDto.getUserId(), followDto.getTargetId());
+        boolean isFollowing = transactionManager.withTransaction(() -> {
+            User user = userDomainService.getUserByIdOrElseThrow(followDto.getUserId());
+            User target = userDomainService.getUserByIdOrElseThrow(followDto.getTargetId());
+            followRepository.findById(followId)
+                    .ifPresentOrElse(
+                            follow -> {
+                                log.info("[PDS::toggleFollowership] 팔로우 관계 삭제 - user({}), target({})", user.getId(), target.getId());
+                                follow.removeRelation(user, target);
+                                followRepository.delete(follow);
+                            },
+                            () -> {
+                                log.info("[PDS::toggleFollowership] 팔로우 관계 생성 - user({}), target({})", user.getId(), target.getId());
+                                Follow relation = Follow.makeRelation(user, target);
+                                followRepository.save(relation);
+                            }
+                    );
+            return profileQueryDomainService.isFollowing(FollowCheckDto.of(user.getId(), target.getId()));
+        });
+        if (isFollowing) {
+            Follow follow = followRepository.findById(followId).orElseThrow();
+            afterFollowing(follow, insightId);
+        }
+        return isFollowing;
     }
 
     public String uploadProfilePhoto(UploadProfilePhotoDto uploadProfilePhotoDto) {
@@ -134,8 +135,6 @@ public class ProfileCommandDomainService {
         return blockedUserId;
     }
 
-
-
     @Transactional
     public void removeAllRelationsBy(User user) {
         followRepository.deleteByFollowerIdOrFolloweeId(user);
@@ -173,30 +172,33 @@ public class ProfileCommandDomainService {
 
     private void afterFollowing(Follow follow, Long insightId) {
         try {
-            Notification notification = Notification.of(
-                    follow.getFollowee(),
-                    NotificationContents.팔로우,
-                    String.valueOf(follow.getFollower().getId()) // note. 클릭 시 팔로우 한 사람의 프로필로 이동 대비
-            );
+            Notification notification = Notification.of(follow.getFollowee(), NotificationContents.팔로우, String.valueOf(follow.getFollower().getId()));
             notificationCommandDomainService.save(notification);
-            if(insightId != null) {
-                log.info("[PDS::afterFollowing] publish FollowFromInsightEvent - insightId ({}), followerId ({}), followeeId ({})",
-                        follow.getFollower().getId(), follow.getFollowee().getId(), insightId);
-                FollowFromInsightEvent followFromInsightEvent = FollowFromInsightEvent.of(
-                        follow.getFollower().getId(),
-                        follow.getFollowee().getId(),
-                        insightId
-                );
-                publishFollowFromInsightEvent(followFromInsightEvent);
+            Long userId = follow.getFollower().getId();
+            Long targetId = follow.getFollowee().getId();
+            publishTitleEvent(userId, targetId);
+            if (insightId != null) {
+                FollowFromInsightEvent followFromInsightEvent = FollowFromInsightEvent.of(userId, targetId, insightId);
+                publishStatisticsEvent(followFromInsightEvent);
             }
-
         } catch (Throwable t) {
-            log.warn("[PDS::afterFollowing] 팔로우 후 작업 실패 - 팔로우하는사람({}), 팔로우당하는사람({})", follow.getFollower().getId(), follow.getFollowee().getId(), t);
+            log.warn("[PDS::afterFollowing] 팔로우 후 작업 실패 - user({}), target({})", follow.getFollower().getId(), follow.getFollowee().getId(), t);
         }
     }
 
-    private void publishFollowFromInsightEvent(FollowFromInsightEvent event) {
+    private void publishStatisticsEvent(FollowFromInsightEvent event) {
+        // note. 통계 이벤트 발행
+        log.info("[PDS::afterFollowing] 팔로잉 통계 이벤트 발행 - user({}), target({}), insightId({})", event.getFollowerId(), event.getFolloweeId(), event.getInsightId());
         mqPublishService.publish(KeeweConsts.FOLLOW_FROM_INSIGHT_EXCHANGE, event);
+    }
+
+    private void publishTitleEvent(Long userId, Long targetId) {
+        // note. 타이틀 이벤트 발행
+        log.info("[PDS::afterFollowing] 팔로잉 타이틀 이벤트 발행 - user({}), target({})", userId, targetId);
+        KeeweTitleHeader followeeMessageHeader = KeeweTitleHeader.of(TitleCategory.FOLLOWEE, targetId.toString());
+        KeeweTitleHeader followingMessageHeader = KeeweTitleHeader.of(TitleCategory.FOLLOWING, userId.toString());
+        mqPublishService.publishWithEmptyMessage(KeeweConsts.DEFAULT_ROUTING_KEY, KeeweConsts.TITLE_STAT_QUEUE, followeeMessageHeader::toMessageWithHeader);
+        mqPublishService.publishWithEmptyMessage(KeeweConsts.DEFAULT_ROUTING_KEY, KeeweConsts.TITLE_STAT_QUEUE, followingMessageHeader::toMessageWithHeader);
     }
 
     private TitleAchievement getTitleAchievementById(Long userId, Long titleId) {

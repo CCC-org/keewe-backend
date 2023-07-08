@@ -25,6 +25,20 @@ public class FollowQueryRepository {
 
     private final JPAQueryFactory queryFactory;
 
+    public Long countFollowersBy(User user) {
+        return queryFactory.select(follow.countDistinct())
+                .from(follow)
+                .where(follow.follower.eq(user))
+                .fetchOne();
+    }
+
+    public Long countFolloweeBy(User user) {
+        return queryFactory.select(follow.countDistinct())
+                .from(follow)
+                .where(follow.followee.eq(user))
+                .fetchOne();
+    }
+
     public List<Long> findFollowingTargetIds(User user, List<User> targets) {
         return queryFactory.select(follow.followee.id)
                 .from(follow)

@@ -10,6 +10,7 @@ import ccc.keewedomain.persistence.repository.user.UserRepository;
 import ccc.keewedomain.service.user.UserDomainService;
 import ccc.keeweinfra.service.messagequeue.MQPublishService;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -36,6 +37,7 @@ public class InsightTitleAcquireProcessor extends AbstractTitleAcquireProcessor 
         insightAggregationRepository.incrementInsightCount(header.getUserId());
         Long insightCount = insightAggregationRepository.get(header.getUserId());
         return Arrays.stream(InsightTitle.values())
+                .sorted(Comparator.comparingLong(InsightTitle::getStandard).reversed())
                 .filter(it -> it.getStandard() <= insightCount)
                 .limit(1)
                 .findFirst()
