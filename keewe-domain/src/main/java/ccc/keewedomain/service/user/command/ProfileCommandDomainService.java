@@ -2,14 +2,10 @@ package ccc.keewedomain.service.user.command;
 
 import ccc.keewecore.consts.KeeweConsts;
 import ccc.keewecore.consts.KeeweRtnConsts;
-import ccc.keewecore.consts.TitleCategory;
 import ccc.keewecore.exception.KeeweException;
-import ccc.keewecore.utils.KeeweTitleHeader;
 import ccc.keewecore.utils.KeeweTransactionManager;
 import ccc.keewedomain.dto.user.*;
-import ccc.keewedomain.event.user.FollowFromInsightEvent;
-import ccc.keewedomain.persistence.domain.notification.Notification;
-import ccc.keewedomain.persistence.domain.notification.enums.NotificationContents;
+import ccc.keewedomain.event.follow.FollowCreateEvent;
 import ccc.keewedomain.persistence.domain.title.Title;
 import ccc.keewedomain.persistence.domain.title.TitleAchievement;
 import ccc.keewedomain.persistence.domain.title.id.TitleAchievementId;
@@ -22,13 +18,13 @@ import ccc.keewedomain.persistence.domain.user.id.FollowId;
 import ccc.keewedomain.persistence.repository.user.BlockRepository;
 import ccc.keewedomain.persistence.repository.user.FollowRepository;
 import ccc.keewedomain.persistence.repository.user.TitleAchievementRepository;
-import ccc.keewedomain.service.notification.command.NotificationCommandDomainService;
 import ccc.keewedomain.service.user.UserDomainService;
 import ccc.keewedomain.service.user.query.ProfileQueryDomainService;
 import ccc.keeweinfra.service.image.StoreService;
 import ccc.keeweinfra.service.messagequeue.MQPublishService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -42,10 +38,10 @@ public class ProfileCommandDomainService {
     private final StoreService storeService;
     private final TitleAchievementRepository titleAchievementRepository;
     private final BlockRepository blockRepository;
-    private final NotificationCommandDomainService notificationCommandDomainService;
     private final ProfileQueryDomainService profileQueryDomainService;
     private final MQPublishService mqPublishService;
     private final KeeweTransactionManager transactionManager;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     public User onboard(OnboardDto dto) {
         User user = userDomainService.getUserByIdOrElseThrow(dto.getUserId());
@@ -70,14 +66,12 @@ public class ProfileCommandDomainService {
                                 log.info("[PDS::toggleFollowership] 팔로우 관계 생성 - user({}), target({})", user.getId(), target.getId());
                                 Follow relation = Follow.makeRelation(user, target);
                                 followRepository.save(relation);
+                                FollowCreateEvent event = FollowCreateEvent.of(user.getId(), target.getId(), insightId);
+                                applicationEventPublisher.publishEvent(event);
                             }
                     );
             return profileQueryDomainService.isFollowing(FollowCheckDto.of(user.getId(), target.getId()));
         });
-        if (isFollowing) {
-            Follow follow = followRepository.findById(followId).orElseThrow();
-            afterFollowing(follow, insightId);
-        }
         return isFollowing;
     }
 
@@ -168,37 +162,6 @@ public class ProfileCommandDomainService {
             storeService.delete(user.getProfilePhotoURL());
             user.deleteProfilePhoto();
         }
-    }
-
-    private void afterFollowing(Follow follow, Long insightId) {
-        try {
-            Notification notification = Notification.of(follow.getFollowee(), NotificationContents.팔로우, String.valueOf(follow.getFollower().getId()));
-            notificationCommandDomainService.save(notification);
-            Long userId = follow.getFollower().getId();
-            Long targetId = follow.getFollowee().getId();
-            publishTitleEvent(userId, targetId);
-            if (insightId != null) {
-                FollowFromInsightEvent followFromInsightEvent = FollowFromInsightEvent.of(userId, targetId, insightId);
-                publishStatisticsEvent(followFromInsightEvent);
-            }
-        } catch (Throwable t) {
-            log.warn("[PDS::afterFollowing] 팔로우 후 작업 실패 - user({}), target({})", follow.getFollower().getId(), follow.getFollowee().getId(), t);
-        }
-    }
-
-    private void publishStatisticsEvent(FollowFromInsightEvent event) {
-        // note. 통계 이벤트 발행
-        log.info("[PDS::afterFollowing] 팔로잉 통계 이벤트 발행 - user({}), target({}), insightId({})", event.getFollowerId(), event.getFolloweeId(), event.getInsightId());
-        mqPublishService.publish(KeeweConsts.FOLLOW_FROM_INSIGHT_EXCHANGE, event);
-    }
-
-    private void publishTitleEvent(Long userId, Long targetId) {
-        // note. 타이틀 이벤트 발행
-        log.info("[PDS::afterFollowing] 팔로잉 타이틀 이벤트 발행 - user({}), target({})", userId, targetId);
-        KeeweTitleHeader followeeMessageHeader = KeeweTitleHeader.of(TitleCategory.FOLLOWEE, targetId.toString());
-        KeeweTitleHeader followingMessageHeader = KeeweTitleHeader.of(TitleCategory.FOLLOWING, userId.toString());
-        mqPublishService.publishWithEmptyMessage(KeeweConsts.DEFAULT_ROUTING_KEY, KeeweConsts.TITLE_STAT_QUEUE, followeeMessageHeader::toMessageWithHeader);
-        mqPublishService.publishWithEmptyMessage(KeeweConsts.DEFAULT_ROUTING_KEY, KeeweConsts.TITLE_STAT_QUEUE, followingMessageHeader::toMessageWithHeader);
     }
 
     private TitleAchievement getTitleAchievementById(Long userId, Long titleId) {
