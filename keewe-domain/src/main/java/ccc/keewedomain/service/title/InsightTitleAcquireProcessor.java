@@ -36,7 +36,7 @@ public class InsightTitleAcquireProcessor extends AbstractTitleAcquireProcessor 
         insightAggregationRepository.incrementInsightCount(header.getUserId());
         Long insightCount = insightAggregationRepository.get(header.getUserId());
         return Arrays.stream(InsightTitle.values())
-                .filter(it -> it.getStandard().equals(insightCount))
+                .filter(it -> it.getStandard() <= insightCount)
                 .limit(1)
                 .findFirst()
                 .map(InsightTitle::getId);

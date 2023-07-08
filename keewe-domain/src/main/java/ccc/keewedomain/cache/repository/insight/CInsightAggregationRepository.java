@@ -20,12 +20,11 @@ public class CInsightAggregationRepository {
         return Long.valueOf(count);
     }
 
-    public boolean saveIfAbsent(String userId) {
-        return redisTemplate.opsForValue().setIfAbsent(createInsightAggregateKey(userId), String.valueOf(0L));
+    public void saveIfAbsent(String userId) {
+        redisTemplate.opsForValue().setIfAbsent(createInsightAggregateKey(userId), String.valueOf(0L));
     }
 
     public String createInsightAggregateKey(String userId) {
         return TitleCategory.INSIGHT + "-" + userId;
     }
-
 }
