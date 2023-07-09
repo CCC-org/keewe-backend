@@ -16,7 +16,10 @@ public class DrawerQueryRepositoryImpl implements DrawerQueryRepository {
         Integer fetchFirst = queryFactory
                 .selectOne()
                 .from(drawer)
-                .where(drawer.user.id.eq(userId).and(drawer.name.eq(name)))
+                .where(drawer.user.id.eq(userId)
+                    .and(drawer.name.eq(name))
+                    .and(drawer.deleted.isFalse())
+                )
                 .fetchFirst();
         return fetchFirst != null;
     }
