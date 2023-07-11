@@ -50,7 +50,8 @@ public class UserApiService {
         Optional<User> userOps = userDomainService.getUserByVendorIdAndVendorType(account.getId(), vendorType);
         if(userOps.isPresent()) {
             log.info("[UAS::signupWithOauth] 로그인 완료 - email({})", account.getEmail());
-            return userAssembler.toUserSignUpResponse(userOps.get(), true, getToken(userOps.get().getId()));
+            User user = userOps.get();
+            return userAssembler.toUserSignUpResponse(user, user.isActive(), getToken(user.getId()));
         }
 
         User user = signUpWithOauth(
