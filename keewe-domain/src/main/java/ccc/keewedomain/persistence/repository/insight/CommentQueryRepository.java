@@ -145,7 +145,7 @@ public class CommentQueryRepository {
                         .and(comment.insight.id.eq(insightId))
                         .and(comment.parent.isNull())
                 )
-                .orderBy(comment.id.asc())
+                .orderBy(comment.id.desc())
                 .fetchFirst());
     }
 
