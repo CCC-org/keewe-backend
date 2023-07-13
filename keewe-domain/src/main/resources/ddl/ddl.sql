@@ -289,3 +289,11 @@ CREATE TABLE IF NOT EXISTS `profile_visit_from_insight`
 
     PRIMARY KEY (insight_id, user_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS `keewe_config`
+(
+    config_key varchar(50) NOT NULL,
+    value varchar(50) NOT NULL,
+
+    PRIMARY KEY (config_key)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

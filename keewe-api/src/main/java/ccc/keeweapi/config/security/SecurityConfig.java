@@ -26,6 +26,7 @@ public class SecurityConfig {
     private final String SIGNUP_URL = "/api/v1/user/*";
     private final String HEALTH_CHECK_URL = "/api/health-check";
     private final String FORCE_LOGIN_URL = "/api/v1/user/force-signup/**";
+    private final String LOGIN_CONFIG_URL = "/api/v1/config/**";
 
     private final UserDetailsService userService;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
@@ -40,6 +41,7 @@ public class SecurityConfig {
                 .antMatchers(GET, HEALTH_CHECK_URL)
                 .antMatchers(GET, "/api/v1/oauth/**")
                 .antMatchers("/h2-console/**")
+                .antMatchers(GET, LOGIN_CONFIG_URL)
                 .antMatchers(GET, FORCE_LOGIN_URL);
     }
 
