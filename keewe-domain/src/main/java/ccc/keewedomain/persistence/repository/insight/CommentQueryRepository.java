@@ -145,7 +145,7 @@ public class CommentQueryRepository {
                         .and(comment.insight.id.eq(insightId))
                         .and(comment.parent.isNull())
                 )
-                .orderBy(comment.id.desc())
+                .orderBy(comment.id.asc())
                 .fetchFirst());
     }
 
@@ -161,7 +161,7 @@ public class CommentQueryRepository {
 
     //각 부모 댓글의 첫 답글의 id 조회
     private JPQLQuery<Long> findFirstReplyIds(List<Comment> parents, Collection<Long> blockedUserIds) {
-        return JPAExpressions.select(comment.id.max())
+        return JPAExpressions.select(comment.id.min())
                 .from(comment)
                 .groupBy(comment.parent.id)
                 .where(comment.parent.in(parents)
