@@ -118,7 +118,7 @@ public class CommentQueryRepository {
                 .fetchJoin()
                 .leftJoin(user.repTitle, title)
                 .fetchJoin()
-                .where(comment.id.in(findIdByParentIdAndCursorDesc(parentId, cPage)))
+                .where(comment.id.in(findIdByParentIdAndCursorAsc(parentId, cPage)))
                 .orderBy(comment.id.asc())
                 .fetch();
     }
@@ -149,12 +149,12 @@ public class CommentQueryRepository {
                 .fetchFirst());
     }
 
-    private List<Long> findIdByParentIdAndCursorDesc(Long parentId, CursorPageable<Long> cPage) {
+    private List<Long> findIdByParentIdAndCursorAsc(Long parentId, CursorPageable<Long> cPage) {
         return queryFactory.select(comment.id)
                 .from(comment)
                 .where(comment.parent.id.eq(parentId)
-                        .and(comment.id.lt(cPage.getCursor())))
-                .orderBy(comment.id.desc())
+                        .and(comment.id.gt(cPage.getCursor())))
+                .orderBy(comment.id.asc())
                 .limit(cPage.getLimit())
                 .fetch();
     }
