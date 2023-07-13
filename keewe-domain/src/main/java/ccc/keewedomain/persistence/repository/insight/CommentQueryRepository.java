@@ -39,9 +39,9 @@ public class CommentQueryRepository {
                 .fetchJoin()
                 .where(comment.insight.id.eq(insightId)
                     .and(comment.parent.isNull())
-                    .and(comment.id.lt(cPage.getCursor()))
+                    .and(comment.id.gt(cPage.getCursor()))
                 )
-                .orderBy(comment.id.desc())
+                .orderBy(comment.id.asc())
                 .limit(cPage.getLimit())
                 .fetch();
     }
@@ -59,10 +59,10 @@ public class CommentQueryRepository {
                 .fetchJoin()
                 .where(comment.insight.id.eq(insightId)
                         .and(comment.parent.isNull())
-                        .and(comment.id.lt(cPage.getCursor()))
+                        .and(comment.id.gt(cPage.getCursor()))
                         .and(comment.writer.id.notIn(blockedUserIds))
                 )
-                .orderBy(comment.id.desc())
+                .orderBy(comment.id.asc())
                 .limit(cPage.getLimit())
                 .fetch();
     }

@@ -63,7 +63,7 @@ public class InsightCommentController {
     @GetMapping("/insights/{insightId}")
     public ApiResponse<List<CommentResponse>> getComments(
             @PathVariable Long insightId,
-            @RequestParam(required = false, defaultValue = LONG_MAX_STRING) Long cursor,
+            @RequestParam(required = false, defaultValue = "0") Long cursor,
             @RequestParam Long limit) {
 
         return ApiResponse.ok(insightCommentQueryApiService.getCommentsWithFirstReply(insightId, CursorPageable.of(cursor, limit)));
@@ -72,7 +72,7 @@ public class InsightCommentController {
     @GetMapping("{parentId}/replies")
     public ApiResponse<List<ReplyResponse>> getReplies(
             @PathVariable Long parentId,
-            @RequestParam(required = false, defaultValue = LONG_MAX_STRING) Long cursor,
+            @RequestParam(required = false, defaultValue = "0") Long cursor,
             @RequestParam Long limit) {
 
         return ApiResponse.ok(insightCommentQueryApiService.getReplies(parentId, CursorPageable.of(cursor, limit)));
