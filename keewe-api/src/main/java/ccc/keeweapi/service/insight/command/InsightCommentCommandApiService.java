@@ -7,6 +7,7 @@ import ccc.keeweapi.dto.insight.response.CommentDeleteResponse;
 import ccc.keewedomain.persistence.domain.insight.Comment;
 import ccc.keewedomain.persistence.domain.notification.Notification;
 import ccc.keewedomain.persistence.domain.notification.enums.NotificationContents;
+import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.service.insight.command.CommentCommandDomainService;
 import ccc.keewedomain.service.notification.command.NotificationCommandDomainService;
 import lombok.RequiredArgsConstructor;
@@ -42,8 +43,17 @@ public class InsightCommentCommandApiService {
             Long insightWriterId = comment.getInsight().getWriter().getId();
             Long commentWriterId = comment.getWriter().getId();
             if (!ObjectUtils.nullSafeEquals(insightWriterId, commentWriterId)) {
-                NotificationContents contents = (comment.getParent() != null) ? NotificationContents.답글 : NotificationContents.댓글;
-                Notification notification = Notification.of(comment.getInsight().getWriter(), contents, String.valueOf(comment.getId()));
+                String referenceId = String.valueOf(comment.getId());
+                User insightWriter = comment.getInsight().getWriter();
+                if (comment.getParent() != null) {
+                    NotificationContents contents = NotificationContents.답글;
+                    Notification notificationOfInsightWriter = Notification.of(insightWriter, contents, referenceId);
+                    Notification notificationOfCommentWriter = Notification.of(comment.getParent().getWriter(), contents, referenceId);
+                    notificationCommandDomainService.save(notificationOfInsightWriter);
+                    notificationCommandDomainService.save(notificationOfCommentWriter);
+                    return;
+                }
+                Notification notification = Notification.of(insightWriter, NotificationContents.댓글, referenceId);
                 notificationCommandDomainService.save(notification);
             }
         } catch (Throwable t) {
