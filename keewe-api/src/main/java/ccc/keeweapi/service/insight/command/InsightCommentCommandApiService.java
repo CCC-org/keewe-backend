@@ -16,6 +16,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
+import java.util.Objects;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -35,7 +37,8 @@ public class InsightCommentCommandApiService {
     @Transactional
     public CommentDeleteResponse delete(Long commentId) {
         return insightAssembler.toCommentDeleteResponse(
-                commentCommandDomainService.delete(insightAssembler.toCommentDeleteDto(commentId)));
+            commentCommandDomainService.delete(insightAssembler.toCommentDeleteDto(commentId))
+        );
     }
 
     public void afterLeaveComment(Comment comment) {
@@ -48,9 +51,12 @@ public class InsightCommentCommandApiService {
                 if (comment.getParent() != null) {
                     NotificationContents contents = NotificationContents.답글;
                     Notification notificationOfInsightWriter = Notification.of(insightWriter, contents, referenceId);
-                    Notification notificationOfCommentWriter = Notification.of(comment.getParent().getWriter(), contents, referenceId);
                     notificationCommandDomainService.save(notificationOfInsightWriter);
-                    notificationCommandDomainService.save(notificationOfCommentWriter);
+                    // note. 댓글 작성자 != 답글 작성자인 경우 알림 생성
+                    if (!ObjectUtils.nullSafeEquals(comment.getParent().getWriter().getId(), commentWriterId)) {
+                        Notification notificationOfCommentWriter = Notification.of(comment.getParent().getWriter(), contents, referenceId);
+                        notificationCommandDomainService.save(notificationOfCommentWriter);
+                    }
                     return;
                 }
                 Notification notification = Notification.of(insightWriter, NotificationContents.댓글, referenceId);
