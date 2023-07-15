@@ -16,7 +16,6 @@ public final class SecurityUtil {
         if(ObjectUtils.isEmpty(principal.getUser())) {
             throw new KeeweException(KeeweRtnConsts.ERR404);
         }
-
         return principal.getUser();
     }
 

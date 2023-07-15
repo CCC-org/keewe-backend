@@ -49,6 +49,9 @@ public enum NotificationContents {
     챌린지_종료_전_실패알림(NotificationCategory.CHALLENGE, "%s", "챌린지가 곧 종료돼요."),
     챌린지_종료(NotificationCategory.CHALLENGE, "%s", "챌린지가 종료되었어요."),
     챌린지_종료_후_재도전(NotificationCategory.CHALLENGE, "%s", "챌린지 재도전하러 가기"),
+
+    // challengeInvite
+    챌린지_초대(NotificationCategory.CHALLENGE_INVITE, "%s", "%s에 초대했어요."),
     ;
 
     NotificationCategory category;

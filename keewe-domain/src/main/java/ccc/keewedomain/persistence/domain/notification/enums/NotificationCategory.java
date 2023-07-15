@@ -6,5 +6,7 @@ public enum NotificationCategory {
     COMMENT,
     COMMENT_REPLY,
     REACTION,
-    CHALLENGE
+    CHALLENGE,
+    CHALLENGE_INVITE
+    ;
 }
