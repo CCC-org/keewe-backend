@@ -23,7 +23,7 @@ public class TitleNotificationProcessor implements NotificationProcessor {
             contents.getCategory(),
             notification.getReferenceId(),
             notification.isRead(),
-            notification.getCreatedAt().toLocalDate().toString()
+            notification.getCreatedAt().toString()
         );
     }
 }

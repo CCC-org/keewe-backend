@@ -32,7 +32,7 @@ public class FollowNotificationProcessor implements NotificationProcessor {
             contents.getCategory(),
             followerId, // note. 클릭 시 프로필로 이동
             notification.isRead(),
-            notification.getCreatedAt().toLocalDate().toString()
+            notification.getCreatedAt().toString()
         );
     }
 }

@@ -37,7 +37,7 @@ public class ReactionNotificationProcessor implements NotificationProcessor {
             contents.getCategory(),
             String.valueOf(reaction.getInsight().getId()), // note. 클릭 시 인사이트로 이동
             notification.isRead(),
-            notification.getCreatedAt().toLocalDate().toString()
+            notification.getCreatedAt().toString()
         );
     }
 }
