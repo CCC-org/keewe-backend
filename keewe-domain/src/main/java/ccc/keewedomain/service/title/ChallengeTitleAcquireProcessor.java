@@ -5,8 +5,8 @@ import ccc.keewecore.utils.KeeweTitleHeader;
 import ccc.keewedomain.persistence.repository.user.TitleAchievementRepository;
 import ccc.keewedomain.persistence.repository.user.TitleRepository;
 import ccc.keewedomain.persistence.repository.user.UserRepository;
-import ccc.keewedomain.service.challenge.query.ChallengeParticipateQueryDomainService;
 import ccc.keewedomain.service.challenge.query.ChallengeQueryDomainService;
+import ccc.keewedomain.service.notification.command.NotificationCommandDomainService;
 import ccc.keewedomain.service.user.UserDomainService;
 import ccc.keeweinfra.service.messagequeue.MQPublishService;
 import org.springframework.stereotype.Service;
@@ -25,9 +25,9 @@ public class ChallengeTitleAcquireProcessor extends AbstractTitleAcquireProcesso
             UserRepository userRepository,
             TitleRepository titleRepository,
             ChallengeQueryDomainService challengeQueryDomainService,
-            ChallengeParticipateQueryDomainService challengeParticipateQueryDomainService
+            NotificationCommandDomainService notificationCommandDomainService
     ) {
-        super(mqPublishService, titleAchievementRepository, userDomainService, userRepository, titleRepository);
+        super(mqPublishService, titleAchievementRepository, userDomainService, userRepository, titleRepository, notificationCommandDomainService);
         this.challengeQueryDomainService = challengeQueryDomainService;
     }
 

@@ -8,6 +8,7 @@ import ccc.keewedomain.persistence.domain.title.enums.ReactionTitle;
 import ccc.keewedomain.persistence.repository.user.TitleAchievementRepository;
 import ccc.keewedomain.persistence.repository.user.TitleRepository;
 import ccc.keewedomain.persistence.repository.user.UserRepository;
+import ccc.keewedomain.service.notification.command.NotificationCommandDomainService;
 import ccc.keewedomain.service.user.UserDomainService;
 import ccc.keeweinfra.service.messagequeue.MQPublishService;
 import lombok.extern.slf4j.Slf4j;
@@ -25,9 +26,10 @@ public class FirstReactionTitleAcquireProcessor extends AbstractTitleAcquireProc
             TitleAchievementRepository titleAchievementRepository,
             UserDomainService userDomainService,
             UserRepository userRepository,
-            TitleRepository titleRepository
+            TitleRepository titleRepository,
+            NotificationCommandDomainService notificationCommandDomainService
     ) {
-        super(mqPublishService, titleAchievementRepository, userDomainService, userRepository, titleRepository);
+        super(mqPublishService, titleAchievementRepository, userDomainService, userRepository, titleRepository, notificationCommandDomainService);
         this.cFirstReactionAggregationRepository = cFirstReactionAggregationRepository;
     }
 

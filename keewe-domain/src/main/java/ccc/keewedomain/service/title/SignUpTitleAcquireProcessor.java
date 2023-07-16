@@ -5,6 +5,7 @@ import ccc.keewecore.utils.KeeweTitleHeader;
 import ccc.keewedomain.persistence.repository.user.TitleAchievementRepository;
 import ccc.keewedomain.persistence.repository.user.TitleRepository;
 import ccc.keewedomain.persistence.repository.user.UserRepository;
+import ccc.keewedomain.service.notification.command.NotificationCommandDomainService;
 import ccc.keewedomain.service.user.UserDomainService;
 import ccc.keeweinfra.service.messagequeue.MQPublishService;
 import java.util.List;
@@ -19,9 +20,10 @@ public class SignUpTitleAcquireProcessor extends AbstractTitleAcquireProcessor {
         TitleAchievementRepository titleAchievementRepository,
         UserDomainService userDomainService,
         UserRepository userRepository,
-        TitleRepository titleRepository
+        TitleRepository titleRepository,
+        NotificationCommandDomainService notificationCommandDomainService
     ) {
-        super(mqPublishService, titleAchievementRepository, userDomainService, userRepository, titleRepository);
+        super(mqPublishService, titleAchievementRepository, userDomainService, userRepository, titleRepository, notificationCommandDomainService);
     }
 
     @Override

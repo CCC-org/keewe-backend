@@ -5,12 +5,15 @@ import ccc.keewecore.consts.TitleCategory;
 import ccc.keewecore.dto.TitleEvent;
 import ccc.keewecore.utils.KeeweTitleHeader;
 import ccc.keewecore.utils.ObjectMapperUtils;
+import ccc.keewedomain.persistence.domain.notification.Notification;
+import ccc.keewedomain.persistence.domain.notification.enums.NotificationContents;
 import ccc.keewedomain.persistence.domain.title.Title;
 import ccc.keewedomain.persistence.domain.title.TitleAchievement;
 import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.persistence.repository.user.TitleAchievementRepository;
 import ccc.keewedomain.persistence.repository.user.TitleRepository;
 import ccc.keewedomain.persistence.repository.user.UserRepository;
+import ccc.keewedomain.service.notification.command.NotificationCommandDomainService;
 import ccc.keewedomain.service.user.UserDomainService;
 import ccc.keeweinfra.service.messagequeue.MQPublishService;
 import lombok.extern.slf4j.Slf4j;
@@ -28,19 +31,22 @@ public abstract class AbstractTitleAcquireProcessor {
     private final UserDomainService userDomainService;
     private final UserRepository userRepository;
     private final TitleRepository titleRepository;
+    private final NotificationCommandDomainService notificationCommandDomainService;
 
     protected AbstractTitleAcquireProcessor(
         MQPublishService mqPublishService,
         TitleAchievementRepository titleAchievementRepository,
         UserDomainService userDomainService,
         UserRepository userRepository,
-        TitleRepository titleRepository
+        TitleRepository titleRepository,
+        NotificationCommandDomainService notificationCommandDomainService
     ) {
         this.mqPublishService = mqPublishService;
         this.titleAchievementRepository = titleAchievementRepository;
         this.userDomainService = userDomainService;
         this.userRepository = userRepository;
         this.titleRepository = titleRepository;
+        this.notificationCommandDomainService = notificationCommandDomainService;
     }
 
     @Transactional
@@ -61,6 +67,11 @@ public abstract class AbstractTitleAcquireProcessor {
             titleAchievementRepository.save(TitleAchievement.of(user, title));
             log.info("[TitleAcquireProcessor] 타이틀 획득 - titleId({}), userId({})", titleId, header.getUserId());
             Long titleAchievementCount = titleAchievementRepository.countByUser(user);
+
+            // 알림 추가
+            NotificationContents contents = NotificationContents.findByTitleId(title.getId());
+            Notification notification = Notification.of(user, contents, "");
+            notificationCommandDomainService.save(notification);
 
             // 최초 타이틀은 대표 타이틀로 설정
             if (titleAchievementCount <= 1) {

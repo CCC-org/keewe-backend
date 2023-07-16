@@ -7,6 +7,7 @@ import ccc.keewedomain.persistence.repository.user.FollowQueryRepository;
 import ccc.keewedomain.persistence.repository.user.TitleAchievementRepository;
 import ccc.keewedomain.persistence.repository.user.TitleRepository;
 import ccc.keewedomain.persistence.repository.user.UserRepository;
+import ccc.keewedomain.service.notification.command.NotificationCommandDomainService;
 import ccc.keewedomain.service.user.UserDomainService;
 import ccc.keeweinfra.service.messagequeue.MQPublishService;
 import lombok.extern.slf4j.Slf4j;
@@ -25,9 +26,10 @@ public class FollowingTitleAcquireProcessor extends AbstractTitleAcquireProcesso
             UserDomainService userDomainService,
             UserRepository userRepository,
             TitleRepository titleRepository,
-            FollowQueryRepository followQueryRepository
+            FollowQueryRepository followQueryRepository,
+            NotificationCommandDomainService notificationCommandDomainService
     ) {
-        super(mqPublishService, titleAchievementRepository, userDomainService, userRepository, titleRepository);
+        super(mqPublishService, titleAchievementRepository, userDomainService, userRepository, titleRepository, notificationCommandDomainService);
         this.userDomainService = userDomainService;
         this.followQueryRepository = followQueryRepository;
     }
