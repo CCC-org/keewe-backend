@@ -79,11 +79,13 @@ public class InsightQueryRepository {
     }
 
     public Map<Long, Long> countValidPerParticipation(List<ChallengeParticipation> participations) {
-        return queryFactory.select(insight.id.count())
+        return queryFactory.select(insight.challengeParticipation.id, insight.id.count())
                 .from(insight)
-                .where(insight.challengeParticipation.in(participations))
-                .where(insight.valid.isTrue())
-                .transform(GroupBy.groupBy(challengeParticipation.id).as(insight.count()));
+                .where(insight.challengeParticipation.in(participations)
+                        .and(insight.valid.isTrue())
+                )
+                .groupBy(insight.challengeParticipation.id)
+                .transform(GroupBy.groupBy(insight.challengeParticipation.id).as(insight.count()));
     }
 
     public List<Insight> findAllForHome(User user, CursorPageable<Long> cPage, Boolean follow) {
