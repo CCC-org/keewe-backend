@@ -55,6 +55,10 @@ public class InsightCommentQueryApiService {
         Map<Long, Long> replyNumberPerParentId = commentQueryDomainService.getReplyNumbers(comments, userId);
 
         List<CommentResponse> responses = comments.stream()
+                .filter(comment -> {
+                    Long replyNumber = replyNumberPerParentId.getOrDefault(comment.getId(), 0L);
+                    return !(replyNumber <= 0 && comment.isDeleted());
+                })
                 .map(comment -> commentAssembler.toCommentResponse(
                         comment,
                         firstReplyPerParentId.get(comment.getId()),

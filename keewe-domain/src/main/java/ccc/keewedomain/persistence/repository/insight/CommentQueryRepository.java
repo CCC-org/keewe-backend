@@ -61,6 +61,7 @@ public class CommentQueryRepository {
                         .and(comment.parent.isNull())
                         .and(comment.id.gt(cPage.getCursor()))
                         .and(comment.writer.id.notIn(blockedUserIds))
+                        .and(comment.deleted.isFalse())
                 )
                 .orderBy(comment.id.asc())
                 .limit(cPage.getLimit())
