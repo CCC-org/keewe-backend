@@ -121,7 +121,9 @@ public class CommentQueryRepository {
                 .fetchJoin()
                 .leftJoin(user.repTitle, title)
                 .fetchJoin()
-                .where(comment.id.in(findIdByParentIdAndCursorAsc(parentId, cPage)))
+                .where(comment.id.in(findIdByParentIdAndCursorAsc(parentId, cPage))
+                    .and(comment.deleted.isFalse())
+                )
                 .orderBy(comment.id.asc())
                 .fetch();
     }
