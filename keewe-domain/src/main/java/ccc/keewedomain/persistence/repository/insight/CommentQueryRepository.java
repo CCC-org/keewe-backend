@@ -96,7 +96,9 @@ public class CommentQueryRepository {
     public Long countByInsightId(Long insightId) {
         return queryFactory.select(comment.count())
                 .from(comment)
-                .where(comment.insight.id.eq(insightId))
+                .where(comment.insight.id.eq(insightId)
+                    .and(comment.deleted.isFalse())
+                )
                 .fetchFirst();
     }
 
