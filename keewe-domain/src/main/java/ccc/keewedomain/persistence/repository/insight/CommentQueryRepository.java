@@ -109,7 +109,10 @@ public class CommentQueryRepository {
                 .fetchJoin()
                 .leftJoin(user.repTitle, title)
                 .fetchJoin()
-                .where(comment.id.in(findFirstReplyIds(parents, blockedUserIds)))
+                .where(
+                    comment.id.in(findFirstReplyIds(parents, blockedUserIds))
+                        .and(comment.deleted.isFalse())
+                )
                 .transform(GroupBy.groupBy(comment.parent.id).as(comment));
     }
 
@@ -133,7 +136,9 @@ public class CommentQueryRepository {
                 .from(comment)
                 .groupBy(comment.parent.id)
                 .where(comment.parent.in(parents)
-                        .and(comment.writer.id.notIn(blockedUserIds)))
+                    .and(comment.writer.id.notIn(blockedUserIds))
+                    .and(comment.deleted.isFalse())
+                )
                 .transform(GroupBy.groupBy(comment.parent.id).as(comment.count()));
     }
 
@@ -147,9 +152,9 @@ public class CommentQueryRepository {
                 .leftJoin(user.repTitle, title)
                 .fetchJoin()
                 .where(comment.writer.eq(writer)
-                        .and(comment.insight.id.eq(insightId))
-                        .and(comment.parent.isNull())
-                        .and(comment.deleted.isFalse())
+                    .and(comment.insight.id.eq(insightId))
+                    .and(comment.parent.isNull())
+                    .and(comment.deleted.isFalse())
                 )
                 .orderBy(comment.id.desc())
                 .fetchFirst());
