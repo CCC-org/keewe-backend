@@ -145,6 +145,7 @@ public class CommentQueryRepository {
                 .where(comment.writer.eq(writer)
                         .and(comment.insight.id.eq(insightId))
                         .and(comment.parent.isNull())
+                        .and(comment.deleted.isFalse())
                 )
                 .orderBy(comment.id.desc())
                 .fetchFirst());
