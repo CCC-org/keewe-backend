@@ -111,7 +111,6 @@ public class CommentQueryRepository {
                 .fetchJoin()
                 .where(
                     comment.id.in(findFirstReplyIds(parents, blockedUserIds))
-                        .and(comment.deleted.isFalse())
                 )
                 .transform(GroupBy.groupBy(comment.parent.id).as(comment));
     }
@@ -176,7 +175,8 @@ public class CommentQueryRepository {
                 .from(comment)
                 .groupBy(comment.parent.id)
                 .where(comment.parent.in(parents)
-                        .and(comment.writer.id.notIn(blockedUserIds))
+                    .and(comment.writer.id.notIn(blockedUserIds))
+                    .and(comment.deleted.isFalse())
                 );
     }
 
