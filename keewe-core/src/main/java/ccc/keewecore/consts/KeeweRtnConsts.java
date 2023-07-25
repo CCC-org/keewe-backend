@@ -19,6 +19,7 @@ public enum KeeweRtnConsts {
 
     ERR411(KeeweRtnGrp.Validation, 411, "유저를 찾을 수 없어요."),
     ERR412(KeeweRtnGrp.Validation, 412, "유저가 이메일 제공에 동의를 하지 않았어요."),
+    ERR413(KeeweRtnGrp.Validation, 413, "유저 토큰이 존재하지 않아요."),
 
     ERR420(KeeweRtnGrp.Validation, 420, "닉네임의 길이가 초과됐어요."),
     ERR421(KeeweRtnGrp.Validation, 421, "닉네임이 비어있어요."),

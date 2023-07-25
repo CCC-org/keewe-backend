@@ -9,6 +9,7 @@ import ccc.keewecore.consts.KeeweConsts;
 import ccc.keewecore.consts.TitleCategory;
 import ccc.keewecore.utils.KeeweStringUtils;
 import ccc.keewecore.utils.KeeweTitleHeader;
+import ccc.keewedomain.dto.user.UserTokenRegisterDto;
 import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.persistence.domain.user.enums.VendorType;
 import ccc.keewedomain.service.challenge.command.ChallengeCommandDomainService;
@@ -61,8 +62,10 @@ public class UserApiService {
         );
 
         this.afterTheFirstSignUp(user);
+        String accessToken = getToken(user.getId());
+        userCommandDomainService.registerToken(UserTokenRegisterDto.of(user.getId(), accessToken, null, null));
         log.info("[UAS::signupWithOauth] 회원가입 완료 - email({})", account.getEmail());
-        return userAssembler.toUserSignUpResponse(user, false, getToken(user.getId()));
+        return userAssembler.toUserSignUpResponse(user, false, accessToken);
     }
 
     public String getToken(Long userId) {
