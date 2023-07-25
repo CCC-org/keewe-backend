@@ -14,8 +14,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.PostConstruct;
-
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -31,11 +29,6 @@ public class UserCommandDomainService {
         storeService.delete(user.getProfilePhotoURL());
         user.withdraw();
         return userRepository.save(user);
-    }
-
-    @PostConstruct
-    public void job() {
-        userRepository.findAll().forEach(user -> userTokenRepository.save(UserToken.of(user.getId(), null, null, null)));
     }
 
     @Transactional
