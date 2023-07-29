@@ -52,6 +52,8 @@ public class UserApiService {
         if(userOps.isPresent()) {
             log.info("[UAS::signupWithOauth] 로그인 완료 - email({})", account.getEmail());
             User user = userOps.get();
+            String accessToken = getToken(user.getId());
+            userCommandDomainService.registerToken(UserTokenRegisterDto.of(user.getId(), accessToken, null, null));
             return userAssembler.toUserSignUpResponse(user, user.isActive(), getToken(user.getId()));
         }
 
@@ -61,9 +63,9 @@ public class UserApiService {
                 , KeeweStringUtils.getOrDefault(account.getEmail(), "")
         );
 
-        this.afterTheFirstSignUp(user);
         String accessToken = getToken(user.getId());
         userCommandDomainService.registerToken(UserTokenRegisterDto.of(user.getId(), accessToken, null, null));
+        this.afterTheFirstSignUp(user);
         log.info("[UAS::signupWithOauth] 회원가입 완료 - email({})", account.getEmail());
         return userAssembler.toUserSignUpResponse(user, false, accessToken);
     }
