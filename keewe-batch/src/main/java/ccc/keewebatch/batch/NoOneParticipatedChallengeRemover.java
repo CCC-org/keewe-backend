@@ -1,5 +1,6 @@
 package ccc.keewebatch.batch;
 
+import ccc.keewebatch.helper.UniqueRunIdIncrementer;
 import ccc.keewecore.utils.ListUtils;
 import ccc.keewedomain.persistence.domain.challenge.Challenge;
 import ccc.keewedomain.persistence.domain.challenge.ChallengeParticipation;
@@ -15,9 +16,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobExecutionListener;
-import org.springframework.batch.core.JobParameters;
-import org.springframework.batch.core.JobParametersBuilder;
-import org.springframework.batch.core.JobParametersIncrementer;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.JobScope;
@@ -40,19 +38,6 @@ public class NoOneParticipatedChallengeRemover {
     // const zone
     private static final String JOB_NAME = "noOneParticipatedChallengeRemoveJob";
     private static final Long CHUCK_SIZE = 100L;
-
-    static class UniqueRunIdIncrementer implements JobParametersIncrementer {
-        private String runId = "run.id";
-
-        @Override
-        public JobParameters getNext(JobParameters parameters) {
-            JobParameters params = parameters != null ? parameters : new JobParameters();
-            Long id = params.getLong(runId) != null ? params.getLong(runId) : 0L;
-            return new JobParametersBuilder()
-                    .addLong(runId, id + 1)
-                    .toJobParameters();
-        }
-    }
 
     @Bean
     public Job noOneParticipatedChallengeRemoveJob(Step noOneParticipateChallengeRemoveStep) {

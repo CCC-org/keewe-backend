@@ -1,6 +1,7 @@
 package ccc.keewebatch.batch;
 
 import static ccc.keewebatch.batch.DailyChallengeRecorder.JOB_NAME;
+import ccc.keewebatch.helper.UniqueRunIdIncrementer;
 import ccc.keewecore.utils.DateTimeUtils;
 import ccc.keewedomain.persistence.domain.challenge.ChallengeParticipation;
 import ccc.keewedomain.persistence.domain.challenge.ChallengeRecord;
@@ -48,13 +49,15 @@ public class DailyChallengeRecorder {
     @Bean
     public Job challengeRecordCheckJob() {
         return jobBuilderFactory.get(JOB_NAME)
-                .start(step1())
+                .preventRestart()
+                .incrementer(new UniqueRunIdIncrementer())
+                .start(challengeRecordStep())
                 .build();
     }
 
     @Bean
-    public Step step1() {
-        return stepBuilderFactory.get("step1")
+    public Step challengeRecordStep() {
+        return stepBuilderFactory.get("challengeRecordStep")
                 .<ChallengeParticipation, ChallengeParticipation>chunk(chunkSize)
                 .reader(reader(null))
                 .processor(processor(null))
