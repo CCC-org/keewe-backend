@@ -38,8 +38,6 @@ public class AppleAuthController {
         UriComponents uri = UriComponentsBuilder.fromUriString(appleUrl)
                 .pathSegment("auth", "authorize")
                 .queryParam("response_type", responseType)
-                .queryParam("response_mode", "form_post")
-                .queryParam("scope", scope)
                 .queryParam("client_id", clientId)
                 .queryParam("redirect_uri", redirectUrl)
                 .build();
