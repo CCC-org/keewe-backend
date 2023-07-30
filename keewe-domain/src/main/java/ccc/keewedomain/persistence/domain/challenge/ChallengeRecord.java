@@ -53,5 +53,8 @@ public class ChallengeRecord extends BaseTimeEntity {
     // TODO(YHS). 한 개 씩 증가하는 방식으로 업데이트
     public void updateRecordCount(int recordCount) {
         this.recordCount = recordCount;
+        if (recordCount >= goalCount) {
+            this.success = true;
+        }
     }
 }
