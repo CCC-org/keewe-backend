@@ -145,9 +145,7 @@ CREATE TABLE IF NOT EXISTS `drawer`
     created_at      DATETIME(6)     NOT NULL,
     updated_at      DATETIME(6)     NOT NULL,
 
-    PRIMARY KEY (drawer_id),
-    FOREIGN KEY (user_id) REFERENCES `user`(user_id),
-    CONSTRAINT `drawer_name_constraint` UNIQUE (user_id, name)
+    PRIMARY KEY (drawer_id)
 ) ENGINE = InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS `insight`
@@ -296,4 +294,25 @@ CREATE TABLE IF NOT EXISTS `keewe_config`
     value varchar(50) NOT NULL,
 
     PRIMARY KEY (config_key)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS `user_token` (
+    user_id BIGINT NOT NULL,
+    access_token VARCHAR(100),
+    refresh_token VARCHAR(100),
+    push_token VARCHAR(100),
+
+    PRIMARY KEY (user_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS `challenge_record` (
+    challenge_record_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    user_id BIGINT,
+    challenge_participation_id BIGINT,
+    week INT NOT NULL,
+    record_count INT NOT NULL,
+    goal_count INT NOT NULL,
+    success TINYINT(1) NOT NULL,
+    created_at          DATETIME(6)     NOT NULL,
+    updated_at          DATETIME(6)     NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
