@@ -312,5 +312,7 @@ CREATE TABLE IF NOT EXISTS `challenge_record` (
     week INT NOT NULL,
     record_count INT NOT NULL,
     goal_count INT NOT NULL,
-    success TINYINT(1) NOT NULL
+    success TINYINT(1) NOT NULL,
+    created_at          DATETIME(6)     NOT NULL,
+    updated_at          DATETIME(6)     NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
