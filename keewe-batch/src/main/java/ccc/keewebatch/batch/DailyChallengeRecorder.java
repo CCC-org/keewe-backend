@@ -6,7 +6,6 @@ import ccc.keewedomain.persistence.domain.challenge.ChallengeParticipation;
 import ccc.keewedomain.persistence.domain.challenge.ChallengeRecord;
 import ccc.keewedomain.persistence.repository.challenge.ChallengeRecordRepository;
 import ccc.keewedomain.service.insight.query.InsightQueryDomainService;
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -107,32 +106,14 @@ public class DailyChallengeRecorder {
     public ItemProcessor<ChallengeParticipation, ChallengeParticipation> processor(@Value("#{jobParameters[endDateStr]}") String currentDateStr) {
         LocalDate currentDate = LocalDate.parse(currentDateStr);
         LocalDateTime currentDateTime = LocalDateTime.of(currentDate, LocalTime.MIN);
-        // TODO. 성공/실패 처리 제거 후 별도 분리
         return cp -> {
             int remainDays = getRemainDays(cp.getCreatedAt(), currentDateTime);
             LocalDateTime weekStartDateTime = currentDateTime.minusDays(7 - remainDays);
             Long insightCount = insightQueryDomainService.countInsightCreatedAtBetween(cp, weekStartDateTime, currentDateTime);
-            int remainInsightCount = (int) (cp.getInsightPerWeek() - insightCount);
-
-            if (remainDays < remainInsightCount) {
-                // 실패
-                cp.expire(LocalDate.now().minusDays(1L));
-            } else if (isSuccess(currentDate, cp.getEndDate(), remainInsightCount)) {
-                // 성공
-                cp.complete();
-            }
             int currentWeek = DateTimeUtils.getWeekCountByRange(cp.getCreatedAt(), cp.getEndDate().atTime(LocalTime.MIDNIGHT), currentDateTime);
-            record(cp, currentWeek, remainInsightCount);
+            this.record(cp, currentWeek, insightCount.intValue());
             return cp;
         };
-    }
-
-    private boolean isSuccess(LocalDate currentDate, LocalDate challengeEndDate, int remainInsightNumber) {
-        return remainInsightNumber == 0 && isLastWeek(currentDate, challengeEndDate);
-    }
-
-    private boolean isLastWeek(LocalDate startDate, LocalDate endDate) {
-        return Duration.between(startDate, endDate).toDays() < 7;
     }
 
     private int getRemainDays(LocalDateTime startDateTime, LocalDateTime endDateTime) {

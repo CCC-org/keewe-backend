@@ -5,15 +5,22 @@ import ccc.keewecore.exception.KeeweException;
 import ccc.keewedomain.persistence.domain.challenge.enums.ChallengeParticipationStatus;
 import ccc.keewedomain.persistence.domain.common.BaseTimeEntity;
 import ccc.keewedomain.persistence.domain.user.User;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
-import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.Period;
-
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import static javax.persistence.FetchType.LAZY;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import static lombok.AccessLevel.PROTECTED;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "challenge_participation")
@@ -90,8 +97,7 @@ public class ChallengeParticipation extends BaseTimeEntity {
         initEndDate();
     }
 
-    public void expire(LocalDate endDate) {
-        this.endDate = endDate;
+    public void expire() {
         this.status = ChallengeParticipationStatus.EXPIRED;
     }
 
