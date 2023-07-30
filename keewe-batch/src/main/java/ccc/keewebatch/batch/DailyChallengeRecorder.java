@@ -1,6 +1,5 @@
 package ccc.keewebatch.batch;
 
-import static ccc.keewebatch.batch.DailyChallengeRecorder.JOB_NAME;
 import ccc.keewebatch.helper.UniqueRunIdIncrementer;
 import ccc.keewecore.utils.DateTimeUtils;
 import ccc.keewedomain.persistence.domain.challenge.ChallengeParticipation;
@@ -18,6 +17,8 @@ import javax.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
+import org.springframework.batch.core.JobExecution;
+import org.springframework.batch.core.JobExecutionListener;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
@@ -28,14 +29,12 @@ import org.springframework.batch.item.database.JpaCursorItemReader;
 import org.springframework.batch.item.database.builder.JpaCursorItemReaderBuilder;
 import org.springframework.batch.item.database.builder.JpaItemWriterBuilder;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @RequiredArgsConstructor
 @Slf4j
-@ConditionalOnProperty(name ="job.name", havingValue = JOB_NAME)
 public class DailyChallengeRecorder {
     private final JobBuilderFactory jobBuilderFactory;
     private final StepBuilderFactory stepBuilderFactory;
@@ -43,22 +42,32 @@ public class DailyChallengeRecorder {
     private final InsightQueryDomainService insightQueryDomainService;
     private final ChallengeRecordRepository challengeRecordRepository;
 
-    private final int chunkSize = 100;
-    public static final String JOB_NAME = "challengeRecordCheck";
+    private final int CHUCK_SIZE = 100;
 
     @Bean
-    public Job challengeRecordCheckJob() {
-        return jobBuilderFactory.get(JOB_NAME)
+    public Job challengeRecordCheckJob(Step challengeRecordStep) {
+        return jobBuilderFactory.get("challengeRecordCheck")
                 .preventRestart()
                 .incrementer(new UniqueRunIdIncrementer())
-                .start(challengeRecordStep())
+                .start(challengeRecordStep)
+                .listener(new JobExecutionListener() {
+                    @Override
+                    public void beforeJob(JobExecution jobExecution) {
+                        log.info("[DailyChallengeRecorder] 데일리 챌린지 기록 시작");
+                    }
+
+                    @Override
+                    public void afterJob(JobExecution jobExecution) {
+                        log.info("[DailyChallengeRecorder] 데일리 챌린지 기록 종료");
+                    }
+                })
                 .build();
     }
 
     @Bean
     public Step challengeRecordStep() {
         return stepBuilderFactory.get("challengeRecordStep")
-                .<ChallengeParticipation, ChallengeParticipation>chunk(chunkSize)
+                .<ChallengeParticipation, ChallengeParticipation>chunk(CHUCK_SIZE)
                 .reader(reader(null))
                 .processor(processor(null))
                 .writer(writer())
@@ -138,7 +147,7 @@ public class DailyChallengeRecorder {
             challengeRecordRepository.save(challengeRecord);
             return;
         }
-        ChallengeRecord challengeRecord = ChallengeRecord.initialize(challengeParticipation, 1);
+        ChallengeRecord challengeRecord = ChallengeRecord.initialize(challengeParticipation, weekCount);
         challengeRecord.updateRecordCount(insightCount);
         challengeRecordRepository.save(challengeRecord);
     }

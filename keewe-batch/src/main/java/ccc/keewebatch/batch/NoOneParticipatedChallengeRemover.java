@@ -36,12 +36,11 @@ public class NoOneParticipatedChallengeRemover {
     private final ChallengeCommandDomainService challengeCommandDomainService;
 
     // const zone
-    private static final String JOB_NAME = "noOneParticipatedChallengeRemoveJob";
     private static final Long CHUCK_SIZE = 100L;
 
     @Bean
     public Job noOneParticipatedChallengeRemoveJob(Step noOneParticipateChallengeRemoveStep) {
-        return jobBuilderFactory.get(JOB_NAME)
+        return jobBuilderFactory.get("noOneParticipatedChallengeRemoveJob")
                 .preventRestart()
                 .incrementer(new UniqueRunIdIncrementer())
                 .start(noOneParticipateChallengeRemoveStep)
