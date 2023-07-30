@@ -2,7 +2,7 @@ server:
   shutdown: graceful
 spring:
   profiles:
-    include: domain, core
+    include: domain, core, push
   service:
     name: LOCAL
 

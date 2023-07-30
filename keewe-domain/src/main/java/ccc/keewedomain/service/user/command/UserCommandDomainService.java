@@ -1,7 +1,5 @@
 package ccc.keewedomain.service.user.command;
 
-import ccc.keewecore.consts.KeeweRtnConsts;
-import ccc.keewecore.exception.KeeweException;
 import ccc.keewedomain.dto.user.UserTokenRegisterDto;
 import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.persistence.domain.user.UserToken;
@@ -35,18 +33,5 @@ public class UserCommandDomainService {
     public UserToken registerToken(UserTokenRegisterDto dto) {
         UserToken userToken = UserToken.of(dto.getUserId(), dto.getAccessToken(), dto.getRefreshToken(), dto.getPushToken());
         return userTokenRepository.save(userToken);
-    }
-
-    @Transactional
-    public void registerPushToken(Long userId, String pushToken) {
-        UserToken userToken = this.findByIdOrElseThrow(userId);
-        userToken.registerPushToken(pushToken);
-    }
-
-    @Transactional(readOnly = true)
-    public UserToken findByIdOrElseThrow(Long userId) {
-        return userTokenRepository.findById(userId).orElseThrow(() -> {
-            throw new KeeweException(KeeweRtnConsts.ERR413);
-        });
     }
 }

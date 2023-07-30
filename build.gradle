@@ -28,9 +28,10 @@ subprojects {
 	dependencies {
 		compileOnly 'org.projectlombok:lombok'
 		annotationProcessor 'org.projectlombok:lombok'
-
-		implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.2'
-		implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.2'
+// 		FIXME push 모듈 api 모듈에서 분리 시 주석 해제
+//		implementation 'com.fasterxml.jackson.core:jackson-core:2.13.4'
+//		implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.4'
+//		implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.4'
 		implementation 'org.springframework.boot:spring-boot-starter-aop'
 		implementation 'net.logstash.logback:logstash-logback-encoder:6.3'
 
@@ -72,6 +73,8 @@ project(':keewe-batch') {
 project(':keewe-push') {
 	dependencies {
 		implementation project(path: ':keewe-core', configuration: 'default')
+		implementation project(path: ':keewe-domain', configuration: 'default')
+		implementation 'io.github.jav:expo-server-sdk:1.1.0'
 		implementation 'org.springframework.boot:spring-boot-starter-webflux'
 	}
 }
@@ -198,6 +201,7 @@ project(':keewe-api') {
 	dependencies {
 		implementation project(path: ':keewe-domain', configuration: 'default')
 		implementation project(path: ':keewe-event', configuration: 'default')
+		implementation project(path: ':keewe-push', configuration: 'default')
 		implementation "io.sentry:sentry-spring-boot-starter:${sentryVersion}"
 		implementation "io.sentry:sentry-logback:${sentryVersion}"
 		implementation 'org.springframework.boot:spring-boot-starter-web'
