@@ -1,7 +1,19 @@
 package ccc.keewebatch.batch;
 
+import static ccc.keewebatch.batch.DailyChallengeRecorder.JOB_NAME;
+import ccc.keewecore.utils.DateTimeUtils;
 import ccc.keewedomain.persistence.domain.challenge.ChallengeParticipation;
+import ccc.keewedomain.persistence.domain.challenge.ChallengeRecord;
+import ccc.keewedomain.persistence.repository.challenge.ChallengeRecordRepository;
 import ccc.keewedomain.service.insight.query.InsightQueryDomainService;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import javax.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
@@ -19,26 +31,16 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import javax.persistence.EntityManagerFactory;
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.HashMap;
-import java.util.Map;
-
-import static ccc.keewebatch.batch.ChallengeRecordChecker.JOB_NAME;
-
 @Configuration
 @RequiredArgsConstructor
 @Slf4j
 @ConditionalOnProperty(name ="job.name", havingValue = JOB_NAME)
-public class ChallengeRecordChecker {
+public class DailyChallengeRecorder {
     private final JobBuilderFactory jobBuilderFactory;
     private final StepBuilderFactory stepBuilderFactory;
     private final EntityManagerFactory entityManagerFactory;
-
     private final InsightQueryDomainService insightQueryDomainService;
+    private final ChallengeRecordRepository challengeRecordRepository;
 
     private final int chunkSize = 100;
     public static final String JOB_NAME = "challengeRecordCheck";
@@ -90,36 +92,51 @@ public class ChallengeRecordChecker {
 
     @Bean
     @StepScope
-    public ItemProcessor<ChallengeParticipation, ChallengeParticipation> processor(@Value("#{jobParameters[endDateStr]}") String endDateStr) {
-        LocalDate endDate = LocalDate.parse(endDateStr);
-        LocalDateTime endDateTime = LocalDateTime.of(endDate, LocalTime.MIN);
-
+    public ItemProcessor<ChallengeParticipation, ChallengeParticipation> processor(@Value("#{jobParameters[endDateStr]}") String currentDateStr) {
+        LocalDate currentDate = LocalDate.parse(currentDateStr);
+        LocalDateTime currentDateTime = LocalDateTime.of(currentDate, LocalTime.MIN);
+        // TODO. 성공/실패 처리 제거 후 별도 분리
         return cp -> {
-            int remainDays = getRemainDays(cp.getCreatedAt(), endDateTime);
-            int insightPerWeek = cp.getInsightPerWeek();
-            LocalDateTime startOfWeekDateTime = endDateTime.minusDays(7 - remainDays);
-            Long thisWeekCount = insightQueryDomainService.countInsightCreatedAtBetween(cp, startOfWeekDateTime, endDateTime);
-            int remainInsightNumber = (int) (insightPerWeek - thisWeekCount);
+            int remainDays = getRemainDays(cp.getCreatedAt(), currentDateTime);
+            LocalDateTime weekStartDateTime = currentDateTime.minusDays(7 - remainDays);
+            Long insightCount = insightQueryDomainService.countInsightCreatedAtBetween(cp, weekStartDateTime, currentDateTime);
+            int remainInsightCount = (int) (cp.getInsightPerWeek() - insightCount);
 
-            if (remainDays < remainInsightNumber) {
+            if (remainDays < remainInsightCount) {
+                // 실패
                 cp.expire(LocalDate.now().minusDays(1L));
-            } else if (isCompleted(endDate, cp.getEndDate(), remainInsightNumber)) {
+            } else if (isSuccess(currentDate, cp.getEndDate(), remainInsightCount)) {
+                // 성공
                 cp.complete();
             }
-
+            int currentWeek = DateTimeUtils.getWeekCountByRange(cp.getCreatedAt(), cp.getEndDate().atTime(LocalTime.MIDNIGHT), currentDateTime);
+            record(cp, currentWeek, remainInsightCount);
             return cp;
         };
     }
 
-    private boolean isCompleted(LocalDate endDateTime, LocalDate cpEndDate, int remainInsightNumber) {
-        return remainInsightNumber == 0 && isSameWeek(endDateTime, cpEndDate);
+    private boolean isSuccess(LocalDate currentDate, LocalDate challengeEndDate, int remainInsightNumber) {
+        return remainInsightNumber == 0 && isLastWeek(currentDate, challengeEndDate);
     }
 
-    private boolean isSameWeek(LocalDate startDate, LocalDate endDate) {
+    private boolean isLastWeek(LocalDate startDate, LocalDate endDate) {
         return Duration.between(startDate, endDate).toDays() < 7;
     }
 
     private int getRemainDays(LocalDateTime startDateTime, LocalDateTime endDateTime) {
         return (7 - Math.abs(startDateTime.getDayOfWeek().getValue() - endDateTime.getDayOfWeek().getValue())) % 7;
+    }
+
+    private void record(ChallengeParticipation challengeParticipation, int weekCount, int insightCount) {
+        Optional<ChallengeRecord> challengeRecordOps = challengeRecordRepository.findByChallengeParticipationAndWeekCount(challengeParticipation, weekCount);
+        if (challengeRecordOps.isPresent()) {
+            ChallengeRecord challengeRecord = challengeRecordOps.get();
+            challengeRecord.updateRecordCount(insightCount);
+            challengeRecordRepository.save(challengeRecord);
+            return;
+        }
+        ChallengeRecord challengeRecord = ChallengeRecord.initialize(challengeParticipation, 1);
+        challengeRecord.updateRecordCount(insightCount);
+        challengeRecordRepository.save(challengeRecord);
     }
 }
