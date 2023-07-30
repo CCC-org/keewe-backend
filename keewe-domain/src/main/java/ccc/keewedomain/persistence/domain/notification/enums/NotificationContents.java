@@ -49,9 +49,9 @@ public enum NotificationContents {
     // challenge
     챌린지_새로운_인사이트(NotificationCategory.CHALLENGE, "%s", "%s님이 이번주 인사이트를 올렸어요.", -1L),
     챌린지_신규_참여(NotificationCategory.CHALLENGE, "%s", "%s님이 %s에 합류했어요!", -1L),
-    챌린지_종료_전_실패알림(NotificationCategory.CHALLENGE, "%s", "챌린지가 곧 종료돼요.", -1L),
-    챌린지_종료(NotificationCategory.CHALLENGE, "%s", "챌린지가 종료되었어요.", -1L),
-    챌린지_종료_후_재도전(NotificationCategory.CHALLENGE, "%s", "챌린지 재도전하러 가기", -1L),
+    챌린지_성공(NotificationCategory.CHALLENGE, "%s", "챌린지를 성공적으로 완주했어요!\n더 많은 챌린지를 둘러볼까요?", -1L),
+    챌린지_실패(NotificationCategory.CHALLENGE, "%s", "챌린지가 종료됐어요!\n%s 챌린지에 재도전할까요?", -1L),
+    챌린지_채찍(NotificationCategory.CHALLENGE, "%s", "오늘 감명받은 링크가 있나요?\n챌린지를 완주해보세요.", -1L),
 
     // challengeInvite
     챌린지_초대(NotificationCategory.CHALLENGE_INVITE, "%s", "%s에 초대했어요.", -1L),

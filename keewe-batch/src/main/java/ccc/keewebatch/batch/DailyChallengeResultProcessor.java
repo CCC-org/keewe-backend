@@ -6,7 +6,10 @@ import ccc.keewecore.exception.KeeweException;
 import ccc.keewecore.utils.DateTimeUtils;
 import ccc.keewedomain.persistence.domain.challenge.ChallengeParticipation;
 import ccc.keewedomain.persistence.domain.challenge.ChallengeRecord;
+import ccc.keewedomain.persistence.domain.notification.Notification;
+import ccc.keewedomain.persistence.domain.notification.enums.NotificationContents;
 import ccc.keewedomain.persistence.repository.challenge.ChallengeRecordRepository;
+import ccc.keewedomain.service.notification.command.NotificationCommandDomainService;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.chrono.ChronoLocalDate;
@@ -36,6 +39,7 @@ public class DailyChallengeResultProcessor {
     private final StepBuilderFactory stepBuilderFactory;
     private final EntityManagerFactory entityManagerFactory;
     private final ChallengeRecordRepository challengeRecordRepository;
+    private final NotificationCommandDomainService notificationCommandDomainService;
 
     private final int CHUCK_SIZE = 100;
 
@@ -111,9 +115,13 @@ public class DailyChallengeResultProcessor {
                 });
         if (isFail) {
             log.info("[DailyChallengeResultProcessor] 챌린지 실패 처리 - userId({}), cpId({})", cp.getChallenger().getId(), cp.getId());
+            Notification notification = Notification.of(cp.getChallenger(), NotificationContents.챌린지_실패, cp.getChallenge().getId().toString());
+            notificationCommandDomainService.save(notification);
             cp.expire();
         } else {
             log.info("[DailyChallengeResultProcessor] 챌린지 성공 처리 - userId({}), cpId({})", cp.getChallenger().getId(), cp.getId());
+            Notification notification = Notification.of(cp.getChallenger(), NotificationContents.챌린지_성공, cp.getChallenge().getId().toString());
+            notificationCommandDomainService.save(notification);
             cp.complete();
         }
         return cp;
@@ -131,7 +139,9 @@ public class DailyChallengeResultProcessor {
         int remainWeekDays = getRemainDays(cp.getCreatedAt(), LocalDateTime.now());
         // note. 일주일의 남은 기록 수와 남은 일 수가 같은 경우
         if (remainWeekDays == (challengeRecord.getGoalCount() - challengeRecord.getRecordCount())) {
-            // do notify
+            log.info("[DailyChallengeResultProcessor] 챌린지 채찍 알림 생성 - userId({}), cpId({})", cp.getChallenger().getId(), cp.getId());
+            Notification notification = Notification.of(cp.getChallenger(), NotificationContents.챌린지_채찍, cp.getChallenge().getId().toString());
+            notificationCommandDomainService.save(notification);
         }
     }
 
