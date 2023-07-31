@@ -2,8 +2,8 @@ package ccc.keewedomain.service.title;
 
 import ccc.keewecore.consts.TitleCategory;
 import ccc.keewecore.utils.KeeweTitleHeader;
-import ccc.keewedomain.cache.domain.insight.CFirstReaction;
-import ccc.keewedomain.cache.repository.insight.CFirstReactionAggregationRepository;
+import ccc.keewedomain.cache.domain.insight.CReactionCountForTitle;
+import ccc.keewedomain.cache.repository.insight.CReactionCountTitleRepository;
 import ccc.keewedomain.persistence.domain.title.enums.ReactionTitle;
 import ccc.keewedomain.persistence.repository.user.TitleAchievementRepository;
 import ccc.keewedomain.persistence.repository.user.TitleRepository;
@@ -17,12 +17,12 @@ import java.util.List;
 
 @Component
 @Slf4j
-public class FirstReactionTitleAcquireProcessor extends AbstractTitleAcquireProcessor {
-    private final CFirstReactionAggregationRepository cFirstReactionAggregationRepository;
+public class ReactionCountTitleAcquireProcessor extends AbstractTitleAcquireProcessor {
+    private final CReactionCountTitleRepository cReactionCountTitleRepository;
 
-    public FirstReactionTitleAcquireProcessor(
+    public ReactionCountTitleAcquireProcessor(
             MQPublishService mqPublishService,
-            CFirstReactionAggregationRepository cFirstReactionAggregationRepository,
+            CReactionCountTitleRepository cReactionCountTitleRepository,
             TitleAchievementRepository titleAchievementRepository,
             UserDomainService userDomainService,
             UserRepository userRepository,
@@ -30,18 +30,23 @@ public class FirstReactionTitleAcquireProcessor extends AbstractTitleAcquireProc
             NotificationCommandDomainService notificationCommandDomainService
     ) {
         super(mqPublishService, titleAchievementRepository, userDomainService, userRepository, titleRepository, notificationCommandDomainService);
-        this.cFirstReactionAggregationRepository = cFirstReactionAggregationRepository;
+        this.cReactionCountTitleRepository = cReactionCountTitleRepository;
     }
 
+    // @todo : 분산락 적용 필요 (scale-out 시)
     @Override
-    protected List<Long> judgeTitleAcquire(KeeweTitleHeader header) {
+    protected synchronized List<Long> judgeTitleAcquire(KeeweTitleHeader header) {
         Long userId = Long.valueOf(header.getUserId());
-        boolean acquire = !cFirstReactionAggregationRepository.existsById(userId);
-        if (!acquire)
-            return List.of();
+        long cacheValue = cReactionCountTitleRepository.findByIdWithMissHandle(userId).getCount();
+        CReactionCountForTitle current = CReactionCountForTitle.of(userId, cacheValue + 1);
+        cReactionCountTitleRepository.save(current);
 
-        cFirstReactionAggregationRepository.save(CFirstReaction.of(userId));
-        return List.of(ReactionTitle.리엑션_최초.getId());
+        System.out.println("cacheValue : " + cacheValue);
+        if (current.getCount() == 1L)
+            return List.of(ReactionTitle.리엑션_최초.getId());
+        if (current.getCount() == 50L)
+            return List.of(ReactionTitle.리엑션_50회.getId());
+        return List.of();
     }
 
     @Override
