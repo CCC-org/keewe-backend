@@ -12,8 +12,9 @@ import javax.persistence.Id;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(staticName = "of")
 @Getter
-@RedisHash(value = KeeweConsts.FIRST_REACTION_HASH_KEY)
-public class CFirstReaction {
+@RedisHash(value = KeeweConsts.REACTION_COUNT_TITLE_HASH_KEY)
+public class CReactionCountForTitle {
     @Id
     Long id;
+    Long count;
 }
