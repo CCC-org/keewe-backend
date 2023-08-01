@@ -22,7 +22,7 @@ public enum NotificationContents {
     피리부는_사나이(NotificationCategory.TITLE, "타이틀 획득!", "100명이 쫓아다니는 인기인. 피리부는 사나이!", 3002L),
     정이_많은(NotificationCategory.TITLE, "타이틀 획득!", "40명을 마음에 담았네요. 정이 많은!", 3003L),
     참_잘했어요(NotificationCategory.TITLE, "타이틀 획득!", "처음 반응을 받았어요. 참 잘했어요!", 4000L),
-    아낌없이_주는_나무(NotificationCategory.TITLE, "타이틀 획득!", "처음 반응을 받았어요. 참 잘했어요!", 4001L),
+    아낌없이_주는_나무(NotificationCategory.TITLE, "타이틀 획득!", "50번의 마음을 전했어요. 아낌없이 주는 나무!", 4001L),
     키위새들의_픽(NotificationCategory.TITLE, "타이틀 획득!", "10명의 키위가 좋아해요. 키위새들의 픽!", 4002L),
     챌린지_메이커(NotificationCategory.TITLE, "타이틀 획득!", "처음 챌린지를 만드셨네요. 챌린지 메이커!", 5000L),
     실패는_성공의_어머니(NotificationCategory.TITLE, "타이틀 획득!", "처음 챌린지를 만드셨네요. 챌린지 메이커!", 5001L),

@@ -40,8 +40,6 @@ public class ReactionCountTitleAcquireProcessor extends AbstractTitleAcquireProc
         long cacheValue = cReactionCountTitleRepository.findByIdWithMissHandle(userId).getCount();
         CReactionCountForTitle current = CReactionCountForTitle.of(userId, cacheValue + 1);
         cReactionCountTitleRepository.save(current);
-
-        System.out.println("cacheValue : " + cacheValue);
         if (current.getCount() == 1L)
             return List.of(ReactionTitle.리엑션_최초.getId());
         if (current.getCount() == 50L)
