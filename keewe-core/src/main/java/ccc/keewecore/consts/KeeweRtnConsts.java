@@ -14,8 +14,8 @@ public enum KeeweRtnConsts {
     ERR402(KeeweRtnGrp.Auth, 402, "토큰이 만료됐어요."),
     ERR403(KeeweRtnGrp.Auth, 403, "토큰이 누락됐어요."),
     ERR404(KeeweRtnGrp.Auth, 404, "권한이 없는 유저입니다."),
-
     ERR405(KeeweRtnGrp.Validation, 405, "지원하지 않는 HTTP Method에요."),
+    ERR406(KeeweRtnGrp.Validation, 406, "온보딩이 필요한 유저에요."),
 
     ERR411(KeeweRtnGrp.Validation, 411, "유저를 찾을 수 없어요."),
     ERR412(KeeweRtnGrp.Validation, 412, "유저가 이메일 제공에 동의를 하지 않았어요."),

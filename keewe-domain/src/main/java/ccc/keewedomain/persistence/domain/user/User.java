@@ -127,6 +127,10 @@ public class User extends BaseTimeEntity {
         return this.status == UserStatus.ACTIVE;
     }
 
+    public boolean isOnboarding() {
+        return this.status == UserStatus.ONBOARD;
+    }
+
     public void setProfilePhoto(ProfilePhoto profilePhoto) {
         this.profilePhoto = profilePhoto;
     }
