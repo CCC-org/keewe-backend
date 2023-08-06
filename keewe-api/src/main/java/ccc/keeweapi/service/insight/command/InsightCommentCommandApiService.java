@@ -52,7 +52,6 @@ public class InsightCommentCommandApiService {
                     NotificationContents contents = NotificationContents.답글;
                     Notification notificationOfInsightWriter = Notification.of(insightWriter, contents, referenceId);
                     notificationCommandDomainService.save(notificationOfInsightWriter);
-//                    mqPublishService.publish(KeeweConsts.PUSH_SEND_EXCHANGE, PushSendEvent.of(insightWriterId, "Keewe", String.format("%s님이 내 \"%ㄴ\" 글에 반응을 남겼어요")));
                     // note. 댓글 작성자 != 답글 작성자인 경우 알림 생성
                     if (!ObjectUtils.nullSafeEquals(comment.getParent().getWriter().getId(), commentWriterId)) {
                         Notification notificationOfCommentWriter = Notification.of(comment.getParent().getWriter(), contents, referenceId);
