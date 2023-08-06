@@ -1,4 +1,4 @@
-# FIXME api 모듈에 추가하여, 파일 이름 변경 및 임시로 비활성화
+# FIXME: api 모듈에 추가하여, 파일 이름 변경 및 임시로 비활성화
 #spring:
 #  profiles:
 #    include: domain, core

@@ -10,13 +10,12 @@ import ccc.keewedomain.persistence.domain.notification.enums.NotificationContent
 import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.service.insight.command.CommentCommandDomainService;
 import ccc.keewedomain.service.notification.command.NotificationCommandDomainService;
+import ccc.keeweinfra.service.messagequeue.MQPublishService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
-
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +25,7 @@ public class InsightCommentCommandApiService {
     private final CommentCommandDomainService commentCommandDomainService;
     private final InsightAssembler insightAssembler;
     private final NotificationCommandDomainService notificationCommandDomainService;
+    private final MQPublishService mqPublishService;
 
     @Transactional
     public CommentCreateResponse create(CommentCreateRequest request) {
@@ -52,6 +52,7 @@ public class InsightCommentCommandApiService {
                     NotificationContents contents = NotificationContents.답글;
                     Notification notificationOfInsightWriter = Notification.of(insightWriter, contents, referenceId);
                     notificationCommandDomainService.save(notificationOfInsightWriter);
+//                    mqPublishService.publish(KeeweConsts.PUSH_SEND_EXCHANGE, PushSendEvent.of(insightWriterId, "Keewe", String.format("%s님이 내 \"%ㄴ\" 글에 반응을 남겼어요")));
                     // note. 댓글 작성자 != 답글 작성자인 경우 알림 생성
                     if (!ObjectUtils.nullSafeEquals(comment.getParent().getWriter().getId(), commentWriterId)) {
                         Notification notificationOfCommentWriter = Notification.of(comment.getParent().getWriter(), contents, referenceId);

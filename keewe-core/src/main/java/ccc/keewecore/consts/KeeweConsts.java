@@ -38,4 +38,6 @@ public class KeeweConsts {
 
     public static final Integer PROFILE_PHOTO_WIDTH = 450;
     public static final Integer PROFILE_PHOTO_HEIGHT = 450;
+
+    public static final String PUSH_DEFAULT_TITLE = "Keewe";
 }

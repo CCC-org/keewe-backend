@@ -12,6 +12,7 @@ import ccc.keewedomain.service.user.UserDomainService;
 import ccc.keeweinfra.service.messagequeue.MQPublishService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
@@ -25,6 +26,7 @@ public class FollowEventListener {
     private final UserDomainService userDomainService;
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT, fallbackExecution = true)
+    @Async
     public void handleEvent(FollowCreateEvent event) {
         Long userId = event.getFollowerId();
         Long targetId = event.getFolloweeId();
@@ -46,7 +48,8 @@ public class FollowEventListener {
     private void createNotification(Long userId, Long targetId) {
         User target = userDomainService.getUserByIdOrElseThrow(targetId);
         Notification notification = Notification.of(target, NotificationContents.팔로우, String.valueOf(userId));
-        notificationCommandDomainService.save(notification);
+        Notification save = notificationCommandDomainService.save(notification);
+        log.info("[FollowEventListener] 팔로워 생성 알람? [{}]", save.getId());
         log.info("[FollowEventListener] 팔로워 생성 알람 생성 완료 - notificationTargetUser({})", targetId);
     }
 }

@@ -1,12 +1,14 @@
 package ccc.keewedomain.persistence.domain.notification;
 
-import static javax.persistence.FetchType.LAZY;
-
 import ccc.keewedomain.persistence.domain.common.BaseTimeEntity;
 import ccc.keewedomain.persistence.domain.notification.enums.NotificationContents;
 import ccc.keewedomain.persistence.domain.user.User;
+import ccc.keewedomain.persistence.listener.notification.NotificationEntityListener;
+import lombok.Getter;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
@@ -15,11 +17,13 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import lombok.Getter;
+
+import static javax.persistence.FetchType.LAZY;
 
 @Entity
 @Table(name = "notification")
 @Getter
+@EntityListeners(NotificationEntityListener.class)
 public class Notification extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,7 +38,7 @@ public class Notification extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private NotificationContents contents;
 
-    // note. 챌린지 -> 챌린지참여 ID, 타이틀 -> 타이틀 ID, 댓글,답글 -> 인사이트 ID, 리액션 -> 인사이트 ID
+    // note. 챌린지 -> 챌린지참여 ID, 타이틀 -> 타이틀 ID, 댓글,답글 -> 인사이트 ID, 리액션 -> 인사이트 ID, 팔로우 -> 팔로워 ID
     @Column(name = "reference_id")
     private String referenceId;
 

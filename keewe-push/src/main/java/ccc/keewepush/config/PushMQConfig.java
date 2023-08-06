@@ -8,7 +8,9 @@ import org.springframework.amqp.core.ExchangeBuilder;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.QueueBuilder;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
+@Configuration
 public class PushMQConfig {
     @Bean
     Queue pushSendQueue() {
@@ -21,7 +23,7 @@ public class PushMQConfig {
     }
 
     @Bean
-    Binding pushSendExchange(Queue pushSendQueue, Exchange pushSendExchange) {
+    Binding pushSendBinding(Queue pushSendQueue, Exchange pushSendExchange) {
         return BindingBuilder.bind(pushSendQueue).to(pushSendExchange).with(KeeweConsts.DEFAULT_ROUTING_KEY).noargs();
     }
 }
