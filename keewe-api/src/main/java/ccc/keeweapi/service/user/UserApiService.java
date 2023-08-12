@@ -54,6 +54,7 @@ public class UserApiService {
             User user = userOps.get();
             String accessToken = getToken(user.getId());
             userCommandDomainService.registerToken(UserTokenRegisterDto.of(user.getId(), accessToken, null, null));
+            this.afterTheFirstSignUp(user);
             return userAssembler.toUserSignUpResponse(user, user.isActive(), getToken(user.getId()));
         }
 
