@@ -20,7 +20,10 @@ public class NotificationCommandDomainService {
     public Notification save(Notification notification) {
         Notification savedNotification = notificationRepository.save(notification);
         NotificationCreateEvent event = NotificationCreateEvent.of(savedNotification);
-        eventPublisher.publishEvent(event);
+        // note. 최초 생성되는 알림에 대해서만 이벤트 발행
+        if (notification.getId() == null) {
+            eventPublisher.publishEvent(event);
+        }
         return savedNotification;
     }
 
