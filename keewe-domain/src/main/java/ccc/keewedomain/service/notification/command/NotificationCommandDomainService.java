@@ -18,10 +18,11 @@ public class NotificationCommandDomainService {
 
     @Transactional
     public Notification save(Notification notification) {
+        boolean isFirstCreated = notification.getId() == null;
         Notification savedNotification = notificationRepository.save(notification);
         NotificationCreateEvent event = NotificationCreateEvent.of(savedNotification);
         // note. 최초 생성되는 알림에 대해서만 이벤트 발행
-        if (notification.getId() == null) {
+        if (isFirstCreated) {
             eventPublisher.publishEvent(event);
         }
         return savedNotification;
