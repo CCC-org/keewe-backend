@@ -28,7 +28,7 @@ public class TitleEventService {
         log.info("[TES::createEventAsFlux] Consumers userId={}, Subs count={}", userId, eventSinks.currentSubscriberCount());
 
         //TODO missed event late push
-        eventSinks.tryEmitNext(TitleEvent.of(null, KeeweConsts.EVENT_CONNECTION_HANDSHAKE, KeeweConsts.EVENT_CONNECTION_HANDSHAKE, LocalDateTime.now()));
+        eventSinks.tryEmitNext(TitleEvent.of(null, KeeweConsts.EVENT_CONNECTION_HANDSHAKE, KeeweConsts.EVENT_CONNECTION_HANDSHAKE, String.valueOf(LocalDateTime.now())));
 
         return eventSinks.asFlux()
                         .doOnError(ex -> failover(ex, userId))

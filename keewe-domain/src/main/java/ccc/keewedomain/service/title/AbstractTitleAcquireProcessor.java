@@ -80,7 +80,7 @@ public abstract class AbstractTitleAcquireProcessor {
             }
 
             // 타이틀 획득 이벤트 발행
-            TitleEvent event = TitleEvent.of(title.getCategory(), title.getName(),title.getIntroduction(), LocalDateTime.now());
+            TitleEvent event = TitleEvent.of(title.getCategory(), title.getName(),title.getIntroduction(), LocalDateTime.now().toString());
             Message message = MessageBuilder.withBody(ObjectMapperUtils.writeValueAsBytes(event)).build();
             mqPublishService.publish(KeeweConsts.TITLE_ACQUIREMENT_EXCHANGE, KeeweConsts.DEFAULT_ROUTING_KEY, message, header::toMessageWithHeader);
         });

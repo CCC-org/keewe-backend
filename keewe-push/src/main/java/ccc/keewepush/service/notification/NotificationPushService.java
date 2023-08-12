@@ -36,8 +36,7 @@ public class NotificationPushService {
             return;
         }
 
-        PushMessage pushMessage = processor
-                .process(notification);
+        PushMessage pushMessage = processor.process(notification);
         pushService.sendPush(pushMessage);
     }
 }
