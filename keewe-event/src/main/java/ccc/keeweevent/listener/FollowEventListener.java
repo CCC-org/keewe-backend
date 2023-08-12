@@ -26,7 +26,7 @@ public class FollowEventListener {
     private final UserDomainService userDomainService;
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT, fallbackExecution = true)
-    @Async
+    @Async(value = "worker")
     public void handleEvent(FollowCreateEvent event) {
         Long userId = event.getFollowerId();
         Long targetId = event.getFolloweeId();
@@ -48,8 +48,7 @@ public class FollowEventListener {
     private void createNotification(Long userId, Long targetId) {
         User target = userDomainService.getUserByIdOrElseThrow(targetId);
         Notification notification = Notification.of(target, NotificationContents.팔로우, String.valueOf(userId));
-        Notification save = notificationCommandDomainService.save(notification);
-        log.info("[FollowEventListener] 팔로워 생성 알람? [{}]", save.getId());
+        notificationCommandDomainService.save(notification);
         log.info("[FollowEventListener] 팔로워 생성 알람 생성 완료 - notificationTargetUser({})", targetId);
     }
 }

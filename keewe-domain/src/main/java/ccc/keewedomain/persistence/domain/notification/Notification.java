@@ -3,27 +3,22 @@ package ccc.keewedomain.persistence.domain.notification;
 import ccc.keewedomain.persistence.domain.common.BaseTimeEntity;
 import ccc.keewedomain.persistence.domain.notification.enums.NotificationContents;
 import ccc.keewedomain.persistence.domain.user.User;
-import ccc.keewedomain.persistence.listener.notification.NotificationEntityListener;
-import lombok.Getter;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import static javax.persistence.FetchType.LAZY;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
-import static javax.persistence.FetchType.LAZY;
+import lombok.Getter;
 
 @Entity
 @Table(name = "notification")
 @Getter
-@EntityListeners(NotificationEntityListener.class)
 public class Notification extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

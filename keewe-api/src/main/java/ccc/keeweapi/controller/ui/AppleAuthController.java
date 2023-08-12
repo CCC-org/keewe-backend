@@ -47,7 +47,6 @@ public class AppleAuthController {
 
     @GetMapping
     public void redirect(HttpServletResponse response) throws IOException {
-        System.out.println(authRequestUrl);
         response.sendRedirect(authRequestUrl);
     }
 }
