@@ -7,6 +7,7 @@ import ccc.keeweapi.dto.challenge.ChallengeDetailResponse;
 import ccc.keeweapi.dto.challenge.ChallengeInsightNumberResponse;
 import ccc.keeweapi.dto.challenge.ChallengeParticipateRequest;
 import ccc.keeweapi.dto.challenge.ChallengeParticipationResponse;
+import ccc.keeweapi.dto.challenge.ChallengeProgressResponse;
 import ccc.keeweapi.dto.challenge.ChallengerCountResponse;
 import ccc.keeweapi.dto.challenge.FriendResponse;
 import ccc.keeweapi.dto.challenge.MyParticipationProgressResponse;
@@ -23,6 +24,7 @@ import ccc.keewedomain.dto.challenge.ParticipationUpdateDto;
 import ccc.keewedomain.event.challenge.ChallengeCreateEvent;
 import ccc.keewedomain.persistence.domain.challenge.Challenge;
 import ccc.keewedomain.persistence.domain.challenge.ChallengeParticipation;
+import ccc.keewedomain.persistence.domain.insight.Insight;
 import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.service.challenge.command.ChallengeCommandDomainService;
 import ccc.keewedomain.service.challenge.query.ChallengeParticipateQueryDomainService;
@@ -36,6 +38,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -168,6 +171,20 @@ public class ChallengeApiService {
     public void updateParticipation(ParticipationUpdateRequest request) {
         ParticipationUpdateDto dto = challengeAssembler.toParticipationUpdateDto(SecurityUtil.getUserId(), request);
         challengeCommandDomainService.updateParticipation(dto);
+    }
+
+    @Transactional(readOnly = true)
+    public ChallengeProgressResponse getProgress() {
+        User user = SecurityUtil.getUser();
+        ChallengeParticipation participation = challengeParticipateQueryDomainService.findCurrentChallengeParticipation(user)
+                .orElseThrow(() -> new KeeweException(KeeweRtnConsts.ERR432));
+        List<String> recordedDates = insightQueryDomainService.getRecordedInsights(participation).stream()
+                .map(Insight::getCreatedAt)
+                .map(LocalDateTime::toLocalDate)
+                .sorted()
+                .map(LocalDate::toString)
+                .collect(Collectors.toList());
+        return challengeAssembler.toChallengeProgressResponse(participation, recordedDates);
     }
 
     private List<String> datesOfWeek(LocalDate startDate) {

@@ -2,6 +2,7 @@ package ccc.keeweapi.controller.api.challenge;
 
 import ccc.keeweapi.document.utils.ApiDocumentationTest;
 import ccc.keeweapi.dto.challenge.ChallengeParticipationResponse;
+import ccc.keeweapi.dto.challenge.ChallengeProgressResponse;
 import ccc.keeweapi.dto.challenge.ChallengerCountResponse;
 import ccc.keeweapi.dto.challenge.DayProgressResponse;
 import ccc.keeweapi.dto.challenge.FinishedChallengeCountResponse;
@@ -466,6 +467,52 @@ public class ChallengeParticipationControllerTest extends ApiDocumentationTest {
                                 fieldWithPath("message").description("요청 결과 메세지"),
                                 fieldWithPath("code").description("결과 코드"),
                                 fieldWithPath("data").description("null")
+                        )
+                        .tag("ChallengeParticipation")
+                        .build()
+        )));
+    }
+
+    @Test
+    @DisplayName("나의 챌린지 참가 전체 현황 조회 API")
+    void my_challenge_participation_progress() throws Exception {
+        Long challengeId = 1L;
+        Long current = 3L;
+        Long total = 4L;
+        int duration = 2;
+        String challengeName = "챌린지 이름";
+        String challengeIntroduction = "챌린지 소개";
+        String startDate = "2023-08-12";
+        String endDate = "2023-08-25";
+        List<String> recordedDates = List.of("2023-08-12", "2023-08-15", "2023-08-20");
+
+        when(challengeApiService.getProgress())
+                .thenReturn(ChallengeProgressResponse.of(challengeName, challengeIntroduction, current, total, duration, startDate, endDate, recordedDates));
+
+        ResultActions resultActions = mockMvc.perform(get("/api/v1/challenge/participation/progress")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        resultActions.andDo(restDocs.document(resource(
+                ResourceSnippetParameters.builder()
+                        .description("나의 챌린지 참가 전체 현황 조회 API 입니다.")
+                        .summary("나의 챌린지 참가 전체 현황 조회 API")
+                        .requestHeaders(
+                                headerWithName("Authorization").description("유저의 JWT")
+                        )
+                        .responseFields(
+                                fieldWithPath("message").description("요청 결과 메세지"),
+                                fieldWithPath("code").description("결과 코드"),
+                                fieldWithPath("data").description("참가중이지 않은 경우 null"),
+                                fieldWithPath("data.challengeName").description("챌린지의 이름"),
+                                fieldWithPath("data.challengeIntroduction").description("챌린지의 소개"),
+                                fieldWithPath("data.current").description("지금까지 기록한 인사이트 수"),
+                                fieldWithPath("data.total").description("기록해야 하는 전체 인사이트 수"),
+                                fieldWithPath("data.duration").description("참가 기간(주)"),
+                                fieldWithPath("data.startDate").description("챌린지 시작일"),
+                                fieldWithPath("data.endDate").description("챌린지 종료일"),
+                                fieldWithPath("data.recordedDates[]").description("기록한 날짜 목록. (오름차순 정렬, yyyy-MM-dd)")
                         )
                         .tag("ChallengeParticipation")
                         .build()

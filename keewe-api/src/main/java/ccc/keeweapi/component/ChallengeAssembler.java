@@ -6,6 +6,7 @@ import ccc.keeweapi.dto.challenge.ChallengeDetailResponse;
 import ccc.keeweapi.dto.challenge.ChallengeInsightNumberResponse;
 import ccc.keeweapi.dto.challenge.ChallengeParticipateRequest;
 import ccc.keeweapi.dto.challenge.ChallengeParticipationResponse;
+import ccc.keeweapi.dto.challenge.ChallengeProgressResponse;
 import ccc.keeweapi.dto.challenge.ChallengeStatisticsResponse;
 import ccc.keeweapi.dto.challenge.ChallengerCountResponse;
 import ccc.keeweapi.dto.challenge.DayProgressResponse;
@@ -25,10 +26,12 @@ import ccc.keewedomain.dto.challenge.ChallengeParticipateDto;
 import ccc.keewedomain.dto.challenge.ParticipationUpdateDto;
 import ccc.keewedomain.persistence.domain.challenge.Challenge;
 import ccc.keewedomain.persistence.domain.challenge.ChallengeParticipation;
+import ccc.keewedomain.persistence.domain.insight.Insight;
 import ccc.keewedomain.persistence.domain.user.User;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -209,5 +212,18 @@ public class ChallengeAssembler {
 
     public ParticipationUpdateDto toParticipationUpdateDto(Long userId, ParticipationUpdateRequest request) {
         return ParticipationUpdateDto.of(userId, request.getMyTopic(), request.getInsightPerWeek(), request.getDuration());
+    }
+
+    public ChallengeProgressResponse toChallengeProgressResponse(ChallengeParticipation participation, List<String> recordedDates) {
+        return ChallengeProgressResponse.of(
+                participation.getChallenge().getName(),
+                participation.getChallenge().getIntroduction(),
+                (long) recordedDates.size(),
+                participation.getTotalInsightNumber(),
+                participation.getDuration(),
+                participation.getCreatedAt().toLocalDate().toString(),
+                participation.getEndDate().toString(),
+                recordedDates
+        );
     }
 }

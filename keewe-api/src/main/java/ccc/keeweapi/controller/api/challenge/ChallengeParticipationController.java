@@ -3,6 +3,7 @@ package ccc.keeweapi.controller.api.challenge;
 import ccc.keeweapi.dto.ApiResponse;
 import ccc.keeweapi.dto.challenge.ChallengeParticipateRequest;
 import ccc.keeweapi.dto.challenge.ChallengeParticipationResponse;
+import ccc.keeweapi.dto.challenge.ChallengeProgressResponse;
 import ccc.keeweapi.dto.challenge.ChallengerCountResponse;
 import ccc.keeweapi.dto.challenge.FinishedChallengeCountResponse;
 import ccc.keeweapi.dto.challenge.FinishedChallengeResponse;
@@ -72,6 +73,11 @@ public class ChallengeParticipationController {
     @GetMapping("/participation/my-week-progress")
     public ApiResponse<WeekProgressResponse> getMyThisWeekProgress() {
         return ApiResponse.ok(challengeApiService.getWeekProgress());
+    }
+
+    @GetMapping("/participation/progress")
+    public ApiResponse<ChallengeProgressResponse> getChallengeProgress() {
+        return ApiResponse.ok(challengeApiService.getProgress());
     }
 
     @GetMapping("/{challengeId}/friends")
