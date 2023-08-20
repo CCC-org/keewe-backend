@@ -1,6 +1,7 @@
 package ccc.keeweapi.component;
 
 import ccc.keeweapi.dto.insight.response.ActiveCommentResponse;
+import ccc.keeweapi.dto.insight.response.CommentCreateResponse;
 import ccc.keeweapi.dto.insight.response.CommentResponse;
 import ccc.keeweapi.dto.insight.response.CommentWriterResponse;
 import ccc.keeweapi.dto.insight.response.PreviewCommentResponse;
@@ -103,6 +104,17 @@ public class CommentAssembler {
                 comment.getCreatedAt().toString(),
                 replies.stream().map(this::toReplyResponse).collect(Collectors.toList()),
                 replyNumber
+        );
+    }
+
+    public CommentCreateResponse toCommentCreateResponse(Comment comment) {
+        return CommentCreateResponse.of(
+                comment.getId(),
+                comment.getContent(),
+                comment.getCreatedAt().toString(),
+                toCommentWriterResponse(comment.getWriter()),
+                List.of(), // note. 답글 목록 및 개수 0개로 설정
+                0L
         );
     }
 }

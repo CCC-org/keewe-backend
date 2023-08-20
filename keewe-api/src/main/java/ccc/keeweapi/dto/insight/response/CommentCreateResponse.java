@@ -1,16 +1,17 @@
 package ccc.keeweapi.dto.insight.response;
 
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
+import java.util.List;
+
+@AllArgsConstructor(staticName = "of")
 @Getter
 public class CommentCreateResponse {
-
-    private Long commentId;
-
-    public static CommentCreateResponse of(Long commentId) {
-        return new CommentCreateResponse(commentId);
-    }
+    private Long id;
+    private String content;
+    private String createdAt;
+    private CommentWriterResponse writer;
+    private List<ReplyResponse> replies;
+    private Long totalReply;
 }

@@ -1,5 +1,6 @@
 package ccc.keeweapi.service.insight.command;
 
+import ccc.keeweapi.component.CommentAssembler;
 import ccc.keeweapi.component.InsightAssembler;
 import ccc.keeweapi.dto.insight.request.CommentCreateRequest;
 import ccc.keeweapi.dto.insight.response.CommentCreateResponse;
@@ -24,6 +25,7 @@ public class InsightCommentCommandApiService {
 
     private final CommentCommandDomainService commentCommandDomainService;
     private final InsightAssembler insightAssembler;
+    private final CommentAssembler commentAssembler;
     private final NotificationCommandDomainService notificationCommandDomainService;
     private final MQPublishService mqPublishService;
 
@@ -31,7 +33,7 @@ public class InsightCommentCommandApiService {
     public CommentCreateResponse create(CommentCreateRequest request) {
         Comment comment = commentCommandDomainService.create(insightAssembler.toCommentCreateDto(request));
         afterLeaveComment(comment);
-        return insightAssembler.toCommentCreateResponse(comment);
+        return commentAssembler.toCommentCreateResponse(comment);
     }
 
     @Transactional

@@ -57,20 +57,24 @@ public class InsightCommentControllerTest extends ApiDocumentationTest {
     @Test
     @DisplayName("댓글 등록 API")
     void create_comment() throws Exception {
-
-        String content = "취업은 하반기에 끝내자";
+        String content = "댓글 내용";
         Long insightId = 1L;
         Long parentId = 1L;
-
-        Long commentId = 2L;
-
+        CommentCreateResponse response = CommentCreateResponse.of(
+                1L,
+                content,
+                LocalDateTime.now().toString(),
+                CommentWriterResponse.of(1L, "닉네임", "타이틀", "이미지 URL"),
+                List.of(),
+                0L
+        );
         JSONObject commentCreateRequest = new JSONObject();
         commentCreateRequest
                 .put("content", content)
                 .put("insightId", insightId)
                 .put("parentId", parentId);
 
-        when(insightCommentCommandApiService.create(any())).thenReturn(CommentCreateResponse.of(commentId));
+        when(insightCommentCommandApiService.create(any())).thenReturn(response);
 
         ResultActions resultActions = mockMvc.perform(post("/api/v1/comments")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
@@ -91,7 +95,16 @@ public class InsightCommentControllerTest extends ApiDocumentationTest {
                         .responseFields(
                                 fieldWithPath("message").description("요청 결과 메세지"),
                                 fieldWithPath("code").description("결과 코드"),
-                                fieldWithPath("data.commentId").description("생성된 댓글(답글) ID"))
+                                fieldWithPath("data.id").description("댓글의 id"),
+                                fieldWithPath("data.content").description("댓글의 내용"),
+                                fieldWithPath("data.createdAt").description("댓글의 생성 시각"),
+                                fieldWithPath("data.totalReply").description("이 댓글의 답글 개수"),
+                                fieldWithPath("data.writer").description("작성자의 정보(optional)").optional(),
+                                fieldWithPath("data.writer.id").description("작성자의 id"),
+                                fieldWithPath("data.writer.name").description("닉네임"),
+                                fieldWithPath("data.writer.title").description("타이틀"),
+                                fieldWithPath("data.writer.image").description("프로필 사진"),
+                                fieldWithPath("data.replies[]").description("댓글의 답글 목록(빈 배열)").optional())
                         .tag("InsightComment")
                         .build()
         )));

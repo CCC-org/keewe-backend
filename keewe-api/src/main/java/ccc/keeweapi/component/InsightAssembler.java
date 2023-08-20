@@ -68,10 +68,6 @@ public class InsightAssembler {
         );
     }
 
-    public CommentCreateResponse toCommentCreateResponse(Comment comment) {
-        return CommentCreateResponse.of(comment.getId());
-    }
-
     public InsightDetailDto toInsightDetailDto(Long insightId) {
         return InsightDetailDto.of(SecurityUtil.getUserId(), insightId);
     }
