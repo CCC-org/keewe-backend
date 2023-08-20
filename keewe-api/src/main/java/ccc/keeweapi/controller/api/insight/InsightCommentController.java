@@ -5,6 +5,7 @@ import ccc.keeweapi.dto.insight.request.CommentCreateRequest;
 import ccc.keeweapi.dto.insight.response.*;
 import ccc.keeweapi.service.insight.command.InsightCommentCommandApiService;
 import ccc.keeweapi.service.insight.query.InsightCommentQueryApiService;
+import ccc.keewecore.consts.KeeweConsts;
 import ccc.keewedomain.persistence.repository.utils.CursorPageable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -43,7 +44,7 @@ public class InsightCommentController {
     @GetMapping("/insights/{insightId}")
     public ApiResponse<List<CommentResponse>> getComments(
             @PathVariable Long insightId,
-            @RequestParam(required = false, defaultValue = "0") Long cursor,
+            @RequestParam(required = false, defaultValue = KeeweConsts.LONG_MAX_STRING) Long cursor,
             @RequestParam Long limit) {
 
         return ApiResponse.ok(insightCommentQueryApiService.getCommentsWithFirstReply(insightId, CursorPageable.of(cursor, limit)));

@@ -41,7 +41,7 @@ public class CommentQueryRepository {
                     .and(comment.parent.isNull())
                     .and(comment.id.gt(cPage.getCursor()))
                 )
-                .orderBy(comment.id.asc())
+                .orderBy(comment.id.desc())
                 .limit(cPage.getLimit())
                 .fetch();
     }
