@@ -1,7 +1,6 @@
 package ccc.keeweapi.service.insight.command;
 
 import ccc.keeweapi.component.CommentAssembler;
-import ccc.keeweapi.component.InsightAssembler;
 import ccc.keeweapi.dto.insight.request.CommentCreateRequest;
 import ccc.keeweapi.dto.insight.response.CommentCreateResponse;
 import ccc.keeweapi.dto.insight.response.CommentDeleteResponse;
@@ -11,7 +10,6 @@ import ccc.keewedomain.persistence.domain.notification.enums.NotificationContent
 import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.service.insight.command.CommentCommandDomainService;
 import ccc.keewedomain.service.notification.command.NotificationCommandDomainService;
-import ccc.keeweinfra.service.messagequeue.MQPublishService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -24,22 +22,20 @@ import org.springframework.util.ObjectUtils;
 public class InsightCommentCommandApiService {
 
     private final CommentCommandDomainService commentCommandDomainService;
-    private final InsightAssembler insightAssembler;
     private final CommentAssembler commentAssembler;
     private final NotificationCommandDomainService notificationCommandDomainService;
-    private final MQPublishService mqPublishService;
 
     @Transactional
     public CommentCreateResponse create(CommentCreateRequest request) {
-        Comment comment = commentCommandDomainService.create(insightAssembler.toCommentCreateDto(request));
+        Comment comment = commentCommandDomainService.create(commentAssembler.toCommentCreateDto(request));
         afterLeaveComment(comment);
         return commentAssembler.toCommentCreateResponse(comment);
     }
 
     @Transactional
     public CommentDeleteResponse delete(Long commentId) {
-        return insightAssembler.toCommentDeleteResponse(
-            commentCommandDomainService.delete(insightAssembler.toCommentDeleteDto(commentId))
+        return commentAssembler.toCommentDeleteResponse(
+            commentCommandDomainService.delete(commentAssembler.toCommentDeleteDto(commentId))
         );
     }
 

@@ -1,17 +1,22 @@
 package ccc.keeweapi.component;
 
+import ccc.keeweapi.dto.insight.request.CommentCreateRequest;
 import ccc.keeweapi.dto.insight.response.ActiveCommentResponse;
-import ccc.keeweapi.dto.insight.response.CommentCreateResponse;
-import ccc.keeweapi.dto.insight.response.CommentResponse;
-import ccc.keeweapi.dto.insight.response.CommentWriterResponse;
-import ccc.keeweapi.dto.insight.response.PreviewCommentResponse;
-import ccc.keeweapi.dto.insight.response.DeletedCommentResponse;
-import ccc.keeweapi.dto.insight.response.InsightCommentCountResponse;
 import ccc.keeweapi.dto.insight.response.ActivePreviewCommentResponse;
 import ccc.keeweapi.dto.insight.response.ActiveReplyResponse;
-import ccc.keeweapi.dto.insight.response.ReplyResponse;
+import ccc.keeweapi.dto.insight.response.CommentCreateResponse;
+import ccc.keeweapi.dto.insight.response.CommentDeleteResponse;
+import ccc.keeweapi.dto.insight.response.CommentResponse;
+import ccc.keeweapi.dto.insight.response.CommentWriterResponse;
+import ccc.keeweapi.dto.insight.response.DeletedCommentResponse;
 import ccc.keeweapi.dto.insight.response.DeletedPreviewCommentResponse;
 import ccc.keeweapi.dto.insight.response.DeletedReplyResponse;
+import ccc.keeweapi.dto.insight.response.InsightCommentCountResponse;
+import ccc.keeweapi.dto.insight.response.PreviewCommentResponse;
+import ccc.keeweapi.dto.insight.response.ReplyResponse;
+import ccc.keeweapi.utils.SecurityUtil;
+import ccc.keewedomain.dto.insight.CommentCreateDto;
+import ccc.keewedomain.dto.insight.CommentDeleteDto;
 import ccc.keewedomain.persistence.domain.insight.Comment;
 import ccc.keewedomain.persistence.domain.user.User;
 import org.springframework.stereotype.Component;
@@ -22,6 +27,36 @@ import java.util.stream.Collectors;
 
 @Component
 public class CommentAssembler {
+    public CommentCreateDto toCommentCreateDto(CommentCreateRequest request) {
+        return CommentCreateDto.of(
+                SecurityUtil.getUserId(),
+                request.getInsightId(),
+                request.getParentId(),
+                request.getContent()
+        );
+    }
+
+    public CommentCreateResponse toCommentCreateResponse(Comment comment) {
+        return CommentCreateResponse.of(
+                comment.getId(),
+                comment.getContent(),
+                comment.getCreatedAt().toString(),
+                toCommentWriterResponse(comment.getWriter()),
+                List.of(), // note. 답글 목록 및 개수 0개로 설정
+                0L
+        );
+    }
+
+    public CommentDeleteDto toCommentDeleteDto(Long commentId) {
+        return CommentDeleteDto.of(
+                SecurityUtil.getUserId(),
+                commentId
+        );
+    }
+
+    public CommentDeleteResponse toCommentDeleteResponse(Long commentId) {
+        return CommentDeleteResponse.of(commentId);
+    }
 
     public PreviewCommentResponse toPreviewCommentResponseInterface(Comment comment) {
         if (comment.isDeleted()) {
@@ -104,17 +139,6 @@ public class CommentAssembler {
                 comment.getCreatedAt().toString(),
                 replies.stream().map(this::toReplyResponse).collect(Collectors.toList()),
                 replyNumber
-        );
-    }
-
-    public CommentCreateResponse toCommentCreateResponse(Comment comment) {
-        return CommentCreateResponse.of(
-                comment.getId(),
-                comment.getContent(),
-                comment.getCreatedAt().toString(),
-                toCommentWriterResponse(comment.getWriter()),
-                List.of(), // note. 답글 목록 및 개수 0개로 설정
-                0L
         );
     }
 }

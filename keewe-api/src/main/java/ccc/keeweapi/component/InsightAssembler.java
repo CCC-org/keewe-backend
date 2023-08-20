@@ -1,22 +1,39 @@
 package ccc.keeweapi.component;
 
-import ccc.keeweapi.dto.insight.request.CommentCreateRequest;
 import ccc.keeweapi.dto.insight.request.DrawerCreateRequest;
 import ccc.keeweapi.dto.insight.request.DrawerResponse;
 import ccc.keeweapi.dto.insight.request.InsightCreateRequest;
 import ccc.keeweapi.dto.insight.request.InsightUpdateRequest;
-import ccc.keeweapi.dto.insight.response.*;
+import ccc.keeweapi.dto.insight.response.BookmarkToggleResponse;
+import ccc.keeweapi.dto.insight.response.ChallengeRecordResponse;
+import ccc.keeweapi.dto.insight.response.DrawerCreateResponse;
+import ccc.keeweapi.dto.insight.response.InsightAuthorAreaResponse;
+import ccc.keeweapi.dto.insight.response.InsightCreateResponse;
+import ccc.keeweapi.dto.insight.response.InsightGetForBookmarkedResponse;
+import ccc.keeweapi.dto.insight.response.InsightGetForHomeResponse;
+import ccc.keeweapi.dto.insight.response.InsightGetResponse;
+import ccc.keeweapi.dto.insight.response.InsightMyPageResponse;
+import ccc.keeweapi.dto.insight.response.InsightStatisticsResponse;
+import ccc.keeweapi.dto.insight.response.InsightUpdateResponse;
+import ccc.keeweapi.dto.insight.response.InsightViewIncrementResponse;
+import ccc.keeweapi.dto.insight.response.ReactionAggregationResponse;
 import ccc.keeweapi.utils.SecurityUtil;
-import ccc.keewedomain.dto.insight.*;
+import ccc.keewedomain.dto.insight.BookmarkToggleDto;
+import ccc.keewedomain.dto.insight.DrawerCreateDto;
+import ccc.keewedomain.dto.insight.InsightCreateDto;
+import ccc.keewedomain.dto.insight.InsightDeleteDto;
+import ccc.keewedomain.dto.insight.InsightDetailDto;
+import ccc.keewedomain.dto.insight.InsightGetDto;
+import ccc.keewedomain.dto.insight.InsightGetForBookmarkedDto;
+import ccc.keewedomain.dto.insight.InsightGetForHomeDto;
+import ccc.keewedomain.dto.insight.InsightMyPageDto;
+import ccc.keewedomain.dto.insight.InsightUpdateDto;
+import ccc.keewedomain.dto.insight.InsightViewIncrementDto;
+import ccc.keewedomain.dto.insight.ReactionAggregationGetDto;
 import ccc.keewedomain.persistence.domain.challenge.Challenge;
 import ccc.keewedomain.persistence.domain.challenge.ChallengeParticipation;
 import ccc.keewedomain.persistence.domain.insight.Drawer;
 import ccc.keewedomain.persistence.domain.insight.Insight;
-import ccc.keewedomain.persistence.domain.insight.Comment;
-import ccc.keewedomain.dto.insight.CommentCreateDto;
-import ccc.keewedomain.dto.insight.DrawerCreateDto;
-import ccc.keewedomain.dto.insight.InsightCreateDto;
-import ccc.keewedomain.dto.insight.InsightViewIncrementDto;
 import ccc.keewedomain.persistence.domain.user.User;
 import org.springframework.stereotype.Component;
 
@@ -57,15 +74,6 @@ public class InsightAssembler {
 
     public InsightViewIncrementResponse toInsightViewIncrementResponse(Long viewCount) {
         return InsightViewIncrementResponse.of(viewCount);
-    }
-
-    public CommentCreateDto toCommentCreateDto(CommentCreateRequest request) {
-        return CommentCreateDto.of(
-                SecurityUtil.getUserId(),
-                request.getInsightId(),
-                request.getParentId(),
-                request.getContent()
-        );
     }
 
     public InsightDetailDto toInsightDetailDto(Long insightId) {
@@ -138,6 +146,10 @@ public class InsightAssembler {
         );
     }
 
+    private boolean isAuthor(Insight insight) {
+        return insight.getWriter().getId().equals(SecurityUtil.getUserId());
+    }
+
     public BookmarkToggleResponse toBookmarkToggleResponse(boolean isBookmark) {
         return BookmarkToggleResponse.of(isBookmark);
     }
@@ -173,20 +185,7 @@ public class InsightAssembler {
         );
     }
 
-    public CommentDeleteDto toCommentDeleteDto(Long commentId) {
-        return CommentDeleteDto.of(
-                SecurityUtil.getUserId(),
-                commentId
-        );
-    }
 
-    public CommentDeleteResponse toCommentDeleteResponse(Long commentId) {
-        return CommentDeleteResponse.of(commentId);
-    }
-
-    private boolean isAuthor(Insight insight) {
-        return insight.getWriter().getId() == SecurityUtil.getUserId();
-    }
 
     public InsightStatisticsResponse toInsightStatisticsResponse(
             Long viewCount,
