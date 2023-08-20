@@ -39,7 +39,7 @@ public class CommentQueryRepository {
                 .fetchJoin()
                 .where(comment.insight.id.eq(insightId)
                     .and(comment.parent.isNull())
-                    .and(comment.id.gt(cPage.getCursor()))
+                    .and(comment.id.lt(cPage.getCursor()))
                 )
                 .orderBy(comment.id.desc())
                 .limit(cPage.getLimit())
