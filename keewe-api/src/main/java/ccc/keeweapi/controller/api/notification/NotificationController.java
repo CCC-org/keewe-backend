@@ -37,6 +37,12 @@ public class NotificationController {
         return ApiResponse.ok(notificationCommandApiService.markAsRead(notificationId));
     }
 
+    @PatchMapping("/read")
+    public ApiResponse<Void> markAllNotificationAsRead() {
+        notificationCommandApiService.markAllAsRead();
+        return ApiResponse.ok();
+    }
+
     @GetMapping("/unread-existence")
     public ApiResponse<UnreadNotificationExistenceResponse> isUnreadNotificationExist() {
         return ApiResponse.ok(notificationQueryApiService.isUnreadNotificationExist());

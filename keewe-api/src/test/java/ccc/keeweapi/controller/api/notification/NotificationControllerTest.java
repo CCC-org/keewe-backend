@@ -1,16 +1,5 @@
 package ccc.keeweapi.controller.api.notification;
 
-import static com.epages.restdocs.apispec.ResourceDocumentation.headerWithName;
-import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName;
-import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.when;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import ccc.keeweapi.document.utils.ApiDocumentationTest;
 import ccc.keeweapi.dto.notification.NotificationResponse;
 import ccc.keeweapi.dto.notification.PaginateNotificationResponse;
@@ -18,18 +7,29 @@ import ccc.keeweapi.dto.notification.UnreadNotificationExistenceResponse;
 import ccc.keeweapi.service.notification.command.NotificationCommandApiService;
 import ccc.keeweapi.service.notification.query.NotificationQueryApiService;
 import ccc.keewedomain.persistence.domain.notification.enums.NotificationCategory;
+import static com.epages.restdocs.apispec.ResourceDocumentation.headerWithName;
+import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName;
+import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import org.springframework.test.web.servlet.ResultActions;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class NotificationControllerTest extends ApiDocumentationTest {
     @InjectMocks
@@ -116,6 +116,32 @@ public class NotificationControllerTest extends ApiDocumentationTest {
                                 fieldWithPath("data.referenceId").description("알림 참조 ID"),
                                 fieldWithPath("data.read").description("알림 읽었는지 여부"),
                                 fieldWithPath("data.createdAt").description("알림 생성 시간")
+                        )
+                        .tag("Notification")
+                        .build()
+        )));
+    }
+
+    @Test
+    @DisplayName("알림 읽음 처리 API 테스트")
+    void testMarkAllAsRead() throws Exception {
+        doNothing().when(notificationCommandApiService).markAllAsRead();
+
+        ResultActions resultActions = mockMvc.perform(patch("/api/v1/notification/read")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        resultActions.andDo(restDocs.document(resource(
+                ResourceSnippetParameters.builder()
+                        .description("모든 알림 읽음 처리 API입니다.")
+                        .summary("알림 읽음 처리 API")
+                        .requestHeaders(
+                                headerWithName("Authorization").description("유저의 JWT"))
+                        .responseFields(
+                                fieldWithPath("message").description("요청 결과 메세지"),
+                                fieldWithPath("code").description("결과 코드"),
+                                fieldWithPath("data").description("데이터")
                         )
                         .tag("Notification")
                         .build()

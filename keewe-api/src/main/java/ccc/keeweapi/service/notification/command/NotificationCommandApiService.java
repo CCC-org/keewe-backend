@@ -5,6 +5,7 @@ import ccc.keeweapi.service.notification.NotificationProcessor;
 import ccc.keeweapi.utils.SecurityUtil;
 import ccc.keewedomain.persistence.domain.notification.Notification;
 import ccc.keewedomain.persistence.domain.notification.enums.NotificationCategory;
+import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.service.notification.command.NotificationCommandDomainService;
 import java.util.List;
 import java.util.Map;
@@ -32,5 +33,14 @@ public class NotificationCommandApiService {
         Notification readMarkedNotification = notificationCommandDomainService.save(notification.markAsRead());
         return notificationProcessors.get(readMarkedNotification.getContents().getCategory())
                 .process(readMarkedNotification);
+    }
+
+    public void markAllAsRead() {
+        User user = SecurityUtil.getUser();
+        List<Notification> notifications = notificationCommandDomainService.getUnreadNotifications(user)
+                .stream()
+                .map(Notification::markAsRead)
+                .collect(Collectors.toList());
+        notificationCommandDomainService.saveAll(notifications);
     }
 }

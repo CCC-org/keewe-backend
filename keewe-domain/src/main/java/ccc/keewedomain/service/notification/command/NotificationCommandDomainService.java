@@ -4,7 +4,9 @@ import ccc.keewecore.consts.KeeweRtnConsts;
 import ccc.keewecore.exception.KeeweException;
 import ccc.keewedomain.event.notification.NotificationCreateEvent;
 import ccc.keewedomain.persistence.domain.notification.Notification;
+import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.persistence.repository.notification.NotificationRepository;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -28,6 +30,10 @@ public class NotificationCommandDomainService {
         return savedNotification;
     }
 
+    public List<Notification> saveAll(List<Notification> notifications) {
+        return notificationRepository.saveAll(notifications);
+    }
+
     public Notification getByIdWithUserAssert(Long notificationId, Long userId) {
         return notificationRepository.findById(notificationId)
                 .map(notification -> {
@@ -37,5 +43,9 @@ public class NotificationCommandDomainService {
                     return notification;
                 })
                 .orElseThrow(() -> new KeeweException(KeeweRtnConsts.ERR483));
+    }
+
+    public List<Notification> getUnreadNotifications(User user) {
+        return notificationRepository.findByUserAndIsReadFalse(user);
     }
 }
