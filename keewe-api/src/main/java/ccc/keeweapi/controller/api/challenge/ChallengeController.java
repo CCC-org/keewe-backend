@@ -68,6 +68,12 @@ public class ChallengeController {
         return ApiResponse.ok(challengeQueryApiService.aggregateChallengeStatistics());
     }
 
+    @GetMapping("/{challengeId}/statistics")
+    @FLogging
+    public ApiResponse<ChallengeStatisticsResponse> aggregateChallengeStatisticsV2(@PathVariable Long challengeId) {
+        return ApiResponse.ok(ChallengeStatisticsResponse.of(3L, 4L, 5L, 6L, 7L));
+    }
+
     @GetMapping("/my/insight/count")
     public ApiResponse<ChallengeInsightNumberResponse> countInsightOfChallenge(
             @RequestParam(required = false) Long writerId

@@ -251,6 +251,34 @@ public class ChallengeControllerTest extends ApiDocumentationTest {
     }
 
     @Test
+    @DisplayName("챌린지 통계 조회 API")
+    void aggregation_challenge() throws Exception {
+        ResultActions resultActions = mockMvc.perform(get("/api/v1/challenge/{challengeId}/statistics", 1L)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + JWT)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        resultActions.andDo(restDocs.document(resource(
+                ResourceSnippetParameters.builder()
+                        .description("특정 챌린지 통계 조회 API입니다.")
+                        .summary("특정 챌린지 통계 조회 API")
+                        .requestHeaders(
+                                headerWithName("Authorization").description("유저의 JWT"))
+                        .responseFields(
+                                fieldWithPath("message").description("요청 결과 메세지"),
+                                fieldWithPath("code").description("결과 코드"),
+                                fieldWithPath("data.bookmarkCount").description("북마크 개수"),
+                                fieldWithPath("data.commentCount").description("댓글 개수"),
+                                fieldWithPath("data.reactionCount").description("리액션 개수"),
+                                fieldWithPath("data.shareCount").description("공유하기 횟수"),
+                                fieldWithPath("data.viewCount").description("조회수")
+                        )
+                        .tag("Challenge")
+                        .build()
+        )));
+    }
+
+    @Test
     @DisplayName("나의 챌린지 인사이트 수 조회 API")
     void get_challenge_insight_count() throws Exception {
         ChallengeInsightNumberResponse response = ChallengeInsightNumberResponse.of(100);
