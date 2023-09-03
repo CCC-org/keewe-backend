@@ -170,7 +170,7 @@ public class User extends BaseTimeEntity {
 
     public String getIdentifier() {
         if (this.email.isEmpty()) {
-            return this.vendorId;
+            return null;
         }
         return this.email;
     }
