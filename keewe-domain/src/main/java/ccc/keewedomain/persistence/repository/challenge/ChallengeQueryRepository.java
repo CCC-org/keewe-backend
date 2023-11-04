@@ -1,6 +1,7 @@
 package ccc.keewedomain.persistence.repository.challenge;
 
 import static ccc.keewedomain.persistence.domain.challenge.QChallenge.challenge;
+import static ccc.keewedomain.persistence.domain.user.QUser.user;
 
 import ccc.keewedomain.persistence.domain.challenge.Challenge;
 import ccc.keewedomain.persistence.domain.user.User;
@@ -27,6 +28,19 @@ public class ChallengeQueryRepository {
                 .from(challenge)
                 .where(challenge.deleted.isFalse()
                         .and(challenge.id.lt(cPage.getCursor()))
+                )
+                .orderBy(challenge.id.desc())
+                .limit(cPage.getLimit())
+                .fetch();
+    }
+
+    // 검색 관련 조회 쿼리
+    public List<Challenge> findAllByKeyword(String keyword, CursorPageable<Long> cPage) {
+        return queryFactory.select(challenge)
+                .from(challenge)
+                .where(challenge.name.contains(keyword)
+                        .and(challenge.id.lt(cPage.getCursor()))
+                        .and(challenge.deleted.isFalse())
                 )
                 .orderBy(challenge.id.desc())
                 .limit(cPage.getLimit())
