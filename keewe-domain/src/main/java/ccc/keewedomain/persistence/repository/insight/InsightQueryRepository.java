@@ -159,6 +159,19 @@ public class InsightQueryRepository {
                 .fetch();
     }
 
+    // 검색 관련 조회 쿼리
+    public List<Insight> findAllByKeyword(String keyword, CursorPageable<Long> cPage) {
+        return queryFactory.select(insight)
+                .from(insight)
+                .where(insight.contents.contains(keyword)
+                        .and(insight.id.lt(cPage.getCursor()))
+                        .and(insight.deleted.isFalse())
+                )
+                .orderBy(insight.id.desc())
+                .limit(cPage.getLimit())
+                .fetch();
+    }
+
     public List<Insight> findAllByUserIdAndDrawerId(Long userId, Long drawerId) {
         return queryFactory.select(insight)
                 .from(insight)
@@ -238,6 +251,16 @@ public class InsightQueryRepository {
                 .orderBy(insight.id.desc())
                 .limit(cPage.getLimit())
                 .fetch();
+    }
+
+    public Long countByChallenge(Challenge challenge) {
+        return queryFactory
+                .select(insight.count())
+                .from(insight)
+                .innerJoin(insight.challengeParticipation, challengeParticipation)
+                .where(insight.challengeParticipation.challenge.eq(challenge)
+                        .and(insight.deleted.isFalse()))
+                .fetchOne();
     }
 
     private BooleanExpression drawerIdEq(Long drawerId) {
