@@ -15,15 +15,18 @@ import ccc.keewedomain.dto.insight.ReactionAggregationGetDto;
 import ccc.keewedomain.persistence.domain.challenge.Challenge;
 import ccc.keewedomain.persistence.domain.challenge.ChallengeParticipation;
 import ccc.keewedomain.persistence.domain.insight.Insight;
+import ccc.keewedomain.persistence.domain.insight.Reaction;
 import ccc.keewedomain.persistence.domain.insight.id.BookmarkId;
 import ccc.keewedomain.persistence.domain.user.User;
 import ccc.keewedomain.persistence.repository.insight.InsightQueryRepository;
 import ccc.keewedomain.persistence.repository.insight.InsightRepository;
 import ccc.keewedomain.persistence.repository.insight.ReactionAggregationRepository;
+import ccc.keewedomain.persistence.repository.insight.ReactionRepository;
 import ccc.keewedomain.persistence.repository.utils.CursorPageable;
 import com.mysema.commons.lang.Pair;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -42,6 +45,7 @@ public class InsightQueryDomainService {
     private final CInsightViewRepository cInsightViewRepository;
     private final CReactionCountRepository cReactionCountRepository;
     private final ReactionAggregationRepository reactionAggregationRepository;
+    private final ReactionRepository reactionRepository;
 
     public InsightGetDto getInsight(InsightDetailDto detailDto) {
         Insight insight = this.getByIdOrElseThrow(detailDto.getInsightId());
@@ -49,6 +53,8 @@ public class InsightQueryDomainService {
             throw new KeeweException(KeeweRtnConsts.ERR484);
         }
         ReactionAggregationGetDto reactionAggregationGetDto = this.getCurrentReactionAggregation(detailDto.getInsightId());
+        List<Reaction> reactions = reactionRepository.findByInsightAndReactor(insight, detailDto.getUser());
+        reactionAggregationGetDto.updateClicked(reactions);
         BookmarkId bookmarkId = BookmarkId.of(detailDto.getUserId(), detailDto.getInsightId());
         Long drawerId = insight.getDrawer() != null ? insight.getDrawer().getId() : null;
         String drawerName = drawerId != null ? insight.getDrawer().getName() : "선택안함";
@@ -66,20 +72,25 @@ public class InsightQueryDomainService {
         Map<Long, Boolean> bookmarkPresence = bookmarkQueryDomainService.getBookmarkPresenceMap(user, forHome);
 
         return forHome.parallelStream().map(i ->
-                InsightGetForHomeDto.of(
-                        i.getId(),
-                        i.getContents(),
-                        bookmarkPresence.getOrDefault(i.getId(), false),
-                        i.getLink(),
-                        this.getCurrentReactionAggregation(i.getId()),
-                        i.getCreatedAt(),
-                        InsightWriterDto.of(
-                                i.getWriter().getId(),
-                                i.getWriter().getNickname(),
-                                i.getWriter().getRepTitleName(),
-                                i.getWriter().getProfilePhotoURL()
-                        )
-                )
+                {
+                    ReactionAggregationGetDto reactionAggregation = this.getCurrentReactionAggregation(i.getId());
+                    List<Reaction> reactions = reactionRepository.findByInsightAndReactor(i, user);
+                    reactionAggregation.updateClicked(reactions);
+                    return InsightGetForHomeDto.of(
+                            i.getId(),
+                            i.getContents(),
+                            bookmarkPresence.getOrDefault(i.getId(), false),
+                            i.getLink(),
+                            reactionAggregation,
+                            i.getCreatedAt(),
+                            InsightWriterDto.of(
+                                    i.getWriter().getId(),
+                                    i.getWriter().getNickname(),
+                                    i.getWriter().getRepTitleName(),
+                                    i.getWriter().getProfilePhotoURL()
+                            )
+                    );
+                }
         ).collect(Collectors.toList());
     }
 
@@ -108,14 +119,19 @@ public class InsightQueryDomainService {
         List<Insight> insights = insightQueryRepository.findAllByUserIdAndDrawerId(targetUserId, drawerId, cPage);
         Map<Long, Boolean> bookmarkPresenceMap = bookmarkQueryDomainService.getBookmarkPresenceMap(user, insights);
         return insights.parallelStream()
-                .map(insight -> InsightMyPageDto.of(
-                        insight.getId(),
-                        insight.getContents(),
-                        insight.getLink(),
-                        this.getCurrentReactionAggregation(insight.getId()),
-                        insight.getCreatedAt(),
-                        bookmarkPresenceMap.getOrDefault(insight.getId(), false)
-                ))
+                .map(insight -> {
+                    ReactionAggregationGetDto reactionAggregation = this.getCurrentReactionAggregation(insight.getId());
+                    List<Reaction> reactions = reactionRepository.findByInsightAndReactor(insight, user);
+                    reactionAggregation.updateClicked(reactions);
+                    return InsightMyPageDto.of(
+                            insight.getId(),
+                            insight.getContents(),
+                            insight.getLink(),
+                            reactionAggregation,
+                            insight.getCreatedAt(),
+                            bookmarkPresenceMap.getOrDefault(insight.getId(), false)
+                    );
+                })
                 .collect(Collectors.toList());
     }
 
@@ -123,7 +139,7 @@ public class InsightQueryDomainService {
     public List<InsightGetForBookmarkedDto> getInsightForBookmark(User user, CursorPageable<LocalDateTime> cPage) {
         Map<Insight, LocalDateTime> insights = insightQueryRepository.findBookmarkedInsight(user, cPage);
         List<Long> insightIds = insights.keySet().stream().map(Insight::getId).collect(Collectors.toList());
-        Map<Long, ReactionAggregationGetDto> reactionInfo = this.queryReactionAggregationInfo(insightIds);
+        Map<Long, ReactionAggregationGetDto> reactionInfo = this.queryReactionAggregationInfo(new ArrayList<>(insights.keySet()), user);
         return insights.entrySet().stream().map(i ->
                 InsightGetForBookmarkedDto.of(
                         i.getKey().getId(),
@@ -150,20 +166,25 @@ public class InsightQueryDomainService {
         Map<Long, Boolean> bookmarkPresence = bookmarkQueryDomainService.getBookmarkPresenceMap(user, insights);
 
         return insights.parallelStream().map(i ->
-                InsightGetForHomeDto.of(
-                        i.getId(),
-                        i.getContents(),
-                        bookmarkPresence.getOrDefault(i.getId(), false),
-                        i.getLink(),
-                        this.getCurrentReactionAggregation(i.getId()),
-                        i.getCreatedAt(),
-                        InsightWriterDto.of(
-                                i.getWriter().getId(),
-                                i.getWriter().getNickname(),
-                                i.getWriter().getRepTitleName(),
-                                i.getWriter().getProfilePhotoURL()
-                        )
-                )
+                {
+                    ReactionAggregationGetDto reactionAggregation = this.getCurrentReactionAggregation(i.getId());
+                    List<Reaction> reactions = reactionRepository.findByInsightAndReactor(i, user);
+                    reactionAggregation.updateClicked(reactions);
+                    return InsightGetForHomeDto.of(
+                            i.getId(),
+                            i.getContents(),
+                            bookmarkPresence.getOrDefault(i.getId(), false),
+                            i.getLink(),
+                            reactionAggregation,
+                            i.getCreatedAt(),
+                            InsightWriterDto.of(
+                                    i.getWriter().getId(),
+                                    i.getWriter().getNickname(),
+                                    i.getWriter().getRepTitleName(),
+                                    i.getWriter().getProfilePhotoURL()
+                            )
+                    );
+                }
         ).collect(Collectors.toList());
     }
 
@@ -231,11 +252,13 @@ public class InsightQueryDomainService {
     }
 
     // note. <InsightId, ReactionAggregationGetDto>
-    private Map<Long, ReactionAggregationGetDto> queryReactionAggregationInfo(List<Long> insightIds) {
-        return insightIds.parallelStream()
-                .map(insightId -> {
-                    ReactionAggregationGetDto dto = this.getCurrentReactionAggregation(insightId);
-                    return Pair.of(insightId, dto);
+    private Map<Long, ReactionAggregationGetDto> queryReactionAggregationInfo(List<Insight> insights, User user) {
+        return insights.parallelStream()
+                .map(insight -> {
+                    ReactionAggregationGetDto dto = this.getCurrentReactionAggregation(insight.getId());
+                    List<Reaction> reactions = reactionRepository.findByInsightAndReactor(insight, user);
+                    dto.updateClicked(reactions);
+                    return Pair.of(insight.getId(), dto);
                 }).collect(Collectors.toMap(Pair::getFirst, Pair::getSecond));
     }
 

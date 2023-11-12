@@ -77,7 +77,7 @@ public class InsightAssembler {
     }
 
     public InsightDetailDto toInsightDetailDto(Long insightId) {
-        return InsightDetailDto.of(SecurityUtil.getUserId(), insightId);
+        return InsightDetailDto.of(SecurityUtil.getUserId(), insightId, SecurityUtil.getUser());
     }
 
     public InsightGetResponse toInsightGetResponse(InsightGetDto dto) {
@@ -120,11 +120,17 @@ public class InsightAssembler {
     private ReactionAggregationResponse toReactionAggregationResponse(ReactionAggregationGetDto dto) {
         return ReactionAggregationResponse.of(
                 dto.getClap(),
+                dto.getIsClapClicked(),
                 dto.getHeart(),
+                dto.getIsHeartClicked(),
                 dto.getSad(),
+                dto.getIsSadClicked(),
                 dto.getSurprise(),
+                dto.getIsSurpriseClicked(),
                 dto.getFire(),
-                dto.getEyes()
+                dto.getIsFireClicked(),
+                dto.getEyes(),
+                dto.getIsEyesClicked()
         );
     }
 
