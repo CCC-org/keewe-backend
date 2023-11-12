@@ -46,3 +46,7 @@ keewe-domain/src/main/resources/application-domain.yml
 keewe-core/src/main/resources/application-core.yml
 /gpg-ownertrust.txt
 /gpg-secret.key
+/native/
+/wrapper/
+/caches/
+/daemon/
