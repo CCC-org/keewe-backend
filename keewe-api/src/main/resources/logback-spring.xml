@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
     <springProperty name = "SENTRY_DSN" source = "env.sentry-dsn"/>
     <springProperty name = "LOGSTASH_DSN" source = "env.logstash-dsn"/>
     <springProperty name = "SERVICE_NAME" source="spring.service.name" />
@@ -26,7 +27,7 @@
         <sift>
             <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
                 <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-                    <pattern>%d{yy-MM-dd HH:mm:ss.SSS} [%-10.10thread][%-5level][%-36.36logger{5}] - %msg%n</pattern>
+                    <pattern>[%clr(%-5level)] [%d{yy-MM-dd HH:mm:ss.SSS}] [%-10.10thread] [%cyan(%logger{5}:%method:%L)] - %msg%n</pattern>
                 </encoder>
             </appender>
         </sift>
