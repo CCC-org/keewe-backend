@@ -50,3 +50,5 @@ keewe-core/src/main/resources/application-core.yml
 /wrapper/
 /caches/
 /daemon/
+/.tmp/
+/jdks/
