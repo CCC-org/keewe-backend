@@ -42,6 +42,7 @@ subprojects {
 	apply plugin: "kotlin-spring"
 	apply plugin: "kotlin-jpa"
 	apply plugin: "kotlin-noarg"
+	apply plugin: "kotlin-kapt"
 	apply plugin: "idea"
 
 	configurations {
@@ -83,16 +84,6 @@ subprojects {
 		exclude 'ccc/keewedomain/**'
 		exclude 'ccc/keeweevent/**'
 	}
-}
-
-project(':keewe-batch') {
-	apply plugin: "kotlin-kapt"
-
-	dependencies {
-		implementation project(path: ':keewe-domain', configuration: 'default')
-		implementation 'org.springframework.boot:spring-boot-starter-batch'
-		testImplementation 'org.springframework.batch:spring-batch-test'
-	}
 
 	kapt {
 		useBuildCache = false
@@ -100,9 +91,15 @@ project(':keewe-batch') {
 	}
 }
 
-project(':keewe-push') {
-	apply plugin: "kotlin-kapt"
+project(':keewe-batch') {
+	dependencies {
+		implementation project(path: ':keewe-domain', configuration: 'default')
+		implementation 'org.springframework.boot:spring-boot-starter-batch'
+		testImplementation 'org.springframework.batch:spring-batch-test'
+	}
+}
 
+project(':keewe-push') {
 	dependencies {
 		implementation project(path: ':keewe-core', configuration: 'default')
 		implementation project(path: ':keewe-domain', configuration: 'default')
@@ -110,29 +107,15 @@ project(':keewe-push') {
 		implementation 'org.springframework.boot:spring-boot-starter-webflux'
 		implementation 'io.netty:netty-resolver-dns-native-macos:4.1.68.Final:osx-aarch_64'
 	}
-
-	kapt {
-		useBuildCache = false
-		keepJavacAnnotationProcessors = true
-	}
 }
 
 project(':keewe-statistics') {
-	apply plugin: "kotlin-kapt"
-
 	dependencies {
 		implementation project(path: ':keewe-domain', configuration: 'default')
-	}
-
-	kapt {
-		useBuildCache = false
-		keepJavacAnnotationProcessors = true
 	}
 }
 
 project(':keewe-infra') {
-	apply plugin: "kotlin-kapt"
-
 	bootJar {
 		enabled = false
 	}
@@ -148,16 +131,9 @@ project(':keewe-infra') {
 		implementation group: 'org.imgscalr', name: 'imgscalr-lib', version: '4.2'
 		implementation 'io.jsonwebtoken:jjwt:0.9.1'
 	}
-
-	kapt {
-		useBuildCache = false
-		keepJavacAnnotationProcessors = true
-	}
 }
 
 project(':keewe-event') {
-	apply plugin: "kotlin-kapt"
-
 	bootJar {
 		enabled = false
 	}
@@ -173,16 +149,9 @@ project(':keewe-event') {
 
 	task prepareKotlinBuildScriptModel {
 	}
-
-	kapt {
-		useBuildCache = false
-		keepJavacAnnotationProcessors = true
-	}
 }
 
 project(':keewe-core') {
-	apply plugin: "kotlin-kapt"
-
 	bootJar {
 		enabled = false
 	}
@@ -194,11 +163,6 @@ project(':keewe-core') {
 	dependencies {
 		implementation 'org.springframework.boot:spring-boot-starter-amqp'
 		implementation 'org.springframework.boot:spring-boot-starter-data-redis'
-	}
-
-	kapt {
-		useBuildCache = false
-		keepJavacAnnotationProcessors = true
 	}
 }
 
@@ -224,24 +188,23 @@ project(':keewe-domain') {
 		implementation group: 'com.h2database', name: 'h2', version: '2.1.214'
 		implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.5.8'
 		implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
-		implementation "com.querydsl:querydsl-apt:${queryDslVersion}"
+		implementation "com.querydsl:querydsl-apt:${queryDslVersion}:jpa"
+		kapt "com.querydsl:querydsl-apt:${queryDslVersion}:jpa"
 		testImplementation group: 'com.h2database', name: 'h2', version: '2.1.214'
 	}
 
-	def querydslSrcDir = "$buildDir/generated/querydsl"
+	def kaptMainDir = "$buildDir/generated/source/kapt/main"
 
 	querydsl {
 		jpa = true
-		querydslSourcesDir = querydslSrcDir
-	}
-
-	sourceSets {
-		main.java.srcDir querydslSrcDir
+		querydslSourcesDir = kaptMainDir
 	}
 
 	compileQuerydsl {
 		options.annotationProcessorPath = configurations.querydsl
 	}
+
+	compileKotlin.dependsOn compileQuerydsl
 
 	configurations {
 		querydsl {
@@ -251,7 +214,6 @@ project(':keewe-domain') {
 }
 
 project(':keewe-api') {
-	apply plugin: "kotlin-kapt"
 	apply plugin: 'com.epages.restdocs-api-spec'
 
 	ext {
@@ -310,11 +272,6 @@ project(':keewe-api') {
 		title = 'Keewe-API'
 		description = 'Keewe의 API 문서입니다.'
 		format = 'yaml'
-	}
-
-	kapt {
-		useBuildCache = false
-		keepJavacAnnotationProcessors = true
 	}
 }
 
