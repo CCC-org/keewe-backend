@@ -6,6 +6,12 @@ plugins {
 	id 'com.ewerk.gradle.plugins.querydsl' version '1.0.10'
 }
 
+allprojects {
+	repositories {
+		mavenCentral()
+	}
+}
+
 subprojects {
 	apply plugin: 'java'
 	apply plugin: 'org.springframework.boot'
@@ -21,17 +27,9 @@ subprojects {
 		}
 	}
 
-	repositories {
-		mavenCentral()
-	}
-
 	dependencies {
 		compileOnly 'org.projectlombok:lombok'
 		annotationProcessor 'org.projectlombok:lombok'
-// 		FIXME push 모듈 api 모듈에서 분리 시 주석 해제
-//		implementation 'com.fasterxml.jackson.core:jackson-core:2.13.4'
-//		implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.4'
-//		implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.4'
 		implementation 'org.springframework.boot:spring-boot-starter-aop'
 		implementation 'net.logstash.logback:logstash-logback-encoder:6.3'
 
@@ -57,15 +55,12 @@ subprojects {
 		exclude 'ccc/keewedomain/**'
 		exclude 'ccc/keeweevent/**'
 	}
-
 }
 
 project(':keewe-batch') {
 	dependencies {
 		implementation project(path: ':keewe-domain', configuration: 'default')
-
 		implementation 'org.springframework.boot:spring-boot-starter-batch'
-
 		testImplementation 'org.springframework.batch:spring-batch-test'
 	}
 }
@@ -79,7 +74,6 @@ project(':keewe-push') {
 		implementation 'io.netty:netty-resolver-dns-native-macos:4.1.68.Final:osx-aarch_64'
 	}
 }
-
 
 project(':keewe-statistics') {
 	dependencies {
@@ -138,7 +132,6 @@ project(':keewe-core') {
 	}
 }
 
-
 project(':keewe-domain') {
 	apply plugin: 'com.ewerk.gradle.plugins.querydsl'
 
@@ -168,11 +161,8 @@ project(':keewe-domain') {
 		implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.5.8'
 		implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
 		implementation "com.querydsl:querydsl-apt:${queryDslVersion}"
-
 		testImplementation group: 'com.h2database', name: 'h2', version: '2.1.214'
-
 	}
-
 
 	def querydslSrcDir = "$buildDir/generated/querydsl"
 
@@ -192,7 +182,6 @@ project(':keewe-domain') {
 
 project(':keewe-api') {
 	apply plugin: 'com.epages.restdocs-api-spec'
-
 
 	ext {
 		logbackVersion = "1.2.11"
@@ -214,7 +203,6 @@ project(':keewe-api') {
 		testImplementation 'com.epages:restdocs-api-spec-mockmvc:0.16.2'
 		testImplementation 'org.springframework.security:spring-security-test'
 	}
-
 
 	def active = System.properties.getOrDefault('spring.profiles.active', 'local')
 
@@ -252,4 +240,11 @@ project(':keewe-api') {
 		description = 'Keewe의 API 문서입니다.'
 		format = 'yaml'
 	}
+}
+
+bootJar {
+	enabled = false
+}
+jar {
+	enabled = true
 }
