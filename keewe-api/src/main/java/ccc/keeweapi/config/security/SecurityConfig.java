@@ -42,6 +42,7 @@ public class SecurityConfig {
                 .antMatchers(GET, "/api/v1/oauth/**")
                 .antMatchers("/h2-console/**")
                 .antMatchers(GET, LOGIN_CONFIG_URL)
+                .antMatchers(GET, "/hello")
                 .antMatchers(GET, FORCE_LOGIN_URL);
     }
 

@@ -1,9 +1,30 @@
+buildscript {
+	group "ccc"
+	version "0.0.1-SNAPSHOT"
+
+	ext {
+		springBootVersion = "2.6.3"
+		kotlinVersion = "1.8.20"
+	}
+
+	repositories {
+		mavenCentral()
+	}
+
+	dependencies {
+		classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
+		classpath "io.spring.gradle:dependency-management-plugin:1.0.11.RELEASE"
+		classpath "gradle.plugin.com.ewerk.gradle.plugins:querydsl-plugin:1.0.10"
+		classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlinVersion}"
+		classpath "org.jetbrains.kotlin:kotlin-allopen:${kotlinVersion}"
+		classpath "org.jetbrains.kotlin:kotlin-noarg:${kotlinVersion}"
+	}
+}
+
 plugins {
 	id 'org.springframework.boot' version '2.7.0'
-	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 	id 'java'
 	id 'com.epages.restdocs-api-spec' version '0.16.2'
-	id 'com.ewerk.gradle.plugins.querydsl' version '1.0.10'
 }
 
 allprojects {
@@ -16,15 +37,22 @@ subprojects {
 	apply plugin: 'java'
 	apply plugin: 'org.springframework.boot'
 	apply plugin: 'io.spring.dependency-management'
-
-	group = 'ccc'
-	version = '0.0.1-SNAPSHOT'
-	sourceCompatibility = '11'
+	apply plugin: "kotlin"
+	apply plugin: "kotlin-allopen"
+	apply plugin: "kotlin-spring"
+	apply plugin: "kotlin-jpa"
+	apply plugin: "kotlin-noarg"
+	apply plugin: "idea"
 
 	configurations {
 		compileOnly {
 			extendsFrom annotationProcessor
 		}
+	}
+
+	sourceSets {
+		main.java.srcDir "src/main/java"
+		main.kotlin.srcDir "src/main/kotlin"
 	}
 
 	dependencies {
@@ -58,14 +86,23 @@ subprojects {
 }
 
 project(':keewe-batch') {
+	apply plugin: "kotlin-kapt"
+
 	dependencies {
 		implementation project(path: ':keewe-domain', configuration: 'default')
 		implementation 'org.springframework.boot:spring-boot-starter-batch'
 		testImplementation 'org.springframework.batch:spring-batch-test'
 	}
+
+	kapt {
+		useBuildCache = false
+		keepJavacAnnotationProcessors = true
+	}
 }
 
 project(':keewe-push') {
+	apply plugin: "kotlin-kapt"
+
 	dependencies {
 		implementation project(path: ':keewe-core', configuration: 'default')
 		implementation project(path: ':keewe-domain', configuration: 'default')
@@ -73,15 +110,29 @@ project(':keewe-push') {
 		implementation 'org.springframework.boot:spring-boot-starter-webflux'
 		implementation 'io.netty:netty-resolver-dns-native-macos:4.1.68.Final:osx-aarch_64'
 	}
+
+	kapt {
+		useBuildCache = false
+		keepJavacAnnotationProcessors = true
+	}
 }
 
 project(':keewe-statistics') {
+	apply plugin: "kotlin-kapt"
+
 	dependencies {
 		implementation project(path: ':keewe-domain', configuration: 'default')
+	}
+
+	kapt {
+		useBuildCache = false
+		keepJavacAnnotationProcessors = true
 	}
 }
 
 project(':keewe-infra') {
+	apply plugin: "kotlin-kapt"
+
 	bootJar {
 		enabled = false
 	}
@@ -97,9 +148,16 @@ project(':keewe-infra') {
 		implementation group: 'org.imgscalr', name: 'imgscalr-lib', version: '4.2'
 		implementation 'io.jsonwebtoken:jjwt:0.9.1'
 	}
+
+	kapt {
+		useBuildCache = false
+		keepJavacAnnotationProcessors = true
+	}
 }
 
 project(':keewe-event') {
+	apply plugin: "kotlin-kapt"
+
 	bootJar {
 		enabled = false
 	}
@@ -115,9 +173,16 @@ project(':keewe-event') {
 
 	task prepareKotlinBuildScriptModel {
 	}
+
+	kapt {
+		useBuildCache = false
+		keepJavacAnnotationProcessors = true
+	}
 }
 
 project(':keewe-core') {
+	apply plugin: "kotlin-kapt"
+
 	bootJar {
 		enabled = false
 	}
@@ -130,6 +195,11 @@ project(':keewe-core') {
 		implementation 'org.springframework.boot:spring-boot-starter-amqp'
 		implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 	}
+
+	kapt {
+		useBuildCache = false
+		keepJavacAnnotationProcessors = true
+	}
 }
 
 project(':keewe-domain') {
@@ -141,12 +211,6 @@ project(':keewe-domain') {
 
 	jar {
 		enabled = true
-	}
-
-	configurations {
-		querydsl {
-			extendsFrom compileClasspath
-		}
 	}
 
 	ext {
@@ -178,9 +242,16 @@ project(':keewe-domain') {
 	compileQuerydsl {
 		options.annotationProcessorPath = configurations.querydsl
 	}
+
+	configurations {
+		querydsl {
+			extendsFrom compileClasspath
+		}
+	}
 }
 
 project(':keewe-api') {
+	apply plugin: "kotlin-kapt"
 	apply plugin: 'com.epages.restdocs-api-spec'
 
 	ext {
@@ -239,6 +310,11 @@ project(':keewe-api') {
 		title = 'Keewe-API'
 		description = 'Keewe의 API 문서입니다.'
 		format = 'yaml'
+	}
+
+	kapt {
+		useBuildCache = false
+		keepJavacAnnotationProcessors = true
 	}
 }
 
