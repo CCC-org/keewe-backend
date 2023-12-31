@@ -6,6 +6,7 @@ import ccc.keeweapi.dto.insight.response.*;
 import ccc.keeweapi.dto.insight.request.InsightCreateRequest;
 import ccc.keeweapi.service.insight.command.InsightCommandApiService;
 import ccc.keeweapi.service.insight.query.InsightQueryApiService;
+import ccc.keeweapi.service.insight.query.InsightQueryApiServiceKt;
 import ccc.keewecore.consts.KeeweConsts;
 import ccc.keewedomain.persistence.repository.utils.CursorPageable;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +31,7 @@ import java.util.List;
 public class InsightController {
     private final InsightQueryApiService insightQueryApiService;
     private final InsightCommandApiService insightCommandApiService;
+    private final InsightQueryApiServiceKt insightQueryApiServiceKt;
 
     @PostMapping
     public ApiResponse<InsightCreateResponse> create(@RequestBody @Valid InsightCreateRequest request) {
@@ -62,7 +64,7 @@ public class InsightController {
             @RequestParam Long limit,
             @RequestParam(required = false, defaultValue = "false") Boolean follow
     ) {
-        return ApiResponse.ok(insightQueryApiService.getInsightsForHome(CursorPageable.of(cursor, limit), follow));
+        return ApiResponse.ok(insightQueryApiServiceKt.paginateHomeInsights(CursorPageable.of(cursor, limit), follow));
     }
 
     @GetMapping("/author/{insightId}")

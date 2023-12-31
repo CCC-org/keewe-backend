@@ -6,6 +6,7 @@ import ccc.keewedomain.persistence.domain.insight.enums.ReactionType;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.List;
 @EqualsAndHashCode
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(staticName = "of")
+@Getter
 public class ReactionAggregationGetDto {
     private Long insightId;
     private Long clap;
@@ -35,7 +37,7 @@ public class ReactionAggregationGetDto {
         return clap;
     }
 
-    public Boolean getClapClicked() {
+    public Boolean isClapClicked() {
         return isClapClicked;
     }
 
