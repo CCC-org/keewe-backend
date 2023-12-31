@@ -3,15 +3,20 @@ package ccc.keewedomain.dto.insight;
 import ccc.keewedomain.cache.domain.insight.CReactionCount;
 import ccc.keewedomain.persistence.domain.insight.Reaction;
 import ccc.keewedomain.persistence.domain.insight.enums.ReactionType;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
-@Getter
 @EqualsAndHashCode
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(staticName = "of")
+@Getter
 public class ReactionAggregationGetDto {
+    private Long insightId;
     private Long clap;
     private Boolean isClapClicked;
     private Long heart;
@@ -23,10 +28,68 @@ public class ReactionAggregationGetDto {
     private Long fire;
     private Boolean isFireClicked;
     private Long eyes;
+
+    public Long getInsightId() {
+        return insightId;
+    }
+
+    public Long getClap() {
+        return clap;
+    }
+
+    public Boolean isClapClicked() {
+        return isClapClicked;
+    }
+
+    public Long getHeart() {
+        return heart;
+    }
+
+    public Boolean getHeartClicked() {
+        return isHeartClicked;
+    }
+
+    public Long getSad() {
+        return sad;
+    }
+
+    public Boolean getSadClicked() {
+        return isSadClicked;
+    }
+
+    public Long getSurprise() {
+        return surprise;
+    }
+
+    public Boolean getSurpriseClicked() {
+        return isSurpriseClicked;
+    }
+
+    public Long getFire() {
+        return fire;
+    }
+
+    public Boolean getFireClicked() {
+        return isFireClicked;
+    }
+
+    public Long getEyes() {
+        return eyes;
+    }
+
+    public Boolean getEyesClicked() {
+        return isEyesClicked;
+    }
+
     private Boolean isEyesClicked;
 
-    public static ReactionAggregationGetDto createByCnt(CReactionCount cnt) {
-        return ReactionAggregationGetDto.of(cnt.getClap(),
+    public static ReactionAggregationGetDto createByCnt(
+        Long insightId,
+        CReactionCount cnt
+    ) {
+        return ReactionAggregationGetDto.of(
+                insightId,
+                cnt.getClap(),
                 false,
                 cnt.getHeart(),
                 false,
@@ -83,5 +146,25 @@ public class ReactionAggregationGetDto {
 
     public Long getAllReactionCount() {
         return clap + heart + sad + surprise + fire + eyes;
+    }
+
+    public static ReactionAggregationGetDto EMPTY(
+        Long insightId
+    ) {
+        return ReactionAggregationGetDto.of(
+                insightId,
+                0L,
+                false,
+                0L,
+                false,
+                0L,
+                false,
+                0L,
+                false,
+                0L,
+                false,
+                0L,
+                false
+        );
     }
 }

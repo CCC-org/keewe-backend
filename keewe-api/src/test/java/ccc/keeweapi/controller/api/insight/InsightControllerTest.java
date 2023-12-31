@@ -4,16 +4,19 @@ import static com.epages.restdocs.apispec.ResourceDocumentation.headerWithName;
 import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import ccc.keeweapi.document.utils.ApiDocumentationTest;
 import ccc.keeweapi.dto.insight.response.*;
 import ccc.keeweapi.service.insight.command.InsightCommandApiService;
 import ccc.keeweapi.service.insight.query.InsightQueryApiService;
+import ccc.keeweapi.service.insight.query.InsightQueryApiServiceKt;
 import ccc.keewedomain.dto.insight.InsightWriterDto;
 import ccc.keewedomain.persistence.domain.common.Interest;
 import ccc.keewedomain.persistence.domain.common.Link;
@@ -42,6 +45,9 @@ public class InsightControllerTest extends ApiDocumentationTest {
 
     @Mock
     InsightCommandApiService insightCommandApiService;
+
+    @Mock
+    InsightQueryApiServiceKt insightQueryApiServiceKt;
 
     @BeforeEach
     public void setup(RestDocumentationContextProvider provider) {
@@ -219,7 +225,7 @@ public class InsightControllerTest extends ApiDocumentationTest {
         long cursor = Long.MAX_VALUE;
         long limit = 10L;
 
-        when(insightQueryApiService.getInsightsForHome(any(), any())).thenReturn(List.of(InsightGetForHomeResponse.of(
+        when(insightQueryApiServiceKt.paginateHomeInsights(any(), anyBoolean())).thenReturn(List.of(InsightGetForHomeResponse.of(
                 insightId,
                 "인사이트 내용입니다. 즐거운 개발 되세요!",
                 true,
@@ -234,6 +240,7 @@ public class InsightControllerTest extends ApiDocumentationTest {
                         .param("follow", "false")
                         .param("cursor", Long.toString(cursor))
                         .param("limit", Long.toString(limit)))
+                .andDo(print())
                 .andExpect(status().isOk());
 
         resultActions.andDo(restDocs.document(resource(
