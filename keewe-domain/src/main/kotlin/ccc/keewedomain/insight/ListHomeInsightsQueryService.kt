@@ -4,6 +4,8 @@ import ccc.keewedomain.cache.repository.insight.CReactionCountRepository
 import ccc.keewedomain.dto.insight.InsightGetForHomeDto
 import ccc.keewedomain.dto.insight.InsightWriterDto
 import ccc.keewedomain.dto.insight.ReactionAggregationGetDto
+import ccc.keewedomain.persistence.domain.insight.Insight
+import ccc.keewedomain.persistence.domain.insight.Reaction
 import ccc.keewedomain.persistence.domain.user.User
 import ccc.keewedomain.persistence.repository.insight.InsightQueryRepository
 import ccc.keewedomain.persistence.repository.insight.ReactionAggregationRepository
@@ -11,6 +13,7 @@ import ccc.keewedomain.persistence.repository.insight.ReactionRepository
 import ccc.keewedomain.persistence.repository.utils.CursorPageable
 import ccc.keewedomain.service.insight.query.BookmarkQueryDomainService
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.async
@@ -37,37 +40,18 @@ class ListHomeInsightsQueryService(
         val activateFollowFilter: Boolean,
     )
 
-    @OptIn(FlowPreview::class)
     suspend fun invoke(query: Query): List<InsightGetForHomeDto> {
         val (user, paginateStandard, activateFollowFilter) = query
         val insights = insightQueryRepository.findAllForHome(user, paginateStandard, activateFollowFilter)
-        val deferredBookmark = coroutineScope.async {
-            bookmarkQueryDomainService.getBookmarkPresenceMap(user, insights)
-        }
+        val deferredBookmark = coroutineScope.async { bookmarkQueryDomainService.getBookmarkPresenceMap(user, insights) }
         val insightIds = insights.map { it.id }
-        val reactionAggregationFlow = insightIds.asFlow()
-            .flatMapMerge {
-                flow { emit(getCurrentReactionAggregation(it)) }
-            }
-            .flowOn(Dispatchers.IO)
-        val reactionFlow = insights.asFlow()
-            .flatMapMerge { insight ->
-                flow { emit(reactionRepository.findByInsightAndReactor(insight, user)) }
-            }
-            .flatMapConcat { it.asFlow() }
-            .flowOn(Dispatchers.IO)
-        // <InsightId, ReactionAggregation>
-        val reactionAggregations = reactionAggregationFlow
-            .toList()
-            .associateBy { it.insightId  }
-        // <InsightId, List<Reaction>>
-        val reactions = reactionFlow
-            .toList()
-            .mapNotNull { it }
-            .groupBy { it.insight.id }
-        val bookmarkMap = deferredBookmark.await()
+        val deferredReactionAggregations = this.getReactionAggregations(insightIds)
+        val deferredReactions = this.getReactions(insights, user)
+        val bookmark = deferredBookmark.await()
+        val reactionAggregations = deferredReactionAggregations.await()
+        val reactions = deferredReactions.await()
         return insights.map { insight ->
-            val isBookmark = bookmarkMap.getOrDefault(insight.id, false)
+            val isBookmark = bookmark[insight.id] ?: false
             val reactionAggregation = reactionAggregations[insight.id] ?: ReactionAggregationGetDto.EMPTY(insight.id)
             val reactionsOfInsight = reactions[insight.id] ?: emptyList()
             reactionAggregation.updateClicked(reactionsOfInsight)
@@ -85,6 +69,38 @@ class ListHomeInsightsQueryService(
                     insight.writer.profilePhotoURL,
                 )
             )
+        }
+    }
+
+    @OptIn(FlowPreview::class)
+    private fun getReactionAggregations(insightIds: List<Long>): Deferred<Map<Long, ReactionAggregationGetDto>> {
+        val reactionAggregationFlow = insightIds.asFlow()
+            .flatMapMerge {
+                flow {
+                    emit(getCurrentReactionAggregation(it))
+                }
+            }
+            .flowOn(Dispatchers.IO)
+        return coroutineScope.async {
+            reactionAggregationFlow.toList()
+                .associateBy { it.insightId }
+        }
+    }
+
+    @OptIn(FlowPreview::class)
+    private fun getReactions(insights: List<Insight>, user: User): Deferred<Map<Long, List<Reaction>>> {
+        val reactionFlow = insights.asFlow()
+            .flatMapMerge { insight ->
+                flow {
+                    emit(reactionRepository.findByInsightAndReactor(insight, user))
+                }
+            }
+            .flatMapConcat { it.asFlow() }
+            .flowOn(Dispatchers.IO)
+        return coroutineScope.async {
+            reactionFlow.toList()
+                .mapNotNull { it }
+                .groupBy { it.insight.id }
         }
     }
 
