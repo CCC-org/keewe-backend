@@ -40,7 +40,9 @@ public interface ReactionAggregationRepository extends JpaRepository<ReactionAgg
             if (reactCntMap.get(reactionType) == null)
                 throw new KeeweException(KeeweRtnConsts.ERR471);
         });
-        return ReactionAggregationGetDto.of(reactCntMap.get(CLAP),
+        return ReactionAggregationGetDto.of(
+                insightId,
+                reactCntMap.get(CLAP),
                 false,
                 reactCntMap.get(HEART),
                 false,

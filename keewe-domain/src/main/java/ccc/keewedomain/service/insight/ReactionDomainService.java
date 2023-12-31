@@ -79,7 +79,7 @@ public class ReactionDomainService {
     }
 
     public ReactionAggregationGetDto getCurrentReactionAggregation(Long insightId) {
-        return ReactionAggregationGetDto.createByCnt(cReactionCountRepository.findByIdWithMissHandle(insightId, () ->
+        return ReactionAggregationGetDto.createByCnt(insightId, cReactionCountRepository.findByIdWithMissHandle(insightId, () ->
                 reactionAggregationRepository.findDtoByInsightId(insightId)
         ));
     }

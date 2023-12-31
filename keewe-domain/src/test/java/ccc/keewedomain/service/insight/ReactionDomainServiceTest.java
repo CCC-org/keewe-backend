@@ -113,7 +113,7 @@ public class ReactionDomainServiceTest {
         assertThat(dto.getEyes()).isEqualTo(0L);
 
         CReactionCount cnt = cReactionCountRepository.findByIdWithMissHandle(insightId, () -> dto);
-        ReactionAggregationGetDto byCnt = ReactionAggregationGetDto.createByCnt(cnt);
+        ReactionAggregationGetDto byCnt = ReactionAggregationGetDto.createByCnt(insightId, cnt);
         assertEquals(dto, byCnt);
     }
 }

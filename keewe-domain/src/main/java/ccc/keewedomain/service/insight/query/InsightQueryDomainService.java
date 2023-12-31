@@ -138,7 +138,6 @@ public class InsightQueryDomainService {
     @Transactional(readOnly = true)
     public List<InsightGetForBookmarkedDto> getInsightForBookmark(User user, CursorPageable<LocalDateTime> cPage) {
         Map<Insight, LocalDateTime> insights = insightQueryRepository.findBookmarkedInsight(user, cPage);
-        List<Long> insightIds = insights.keySet().stream().map(Insight::getId).collect(Collectors.toList());
         Map<Long, ReactionAggregationGetDto> reactionInfo = this.queryReactionAggregationInfo(new ArrayList<>(insights.keySet()), user);
         return insights.entrySet().stream().map(i ->
                 InsightGetForBookmarkedDto.of(
@@ -263,7 +262,7 @@ public class InsightQueryDomainService {
     }
 
     private ReactionAggregationGetDto getCurrentReactionAggregation(Long insightId) {
-        return ReactionAggregationGetDto.createByCnt(cReactionCountRepository.findByIdWithMissHandle(insightId, () ->
+        return ReactionAggregationGetDto.createByCnt(insightId, cReactionCountRepository.findByIdWithMissHandle(insightId, () ->
                 reactionAggregationRepository.findDtoByInsightId(insightId)
         ));
     }

@@ -1,15 +1,22 @@
 package ccc.keewedomain.persistence.domain.insight;
 
-import ccc.keewedomain.persistence.domain.insight.ReactionAggregation;
 import ccc.keewedomain.persistence.domain.challenge.ChallengeParticipation;
 import ccc.keewedomain.persistence.domain.common.BaseTimeEntity;
 import ccc.keewedomain.persistence.domain.common.Link;
 import ccc.keewedomain.persistence.domain.user.User;
 import lombok.AccessLevel;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +24,6 @@ import static javax.persistence.FetchType.LAZY;
 
 @Entity
 @Table(name = "insight")
-@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Insight extends BaseTimeEntity {
 
@@ -61,6 +67,54 @@ public class Insight extends BaseTimeEntity {
 
     @Column(name = "view")
     private Long view = 0L;
+
+    public Long getId() {
+        return id;
+    }
+
+    public User getWriter() {
+        return writer;
+    }
+
+    public ChallengeParticipation getChallengeParticipation() {
+        return challengeParticipation;
+    }
+
+    public String getContents() {
+        return contents;
+    }
+
+    public Link getLink() {
+        return link;
+    }
+
+    public boolean isValid() {
+        return valid;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public List<Reaction> getReactions() {
+        return reactions;
+    }
+
+    public List<ReactionAggregation> getReactionAggregations() {
+        return reactionAggregations;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public Drawer getDrawer() {
+        return drawer;
+    }
+
+    public Long getView() {
+        return view;
+    }
 
     public static Insight of(User writer, ChallengeParticipation participation, Drawer drawer, String contents, Link link, boolean valid) {
         Insight insight = new Insight();

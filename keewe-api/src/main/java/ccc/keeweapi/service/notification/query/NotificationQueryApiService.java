@@ -46,7 +46,7 @@ public class NotificationQueryApiService {
                 })
                 .collect(Collectors.toList());
 
-        if(notificationResponses.size() >= cPage.getLimit()) {
+        if (notificationResponses.size() >= cPage.getLimit()) {
             NotificationResponse lastResponse = ListUtils.getLast(notificationResponses);
             return PaginateNotificationResponse.of(lastResponse.getId(), notificationResponses);
         } else {

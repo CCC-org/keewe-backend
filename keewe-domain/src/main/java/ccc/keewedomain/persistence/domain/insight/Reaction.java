@@ -4,16 +4,24 @@ import ccc.keewedomain.persistence.domain.common.BaseTimeEntity;
 import ccc.keewedomain.persistence.domain.insight.enums.ReactionType;
 import ccc.keewedomain.persistence.domain.user.User;
 import lombok.AccessLevel;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
 import static javax.persistence.FetchType.LAZY;
 
 @Table(name = "reaction")
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Getter
 public class Reaction extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,5 +47,21 @@ public class Reaction extends BaseTimeEntity {
         entity.type = reactionType;
 
         return entity;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Insight getInsight() {
+        return insight;
+    }
+
+    public User getReactor() {
+        return reactor;
+    }
+
+    public ReactionType getType() {
+        return type;
     }
 }

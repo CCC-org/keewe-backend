@@ -9,9 +9,6 @@ import ccc.keewedomain.persistence.domain.title.Title;
 import ccc.keewedomain.persistence.domain.user.enums.Privacy;
 import ccc.keewedomain.persistence.domain.user.enums.UserStatus;
 import ccc.keewedomain.persistence.domain.user.enums.VendorType;
-import java.util.Collections;
-import java.util.UUID;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.CascadeType;
@@ -30,8 +27,10 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static javax.persistence.FetchType.LAZY;
@@ -39,7 +38,6 @@ import static lombok.AccessLevel.PROTECTED;
 
 @Entity
 @Table(name = "user")
-@Getter
 @NoArgsConstructor(access = PROTECTED)
 public class User extends BaseTimeEntity {
 
@@ -193,6 +191,70 @@ public class User extends BaseTimeEntity {
         this.interests = Collections.emptyList();
         this.repTitle = null;
         this.vendorId = "WITHDRAW:".concat(UUID.randomUUID().toString());
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getVendorId() {
+        return vendorId;
+    }
+
+    public VendorType getVendorType() {
+        return vendorType;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public ProfilePhoto getProfilePhoto() {
+        return profilePhoto;
+    }
+
+    public Privacy getPrivacy() {
+        return privacy;
+    }
+
+    public List<Interest> getInterests() {
+        return interests;
+    }
+
+    public List<Follow> getFollowers() {
+        return followers;
+    }
+
+    public List<Follow> getFollowees() {
+        return followees;
+    }
+
+    public Title getRepTitle() {
+        return repTitle;
+    }
+
+    public UserStatus getStatus() {
+        return status;
+    }
+
+    public String getIntroduction() {
+        return introduction;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
     }
 }
 
