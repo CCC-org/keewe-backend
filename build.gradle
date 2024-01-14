@@ -100,6 +100,7 @@ subprojects {
 project(':keewe-batch') {
 	dependencies {
 		implementation project(path: ':keewe-domain', configuration: 'default')
+		implementation project(path: ':keewe-event', configuration: 'default')
 		implementation 'org.springframework.boot:spring-boot-starter-batch'
 		testImplementation 'org.springframework.batch:spring-batch-test'
 	}
