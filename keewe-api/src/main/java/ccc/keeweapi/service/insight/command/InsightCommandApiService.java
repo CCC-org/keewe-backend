@@ -48,6 +48,7 @@ public class InsightCommandApiService {
         return insightAssembler.toInsightViewIncrementResponse(viewCount);
     }
 
+    @TitleEventPublish(titleCategory = TitleCategory.BOOKMARK)
     public BookmarkToggleResponse toggleInsightBookmark(Long insightId) {
         boolean isBookmark = bookmarkCommandDomainService.toggleInsightBookmark(insightAssembler.toBookmarkToggleDto(insightId));
         return insightAssembler.toBookmarkToggleResponse(isBookmark);
