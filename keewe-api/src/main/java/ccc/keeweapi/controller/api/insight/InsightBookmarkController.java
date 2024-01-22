@@ -3,7 +3,6 @@ package ccc.keeweapi.controller.api.insight;
 import ccc.keeweapi.dto.ApiResponse;
 import ccc.keeweapi.dto.insight.response.BookmarkToggleResponse;
 import ccc.keeweapi.service.insight.command.InsightCommandApiService;
-import ccc.keewecore.aop.annotations.FLogging;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,7 +17,6 @@ public class InsightBookmarkController {
     private final InsightCommandApiService insightCommandApiService;
 
     @PostMapping("/bookmark/{insightId}")
-    @FLogging
     public ApiResponse<BookmarkToggleResponse> toggleBookmark(@PathVariable Long insightId) {
         return ApiResponse.ok(insightCommandApiService.toggleInsightBookmark(insightId));
     }
